@@ -5,9 +5,9 @@ on:
     branches: [staging]
 
 env:
-  REGION: southamerica-east1
+  REGION: us-east1
   SERVICE: tehillim-staging
-  REGISTRY: southamerica-east1-docker.pkg.dev
+  REGISTRY: us-east1-docker.pkg.dev
 
 jobs:
   deploy:
