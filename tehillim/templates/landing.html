@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tehillim — Plataforma de Aprendizado Musical</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    .gradient-hero {
+      background: linear-gradient(135deg, #FAF7F2 0%, #F2EAD8 50%, #EAE0C8 100%);
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800">
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full border-2 border-gray-800 flex items-center justify-center">
+          <span style="font-size:20px;font-family:'Georgia',serif;color:#1f2937;line-height:1;">&#119070;</span>
+        </div>
+        <div>
+          <p class="font-bold text-[11px] tracking-[3px] text-gray-800 leading-tight">TEHILLIM</p>
+          <!-- ✏️ CONFIGURAR: troque "Orquestra" pelo nome da sua escola -->
+          <p class="text-[9px] tracking-[2px] text-gray-400 uppercase leading-tight">Orquestra</p>
+        </div>
+      </div>
+
+      <!-- Botão de login -->
+      <a href="/login"
+         class="bg-gray-800 text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-[#7A5C2E] transition-colors">
+        Entrar
+      </a>
+
+    </div>
+  </nav>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="gradient-hero min-h-screen flex items-center pt-16">
+    <div class="max-w-6xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- Texto -->
+      <div>
+        <span class="inline-block bg-[#7A5C2E]/10 text-[#7A5C2E] text-xs font-semibold px-3 py-1 rounded-full mb-6 tracking-wide uppercase">
+          <!-- ✏️ CONFIGURAR: mude esta etiqueta como quiser -->
+          Plataforma de música
+        </span>
+
+        <!-- ✏️ CONFIGURAR: este é o título principal da sua landing page -->
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6">
+          Aprenda música de forma
+          <span class="text-[#7A5C2E]">estruturada</span>
+          e progressiva
+        </h1>
+
+        <!-- ✏️ CONFIGURAR: descrição da plataforma -->
+        <p class="text-lg text-gray-500 leading-relaxed mb-8">
+          Tehillim é a plataforma de ensino da nossa escola. Módulos organizados em trilhas,
+          progresso acompanhado pelo professor e conteúdo que avança no seu ritmo.
+        </p>
+
+        <div class="flex items-center gap-4">
+          <a href="/login"
+             class="bg-[#7A5C2E] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#6A4C1E] transition-colors shadow-lg shadow-[#7A5C2E]/20">
+            Acessar a plataforma →
+          </a>
+          <!-- ✏️ CONFIGURAR: link opcional para saber mais / contato -->
+          <a href="#como-funciona" class="text-gray-500 text-sm hover:text-gray-800 transition-colors">
+            Como funciona ↓
+          </a>
+        </div>
+      </div>
+
+      <!-- Ilustração / Cards de preview -->
+      <div class="hidden lg:flex flex-col gap-3">
+
+        <!-- ✏️ CONFIGURAR: estes cards mostram os grupos da plataforma.
+             Você pode trocar os nomes, ícones e descrições para refletir
+             o conteúdo real da sua plataforma. -->
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
+          <span class="text-3xl">🟢</span>
+          <div>
+            <p class="font-semibold text-gray-800 text-sm">Musicalização Infantil</p>
+            <p class="text-xs text-gray-400">Sons, ritmo, pulso e primeiros conceitos</p>
+          </div>
+          <span class="ml-auto text-xs text-gray-300 font-medium">10 módulos</span>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
+          <span class="text-3xl">🔵</span>
+          <div>
+            <p class="font-semibold text-gray-800 text-sm">Alfabetização Musical</p>
+            <p class="text-xs text-gray-400">Pentagrama, notas, figuras e compasso</p>
+          </div>
+          <span class="ml-auto text-xs text-gray-300 font-medium">7 módulos</span>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
+          <span class="text-3xl">🟣</span>
+          <div>
+            <p class="font-semibold text-gray-800 text-sm">Método Bona</p>
+            <p class="text-xs text-gray-400">40 lições progressivas de ritmo</p>
+          </div>
+          <span class="ml-auto text-xs text-gray-300 font-medium">40 lições</span>
+        </div>
+
+        <div class="bg-[#FAF7F2] rounded-2xl p-5 border border-[#F2EAD8] flex items-center gap-4">
+          <div class="w-8 h-8 rounded-full bg-[#7A5C2E]/10 flex items-center justify-center text-sm">🎯</div>
+          <p class="text-sm text-gray-500 italic">
+            "O professor acompanha seu progresso em tempo real."
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ COMO FUNCIONA ══════════════ -->
+  <section id="como-funciona" class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+
+      <!-- ✏️ CONFIGURAR: título da seção -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Como funciona</h2>
+        <p class="text-gray-400 max-w-xl mx-auto">
+          Uma trilha pensada para cada aluno, acompanhada de perto pelo professor.
+        </p>
+      </div>
+
+      <!-- Passos -->
+      <!-- ✏️ CONFIGURAR: os 3 passos abaixo descrevem o fluxo da plataforma.
+           Troque os textos para explicar melhor para os seus alunos. -->
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <div class="text-center">
+          <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5 text-2xl">
+            🔓
+          </div>
+          <h3 class="font-semibold text-gray-800 mb-2">1. Professor libera os módulos</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            O professor seleciona quais conteúdos cada aluno pode acessar,
+            no ritmo certo para o seu nível.
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5 text-2xl">
+            📚
+          </div>
+          <h3 class="font-semibold text-gray-800 mb-2">2. Aluno estuda na trilha</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Cada módulo tem teoria, vídeo, exercícios e um jogo.
+            O progresso é salvo automaticamente.
+          </p>
+        </div>
+
+        <div class="text-center">
+          <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5 text-2xl">
+            📊
+          </div>
+          <h3 class="font-semibold text-gray-800 mb-2">3. Professor acompanha tudo</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Pelo dashboard, o professor vê o progresso, ouve as gravações
+            e deixa comentários para o aluno.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ FUNCIONALIDADES ══════════════ -->
+  <section class="py-24 bg-[#FAF7F2]">
+    <div class="max-w-6xl mx-auto px-6">
+
+      <div class="text-center mb-16">
+        <!-- ✏️ CONFIGURAR: título desta seção -->
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Tudo que você precisa para aprender</h2>
+      </div>
+
+      <!-- ✏️ CONFIGURAR: adicione, remova ou renomeie os cards de funcionalidades -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="text-2xl mb-3">🎼</div>
+          <h3 class="font-semibold text-gray-800 mb-2">Partituras interativas</h3>
+          <p class="text-sm text-gray-400">Método Bona e Pozzoli com player de áudio integrado diretamente no navegador.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="text-2xl mb-3">🏆</div>
+          <h3 class="font-semibold text-gray-800 mb-2">Conquistas e desempenho</h3>
+          <p class="text-sm text-gray-400">Acompanhe sua evolução, sequência de dias estudados e desbloqueie conquistas.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="text-2xl mb-3">🎮</div>
+          <h3 class="font-semibold text-gray-800 mb-2">Jogos educativos</h3>
+          <p class="text-sm text-gray-400">Cada módulo termina com um jogo para fixar o conteúdo de forma lúdica.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="text-2xl mb-3">🎙️</div>
+          <h3 class="font-semibold text-gray-800 mb-2">Gravações de áudio</h3>
+          <p class="text-sm text-gray-400">Envie gravações diretamente pela plataforma para o professor avaliar.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="text-2xl mb-3">📱</div>
+          <h3 class="font-semibold text-gray-800 mb-2">Acesso em qualquer device</h3>
+          <p class="text-sm text-gray-400">Funciona no computador, tablet e celular. Estude onde quiser.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <div class="text-2xl mb-3">💬</div>
+          <h3 class="font-semibold text-gray-800 mb-2">Feedback do professor</h3>
+          <p class="text-sm text-gray-400">Receba comentários direto na plataforma sobre seu desempenho em cada módulo.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ CTA FINAL ══════════════ -->
+  <section class="py-24 bg-gray-900 text-white text-center">
+    <div class="max-w-2xl mx-auto px-6">
+      <div class="w-16 h-16 rounded-full border-2 border-white/30 flex items-center justify-center mx-auto mb-6">
+        <span style="font-size:36px;font-family:'Georgia',serif;color:white;line-height:1;">&#119070;</span>
+      </div>
+      <!-- ✏️ CONFIGURAR: mensagem final de chamada para ação -->
+      <h2 class="text-3xl font-bold mb-4">Pronto para começar?</h2>
+      <p class="text-gray-400 mb-8">
+        Entre com as suas credenciais e continue de onde parou.
+      </p>
+      <a href="/login"
+         class="inline-block bg-[#7A5C2E] text-white font-semibold px-8 py-4 rounded-full hover:bg-[#6A4C1E] transition-colors text-lg">
+        Acessar a plataforma →
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════ RODAPÉ ══════════════ -->
+  <!-- ✏️ CONFIGURAR: troque o nome, ano e informações de contato -->
+  <footer class="py-8 bg-gray-900 border-t border-white/5 text-center">
+    <p class="text-gray-500 text-sm">© 2025 Tehillim — Orquestra. Todos os direitos reservados.</p>
+  </footer>
+
+</body>
+</html>
