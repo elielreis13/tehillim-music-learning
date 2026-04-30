@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Lightbulb globe -->
+  <path d="M24 6C16.3 6 10 12.3 10 20C10 25.5 13.1 30.2 18 32.8V38H30V32.8C34.9 30.2 38 25.5 38 20C38 12.3 31.7 6 24 6Z" stroke="#7A5C2E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Base ring 1 -->
+  <line x1="18" y1="38" x2="30" y2="38" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round"/>
+  <!-- Base ring 2 -->
+  <line x1="20" y1="42" x2="28" y2="42" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round"/>
+  <!-- Filament hint inside -->
+  <path d="M20 20C20 18 22 16 24 18C26 20 28 18 28 18" stroke="#7A5C2E" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.55"/>
+</svg>

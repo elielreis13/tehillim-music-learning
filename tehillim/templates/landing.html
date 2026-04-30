@@ -21,13 +21,16 @@
 
       <!-- Logo -->
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-full border-2 border-gray-800 flex items-center justify-center">
-          <span style="font-size:20px;font-family:'Georgia',serif;color:#1f2937;line-height:1;">&#119070;</span>
-        </div>
+        <img 
+          src="{{ url_for('static', filename='icons/tehillim-logo.svg') }}" 
+          alt="Tehillim Logo"
+          class="w-12 h-12 object-contain"
+        >
         <div>
-          <p class="font-bold text-[11px] tracking-[3px] text-gray-800 leading-tight">TEHILLIM</p>
-          <!-- ✏️ CONFIGURAR: troque "Orquestra" pelo nome da sua escola -->
-          <p class="text-[9px] tracking-[2px] text-gray-400 uppercase leading-tight">Orquestra</p>
+          <p class="font-bold text-[11px] tracking-[3px] text-gray-800 leading-tight"
+          style="font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+          TEHILLIM
+        </p>
         </div>
       </div>
 
@@ -84,30 +87,51 @@
              o conteúdo real da sua plataforma. -->
 
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-          <span class="text-3xl">🟢</span>
+          <img 
+            src="{{ url_for('static', filename='icons/musicalizacao-infantil.svg') }}"
+            alt="Ícone"
+            class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
+          >
           <div>
-            <p class="font-semibold text-gray-800 text-sm">Musicalização Infantil</p>
+            <p class="font-semibold text-gray-800 text-sm">Musicalização</p>
             <p class="text-xs text-gray-400">Sons, ritmo, pulso e primeiros conceitos</p>
           </div>
-          <span class="ml-auto text-xs text-gray-300 font-medium">10 módulos</span>
         </div>
 
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-          <span class="text-3xl">🔵</span>
+          <img 
+            src="{{ url_for('static', filename='icons/alfebatizacao-musical.svg') }}"
+            alt="alfabetizacao"
+            class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
+          >
           <div>
             <p class="font-semibold text-gray-800 text-sm">Alfabetização Musical</p>
             <p class="text-xs text-gray-400">Pentagrama, notas, figuras e compasso</p>
           </div>
-          <span class="ml-auto text-xs text-gray-300 font-medium">7 módulos</span>
         </div>
 
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-          <span class="text-3xl">🟣</span>
+          <img 
+            src="{{ url_for('static', filename='icons/bona.svg') }}"
+            alt="bona"
+            class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
+          >
           <div>
             <p class="font-semibold text-gray-800 text-sm">Método Bona</p>
             <p class="text-xs text-gray-400">40 lições progressivas de ritmo</p>
           </div>
-          <span class="ml-auto text-xs text-gray-300 font-medium">40 lições</span>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
+          <img 
+            src="{{ url_for('static', filename='icons/pozzoli.svg') }}"
+            alt="pozzoli"
+            class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
+          >
+          <div>
+            <p class="font-semibold text-gray-800 text-sm">Método Pozzoli</p>
+            <p class="text-xs text-gray-400">100 lições progressivas de ritmo</p>
+          </div>
         </div>
 
         <div class="bg-[#FAF7F2] rounded-2xl p-5 border border-[#F2EAD8] flex items-center gap-4">
@@ -140,7 +164,11 @@
 
         <div class="text-center">
           <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5 text-2xl">
-            🔓
+            <img 
+            src="{{ url_for('static', filename='icons/liberar-cadeado.svg') }}"
+            alt="liberar-cadeado"
+            class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
+          >
           </div>
           <h3 class="font-semibold text-gray-800 mb-2">1. Professor libera os módulos</h3>
           <p class="text-sm text-gray-400 leading-relaxed">
@@ -151,7 +179,11 @@
 
         <div class="text-center">
           <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5 text-2xl">
-            📚
+            <img 
+            src="{{ url_for('static', filename='icons/trilha-estudo.svg') }}"
+            alt="trilha-estudo"
+            class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
+          >
           </div>
           <h3 class="font-semibold text-gray-800 mb-2">2. Aluno estuda na trilha</h3>
           <p class="text-sm text-gray-400 leading-relaxed">
@@ -162,7 +194,11 @@
 
         <div class="text-center">
           <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5 text-2xl">
-            📊
+            <img 
+            src="{{ url_for('static', filename='icons/dash-acompanhamento.svg') }}"
+            alt="dash-acompanhamento"
+            class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
+          >
           </div>
           <h3 class="font-semibold text-gray-800 mb-2">3. Professor acompanha tudo</h3>
           <p class="text-sm text-gray-400 leading-relaxed">
@@ -230,8 +266,12 @@
   <!-- ══════════════ CTA FINAL ══════════════ -->
   <section class="py-24 bg-gray-900 text-white text-center">
     <div class="max-w-2xl mx-auto px-6">
-      <div class="w-16 h-16 rounded-full border-2 border-white/30 flex items-center justify-center mx-auto mb-6">
-        <span style="font-size:36px;font-family:'Georgia',serif;color:white;line-height:1;">&#119070;</span>
+      <div class="w-16 h-16 flex items-center justify-center mx-auto mb-6">
+        <img 
+          src="{{ url_for('static', filename='icons/tehillim-logo-branco.svg') }}" 
+          alt="Tehillim Logo"
+          class="w-16 h-16 object-contain"
+        >
       </div>
       <!-- ✏️ CONFIGURAR: mensagem final de chamada para ação -->
       <h2 class="text-3xl font-bold mb-4">Pronto para começar?</h2>

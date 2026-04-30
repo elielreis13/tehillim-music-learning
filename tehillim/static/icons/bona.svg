@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Five staff lines -->
+  <line x1="4" y1="18" x2="44" y2="18" stroke="#7A5C2E" stroke-width="1.5"/>
+  <line x1="4" y1="23" x2="44" y2="23" stroke="#7A5C2E" stroke-width="1.5"/>
+  <line x1="4" y1="28" x2="44" y2="28" stroke="#7A5C2E" stroke-width="1.5"/>
+  <line x1="4" y1="33" x2="44" y2="33" stroke="#7A5C2E" stroke-width="1.5"/>
+  <line x1="4" y1="38" x2="44" y2="38" stroke="#7A5C2E" stroke-width="1.5"/>
+  <!-- Barlines -->
+  <line x1="4"  y1="16" x2="4"  y2="40" stroke="#7A5C2E" stroke-width="2.5"/>
+  <line x1="24" y1="16" x2="24" y2="40" stroke="#7A5C2E" stroke-width="1.5"/>
+  <line x1="44" y1="16" x2="44" y2="40" stroke="#7A5C2E" stroke-width="2.5"/>
+  <!-- Measure 1: whole note (open oval) -->
+  <ellipse cx="14" cy="28" rx="5" ry="3.5" fill="none" stroke="#7A5C2E" stroke-width="2"/>
+  <!-- Measure 2: two quarter notes -->
+  <ellipse cx="30" cy="25.5" rx="4" ry="3" transform="rotate(-15 30 25.5)" fill="#7A5C2E"/>
+  <line x1="33.8" y1="23" x2="33.8" y2="10" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round"/>
+  <ellipse cx="38" cy="30.5" rx="4" ry="3" transform="rotate(-15 38 30.5)" fill="#7A5C2E"/>
+  <line x1="41.8" y1="28" x2="41.8" y2="15" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round"/>
+</svg>

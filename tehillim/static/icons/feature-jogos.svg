@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Die body with rounded corners -->
+  <rect x="6" y="6" width="36" height="36" rx="7" stroke="#7A5C2E" stroke-width="2.5"/>
+  <!-- Music note on face (8th note) -->
+  <ellipse cx="21" cy="31" rx="5.5" ry="4" transform="rotate(-15 21 31)" fill="#7A5C2E" opacity="0.85"/>
+  <line x1="26" y1="28" x2="26" y2="14" stroke="#7A5C2E" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- 8th-note flag -->
+  <path d="M26 14C30 16 31 20 28 22" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Corner dots (top-left, bottom-right) -->
+  <circle cx="14" cy="14" r="2.5" fill="#7A5C2E"/>
+  <circle cx="34" cy="34" r="2.5" fill="#7A5C2E"/>
+</svg>
