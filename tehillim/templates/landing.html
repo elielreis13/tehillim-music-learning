@@ -3,7 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tehillim — Plataforma de Aprendizado Musical</title>
+
+  <title>Tehillim | Plataforma de Educação Musical — Teoria, Solfejo e Ritmo</title>
+  <meta name="description" content="Aprenda teoria musical, solfejo e ritmo com o Método Bona e Pozzoli. Trilhas progressivas, feedback do professor e jogos educativos para crianças e adultos.">
+  <meta name="keywords" content="educação musical, teoria musical, solfejo, método bona, método pozzoli, musicalização infantil, escola de música online, aprenda música">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Tehillim | Plataforma de Educação Musical">
+  <meta property="og:description" content="Aprenda teoria musical com trilhas progressivas, feedback do professor e jogos educativos. Método Bona, Pozzoli e musicalização infantil.">
+  <meta property="og:locale" content="pt_BR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Tehillim | Plataforma de Educação Musical">
+  <meta name="twitter:description" content="Trilhas progressivas de teoria musical com acompanhamento do professor.">
+
+  <!-- JSON-LD: EducationalOrganization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Tehillim",
+    "description": "Plataforma de educação musical com trilhas progressivas de teoria, solfejo e ritmo.",
+    "teaches": ["Teoria Musical", "Solfejo", "Musicalização Infantil", "Método Bona", "Método Pozzoli"]
+  }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * { box-sizing: border-box; }
@@ -16,7 +43,8 @@
 <body class="bg-white text-gray-800">
 
   <!-- ══════════════ NAVBAR ══════════════ -->
-  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+  <header>
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100" aria-label="Navegação principal">
     <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
       <!-- Logo -->
@@ -42,6 +70,9 @@
 
     </div>
   </nav>
+  </header>
+
+  <main>
 
   <!-- ══════════════ HERO ══════════════ -->
   <section class="gradient-hero min-h-screen flex items-center pt-16">
@@ -50,29 +81,26 @@
       <!-- Texto -->
       <div>
         <span class="inline-block bg-[#7A5C2E]/10 text-[#7A5C2E] text-xs font-semibold px-3 py-1 rounded-full mb-6 tracking-wide uppercase">
-          <!-- ✏️ CONFIGURAR: mude esta etiqueta como quiser -->
-          Plataforma de música
+          Escola de Música Online
         </span>
 
-        <!-- ✏️ CONFIGURAR: este é o título principal da sua landing page -->
         <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6">
-          Aprenda música de forma
+          Aprenda teoria musical de forma
           <span class="text-[#7A5C2E]">estruturada</span>
           e progressiva
         </h1>
 
-        <!-- ✏️ CONFIGURAR: descrição da plataforma -->
         <p class="text-lg text-gray-500 leading-relaxed mb-8">
-          Tehillim é a plataforma de ensino da nossa escola. Módulos organizados em trilhas,
-          progresso acompanhado pelo professor e conteúdo que avança no seu ritmo.
+          Tehillim é a plataforma de ensino da nossa escola de música. Trilhas de solfejo,
+          ritmo e teoria com os Métodos Bona e Pozzoli — progresso acompanhado pelo professor,
+          no seu ritmo.
         </p>
 
         <div class="flex items-center gap-4">
           <a href="/login"
              class="bg-[#7A5C2E] text-white font-semibold px-7 py-3.5 rounded-full hover:bg-[#6A4C1E] transition-colors shadow-lg shadow-[#7A5C2E]/20">
-            Acessar a plataforma →
+            Começar a estudar →
           </a>
-          <!-- ✏️ CONFIGURAR: link opcional para saber mais / contato -->
           <a href="#como-funciona" class="text-gray-500 text-sm hover:text-gray-800 transition-colors">
             Como funciona ↓
           </a>
@@ -87,50 +115,50 @@
              o conteúdo real da sua plataforma. -->
 
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-          <img 
+          <img
             src="{{ url_for('static', filename='icons/musicalizacao-infantil.svg') }}"
-            alt="Ícone"
+            alt="Musicalização Infantil"
             class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
           >
           <div>
-            <p class="font-semibold text-gray-800 text-sm">Musicalização</p>
-            <p class="text-xs text-gray-400">Sons, ritmo, pulso e primeiros conceitos</p>
+            <p class="font-semibold text-gray-800 text-sm">Musicalização Infantil</p>
+            <p class="text-xs text-gray-400">Sons, ritmo, pulso e primeiros conceitos musicais</p>
           </div>
         </div>
 
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-          <img 
+          <img
             src="{{ url_for('static', filename='icons/alfebatizacao-musical.svg') }}"
-            alt="alfabetizacao"
+            alt="Alfabetização Musical"
             class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
           >
           <div>
             <p class="font-semibold text-gray-800 text-sm">Alfabetização Musical</p>
-            <p class="text-xs text-gray-400">Pentagrama, notas, figuras e compasso</p>
+            <p class="text-xs text-gray-400">Pentagrama, notas, figuras de ritmo e compasso</p>
           </div>
         </div>
 
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-          <img 
+          <img
             src="{{ url_for('static', filename='icons/bona.svg') }}"
-            alt="bona"
+            alt="Método Bona de solfejo"
             class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
           >
           <div>
             <p class="font-semibold text-gray-800 text-sm">Método Bona</p>
-            <p class="text-xs text-gray-400">40 lições progressivas de ritmo</p>
+            <p class="text-xs text-gray-400">40 lições progressivas de ritmo e solfejo</p>
           </div>
         </div>
 
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center gap-4">
-          <img 
+          <img
             src="{{ url_for('static', filename='icons/pozzoli.svg') }}"
-            alt="pozzoli"
+            alt="Método Pozzoli de teoria musical"
             class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
           >
           <div>
             <p class="font-semibold text-gray-800 text-sm">Método Pozzoli</p>
-            <p class="text-xs text-gray-400">100 lições progressivas de ritmo</p>
+            <p class="text-xs text-gray-400">100 lições progressivas de teoria e ditado musical</p>
           </div>
         </div>
 
@@ -146,64 +174,60 @@
   </section>
 
   <!-- ══════════════ COMO FUNCIONA ══════════════ -->
-  <section id="como-funciona" class="py-24 bg-white">
+  <section id="como-funciona" class="py-24 bg-white" aria-labelledby="como-funciona-titulo">
     <div class="max-w-6xl mx-auto px-6">
 
-      <!-- ✏️ CONFIGURAR: título da seção -->
       <div class="text-center mb-16">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Como funciona</h2>
+        <h2 id="como-funciona-titulo" class="text-3xl font-bold text-gray-900 mb-4">Como funciona a plataforma</h2>
         <p class="text-gray-400 max-w-xl mx-auto">
-          Uma trilha pensada para cada aluno, acompanhada de perto pelo professor.
+          Trilha de aprendizado personalizada para cada aluno, com acompanhamento contínuo do professor.
         </p>
       </div>
 
-      <!-- Passos -->
-      <!-- ✏️ CONFIGURAR: os 3 passos abaixo descrevem o fluxo da plataforma.
-           Troque os textos para explicar melhor para os seus alunos. -->
       <div class="grid md:grid-cols-3 gap-8">
 
         <div class="text-center">
-          <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5 text-2xl">
-            <img 
-            src="{{ url_for('static', filename='icons/liberar-cadeado.svg') }}"
-            alt="liberar-cadeado"
-            class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
-          >
+          <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5">
+            <img
+              src="{{ url_for('static', filename='icons/liberar-cadeado.svg') }}"
+              alt="Professor liberando módulos ao aluno"
+              class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
+            >
           </div>
           <h3 class="font-semibold text-gray-800 mb-2">1. Professor libera os módulos</h3>
           <p class="text-sm text-gray-400 leading-relaxed">
-            O professor seleciona quais conteúdos cada aluno pode acessar,
-            no ritmo certo para o seu nível.
+            O professor escolhe quais conteúdos de teoria e solfejo cada aluno acessa,
+            respeitando o nível e o ritmo de aprendizado de cada um.
           </p>
         </div>
 
         <div class="text-center">
-          <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5 text-2xl">
-            <img 
-            src="{{ url_for('static', filename='icons/trilha-estudo.svg') }}"
-            alt="trilha-estudo"
-            class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
-          >
+          <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5">
+            <img
+              src="{{ url_for('static', filename='icons/trilha-estudo.svg') }}"
+              alt="Aluno estudando na trilha musical"
+              class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
+            >
           </div>
           <h3 class="font-semibold text-gray-800 mb-2">2. Aluno estuda na trilha</h3>
           <p class="text-sm text-gray-400 leading-relaxed">
-            Cada módulo tem teoria, vídeo, exercícios e um jogo.
+            Cada módulo combina teoria musical, vídeoaulas, exercícios práticos e jogos educativos.
             O progresso é salvo automaticamente.
           </p>
         </div>
 
         <div class="text-center">
-          <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5 text-2xl">
-            <img 
-            src="{{ url_for('static', filename='icons/dash-acompanhamento.svg') }}"
-            alt="dash-acompanhamento"
-            class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
-          >
+          <div class="w-14 h-14 rounded-2xl bg-[#F2EAD8] flex items-center justify-center mx-auto mb-5">
+            <img
+              src="{{ url_for('static', filename='icons/dash-acompanhamento.svg') }}"
+              alt="Dashboard de acompanhamento do professor"
+              class="w-12 h-12 rounded-2xl bg-[#F2EAD8]"
+            >
           </div>
-          <h3 class="font-semibold text-gray-800 mb-2">3. Professor acompanha tudo</h3>
+          <h3 class="font-semibold text-gray-800 mb-2">3. Professor acompanha em tempo real</h3>
           <p class="text-sm text-gray-400 leading-relaxed">
-            Pelo dashboard, o professor vê o progresso, ouve as gravações
-            e deixa comentários para o aluno.
+            Pelo painel do professor, é possível ver o progresso de cada aluno, ouvir as gravações
+            e enviar feedback diretamente na plataforma.
           </p>
         </div>
 
@@ -212,51 +236,52 @@
   </section>
 
   <!-- ══════════════ FUNCIONALIDADES ══════════════ -->
-  <section class="py-24 bg-[#FAF7F2]">
+  <section class="py-24 bg-[#FAF7F2]" aria-labelledby="funcionalidades-titulo">
     <div class="max-w-6xl mx-auto px-6">
 
       <div class="text-center mb-16">
-        <!-- ✏️ CONFIGURAR: título desta seção -->
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Tudo que você precisa para aprender</h2>
+        <h2 id="funcionalidades-titulo" class="text-3xl font-bold text-gray-900 mb-4">Tudo que você precisa para aprender música</h2>
+        <p class="text-gray-400 max-w-xl mx-auto">
+          Recursos pensados para tornar o estudo de teoria musical mais eficiente, motivador e acompanhado.
+        </p>
       </div>
 
-      <!-- ✏️ CONFIGURAR: adicione, remova ou renomeie os cards de funcionalidades -->
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
 
         <div class="bg-white rounded-2xl p-6 shadow-sm">
-          <div class="text-2xl mb-3">🎼</div>
+          <img src="{{ url_for('static', filename='icons/feature-partituras.svg') }}" alt="Partituras interativas com player de áudio" class="w-10 h-10 mb-3">
           <h3 class="font-semibold text-gray-800 mb-2">Partituras interativas</h3>
-          <p class="text-sm text-gray-400">Método Bona e Pozzoli com player de áudio integrado diretamente no navegador.</p>
+          <p class="text-sm text-gray-400">Estude os Métodos Bona e Pozzoli com player de áudio integrado — ouça e leia a partitura ao mesmo tempo.</p>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-sm">
-          <div class="text-2xl mb-3">🏆</div>
-          <h3 class="font-semibold text-gray-800 mb-2">Conquistas e desempenho</h3>
-          <p class="text-sm text-gray-400">Acompanhe sua evolução, sequência de dias estudados e desbloqueie conquistas.</p>
+          <img src="{{ url_for('static', filename='icons/feature-conquistas.svg') }}" alt="Sistema de conquistas e progresso musical" class="w-10 h-10 mb-3">
+          <h3 class="font-semibold text-gray-800 mb-2">Conquistas e progresso</h3>
+          <p class="text-sm text-gray-400">Acompanhe sua evolução musical, mantenha a sequência de dias estudados e desbloqueie conquistas.</p>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-sm">
-          <div class="text-2xl mb-3">🎮</div>
-          <h3 class="font-semibold text-gray-800 mb-2">Jogos educativos</h3>
-          <p class="text-sm text-gray-400">Cada módulo termina com um jogo para fixar o conteúdo de forma lúdica.</p>
+          <img src="{{ url_for('static', filename='icons/feature-jogos.svg') }}" alt="Jogos educativos para fixação musical" class="w-10 h-10 mb-3">
+          <h3 class="font-semibold text-gray-800 mb-2">Jogos educativos de música</h3>
+          <p class="text-sm text-gray-400">Cada módulo termina com um jogo interativo para fixar notas, ritmos e teoria de forma lúdica.</p>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-sm">
-          <div class="text-2xl mb-3">🎙️</div>
-          <h3 class="font-semibold text-gray-800 mb-2">Gravações de áudio</h3>
-          <p class="text-sm text-gray-400">Envie gravações diretamente pela plataforma para o professor avaliar.</p>
+          <img src="{{ url_for('static', filename='icons/feature-gravacao.svg') }}" alt="Envio de gravações de áudio para o professor" class="w-10 h-10 mb-3">
+          <h3 class="font-semibold text-gray-800 mb-2">Envio de gravações</h3>
+          <p class="text-sm text-gray-400">Grave e envie seus exercícios diretamente pela plataforma para o professor avaliar e comentar.</p>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-sm">
-          <div class="text-2xl mb-3">📱</div>
-          <h3 class="font-semibold text-gray-800 mb-2">Acesso em qualquer device</h3>
-          <p class="text-sm text-gray-400">Funciona no computador, tablet e celular. Estude onde quiser.</p>
+          <img src="{{ url_for('static', filename='icons/feature-dispositivos.svg') }}" alt="Plataforma acessível em computador, tablet e celular" class="w-10 h-10 mb-3">
+          <h3 class="font-semibold text-gray-800 mb-2">Estude em qualquer dispositivo</h3>
+          <p class="text-sm text-gray-400">A plataforma funciona no computador, tablet e celular. Estude em casa ou onde estiver.</p>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-sm">
-          <div class="text-2xl mb-3">💬</div>
-          <h3 class="font-semibold text-gray-800 mb-2">Feedback do professor</h3>
-          <p class="text-sm text-gray-400">Receba comentários direto na plataforma sobre seu desempenho em cada módulo.</p>
+          <img src="{{ url_for('static', filename='icons/feature-feedback.svg') }}" alt="Feedback personalizado do professor de música" class="w-10 h-10 mb-3">
+          <h3 class="font-semibold text-gray-800 mb-2">Feedback personalizado</h3>
+          <p class="text-sm text-gray-400">Receba comentários do professor diretamente na plataforma sobre seu desempenho em cada lição.</p>
         </div>
 
       </div>
@@ -264,31 +289,32 @@
   </section>
 
   <!-- ══════════════ CTA FINAL ══════════════ -->
-  <section class="py-24 bg-gray-900 text-white text-center">
+  <section class="py-24 bg-gray-900 text-white text-center" aria-labelledby="cta-titulo">
     <div class="max-w-2xl mx-auto px-6">
       <div class="w-16 h-16 flex items-center justify-center mx-auto mb-6">
-        <img 
-          src="{{ url_for('static', filename='icons/tehillim-logo-branco.svg') }}" 
-          alt="Tehillim Logo"
+        <img
+          src="{{ url_for('static', filename='icons/tehillim-logo-branco.svg') }}"
+          alt="Tehillim — Plataforma de Educação Musical"
           class="w-16 h-16 object-contain"
         >
       </div>
-      <!-- ✏️ CONFIGURAR: mensagem final de chamada para ação -->
-      <h2 class="text-3xl font-bold mb-4">Pronto para começar?</h2>
+      <h2 id="cta-titulo" class="text-3xl font-bold mb-4">Pronto para avançar na música?</h2>
       <p class="text-gray-400 mb-8">
-        Entre com as suas credenciais e continue de onde parou.
+        Acesse sua conta e continue sua trilha de teoria musical de onde parou.
       </p>
       <a href="/login"
          class="inline-block bg-[#7A5C2E] text-white font-semibold px-8 py-4 rounded-full hover:bg-[#6A4C1E] transition-colors text-lg">
-        Acessar a plataforma →
+        Começar a estudar →
       </a>
     </div>
   </section>
 
+  </main>
+
   <!-- ══════════════ RODAPÉ ══════════════ -->
   <!-- ✏️ CONFIGURAR: troque o nome, ano e informações de contato -->
   <footer class="py-8 bg-gray-900 border-t border-white/5 text-center">
-    <p class="text-gray-500 text-sm">© 2025 Tehillim — Orquestra. Todos os direitos reservados.</p>
+    <p class="text-gray-500 text-sm">© 2026 Tehillim — Escola de Música. Todos os direitos reservados.</p>
   </footer>
 
 </body>
