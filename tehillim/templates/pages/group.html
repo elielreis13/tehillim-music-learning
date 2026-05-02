@@ -3,7 +3,7 @@
 {% block title %}{{ group.name }} | Tehillim{% endblock %}
 
 {% block header %}
-<header class="bg-[#F2EAD8] px-8 py-5 relative overflow-hidden flex-shrink-0">
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
   <div class="flex items-center justify-between relative z-10">
     <div>
       <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">
@@ -30,11 +30,11 @@
 {% endblock %}
 
 {% block content %}
-<div class="p-6">
+<div class="p-4 md:p-6">
 
   <!-- Progress bar do grupo -->
   <div class="bg-white rounded-2xl p-5 shadow-sm mb-5">
-    <div class="flex items-center justify-between mb-3">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
       <div>
         <p class="font-bold text-[15px] text-gray-800">{{ group.module_count }} Módulos</p>
         <p class="text-[12px] text-gray-400 mt-0.5">Avance em ordem para desbloquear os próximos módulos</p>
@@ -50,7 +50,7 @@
   </div>
 
   <!-- Modules grid -->
-  <div class="grid grid-cols-2 gap-4" id="module-grid">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="module-grid">
     {% for module in group.modules %}
     {% set unlocked = is_teacher_cookie or module.slug in granted_slugs %}
     <div class="bg-white rounded-2xl p-5 shadow-sm {% if not unlocked %}opacity-60{% endif %} relative"

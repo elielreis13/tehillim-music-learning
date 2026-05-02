@@ -3,7 +3,7 @@
 {% block title %}Desempenho | Tehillim{% endblock %}
 
 {% block header %}
-<header class="bg-[#F2EAD8] px-8 py-5 relative overflow-hidden flex-shrink-0">
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
   <div class="flex items-center justify-between relative z-10">
     <div>
       <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Análise</p>
@@ -26,13 +26,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="p-6 flex gap-5">
+<div class="p-4 md:p-6 flex flex-col xl:flex-row gap-5">
 
   <!-- ── COLUNA PRINCIPAL ── -->
   <div class="flex-1 flex flex-col gap-5 min-w-0">
 
     <!-- Stats cards -->
-    <div class="grid grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       {% set stats = [
         ('📚', 'Módulos Concluídos', 'stat-modules', 'bg-[#F2EAD8]', '#C4943A'),
         ('🔥', 'Sequência Atual', 'stat-streak', 'bg-[#DFF0E8]', '#4E7A60'),
@@ -97,7 +97,7 @@
   </div>
 
   <!-- ── PAINEL DIREITO ── -->
-  <div class="w-[260px] flex-shrink-0 flex flex-col gap-4">
+  <div class="w-full xl:w-[260px] flex-shrink-0 flex flex-col gap-4">
 
     <!-- Gauge circular -->
     <div class="bg-white rounded-2xl p-5 shadow-sm">

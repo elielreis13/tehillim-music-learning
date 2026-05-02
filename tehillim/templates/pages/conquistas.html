@@ -3,7 +3,7 @@
 {% block title %}Conquistas | Tehillim{% endblock %}
 
 {% block header %}
-<header class="bg-[#F2EAD8] px-8 py-5 relative overflow-hidden flex-shrink-0">
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
   <div class="flex items-center justify-between relative z-10">
     <div>
       <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Progresso</p>
@@ -32,13 +32,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="p-6 flex gap-5">
+<div class="p-4 md:p-6 flex flex-col xl:flex-row gap-5">
 
   <!-- ── COLUNA PRINCIPAL ── -->
   <div class="flex-1 flex flex-col gap-5 min-w-0">
 
     <!-- Resumo rápido -->
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-[#F2EAD8] flex items-center justify-center text-xl">🏆</div>
         <div>
@@ -65,15 +65,15 @@
     <!-- Grid de conquistas -->
     <div>
       <h2 class="font-bold text-[16px] text-gray-800 mb-3">Todas as Conquistas</h2>
-      <div class="grid grid-cols-3 gap-4" id="achievements-grid">
-        <p class="text-[13px] text-gray-400 col-span-3">Carregando...</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" id="achievements-grid">
+        <p class="text-[13px] text-gray-400 sm:col-span-2 xl:col-span-3">Carregando...</p>
       </div>
     </div>
 
   </div>
 
   <!-- ── PAINEL DIREITO ── -->
-  <div class="w-[240px] flex-shrink-0 flex flex-col gap-4">
+  <div class="w-full xl:w-[240px] flex-shrink-0 flex flex-col gap-4">
 
     <!-- Próximas conquistas -->
     <div class="bg-white rounded-2xl p-5 shadow-sm">
