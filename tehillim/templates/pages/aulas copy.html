@@ -12,13 +12,19 @@
     </div>
     <div class="flex items-center gap-4">
       <div class="flex items-center gap-2">
-        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
+        <span class="text-xl">🔥</span>
         <div class="leading-tight">
           <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
           <p class="text-[10px] text-gray-500">dias de sequência</p>
         </div>
       </div>
       <div class="w-px h-7 bg-[#D4C4A8]"></div>
+      <a href="/configuracoes" class="flex items-center gap-1.5 cursor-pointer">
+        <div class="w-9 h-9 rounded-full overflow-hidden">
+          <svg viewBox="0 0 36 36" class="w-full h-full"><rect width="36" height="36" fill="#D4A574"/><circle cx="18" cy="14" r="7" fill="#C49060"/><ellipse cx="18" cy="32" rx="11" ry="8" fill="#C49060"/></svg>
+        </div>
+        <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </a>
     </div>
   </div>
   <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
@@ -36,9 +42,8 @@
     </button>
     {% for group in groups %}
     <button onclick="filterGroup('{{ group.slug }}')" id="filter-{{ group.slug }}"
-      class="px-4 py-2 rounded-xl text-[13px] font-semibold bg-white text-gray-500 hover:bg-gray-50 shadow-sm transition-colors inline-flex items-center gap-2">
-      <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-4 h-4 object-contain">
-      {{ group.name }}
+      class="px-4 py-2 rounded-xl text-[13px] font-semibold bg-white text-gray-500 hover:bg-gray-50 shadow-sm transition-colors">
+      {{ group.icon }} {{ group.name }}
     </button>
     {% endfor %}
   </div>
@@ -53,7 +58,7 @@
   {% set c = group_colors[loop.index0 % 3] %}
   <section class="group-section" data-group="{{ group.slug }}">
     <div class="flex items-center gap-2 mb-3">
-      <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-7 h-7 object-contain flex-shrink-0">
+      <span class="text-xl">{{ group.icon }}</span>
       <h2 class="font-bold text-[16px] text-gray-800">{{ group.name }}</h2>
       <span class="text-[11px] text-gray-400">{{ group.module_count }} aulas</span>
     </div>
@@ -120,8 +125,8 @@ function filterGroup(slug) {
   document.querySelectorAll('[id^="filter-"]').forEach(btn => {
     const isActive = btn.id === `filter-${slug}`;
     btn.className = isActive
-      ? 'px-4 py-2 rounded-xl text-[13px] font-semibold bg-[#C4943A] text-white transition-colors inline-flex items-center gap-2'
-      : 'px-4 py-2 rounded-xl text-[13px] font-semibold bg-white text-gray-500 hover:bg-gray-50 shadow-sm transition-colors inline-flex items-center gap-2';
+      ? 'px-4 py-2 rounded-xl text-[13px] font-semibold bg-[#C4943A] text-white transition-colors'
+      : 'px-4 py-2 rounded-xl text-[13px] font-semibold bg-white text-gray-500 hover:bg-gray-50 shadow-sm transition-colors';
   });
 }
 

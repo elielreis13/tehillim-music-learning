@@ -1,0 +1,242 @@
+{% extends "base_app.html" %}
+
+{% block title %}Perfil | Tehillim{% endblock %}
+
+{% block header %}
+<header class="bg-[#F2EAD8] px-8 py-5 relative overflow-hidden flex-shrink-0">
+  <div class="flex items-center justify-between relative z-10">
+    <div>
+      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Conta</p>
+      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Meu Perfil</h1>
+      <p class="text-[13px] text-gray-500 mt-0.5" id="header-email">—</p>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
+        <div class="leading-tight">
+          <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
+          <p class="text-[10px] text-gray-500">dias de sequência</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 flex gap-5">
+
+  <!-- ── COLUNA PRINCIPAL ── -->
+  <div class="flex-1 flex flex-col gap-5 min-w-0">
+
+    <!-- Card de perfil -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <div class="flex items-center gap-6">
+        <!-- Avatar -->
+        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-[#D4A574] to-[#C4943A] flex items-center justify-center flex-shrink-0 shadow-md">
+          <svg viewBox="0 0 36 36" class="w-full h-full rounded-full" fill="none">
+            <rect width="36" height="36" fill="#D4A574"/>
+            <circle cx="18" cy="14" r="7" fill="#C49060"/>
+            <ellipse cx="18" cy="32" rx="11" ry="8" fill="#C49060"/>
+          </svg>
+        </div>
+        <!-- Info -->
+        <div class="flex-1">
+          <h2 class="font-bold text-[20px] text-gray-800" id="profile-name">Carregando...</h2>
+          <p class="text-[13px] text-gray-400 mt-0.5" id="profile-email">—</p>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-[11px] bg-[#F2EAD8] text-[#7A5C2E] font-semibold px-2.5 py-1 rounded-full" id="profile-role">Aluno</span>
+            <span class="text-[11px] text-gray-400">Membro desde <span id="profile-since">—</span></span>
+          </div>
+        </div>
+        <!-- XP badge -->
+        <div class="flex flex-col items-center bg-[#F2EAD8] rounded-2xl px-6 py-4">
+          <span class="text-2xl mb-1">⭐</span>
+          <p class="font-bold text-[22px] text-[#C4943A]" id="profile-xp">0</p>
+          <p class="text-[11px] text-gray-500">XP Total</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <h3 class="font-bold text-[15px] text-gray-800 mb-4">Estatísticas</h3>
+      <div class="grid grid-cols-3 gap-4">
+        {% set stat_items = [
+          ('📚', 'Módulos Concluídos', 'ps-modules', 'bg-[#F2EAD8]'),
+          ('🔥', 'Maior Sequência', 'ps-streak',  'bg-[#DFF0E8]'),
+          ('📅', 'Total de Dias',    'ps-days',   'bg-[#EDE9FE]'),
+        ] %}
+        {% for icon, label, id, bg in stat_items %}
+        <div class="{{ bg }} rounded-2xl p-4 text-center">
+          <div class="text-2xl mb-2">{{ icon }}</div>
+          <p class="font-bold text-[20px] text-gray-800" id="{{ id }}">—</p>
+          <p class="text-[11px] text-gray-500 mt-0.5">{{ label }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Progresso por grupo -->
+    <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <h3 class="font-bold text-[15px] text-gray-800 mb-4">Meu Progresso</h3>
+      {% set gc = [('#C4943A', 'bg-[#F2EAD8]'), ('#5A8A6A', 'bg-[#DFF0E8]'), ('#7B5EA7', 'bg-[#E8E0F4]')] %}
+      {% for group in groups %}
+      {% set c = gc[loop.index0 % 3] %}
+      <div class="flex items-center gap-4 mb-4 last:mb-0">
+        <div class="w-10 h-10 rounded-xl {{ c[1] }} flex items-center justify-center flex-shrink-0">
+          <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-7 h-7 object-contain">
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between mb-1.5">
+            <p class="font-semibold text-[13px] text-gray-700">{{ group.name }}</p>
+            <p class="text-[12px] font-bold" style="color:{{ c[0] }}" data-prof-pct="{{ group.slug }}">—</p>
+          </div>
+          <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-700" style="background-color:{{ c[0] }};width:0%"
+                 data-prof-bar="{{ group.slug }}"></div>
+          </div>
+          <p class="text-[10px] text-gray-400 mt-1" data-prof-count="{{ group.slug }}"></p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <!-- ── PAINEL DIREITO ── -->
+  <div class="w-[260px] flex-shrink-0 flex flex-col gap-4">
+
+    <!-- Ações da conta -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm">
+      <h3 class="font-bold text-[14px] text-gray-800 mb-4">Conta</h3>
+      <div class="flex flex-col gap-2">
+        <a href="/configuracoes"
+           class="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-700 text-[13px] font-medium transition-colors">
+          <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          Configurações
+        </a>
+        <a href="/desempenho"
+           class="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-700 text-[13px] font-medium transition-colors">
+          <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75z"/>
+          </svg>
+          Ver Desempenho
+        </a>
+        <button onclick="doSignOut()"
+           class="flex items-center gap-2.5 px-4 py-3 rounded-xl hover:bg-red-50 text-red-500 text-[13px] font-medium transition-colors w-full text-left">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/>
+          </svg>
+          Sair da conta
+        </button>
+      </div>
+    </div>
+
+    <!-- Conquistas resumidas -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-bold text-[14px] text-gray-800">Conquistas</h3>
+        <a href="/conquistas" class="text-[11px] text-gray-400 hover:text-gray-600">Ver todas</a>
+      </div>
+      <div id="profile-achievements" class="flex flex-col gap-2.5">
+        <p class="text-[12px] text-gray-400">Carregando...</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const GROUPS_DATA = {{ groups | tojson }};
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await waitForProfile();
+  renderProfile();
+});
+
+function waitForProfile() {
+  return new Promise(resolve => {
+    if (window._progress !== undefined) return resolve();
+    const t = setInterval(() => { if (window._progress !== undefined) { clearInterval(t); resolve(); } }, 100);
+    setTimeout(() => { clearInterval(t); resolve(); }, 5000);
+  });
+}
+
+function renderProfile() {
+  const done   = window._doneModules || 0;
+  const total  = window._totalModules || 1;
+  const streak = window._streak || 0;
+  const days   = (window._studyDays || []).length;
+  const xp     = done * 50 + days * 10;
+  const doneSet = new Set((window._progress || []).filter(p => p.completed > 0).map(p => p.module_slug));
+
+  // Tenta buscar dados do usuário via Supabase
+  if (window._sb) {
+    window._sb.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      const name = user.user_metadata?.name || user.email?.split('@')[0] || 'Aluno';
+      const email = user.email || '';
+      const since = new Date(user.created_at).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+      const role  = user.user_metadata?.role === 'teacher' ? 'Professor' : 'Aluno';
+
+      set('profile-name',  name);
+      set('profile-email', email);
+      set('header-email',  email);
+      set('profile-since', since);
+      set('profile-role',  role);
+    });
+  }
+
+  set('profile-xp', xp);
+  set('ps-modules', done + ' / ' + total);
+  set('ps-streak',  streak + ' dias');
+  set('ps-days',    days);
+
+  // Progresso por grupo
+  GROUPS_DATA.forEach(group => {
+    const slugs = group.modules.map(m => m.slug);
+    const gDone = slugs.filter(s => doneSet.has(s)).length;
+    const pct   = group.module_count > 0 ? Math.round((gDone / group.module_count) * 100) : 0;
+    const bar   = document.querySelector(`[data-prof-bar="${group.slug}"]`);
+    const pctEl = document.querySelector(`[data-prof-pct="${group.slug}"]`);
+    const cnt   = document.querySelector(`[data-prof-count="${group.slug}"]`);
+    if (bar)   bar.style.width = pct + '%';
+    if (pctEl) pctEl.textContent = pct + '%';
+    if (cnt)   cnt.textContent = `${gDone} de ${group.module_count} módulos`;
+  });
+
+  // Conquistas resumidas
+  const achEl = document.getElementById('profile-achievements');
+  if (achEl) {
+    const items = [
+      { icon:'🎵', bg:'bg-[#C4D9CE]', name:'Primeiros Passos', earned: done >= 1 },
+      { icon:'⭐', bg:'bg-[#F0E4B8]', name:'Semana Perfeita',  earned: streak >= 7 },
+      { icon:'🏆', bg:'bg-[#DBEAFE]', name:'Instrumentista',   earned: done >= 10 },
+    ];
+    achEl.innerHTML = items.map(a => `
+      <div class="flex items-center gap-2.5 ${!a.earned ? 'opacity-40' : ''}">
+        <div class="w-8 h-8 rounded-lg ${a.bg} flex items-center justify-center text-base flex-shrink-0">${a.earned ? a.icon : '🔒'}</div>
+        <p class="text-[12px] font-semibold text-gray-700">${a.name}</p>
+      </div>`).join('');
+  }
+}
+
+async function doSignOut() {
+  if (!window._sb) return;
+  await window._sb.auth.signOut();
+  window.location.href = '/login';
+}
+
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+</script>
+{% endblock %}

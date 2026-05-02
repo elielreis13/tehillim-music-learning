@@ -14,22 +14,22 @@ def create_app(config=None) -> Flask:
         app.config.update(config)
 
     @app.context_processor
-    def inject_supabase():
+    def inject_globals():
+        from tehillim.content import groups_summary
         return {
             "supabase_url": app.config["SUPABASE_URL"],
             "supabase_anon_key": app.config["SUPABASE_ANON_KEY"],
+            "groups":groups_summary(),
         }
 
-    from .public import bp as public_bp
-    from .auth import bp as auth_bp
-    # from .modules import bp as modules_bp
-    # from .admin import bp as admin_bp
-    # from .api import bp as api_bp
+    from .auth    import bp as auth_bp
+    from .modules import bp as modules_bp
+    from .admin   import bp as admin_bp
+    from .api     import bp as api_bp
 
-    app.register_blueprint(public_bp)
     app.register_blueprint(auth_bp)
-    # app.register_blueprint(modules_bp)
-    # app.register_blueprint(admin_bp)
-    # app.register_blueprint(api_bp, url_prefix="/api")
+    app.register_blueprint(modules_bp)
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(api_bp, url_prefix="/api")
 
     return app

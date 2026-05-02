@@ -1,0 +1,160 @@
+{% extends "base_app.html" %}
+
+{% block title %}Grupos de Estudo | Tehillim{% endblock %}
+
+{% block header %}
+<header class="bg-[#F2EAD8] px-8 py-5 relative overflow-hidden flex-shrink-0">
+  <div class="flex items-center justify-between relative z-10">
+    <div>
+      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Plataforma</p>
+      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Grupos de Estudo</h1>
+      <p class="text-[13px] text-gray-500 mt-0.5">{{ groups | sum(attribute='module_count') }} módulos em {{ groups | length }} grupos progressivos</p>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
+        <div class="leading-tight">
+          <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
+          <p class="text-[10px] text-gray-500">dias de sequência</p>
+        </div>
+      </div>
+      <div class="w-px h-7 bg-[#D4C4A8]"></div>
+    </div>
+  </div>
+  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 flex flex-col gap-6">
+
+  <!-- Summary Row -->
+  <div class="grid grid-cols-3 gap-4">
+    {% set group_colors = [
+      ('bg-[#F2EAD8]', '#C4943A', 'bg-[#FBF6EE]', 'bg-[#F2EAD8]'),
+      ('bg-[#E8F2EC]', '#5A8A6A', 'bg-[#F4FAF7]', 'bg-[#DFF0E8]'),
+      ('bg-[#EDE8F4]', '#7B5EA7', 'bg-[#F6F3FC]', 'bg-[#E8E0F4]'),
+    ] %}
+    {% for group in groups %}
+    {% set c = group_colors[loop.index0 % 3] %}
+    <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-4">
+      <div class="w-12 h-12 rounded-xl {{ c[0] }} flex items-center justify-center flex-shrink-0">
+        <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-8 h-8 object-contain">
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-bold text-[14px] text-gray-800">{{ group.name }}</p>
+        <p class="text-[11px] text-gray-400">{{ group.module_count }} módulos</p>
+        <div class="mt-1.5 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-500" style="background-color:{{ c[1] }};width:0%"
+               data-group-bar="{{ group.slug }}"></div>
+        </div>
+      </div>
+      <span class="text-[13px] font-bold" style="color:{{ c[1] }}" data-group-pct="{{ group.slug }}">—</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Groups expanded -->
+  {% for group in groups %}
+  {% set c = group_colors[loop.index0 % 3] %}
+  <section>
+    <div class="{{ c[2] }} rounded-2xl overflow-hidden shadow-sm">
+
+      <!-- Group header -->
+      <div class="{{ c[3] }} px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-8 h-8 object-contain flex-shrink-0">
+          <div>
+            <h2 class="font-bold text-[16px] text-gray-800">{{ group.name }}</h2>
+            <p class="text-[12px] text-gray-500">{{ group.description }}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 flex-shrink-0">
+          <span class="text-[11px] font-bold px-2.5 py-1 rounded-full" style="color:{{ c[1] }};background-color:{{ c[1] }}1a">
+            {{ group.module_count }} módulos
+          </span>
+          <span class="text-[13px] font-bold" style="color:{{ c[1] }}" data-group-hpct="{{ group.slug }}">—</span>
+        </div>
+      </div>
+
+      <!-- Modules grid -->
+      <div class="p-5 grid grid-cols-2 gap-3">
+        {% for module in group.modules %}
+        <div class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-sm border border-gray-50 hover:shadow-md transition-shadow cursor-pointer group"
+             data-module="{{ module.slug }}"
+             onclick="goModule('{{ module.slug }}')">
+          <div class="w-9 h-9 rounded-lg {{ c[0] }} flex items-center justify-center flex-shrink-0">
+            <span class="text-[11px] font-bold" style="color:{{ c[1] }}">M{{ '%02d'|format(module.number) }}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-[13px] text-gray-800 truncate">{{ module.title }}</p>
+            <p class="text-[10px] text-gray-400 truncate">{{ module.topics[:2] | join(' · ') }}</p>
+          </div>
+          <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-colors"
+               id="status-{{ module.slug }}">
+            <svg class="w-3.5 h-3.5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+            </svg>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </section>
+  {% endfor %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const GROUPS_DATA = {{ groups | tojson }};
+
+function goModule(slug) {
+  window.location.href = '/modulos/' + slug;
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await waitForProgress();
+  renderProgress();
+});
+
+function waitForProgress() {
+  return new Promise(resolve => {
+    if (window._progress !== undefined) return resolve();
+    const t = setInterval(() => { if (window._progress !== undefined) { clearInterval(t); resolve(); } }, 100);
+    setTimeout(() => { clearInterval(t); resolve(); }, 5000);
+  });
+}
+
+function renderProgress() {
+  if (!window._progress) return;
+  const doneSet = new Set(window._progress.filter(p => p.completed > 0).map(p => p.module_slug));
+
+  GROUPS_DATA.forEach(group => {
+    const slugs = group.modules.map(m => m.slug);
+    const done = slugs.filter(s => doneSet.has(s)).length;
+    const pct = group.module_count > 0 ? Math.round((done / group.module_count) * 100) : 0;
+
+    ['bar', 'pct', 'hpct'].forEach(key => {
+      const el = document.querySelector(`[data-group-${key}="${group.slug}"]`);
+      if (el) {
+        if (key === 'bar') el.style.width = pct + '%';
+        else el.textContent = pct + '%';
+      }
+    });
+
+    // Module status icons
+    group.modules.forEach(m => {
+      const el = document.getElementById('status-' + m.slug);
+      if (!el) return;
+      if (doneSet.has(m.slug)) {
+        el.className = 'w-6 h-6 rounded-full bg-[#4E7A60] flex items-center justify-center flex-shrink-0';
+        el.innerHTML = '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
+      }
+    });
+  });
+}
+</script>
+{% endblock %}

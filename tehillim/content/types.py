@@ -63,12 +63,14 @@ class ModuleGroup:
     icon: str
     description: str
     modules: tuple[StudyModule, ...]
+    icon_file: str = ""
 
     def to_summary(self) -> dict[str, object]:
         return {
             "name": self.name,
             "slug": self.slug,
             "icon": self.icon,
+            "icon_file": self.icon_file,
             "description": self.description,
             "module_count": len(self.modules),
             "modules": [m.to_summary() for m in self.modules],
@@ -78,6 +80,7 @@ class ModuleGroup:
         return {
             "name": self.name,
             "icon": self.icon,
+            "icon_file": self.icon_file,
             "description": self.description,
             "module_count": len(self.modules),
             "modules": [m.to_payload() for m in self.modules],
