@@ -3,34 +3,34 @@
 {% block title %}Início | Tehillim{% endblock %}
 
 {% block header %}
-<header class="bg-[#F2EAD8] px-4 md:px-8 pt-4 pb-6 md:pb-7 relative overflow-hidden flex-shrink-0">
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
 
-  <!-- Top bar -->
-  <div class="flex justify-end items-center gap-4 mb-5 relative z-10">
-    <div class="flex items-center gap-2">
-      <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
-      <div class="leading-tight">
-        <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
-        <p class="text-[10px] text-gray-500 mt-0.5">dias de sequência</p>
-      </div>
+  <div class="flex items-center justify-between relative z-10">
+    <!-- Greeting -->
+    <div>
+      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Bem-vindo de volta 👋</p>
+      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Olá, <span data-user-name>Aluno</span>!</h1>
+      <p class="text-[13px] text-gray-500 mt-0.5">Vamos continuar sua jornada musical hoje?</p>
     </div>
-    <div class="w-px h-7 bg-[#D4C4A8]"></div>
-    <a href="/notificacoes" class="w-9 h-9 rounded-full bg-white/70 flex items-center justify-center shadow-sm hover:bg-white transition-colors" id="notif-bell-btn">
-      <img src="{{ url_for('static', filename='icons/ui-comment.svg') }}" class="w-5 h-5"/>
-    </a>
-  </div>
 
-  <!-- Greeting -->
-  <div class="relative z-10">
-    <p class="text-[15px] text-gray-600">Olá, <span data-user-name>Aluno</span>! 👋</p>
-    <h1 class="text-[28px] font-bold text-gray-800 leading-tight mt-0.5">Que bom te ver por aqui!</h1>
-    <p class="text-gray-500 mt-1.5 text-sm">Vamos continuar sua jornada musical hoje?</p>
+    <!-- Top bar -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-6 h-6 flex-shrink-0"/>
+        <div class="leading-tight">
+          <p class="font-bold text-[16px] text-gray-800 leading-none" data-streak>—</p>
+          <p class="text-[10px] text-gray-500">dias de sequência</p>
+        </div>
+      </div>
+      <div class="w-px h-6 bg-[#D4C4A8]"></div>
+      <a href="/notificacoes" class="w-8 h-8 rounded-full bg-white/70 flex items-center justify-center shadow-sm hover:bg-white transition-colors" id="notif-bell-btn">
+        <img src="{{ url_for('static', filename='icons/ui-comment.svg') }}" class="w-4 h-4"/>
+      </a>
+    </div>
   </div>
 
   <!-- Decorative -->
-  <div class="absolute right-[60px] top-[-10px] text-[#C4943A] opacity-[0.12] select-none pointer-events-none" style="font-size:180px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
-  <div class="absolute right-[200px] top-[10px] text-[#C4943A] opacity-[0.18] select-none pointer-events-none" style="font-size:48px;line-height:1;">&#9835;</div>
-  <div class="absolute right-[140px] bottom-[8px] text-[#C4943A] opacity-[0.15] select-none pointer-events-none" style="font-size:56px;line-height:1;">&#9834;</div>
+  <div class="absolute right-[60px] top-[-10px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:140px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
 </header>
 {% endblock %}
 
@@ -47,12 +47,12 @@
         <a href="/grupos" class="text-[13px] text-gray-400 hover:text-gray-600 transition-colors">Ver todos</a>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {% for group in groups %}
         {% set colors = ['#EDD9B0', '#C4D9CE', '#C4D4E4'] %}
         {% set prog_colors = ['#C4943A', '#5A8A6A', '#4A4A5A'] %}
+        {% for group in groups[:3] %}
         <a href="/grupos/{{ group.slug }}" class="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow block">
           <div class="flex justify-center mb-4">
-            <div class="w-[70px] h-[70px] rounded-full flex items-center justify-center text-4xl" style="background-color: {{ colors[loop.index0 % 3] }}">
+            <div class="w-[70px] h-[70px] rounded-full flex items-center justify-center" style="background-color: {{ colors[loop.index0 % 3] }}">
               <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-12 h-12 object-contain">
             </div>
           </div>
@@ -90,12 +90,9 @@
         <div class="flex flex-col sm:flex-row sm:items-center gap-4">
           <div class="relative flex-shrink-0 w-[100px] h-[100px]">
             <svg class="w-full h-full" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" fill="none" stroke="#F2C4A8" stroke-width="10"/>
+              <circle cx="50" cy="50" r="42" fill="none" stroke="#D4EAE0" stroke-width="10"/>
               <circle cx="50" cy="50" r="42" fill="none" stroke="#3D7A5E" stroke-width="10"
-                id="perf-circle"
-                stroke-dasharray="0 263.9"
-                stroke-linecap="round"
-                transform="rotate(-90 50 50)"/>
+                id="perf-circle" stroke-dasharray="0 263.9" stroke-linecap="round" transform="rotate(-90 50 50)"/>
             </svg>
             <div class="absolute inset-0 flex flex-col items-center justify-center">
               <span class="font-bold text-[18px] text-gray-800 leading-tight" id="perf-pct">—</span>
@@ -121,9 +118,9 @@
     </div>
 
     <!-- Quote -->
-    <div class="bg-[#F8F4ED] rounded-2xl px-7 py-5 relative overflow-hidden">
-      <div class="relative z-10 max-w-full md:max-w-[80%]">
-        <svg class="w-8 h-6 text-[#C4943A] opacity-30 mb-1" fill="currentColor" viewBox="0 0 32 24">
+    <div class="bg-[#EEF3FA] rounded-2xl px-7 py-5 relative overflow-hidden">
+      <div class="relative z-10 max-w-full md:max-w-[60%]">
+        <svg class="w-8 h-6 text-[#4A78B0] opacity-30 mb-1" fill="currentColor" viewBox="0 0 32 24">
           <path d="M0 24V14.4C0 6.72 4.8 1.92 14.4 0l1.6 2.56C10.56 3.84 7.68 6.56 7.04 10.4H12V24H0zm18 0V14.4C18 6.72 22.8 1.92 32.4 0L34 2.56c-5.44 1.28-8.32 4-8.96 7.84H30V24H18z"/>
         </svg>
         <p class="text-gray-700 font-medium text-[14px] leading-relaxed">A música é a linguagem universal da humanidade.</p>
@@ -131,6 +128,7 @@
       </div>
       <div class="absolute right-6 -bottom-2 opacity-[0.08] pointer-events-none select-none" style="font-size:90px;line-height:1;">🎻</div>
     </div>
+
   </div>
 
   <!-- ── RIGHT PANEL ── -->
@@ -161,11 +159,9 @@
 
 {% block scripts %}
 <script>
-// Dados dos grupos vindos do servidor
 const GROUPS_DATA = {{ groups | tojson }};
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Espera o init da sidebar (window._progress fica disponível)
   await waitForProgress();
   renderGroupProgress();
   renderPerformance();
@@ -220,7 +216,6 @@ function renderTrailWidget() {
   if (!container) return;
   const prog = window._progress || [];
   const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
-  // Encontra primeiro módulo não concluído
   let currentModule = null;
   for (const group of GROUPS_DATA) {
     for (const m of group.modules) {
@@ -277,7 +272,6 @@ function renderNextLesson() {
   container.innerHTML = `
     <div class="rounded-xl bg-[#F2EAD8] h-[110px] relative overflow-hidden flex items-center justify-center mb-3">
       <span class="absolute text-[#C4943A] opacity-20 select-none" style="font-size:80px;font-family:'Georgia',serif;right:-10px;bottom:-10px;">&#119070;</span>
-      <span class="text-[#C4943A] opacity-25 select-none" style="font-size:44px;">&#9834;</span>
       <a href="/modulos/${nextModule.slug}" class="absolute inset-0 flex items-center justify-center">
         <div class="w-10 h-10 rounded-full bg-gray-800/75 flex items-center justify-center shadow-lg hover:bg-gray-800/90 transition-colors">
           <svg class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -295,7 +289,6 @@ function renderAchievements() {
   const container = document.getElementById('achievements-widget');
   if (!container) return;
   const done = window._doneModules || 0;
-  const days = (window._studyDays || []).length;
   const streak = window._streak || 0;
 
   const list = [
