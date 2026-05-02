@@ -36,6 +36,7 @@ def landing():
     return render_template("landing.html")
 
 
+@bp.get("/inicio")
 @bp.get("/index.html")
 def index():
     return render_template("pages/home.html", active_page="inicio")
