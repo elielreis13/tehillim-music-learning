@@ -3,7 +3,7 @@
 {% block title %}Configurações | Tehillim{% endblock %}
 
 {% block header %}
-<header class="bg-[#F2EAD8] px-8 py-5 relative overflow-hidden flex-shrink-0">
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
   <div class="flex items-center justify-between relative z-10">
     <div>
       <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Conta</p>
@@ -25,7 +25,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="p-6 flex gap-5">
+<div class="p-4 md:p-6 flex flex-col xl:flex-row gap-5">
 
   <!-- ── COLUNA PRINCIPAL ── -->
   <div class="flex-1 flex flex-col gap-5 min-w-0">
@@ -47,11 +47,11 @@
             class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-[13px] text-gray-500 cursor-not-allowed"/>
           <p class="text-[11px] text-gray-400">O e-mail não pode ser alterado.</p>
         </div>
-        <div class="flex items-center justify-between pt-2">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
           <p class="text-[12px] text-green-600 font-medium hidden" id="cfg-name-ok">✓ Nome atualizado!</p>
           <p class="text-[12px] text-red-500 font-medium hidden" id="cfg-name-err"></p>
           <button onclick="saveName()"
-            class="bg-[#C4943A] hover:bg-[#B3852F] text-white font-semibold text-[13px] px-6 py-2.5 rounded-xl transition-colors ml-auto">
+            class="w-full sm:w-auto bg-[#C4943A] hover:bg-[#B3852F] text-white font-semibold text-[13px] px-6 py-2.5 rounded-xl transition-colors sm:ml-auto">
             Salvar Nome
           </button>
         </div>
@@ -91,10 +91,10 @@
           </div>
           <p class="text-[11px] text-gray-400 mt-1" id="pw-strength-label"></p>
         </div>
-        <div class="flex items-center justify-between pt-2">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
           <p class="text-[12px] font-medium hidden" id="cfg-pw-msg"></p>
           <button onclick="savePassword()"
-            class="bg-[#C4943A] hover:bg-[#B3852F] text-white font-semibold text-[13px] px-6 py-2.5 rounded-xl transition-colors ml-auto">
+            class="w-full sm:w-auto bg-[#C4943A] hover:bg-[#B3852F] text-white font-semibold text-[13px] px-6 py-2.5 rounded-xl transition-colors sm:ml-auto">
             Alterar Senha
           </button>
         </div>
@@ -117,7 +117,7 @@
   </div>
 
   <!-- ── PAINEL DIREITO ── -->
-  <div class="w-[260px] flex-shrink-0 flex flex-col gap-4">
+  <div class="w-full xl:w-[260px] flex-shrink-0 flex flex-col gap-4">
 
     <!-- Info do usuário -->
     <div class="bg-white rounded-2xl p-5 shadow-sm">

@@ -3,7 +3,7 @@
 {% block title %}Grupos de Estudo | Tehillim{% endblock %}
 
 {% block header %}
-<header class="bg-[#F2EAD8] px-8 py-5 relative overflow-hidden flex-shrink-0">
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
   <div class="flex items-center justify-between relative z-10">
     <div>
       <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Plataforma</p>
@@ -26,10 +26,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="p-6 flex flex-col gap-6">
+<div class="p-4 md:p-6 flex flex-col gap-6">
 
   <!-- Summary Row -->
-  <div class="grid grid-cols-3 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
     {% set group_colors = [
       ('bg-[#F2EAD8]', '#C4943A', 'bg-[#FBF6EE]', 'bg-[#F2EAD8]'),
       ('bg-[#E8F2EC]', '#5A8A6A', 'bg-[#F4FAF7]', 'bg-[#DFF0E8]'),
@@ -61,7 +61,7 @@
     <div class="{{ c[2] }} rounded-2xl overflow-hidden shadow-sm">
 
       <!-- Group header -->
-      <div class="{{ c[3] }} px-6 py-4 flex items-center justify-between">
+      <div class="{{ c[3] }} px-4 md:px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div class="flex items-center gap-3">
           <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-8 h-8 object-contain flex-shrink-0">
           <div>
@@ -78,7 +78,7 @@
       </div>
 
       <!-- Modules grid -->
-      <div class="p-5 grid grid-cols-2 gap-3">
+      <div class="p-4 md:p-5 grid grid-cols-1 lg:grid-cols-2 gap-3">
         {% for module in group.modules %}
         <div class="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-sm border border-gray-50 hover:shadow-md transition-shadow cursor-pointer group"
              data-module="{{ module.slug }}"

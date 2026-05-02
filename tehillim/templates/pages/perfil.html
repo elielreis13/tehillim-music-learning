@@ -3,7 +3,7 @@
 {% block title %}Perfil | Tehillim{% endblock %}
 
 {% block header %}
-<header class="bg-[#F2EAD8] px-8 py-5 relative overflow-hidden flex-shrink-0">
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
   <div class="flex items-center justify-between relative z-10">
     <div>
       <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Conta</p>
@@ -25,14 +25,14 @@
 {% endblock %}
 
 {% block content %}
-<div class="p-6 flex gap-5">
+<div class="p-4 md:p-6 flex flex-col xl:flex-row gap-5">
 
   <!-- ── COLUNA PRINCIPAL ── -->
   <div class="flex-1 flex flex-col gap-5 min-w-0">
 
     <!-- Card de perfil -->
     <div class="bg-white rounded-2xl p-6 shadow-sm">
-      <div class="flex items-center gap-6">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
         <!-- Avatar -->
         <div class="w-20 h-20 rounded-full bg-gradient-to-br from-[#D4A574] to-[#C4943A] flex items-center justify-center flex-shrink-0 shadow-md">
           <svg viewBox="0 0 36 36" class="w-full h-full rounded-full" fill="none">
@@ -42,16 +42,16 @@
           </svg>
         </div>
         <!-- Info -->
-        <div class="flex-1">
+        <div class="flex-1 min-w-0">
           <h2 class="font-bold text-[20px] text-gray-800" id="profile-name">Carregando...</h2>
           <p class="text-[13px] text-gray-400 mt-0.5" id="profile-email">—</p>
-          <div class="flex items-center gap-2 mt-2">
+          <div class="flex flex-wrap items-center gap-2 mt-2">
             <span class="text-[11px] bg-[#F2EAD8] text-[#7A5C2E] font-semibold px-2.5 py-1 rounded-full" id="profile-role">Aluno</span>
             <span class="text-[11px] text-gray-400">Membro desde <span id="profile-since">—</span></span>
           </div>
         </div>
         <!-- XP badge -->
-        <div class="flex flex-col items-center bg-[#F2EAD8] rounded-2xl px-6 py-4">
+        <div class="w-full sm:w-auto flex flex-col items-center bg-[#F2EAD8] rounded-2xl px-6 py-4">
           <span class="text-2xl mb-1">⭐</span>
           <p class="font-bold text-[22px] text-[#C4943A]" id="profile-xp">0</p>
           <p class="text-[11px] text-gray-500">XP Total</p>
@@ -62,7 +62,7 @@
     <!-- Estatísticas -->
     <div class="bg-white rounded-2xl p-6 shadow-sm">
       <h3 class="font-bold text-[15px] text-gray-800 mb-4">Estatísticas</h3>
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {% set stat_items = [
           ('📚', 'Módulos Concluídos', 'ps-modules', 'bg-[#F2EAD8]'),
           ('🔥', 'Maior Sequência', 'ps-streak',  'bg-[#DFF0E8]'),
@@ -88,7 +88,7 @@
         <div class="w-10 h-10 rounded-xl {{ c[1] }} flex items-center justify-center flex-shrink-0">
           <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-7 h-7 object-contain">
         </div>
-        <div class="flex-1">
+        <div class="flex-1 min-w-0">
           <div class="flex items-center justify-between mb-1.5">
             <p class="font-semibold text-[13px] text-gray-700">{{ group.name }}</p>
             <p class="text-[12px] font-bold" style="color:{{ c[0] }}" data-prof-pct="{{ group.slug }}">—</p>
@@ -106,7 +106,7 @@
   </div>
 
   <!-- ── PAINEL DIREITO ── -->
-  <div class="w-[260px] flex-shrink-0 flex flex-col gap-4">
+  <div class="w-full xl:w-[260px] flex-shrink-0 flex flex-col gap-4">
 
     <!-- Ações da conta -->
     <div class="bg-white rounded-2xl p-5 shadow-sm">

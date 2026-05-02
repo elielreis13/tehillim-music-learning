@@ -529,13 +529,57 @@
     padding-top: 10px;
     border-top: 1px solid #E5E7EB;
   }
+
+  @media (max-width: 768px) {
+    .study-layout {
+      flex-direction: column;
+      gap: 14px;
+      height: auto;
+      min-height: 100%;
+      overflow: visible;
+      padding: 14px;
+    }
+
+    .study-path {
+      width: 100%;
+      flex-direction: row;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .path-node {
+      min-width: 150px;
+      flex: 0 0 auto;
+      padding: 9px 10px;
+    }
+
+    .study-stage {
+      border-radius: 16px;
+      padding: 20px 16px;
+      overflow: visible;
+    }
+
+    #stage-title {
+      font-size: 22px;
+    }
+
+    .activity-card,
+    .match-row,
+    .actions {
+      flex-direction: column;
+    }
+
+    .actions .action {
+      width: 100%;
+    }
+  }
 </style>
 {% endblock %}
 
 {% block header %}
-<header class="bg-[#F2EAD8] px-8 py-5 relative overflow-hidden flex-shrink-0">
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
   <div class="flex items-center justify-between relative z-10">
-    <div class="flex items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3">
       <a href="/index.html"
          class="w-8 h-8 rounded-lg bg-white/60 hover:bg-white flex items-center justify-center transition-colors flex-shrink-0">
         <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">

@@ -103,6 +103,37 @@
     #score-container text.lyric {
       font-size: 3px !important;
     }
+
+    @media (max-width: 640px) {
+      #controls {
+        gap: 8px;
+        padding: 8px;
+      }
+
+      .btn,
+      .ctrl-group,
+      .toggle-label {
+        font-size: 0.72rem;
+      }
+
+      .btn {
+        padding: 7px 10px;
+      }
+
+      #bpm-slider {
+        width: 70px;
+      }
+
+      #status {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      #score-container {
+        padding: 8px;
+        overflow-x: auto;
+      }
+    }
   </style>
 </head>
 <body>
