@@ -12,6 +12,7 @@ GROUPS: tuple[ModuleGroup, ...] = (
         name="Musicalização Infantil",
         slug="musicalizacao-infantil",
         icon="🟢",
+        icon_file="musicalizacao-infantil.svg",
         description=(
             "Dê os primeiros passos na música de forma lúdica! Explore sons, silêncios, "
             "grave e agudo, forte e fraco, ritmo, pulso, andamento, notas e a escala musical."
@@ -22,6 +23,7 @@ GROUPS: tuple[ModuleGroup, ...] = (
         name="Alfabetização Musical",
         slug="alfabetizacao-musical",
         icon="🔵",
+        icon_file="alfebatizacao-musical.svg",
         description=(
             "Aprenda a ler a linguagem escrita da música: pentagrama, clave de sol, "
             "notas no pentagrama, figuras rítmicas, compasso e barra de compasso."
@@ -32,6 +34,7 @@ GROUPS: tuple[ModuleGroup, ...] = (
         name="Prática e Aplicação",
         slug="pratica-e-aplicacao",
         icon="🟡",
+        icon_file="pratica-aplicacao.svg",
         description=(
             "Coloque a teoria em prática! Leitura rítmica, leitura melódica, pausas, "
             "ditado rítmico, ditado melódico, interpretação, prática instrumental e criação."
@@ -42,6 +45,7 @@ GROUPS: tuple[ModuleGroup, ...] = (
         name="Teoria e Harmonia",
         slug="teoria-e-harmonia",
         icon="🟠",
+        icon_file="teoria-harmonia.svg",
         description=(
             "Mergulhe na teoria: sustenido, bemol, bequadro, tom e semitom, escala "
             "cromática, armadura de clave, tonalidades, escalas, intervalos, acordes, "
@@ -53,6 +57,7 @@ GROUPS: tuple[ModuleGroup, ...] = (
         name="Método Bona",
         slug="metodo-bona",
         icon="🟣",
+        icon_file="bona.svg",
         description=(
             "Estudo sistemático do ritmo musical baseado no clássico Método Bona. "
             "40 lições progressivas organizadas em quatro blocos (B1–B4)."
@@ -63,6 +68,7 @@ GROUPS: tuple[ModuleGroup, ...] = (
         name="Método Pozzoli",
         slug="metodo-pozzoli",
         icon="🟣",
+        icon_file="pozzoli.svg",
         description=(
             "Solfejo e leitura melódica baseados no Método Pozzoli. "
             "12 trilhas progressivas do solfejo inicial ao avançado (P1–P4)."
@@ -73,6 +79,7 @@ GROUPS: tuple[ModuleGroup, ...] = (
         name="Leitura Avançada e Expressão",
         slug="leitura-avancada",
         icon="🔴",
+        icon_file="leitura-avancada.svg",
         description=(
             "Leitura rítmica avançada (síncope, contratempo), leitura melódica avançada, "
             "articulação, dinâmica, frase musical e interpretação completa."

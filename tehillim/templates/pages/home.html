@@ -1,0 +1,320 @@
+{% extends "base_app.html" %}
+
+{% block title %}Início | Tehillim{% endblock %}
+
+{% block header %}
+<header class="bg-[#F2EAD8] px-8 pt-4 pb-7 relative overflow-hidden flex-shrink-0">
+
+  <!-- Top bar -->
+  <div class="flex justify-end items-center gap-4 mb-5 relative z-10">
+    <div class="flex items-center gap-2">
+      <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
+      <div class="leading-tight">
+        <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
+        <p class="text-[10px] text-gray-500 mt-0.5">dias de sequência</p>
+      </div>
+    </div>
+    <div class="w-px h-7 bg-[#D4C4A8]"></div>
+    <a href="/notificacoes" class="w-9 h-9 rounded-full bg-white/70 flex items-center justify-center shadow-sm hover:bg-white transition-colors" id="notif-bell-btn">
+      <img src="{{ url_for('static', filename='icons/ui-comment.svg') }}" class="w-5 h-5"/>
+    </a>
+  </div>
+
+  <!-- Greeting -->
+  <div class="relative z-10">
+    <p class="text-[15px] text-gray-600">Olá, <span data-user-name>Aluno</span>! 👋</p>
+    <h1 class="text-[28px] font-bold text-gray-800 leading-tight mt-0.5">Que bom te ver por aqui!</h1>
+    <p class="text-gray-500 mt-1.5 text-sm">Vamos continuar sua jornada musical hoje?</p>
+  </div>
+
+  <!-- Decorative -->
+  <div class="absolute right-[60px] top-[-10px] text-[#C4943A] opacity-[0.12] select-none pointer-events-none" style="font-size:180px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
+  <div class="absolute right-[200px] top-[10px] text-[#C4943A] opacity-[0.18] select-none pointer-events-none" style="font-size:48px;line-height:1;">&#9835;</div>
+  <div class="absolute right-[140px] bottom-[8px] text-[#C4943A] opacity-[0.15] select-none pointer-events-none" style="font-size:56px;line-height:1;">&#9834;</div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="p-5 flex gap-4 min-h-full">
+
+  <!-- ── LEFT / CENTER COLUMN ── -->
+  <div class="flex-1 flex flex-col gap-4 min-w-0">
+
+    <!-- Grupos de Estudo -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-bold text-[16px] text-gray-800">Seus Grupos de Estudo</h2>
+        <a href="/grupos" class="text-[13px] text-gray-400 hover:text-gray-600 transition-colors">Ver todos</a>
+      </div>
+      <div class="grid grid-cols-3 gap-4">
+        {% for group in groups %}
+        {% set colors = ['#EDD9B0', '#C4D9CE', '#C4D4E4'] %}
+        {% set prog_colors = ['#C4943A', '#5A8A6A', '#4A4A5A'] %}
+        <a href="/grupos/{{ group.slug }}" class="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow block">
+          <div class="flex justify-center mb-4">
+            <div class="w-[70px] h-[70px] rounded-full flex items-center justify-center text-4xl" style="background-color: {{ colors[loop.index0 % 3] }}">
+              <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-12 h-12 object-contain">
+            </div>
+          </div>
+          <h3 class="font-bold text-[14px] text-center text-gray-800">{{ group.name }}</h3>
+          <p class="text-[11px] text-center text-gray-400 mt-1">{{ group.module_count }} módulos</p>
+          <div class="mt-3.5">
+            <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-500" style="background-color: {{ prog_colors[loop.index0 % 3] }}; width:0%"
+                   data-group-progress="{{ group.slug }}"></div>
+            </div>
+            <p class="text-right text-[11px] font-semibold text-gray-500 mt-1" data-group-pct="{{ group.slug }}">—</p>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Continue Trilha + Desempenho -->
+    <div class="grid grid-cols-2 gap-4">
+
+      <!-- Continue sua Trilha -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+        <h2 class="font-bold text-[15px] text-gray-800 mb-4">Continue sua Trilha</h2>
+        <div id="trail-widget">
+          <p class="text-[13px] text-gray-400">Carregando...</p>
+        </div>
+      </div>
+
+      <!-- Desempenho Geral -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-bold text-[15px] text-gray-800">Desempenho Geral</h2>
+          <a href="/desempenho" class="text-[11px] text-gray-400 hover:text-gray-600 transition-colors">Ver relatório</a>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="relative flex-shrink-0 w-[100px] h-[100px]">
+            <svg class="w-full h-full" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="#F2C4A8" stroke-width="10"/>
+              <circle cx="50" cy="50" r="42" fill="none" stroke="#3D7A5E" stroke-width="10"
+                id="perf-circle"
+                stroke-dasharray="0 263.9"
+                stroke-linecap="round"
+                transform="rotate(-90 50 50)"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="font-bold text-[18px] text-gray-800 leading-tight" id="perf-pct">—</span>
+              <span class="text-[9px] text-gray-400 mt-0.5">Desempenho</span>
+            </div>
+          </div>
+          <div class="flex-1 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[12px] text-gray-500">Módulos Concluídos</span>
+              <span class="text-[12px] font-bold text-gray-700" id="perf-modules">—</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[12px] text-gray-500">🔥 Sequência</span>
+              <span class="text-[12px] font-bold text-gray-700"><span data-streak>—</span> dias</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[12px] text-gray-500">Dias de estudo</span>
+              <span class="text-[12px] font-bold text-gray-700" id="perf-days">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote -->
+    <div class="bg-[#F8F4ED] rounded-2xl px-7 py-5 relative overflow-hidden">
+      <div class="relative z-10 max-w-[80%]">
+        <svg class="w-8 h-6 text-[#C4943A] opacity-30 mb-1" fill="currentColor" viewBox="0 0 32 24">
+          <path d="M0 24V14.4C0 6.72 4.8 1.92 14.4 0l1.6 2.56C10.56 3.84 7.68 6.56 7.04 10.4H12V24H0zm18 0V14.4C18 6.72 22.8 1.92 32.4 0L34 2.56c-5.44 1.28-8.32 4-8.96 7.84H30V24H18z"/>
+        </svg>
+        <p class="text-gray-700 font-medium text-[14px] leading-relaxed">A música é a linguagem universal da humanidade.</p>
+        <p class="text-gray-400 text-[12px] mt-2">— Henry Wadsworth Longfellow</p>
+      </div>
+      <div class="absolute right-6 -bottom-2 opacity-[0.08] pointer-events-none select-none" style="font-size:90px;line-height:1;">🎻</div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="w-[272px] flex-shrink-0 flex flex-col gap-4">
+
+    <!-- Próxima Aula -->
+    <div class="bg-white rounded-2xl overflow-hidden shadow-sm">
+      <p class="font-bold text-[15px] text-gray-800 px-5 pt-5 pb-3">Próxima Aula</p>
+      <div id="next-lesson-widget" class="px-5 pb-5">
+        <p class="text-[13px] text-gray-400">Carregando...</p>
+      </div>
+    </div>
+
+    <!-- Conquistas Recentes -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-[15px] text-gray-800">Conquistas Recentes</h3>
+        <a href="/conquistas" class="text-[11px] text-gray-400 hover:text-gray-600 transition-colors">Ver todas</a>
+      </div>
+      <div class="flex flex-col gap-3.5" id="achievements-widget">
+        <p class="text-[13px] text-gray-400">Carregando...</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Dados dos grupos vindos do servidor
+const GROUPS_DATA = {{ groups | tojson }};
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Espera o init da sidebar (window._progress fica disponível)
+  await waitForProgress();
+  renderGroupProgress();
+  renderPerformance();
+  renderTrailWidget();
+  renderNextLesson();
+  renderAchievements();
+});
+
+function waitForProgress() {
+  return new Promise(resolve => {
+    if (window._progress !== undefined) return resolve();
+    const t = setInterval(() => {
+      if (window._progress !== undefined) { clearInterval(t); resolve(); }
+    }, 100);
+    setTimeout(() => { clearInterval(t); resolve(); }, 5000);
+  });
+}
+
+function renderGroupProgress() {
+  if (!window._progress) return;
+  const doneSet = new Set(window._progress.filter(p => p.completed > 0).map(p => p.module_slug));
+  GROUPS_DATA.forEach(group => {
+    const slugsInGroup = group.modules.map(m => m.slug);
+    const done = slugsInGroup.filter(s => doneSet.has(s)).length;
+    const pct = group.module_count > 0 ? Math.round((done / group.module_count) * 100) : 0;
+    const bar = document.querySelector(`[data-group-progress="${group.slug}"]`);
+    const lbl = document.querySelector(`[data-group-pct="${group.slug}"]`);
+    if (bar) bar.style.width = pct + '%';
+    if (lbl) lbl.textContent = pct + '%';
+  });
+}
+
+function renderPerformance() {
+  const done = window._doneModules || 0;
+  const total = window._totalModules || 1;
+  const pct = Math.round((done / total) * 100);
+  const circumference = 263.9;
+  const dashArr = (pct / 100) * circumference;
+
+  const circle = document.getElementById('perf-circle');
+  if (circle) circle.setAttribute('stroke-dasharray', `${dashArr} ${circumference}`);
+  const pctEl = document.getElementById('perf-pct');
+  if (pctEl) pctEl.textContent = pct + '%';
+  const modEl = document.getElementById('perf-modules');
+  if (modEl) modEl.textContent = `${done} / ${total}`;
+  const daysEl = document.getElementById('perf-days');
+  if (daysEl) daysEl.textContent = (window._studyDays || []).length;
+}
+
+function renderTrailWidget() {
+  const container = document.getElementById('trail-widget');
+  if (!container) return;
+  const prog = window._progress || [];
+  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
+  // Encontra primeiro módulo não concluído
+  let currentModule = null;
+  for (const group of GROUPS_DATA) {
+    for (const m of group.modules) {
+      if (!doneSet.has(m.slug)) { currentModule = m; break; }
+    }
+    if (currentModule) break;
+  }
+
+  if (!currentModule) {
+    container.innerHTML = '<p class="text-[13px] text-[#4E7A60] font-semibold">🎉 Todos os módulos concluídos!</p>';
+    return;
+  }
+
+  const steps = currentModule.step_count || 7;
+  const stepsHTML = Array.from({length: Math.min(steps, 5)}, (_, i) => `
+    <div class="flex flex-col items-center gap-1.5 z-10">
+      <div class="w-8 h-8 rounded-full ${i < 2 ? 'bg-[#4E7A60]' : i === 2 ? 'bg-[#C4943A] ring-4 ring-[#C4943A]/20' : 'bg-[#F5EFE4] border-2 border-gray-200'} flex items-center justify-center shadow-sm">
+        ${i < 2 ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
+          : i === 2 ? '<span class="text-white text-sm">&#9834;</span>'
+          : '<svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>'}
+      </div>
+    </div>`).join('');
+
+  container.innerHTML = `
+    <div class="relative flex items-start justify-between px-1 mb-4">
+      <div class="absolute left-4 right-4 top-4 h-0.5 bg-gray-200 z-0"></div>
+      ${stepsHTML}
+    </div>
+    <p class="font-semibold text-[13px] text-gray-700">M${String(currentModule.number).padStart(2,'0')} — ${currentModule.title}</p>
+    <p class="text-[11px] text-gray-400 mt-1">${currentModule.description}</p>
+    <a href="/modulos/${currentModule.slug}" class="block w-full mt-3 bg-[#C4943A] hover:bg-[#B3852F] text-white font-semibold text-[13px] py-2.5 rounded-xl transition-colors text-center">
+      Continuar Módulo
+    </a>`;
+}
+
+function renderNextLesson() {
+  const container = document.getElementById('next-lesson-widget');
+  if (!container) return;
+  const prog = window._progress || [];
+  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
+  let nextModule = null;
+  for (const group of GROUPS_DATA) {
+    for (const m of group.modules) {
+      if (!doneSet.has(m.slug)) { nextModule = m; break; }
+    }
+    if (nextModule) break;
+  }
+
+  if (!nextModule) {
+    container.innerHTML = '<p class="text-[13px] text-[#4E7A60]">Todos concluídos! 🎉</p>';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="rounded-xl bg-[#F2EAD8] h-[110px] relative overflow-hidden flex items-center justify-center mb-3">
+      <span class="absolute text-[#C4943A] opacity-20 select-none" style="font-size:80px;font-family:'Georgia',serif;right:-10px;bottom:-10px;">&#119070;</span>
+      <span class="text-[#C4943A] opacity-25 select-none" style="font-size:44px;">&#9834;</span>
+      <a href="/modulos/${nextModule.slug}" class="absolute inset-0 flex items-center justify-center">
+        <div class="w-10 h-10 rounded-full bg-gray-800/75 flex items-center justify-center shadow-lg hover:bg-gray-800/90 transition-colors">
+          <svg class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </a>
+    </div>
+    <p class="font-bold text-[14px] text-gray-800">${nextModule.title}</p>
+    <p class="text-[11px] text-gray-400 mt-0.5">${nextModule.topics ? nextModule.topics.slice(0,2).join(' · ') : ''}</p>
+    <a href="/modulos/${nextModule.slug}" class="block w-full mt-3 bg-[#C4943A] hover:bg-[#B3852F] text-white font-semibold text-[13px] py-2.5 rounded-xl transition-colors text-center">
+      Continuar Aula
+    </a>`;
+}
+
+function renderAchievements() {
+  const container = document.getElementById('achievements-widget');
+  if (!container) return;
+  const done = window._doneModules || 0;
+  const days = (window._studyDays || []).length;
+  const streak = window._streak || 0;
+
+  const list = [
+    { icon: '🎵', bg: 'bg-[#C4D9CE]', name: 'Primeiros Passos', desc: 'Concluiu sua primeira trilha', xp: 50, earned: done >= 1 },
+    { icon: '⭐', bg: 'bg-[#F0E4B8]', name: 'Dedicado', desc: 'Estudou por 10 dias seguidos', xp: 100, earned: streak >= 10 },
+    { icon: '🎯', bg: 'bg-[#F4CACA]', name: 'Em Ritmo', desc: 'Completou 5 módulos', xp: 80, earned: done >= 5 },
+  ];
+
+  container.innerHTML = list.map(a => `
+    <div class="flex items-center gap-3 ${!a.earned ? 'opacity-40' : ''}">
+      <div class="w-10 h-10 rounded-full ${a.bg} flex items-center justify-center flex-shrink-0 text-lg">
+        ${a.earned ? a.icon : '🔒'}
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-[12px] text-gray-800">${a.name}</p>
+        <p class="text-[10px] text-gray-400 truncate">${a.desc}</p>
+      </div>
+      ${a.earned ? `<span class="text-[10px] font-bold text-[#4E7A60] bg-[#E8F4EE] px-2 py-1 rounded-full flex-shrink-0">+${a.xp} XP</span>` : ''}
+    </div>`).join('');
+}
+</script>
+{% endblock %}

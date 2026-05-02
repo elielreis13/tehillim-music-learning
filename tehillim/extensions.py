@@ -1,5 +1,8 @@
+import json
+from urllib.parse import unquote
+
 import requests
-from flask import current_app
+from flask import current_app, jsonify, redirect, request
 
 
 def sb_headers():
@@ -52,3 +55,42 @@ def get_user_from_token(token: str) -> dict | None:
         timeout=5,
     )
     return r.json() if r.ok else None
+
+
+def is_teacher_request() -> bool:
+    """Retorna True se o cookie 'ta' indica que o usuário é professor."""
+    try:
+        raw  = request.cookies.get("ta", "")
+        data = json.loads(unquote(raw)) if raw else {}
+        return bool(data.get("t", False))
+    except Exception:
+        return False
+
+
+def require_teacher():
+    """Redireciona para '/' se o usuário não for professor. Uso: if err := require_teacher(): return err"""
+    if not is_teacher_request():
+        return redirect("/")
+    return None
+
+
+def require_teacher_token():
+    """Versão para APIs: valida Bearer token e verifica papel de professor. Retorna 403 ou None."""
+    auth_header = request.headers.get("Authorization", "")
+
+    # Modo dev: token especial é aceito como professor
+    if auth_header == "Bearer __dev__":
+        return None
+
+    if not auth_header.startswith("Bearer "):
+        return jsonify({"error": "Não autorizado"}), 403
+
+    user_data = get_user_from_token(auth_header[7:])
+    if not user_data:
+        return jsonify({"error": "Token inválido"}), 403
+
+    is_teacher = (user_data.get("user_metadata") or {}).get("role") == "teacher"
+    if not is_teacher:
+        return jsonify({"error": "Acesso restrito ao professor"}), 403
+
+    return None

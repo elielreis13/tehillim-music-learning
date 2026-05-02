@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar | Tehillim</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 40px white inset;
+      -webkit-text-fill-color: #1f2937;
+    }
+  </style>
+</head>
+<body class="bg-[#FAF7F2] min-h-screen flex items-center justify-center p-4">
+
+  <div class="w-full max-w-[900px] min-h-[560px] bg-white rounded-3xl shadow-lg overflow-hidden flex">
+
+    <!-- ── PAINEL ESQUERDO ── -->
+    <div class="w-[380px] flex-shrink-0 bg-[#F2EAD8] relative overflow-hidden flex flex-col px-10 py-10">
+
+      <!-- Decorações -->
+      <div class="absolute right-[-30px] bottom-[-20px] text-[#C4943A] opacity-[0.10] select-none pointer-events-none" style="font-size:260px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
+      <div class="absolute left-[20px] top-[40px] text-[#C4943A] opacity-[0.10] select-none pointer-events-none" style="font-size:60px;line-height:1;">&#9835;</div>
+      <div class="absolute right-[40px] top-[120px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:44px;line-height:1;">&#9834;</div>
+      <div class="absolute left-[60px] bottom-[100px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:36px;line-height:1;">&#9833;</div>
+
+      <!-- Logo -->
+      <div class="flex items-center gap-3 relative z-10">
+        <div class="w-[46px] h-[46px] rounded-full border-[2px] border-gray-800 flex items-center justify-center flex-shrink-0 bg-white/40">
+          <span style="font-size:26px;font-family:'Georgia',serif;color:#1f2937;line-height:1;">&#119070;</span>
+        </div>
+        <div>
+          <p class="font-bold text-[11px] tracking-[3px] text-gray-800 leading-tight">TEHILLIM</p>
+          <p class="text-[9px] tracking-[2px] text-gray-500 uppercase leading-tight">Orquestra</p>
+        </div>
+      </div>
+
+      <!-- Copy -->
+      <div class="mt-auto relative z-10">
+        <h2 class="font-bold text-[26px] text-gray-800 leading-snug">
+          Sua jornada<br/>musical começa<br/>aqui.
+        </h2>
+        <p class="text-gray-500 text-[13px] mt-3 leading-relaxed">
+          Aprenda teoria, prática e percepção musical no seu próprio ritmo.
+        </p>
+        <div class="mt-7 flex gap-5">
+          <div>
+            <p class="font-bold text-[20px] text-[#C4943A]">45+</p>
+            <p class="text-[11px] text-gray-500 mt-0.5">Módulos</p>
+          </div>
+          <div class="w-px bg-[#D4C4A8]"></div>
+          <div>
+            <p class="font-bold text-[20px] text-[#C4943A]">3</p>
+            <p class="text-[11px] text-gray-500 mt-0.5">Grupos</p>
+          </div>
+          <div class="w-px bg-[#D4C4A8]"></div>
+          <div>
+            <p class="font-bold text-[20px] text-[#C4943A]">∞</p>
+            <p class="text-[11px] text-gray-500 mt-0.5">Exercícios</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-10 relative z-10">
+        <div class="h-px bg-[#D4C4A8] mb-4"></div>
+        <p class="text-[12px] text-gray-500 italic leading-relaxed">"A música é a taquigrafia das emoções."</p>
+        <p class="text-[11px] text-gray-400 mt-1">— Lev Tolstói</p>
+      </div>
+    </div>
+
+    <!-- ── PAINEL DIREITO (FORM) ── -->
+    <div class="flex-1 flex flex-col justify-center px-12 py-10">
+
+      <div class="mb-8">
+        <h1 class="font-bold text-[24px] text-gray-800">Bem-vindo de volta! 👋</h1>
+        <p class="text-gray-400 text-[13px] mt-1.5">Acesse sua conta para continuar sua jornada.</p>
+      </div>
+
+      <form id="password-form" class="flex flex-col gap-4" novalidate>
+
+        <!-- E-mail -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[12px] font-semibold text-gray-600" for="login-email">E-mail</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+              </svg>
+            </div>
+            <input id="login-email" type="email" placeholder="seu@email.com" autocomplete="email" required
+              class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-[#FAF7F2] text-[13px] text-gray-800 placeholder-gray-400 outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/15 transition-all"/>
+          </div>
+        </div>
+
+        <!-- Senha -->
+        <div class="flex flex-col gap-1.5">
+          <div class="flex items-center justify-between">
+            <label class="text-[12px] font-semibold text-gray-600" for="login-password">Senha</label>
+          </div>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+              </svg>
+            </div>
+            <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" required
+              class="w-full pl-10 pr-11 py-3 rounded-xl border border-gray-200 bg-[#FAF7F2] text-[13px] text-gray-800 placeholder-gray-400 outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/15 transition-all"/>
+            <button type="button" id="toggle-pw" aria-label="Mostrar senha"
+              class="absolute inset-y-0 right-3.5 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
+              <svg id="eye-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <p class="login-feedback text-[12px]" id="login-feedback" aria-live="polite" style="min-height:18px"></p>
+
+        <button type="submit" id="login-btn"
+          class="w-full bg-[#C4943A] hover:bg-[#B3852F] active:bg-[#A37728] text-white font-semibold text-[14px] py-3.5 rounded-xl transition-colors shadow-sm">
+          Entrar
+        </button>
+
+        <div class="flex items-center gap-3 my-1">
+          <div class="flex-1 h-px bg-gray-200"></div>
+          <span class="text-[11px] text-gray-400">ou continue com</span>
+          <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <button type="button" id="magic-btn"
+          class="w-full flex items-center justify-center gap-2.5 border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-medium text-[13px] py-3 rounded-xl transition-colors">
+          <svg class="w-4 h-4 text-[#C4943A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 9v.906a2.25 2.25 0 01-1.183 1.981l-6.478 3.488M2.25 9v.906a2.25 2.25 0 001.183 1.981l6.478 3.488m8.839 2.51l-4.66-2.51m0 0l-1.023-.55a2.25 2.25 0 00-2.134 0l-1.022.55m0 0l-4.661 2.51m16.5 1.615a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V8.844a2.25 2.25 0 011.183-1.98l7.5-4.04a2.25 2.25 0 012.134 0l7.5 4.04a2.25 2.25 0 011.183 1.98V19.5z"/>
+          </svg>
+          Entrar com link por e-mail
+        </button>
+        <p class="text-[11px] text-gray-400" id="magic-feedback" aria-live="polite" style="min-height:16px;text-align:center"></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    window.SUPABASE_URL      = "{{ supabase_url }}";
+    window.SUPABASE_ANON_KEY = "{{ supabase_anon_key }}";
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script>
+    document.getElementById('toggle-pw').addEventListener('click', () => {
+      const input = document.getElementById('login-password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
+    document.getElementById('password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const btn      = document.getElementById('login-btn');
+      const fb       = document.getElementById('login-feedback');
+      if (!email || !password) return;
+      btn.disabled = true; btn.textContent = 'Entrando...'; fb.textContent = ''; fb.className = 'text-[12px]';
+      const error = await window.auth.signInWithPassword(email, password);
+      if (error) {
+        fb.textContent = error.message?.includes('Invalid login') ? 'E-mail ou senha incorretos.' : (error.message || 'Tente novamente.');
+        fb.className = 'text-[12px] text-red-500';
+        btn.disabled = false; btn.textContent = 'Entrar';
+      }
+    });
+
+    document.getElementById('magic-btn').addEventListener('click', async () => {
+      const email = document.getElementById('login-email').value.trim();
+      const fb    = document.getElementById('magic-feedback');
+      if (!email) { fb.textContent = 'Digite seu e-mail primeiro.'; fb.className = 'text-[12px] text-red-500 text-center'; return; }
+      const btn = document.getElementById('magic-btn');
+      btn.disabled = true; btn.textContent = 'Enviando...'; fb.textContent = '';
+      const error = await window.auth.sendMagicLink(email);
+      if (error) {
+        fb.textContent = 'Erro: ' + (error.message || 'tente novamente.');
+        fb.className = 'text-[12px] text-red-500 text-center';
+        btn.disabled = false; btn.textContent = 'Entrar com link por e-mail';
+      } else {
+        fb.textContent = 'Link enviado! Verifique seu e-mail.';
+        fb.className = 'text-[12px] text-[#4E7A60] text-center';
+        btn.textContent = 'Link enviado ✓';
+      }
+    });
+  </script>
+</body>
+</html>

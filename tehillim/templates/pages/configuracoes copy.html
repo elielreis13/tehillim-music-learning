@@ -12,7 +12,7 @@
     </div>
     <div class="flex items-center gap-4">
       <div class="flex items-center gap-2">
-        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
+        <span class="text-xl">🔥</span>
         <div class="leading-tight">
           <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
           <p class="text-[10px] text-gray-500">dias</p>
@@ -162,10 +162,10 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-  await window.auth.ready;
-  if (!window.auth.isLoggedIn()) return;
-  const user  = window.auth.getUser();
-  const name  = user.user_metadata?.name || user.email?.split('@')[0] || '';
+  if (!window._sb) return;
+  const { data: { user } } = await window._sb.auth.getUser();
+  if (!user) return;
+  const name = user.user_metadata?.name || user.email?.split('@')[0] || '';
   const email = user.email || '';
   const role  = user.user_metadata?.role === 'teacher' ? 'Professor' : 'Aluno';
 
@@ -243,7 +243,9 @@ async function savePassword() {
 }
 
 async function doSignOut() {
-  await window.auth.signOut();
+  if (!window._sb) return;
+  await window._sb.auth.signOut();
+  window.location.href = '/login';
 }
 
 function togglePw(id) {
