@@ -557,7 +557,7 @@ function renderLocked(loggedIn = true) {
         <span class="lock-icon">🔒</span>
         <h2>Módulo bloqueado</h2>
         <p>Este módulo ainda não foi liberado pelo seu professor. Aguarde a liberação para continuar.</p>
-        <a class="action primary" href="/">Voltar ao início</a>
+        <a class="action primary" href="/index.html">Voltar ao início</a>
       </div>
     `;
   }

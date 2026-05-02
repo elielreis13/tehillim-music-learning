@@ -13,14 +13,14 @@
   </style>
   {% block head %}{% endblock %}
 </head>
-<body class="bg-[#FAF7F2] h-screen flex overflow-hidden text-gray-800">
+<body class="bg-[#FAF7F2] h-screen flex overflow-hidden text-gray-800" style="visibility:hidden">
 
   <!-- ══════════════ SIDEBAR ══════════════ -->
   <aside class="w-[210px] bg-white flex flex-col shadow-sm flex-shrink-0">
 
     <!-- Logo -->
     <div class="flex flex-col items-center pt-7 pb-5 px-4 flex-shrink-0">
-      <a href="/" class="w-[58px] h-[58px] rounded-full border-[2.5px] border-gray-800 flex items-center justify-center">
+      <a href="/index.html" class="w-[58px] h-[58px] rounded-full border-[2.5px] border-gray-800 flex items-center justify-center">
         <img src="{{ url_for('static', filename='icons/tehillim-logo.svg') }}" alt="Tehillim" class="w-9 h-9 object-contain"/>
       </a>
       <p class="font-bold text-[11px] tracking-[3px] mt-2 text-gray-800">TEHILLIM</p>
@@ -30,7 +30,7 @@
     <!-- Nav -->
     <nav class="flex flex-col px-3 gap-0.5 flex-1 overflow-y-auto min-h-0">
 
-      <a href="/" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
+      <a href="/index.html" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
         {% if active_page == 'inicio' %}bg-[#F2EAD8] text-[#7A5C2E] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
         <img src="{{ url_for('static', filename='icons/nav-inicio.svg') }}" class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'inicio' %}opacity-40{% endif %}"/>
         Início
@@ -133,6 +133,16 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="/static/js/auth.js"></script>
+  <script>
+    window.auth.ready.then(() => {
+      if (!window.auth.isLoggedIn()) {
+        const next = encodeURIComponent(window.location.pathname + window.location.search);
+        window.location.replace(`/login?next=${next}`);
+        return;
+      }
+      document.body.style.visibility = 'visible';
+    });
+  </script>
 
   <!-- ① Leitura SÍNCRONA do localStorage — roda antes do DOMContentLoaded
        Garante que window._progress já existe quando as páginas renderizam      -->

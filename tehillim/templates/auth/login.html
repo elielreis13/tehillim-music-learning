@@ -81,8 +81,14 @@
 {% block scripts %}
 <script>
   window.auth.ready.then(() => {
-    if (window.auth.isLoggedIn()) window.location.href = '/';
+    if (window.auth.isLoggedIn()) window.location.href = getNextUrl();
   });
+
+  function getNextUrl() {
+    const next = new URLSearchParams(window.location.search).get('next') || '/index.html';
+    if (!next.startsWith('/') || next.startsWith('//')) return '/index.html';
+    return next;
+  }
 
   async function submitLogin(e) {
     e.preventDefault();
@@ -100,8 +106,9 @@
     btn.textContent = 'Entrando…';
 
     try {
-      await window.auth.signInWithPassword(email, senha);
-      window.location.href = '/';
+      const error = await window.auth.signInWithPassword(email, senha);
+      if (error) throw error;
+      window.location.href = getNextUrl();
     } catch (err) {
       mostrarErro(traduzirErro(err), erro);
       btn.disabled    = false;
