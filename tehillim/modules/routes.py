@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from urllib.parse import unquote
+from urllib.parse import quote, unquote
 
-from flask import abort, render_template, request
+from flask import abort, redirect, render_template, request
 
 from . import bp
 from tehillim.content import get_group, get_module
@@ -19,12 +19,23 @@ def _ta_cookie() -> tuple[set, bool]:
         return set(), False
 
 
+@bp.before_request
+def require_login_for_app_pages():
+    if request.endpoint == "modules.landing":
+        return None
+    if request.cookies.get("ta"):
+        return None
+
+    next_url = request.full_path.rstrip("?")
+    return redirect(f"/login?next={quote(next_url)}")
+
+
+@bp.get("/")
 @bp.get("/landing")
 def landing():
     return render_template("landing.html")
 
 
-@bp.get("/")
 @bp.get("/index.html")
 def index():
     return render_template("pages/home.html", active_page="inicio")

@@ -51,7 +51,8 @@
           if (event === "SIGNED_IN") {
             try { await this._onSignIn(); } catch (e) { console.error("[auth] _onSignIn:", e); }
             if (window.location.pathname === "/login") {
-              window.location.href = "/";
+              const next = new URLSearchParams(window.location.search).get("next") || "/index.html";
+              window.location.href = (next.startsWith("/") && !next.startsWith("//")) ? next : "/index.html";
             }
           }
         });
@@ -113,7 +114,7 @@
         this._accessCacheAt = Date.now();
         document.cookie = `ta=${encodeURIComponent(JSON.stringify({ s: [], t: true }))}; path=/; max-age=3600; SameSite=Lax`;
         this._renderBadge();
-        window.location.href = "/";
+        window.location.href = "/index.html";
         return null;
       }
 
@@ -126,7 +127,7 @@
       if (!this.client) return { message: "Supabase não inicializado." };
       const { error } = await this.client.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: window.location.origin },
+        options: { emailRedirectTo: `${window.location.origin}/index.html` },
       });
       return error ?? null;
     },
