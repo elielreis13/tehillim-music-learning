@@ -2,6 +2,15 @@
 
 {% block title %}{{ module.title }} | Tehillim{% endblock %}
 
+{% block head %}
+<style>
+  /* Desktop: partitura cabe bem em 480px */
+  .bona-frame { height: 480px; display: block; }
+  /* Mobile: controles ocupam 2 linhas (~90px), score precisa de mais espaço */
+  @media (max-width: 640px) { .bona-frame { height: 540px; } }
+</style>
+{% endblock %}
+
 {% block header %}
 <header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
   <div class="flex items-center justify-between relative z-10">
@@ -51,8 +60,8 @@
     <!-- Player isolado via iframe — evita interferência do Tailwind no OSMD -->
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
       <iframe src="/bona-player/{{ module.slug }}"
-              class="w-full border-0 block"
-              style="height: 480px;"
+              allow="autoplay"
+              class="w-full border-0 block bona-frame"
               title="Player Bona — {{ module.title }}"></iframe>
     </div>
 

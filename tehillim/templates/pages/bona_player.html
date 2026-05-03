@@ -7,6 +7,9 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* Impede que conteúdo largo expanda o iframe além da largura do pai */
+    html, body { overflow-x: hidden; }
+
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
       background: #fff;
@@ -14,51 +17,59 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
 
+    /* ── Controles ── */
     #controls {
+      flex-shrink: 0;
+      border-bottom: 1px solid #e5e7eb;
+      background: #fafafa;
+      padding: 8px 12px;
+    }
+
+    #ctrl-row1, #ctrl-row2 {
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding: 10px 16px;
-      border-bottom: 1px solid #e5e7eb;
-      flex-wrap: wrap;
-      flex-shrink: 0;
-      background: #fafafa;
+      gap: 10px;
+      min-width: 0;
     }
+    #ctrl-row2 { margin-top: 6px; }
+
+    .ctrl-spacer { flex: 1; min-width: 0; }
 
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 7px 16px;
+      gap: 5px;
+      padding: 7px 14px;
       border: none;
       border-radius: 8px;
       font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
-      transition: opacity 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
       user-select: none;
     }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     #btn-play  { background: #C4943A; color: #fff; }
-    #btn-play:not(:disabled):hover { background: #B3852F; }
+    #btn-play:not(:disabled):hover  { background: #B3852F; }
     #btn-reset { background: #f3f4f6; color: #374151; }
     #btn-reset:not(:disabled):hover { background: #e5e7eb; }
 
     .ctrl-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       font-size: 0.78rem;
       color: #6b7280;
+      min-width: 0;
     }
     .ctrl-group label { white-space: nowrap; font-weight: 600; }
 
-    #bpm-slider { width: 90px; accent-color: #C4943A; cursor: pointer; }
-    #bpm-value  { font-weight: 700; color: #111827; min-width: 28px; }
+    #bpm-slider { width: 80px; accent-color: #C4943A; cursor: pointer; flex-shrink: 0; }
+    #bpm-value  { font-weight: 700; color: #111827; min-width: 26px; }
 
     #instrument-select {
       border: 1px solid #d1d5db;
@@ -67,8 +78,8 @@
       font-size: 0.78rem;
       background: #fff;
       cursor: pointer;
-      outline: none;
       color: #374151;
+      max-width: 120px;
     }
 
     .toggle-label {
@@ -83,56 +94,31 @@
     }
     .toggle-label input { accent-color: #C4943A; width: 14px; height: 14px; cursor: pointer; }
 
-    #status {
-      font-size: 0.72rem;
-      color: #9ca3af;
-      margin-left: auto;
-    }
+    #status { font-size: 0.72rem; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+    /* ── Partitura ── */
     #score-container {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
+      overflow-x: auto;
       padding: 12px 16px;
-    } 
-
-    #score-container text[class*="lyric"] {
-      font-size: 4px !important;
+      -webkit-overflow-scrolling: touch;
     }
-    /* Note names rendered by OSMD as SVG text (lyric elements) */
+
+    /* Nomes de notas renderizados pelo OSMD como texto SVG */
     #score-container text.vf-lyric,
-    #score-container text.lyric {
+    #score-container text.lyric,
+    #score-container text[class*="lyric"] {
       font-size: 3px !important;
     }
 
     @media (max-width: 640px) {
-      #controls {
-        gap: 8px;
-        padding: 8px;
-      }
-
-      .btn,
-      .ctrl-group,
-      .toggle-label {
-        font-size: 0.72rem;
-      }
-
-      .btn {
-        padding: 7px 10px;
-      }
-
-      #bpm-slider {
-        width: 70px;
-      }
-
-      #status {
-        width: 100%;
-        margin-left: 0;
-      }
-
-      #score-container {
-        padding: 8px;
-        overflow-x: auto;
-      }
+      .btn { padding: 7px 10px; font-size: 0.78rem; }
+      #bpm-slider { width: 65px; }
+      #instrument-select { max-width: 100px; font-size: 0.75rem; }
+      .toggle-label { font-size: 0.75rem; }
+      #score-container { padding: 8px; }
     }
   </style>
 </head>
@@ -145,42 +131,46 @@
 {% else %}
 
 <div id="controls">
-  <button id="btn-play" class="btn" disabled>
-    <svg id="icon-play" width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-    <svg id="icon-pause" width="14" height="14" fill="currentColor" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-    <span id="btn-play-label">Tocar</span>
-  </button>
-  <button id="btn-reset" class="btn" disabled>
-    <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.46-4.46M20 15a9 9 0 01-15.46 4.46"/>
-    </svg>
-    Reiniciar
-  </button>
-
-  <div class="ctrl-group">
-    <label>BPM</label>
-    <input id="bpm-slider" type="range" min="40" max="160" value="80">
-    <span id="bpm-value">80</span>
+  <!-- Linha 1: play, reset, BPM, status -->
+  <div id="ctrl-row1">
+    <button id="btn-play" class="btn" disabled>
+      <svg id="icon-play"  width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="icon-pause" width="13" height="13" fill="currentColor" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      <span id="btn-play-label">Tocar</span>
+    </button>
+    <button id="btn-reset" class="btn" disabled>
+      <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.46-4.46M20 15a9 9 0 01-15.46 4.46"/>
+      </svg>
+      Reiniciar
+    </button>
+    <div class="ctrl-group">
+      <label>BPM</label>
+      <input id="bpm-slider" type="range" min="40" max="160" value="80">
+      <span id="bpm-value">80</span>
+    </div>
+    <div class="ctrl-spacer"></div>
+    <span id="status"></span>
   </div>
 
-  <div class="ctrl-group">
-    <label>Instrumento</label>
-    <select id="instrument-select">
-      <option value="piano">Piano</option>
-      <option value="violin">Violino</option>
-      <option value="flute">Flauta</option>
-      <option value="saxophone">Saxofone</option>
-      <option value="clarinet">Clarinete</option>
-      <option value="trumpet">Trompete</option>
-    </select>
+  <!-- Linha 2: instrumento e mostrar notas -->
+  <div id="ctrl-row2">
+    <div class="ctrl-group">
+      <label>Instrumento</label>
+      <select id="instrument-select">
+        <option value="piano">Piano</option>
+        <option value="violin">Violino</option>
+        <option value="flute">Flauta</option>
+        <option value="saxophone">Saxofone</option>
+        <option value="clarinet">Clarinete</option>
+        <option value="trumpet">Trompete</option>
+      </select>
+    </div>
+    <label class="toggle-label">
+      <input id="toggle-note-names" type="checkbox">
+      Mostrar notas
+    </label>
   </div>
-
-  <label class="toggle-label">
-    <input id="toggle-note-names" type="checkbox">
-    Mostrar notas
-  </label>
-
-  <span id="status"></span>
 </div>
 
 <div id="score-container"></div>
@@ -274,7 +264,7 @@ async function initScore() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     rawXml = await res.text();
     await reloadScore();
-    btnPlay.disabled = false;
+    btnPlay.disabled  = false;
     btnReset.disabled = false;
     setStatus('Pronto.');
   } catch (err) {
@@ -298,8 +288,8 @@ const INSTRUMENTS = {
       A7:'A7.mp3',  C8:'C8.mp3',
     },
   },
-  violin:    { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/violin-mp3/',   urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
-  flute:     { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/flute-mp3/',    urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
+  violin:    { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/violin-mp3/',    urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
+  flute:     { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/flute-mp3/',     urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
   saxophone: { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/alto_sax-mp3/', urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
   clarinet:  { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/clarinet-mp3/', urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
   trumpet:   { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/trumpet-mp3/',  urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
@@ -389,7 +379,6 @@ function scheduleStep() {
 
 async function startPlayback() {
   if (!osmd || isPlaying) return;
-  await Tone.start();
   setStatus('Carregando amostras...');
   await initAudio();
   isPlaying = true;
@@ -433,7 +422,16 @@ function setPlayUI(playing) {
 function setStatus(msg) { statusEl.textContent = msg; }
 
 // ── Eventos ───────────────────────────────────────────────────────────────────
-btnPlay.addEventListener('click', () => isPlaying ? pausePlayback() : startPlayback());
+
+// Desbloqueio do AudioContext no primeiro toque (crítico para iOS Safari)
+document.addEventListener('touchstart', () => Tone.start(), { once: true, passive: true });
+
+btnPlay.addEventListener('click', () => {
+  // Chama Tone.start() sincronamente dentro do handler de gesto — necessário para iOS
+  Tone.start();
+  isPlaying ? pausePlayback() : startPlayback();
+});
+
 btnReset.addEventListener('click', resetPlayback);
 bpmSlider.addEventListener('input', () => { bpmValue.textContent = bpmSlider.value; });
 
