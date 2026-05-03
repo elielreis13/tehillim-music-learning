@@ -207,6 +207,9 @@ const scoreContainer = document.getElementById('score-container');
 const statusEl       = document.getElementById('status');
 
 // ── Score ─────────────────────────────────────────────────────────────────────
+const NOTE_PT = { C:'Dó', D:'Ré', E:'Mi', F:'Fá', G:'Sol', A:'Lá', B:'Si' };
+const ACC_PT  = { 1:'#', [-1]:'b' };
+
 function addNoteNamesToXml(xmlString) {
   const doc = new DOMParser().parseFromString(xmlString, 'application/xml');
   doc.querySelectorAll('note').forEach(note => {
@@ -214,14 +217,15 @@ function addNoteNamesToXml(xmlString) {
     const step = note.querySelector('step')?.textContent;
     if (!step) return;
     const alter = parseFloat(note.querySelector('alter')?.textContent ?? '0');
-    const acc   = alter === 1 ? '#' : alter === -1 ? 'b' : '';
+    const acc   = ACC_PT[alter] ?? '';
+    const label = (NOTE_PT[step] ?? step) + acc;
     note.querySelectorAll('lyric').forEach(l => l.remove());
     const lyric    = doc.createElement('lyric');
     lyric.setAttribute('number', '1');
     const syllabic = doc.createElement('syllabic');
     syllabic.textContent = 'single';
     const text     = doc.createElement('text');
-    text.textContent = `${step}${acc}`;
+    text.textContent = label;
     lyric.appendChild(syllabic);
     lyric.appendChild(text);
     note.appendChild(lyric);
@@ -231,7 +235,8 @@ function addNoteNamesToXml(xmlString) {
 
 function shrinkLyricText() {
   scoreContainer.querySelectorAll('svg text').forEach(el => {
-    if (/^[A-Ga-g][#b]?$/.test(el.textContent.trim())) {
+    const t = el.textContent.trim();
+    if (/^(Dó|Ré|Mi|Fá|Sol|Lá|Si)[#b]?$/.test(t)) {
       el.setAttribute('font-size', '12');
       el.style.fontSize = '12px';
     }
