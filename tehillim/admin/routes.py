@@ -15,4 +15,11 @@ def dashboard():
 def admin():
     if err := require_teacher():
         return err
-    return render_template("pages/admin.html")
+    return render_template("pages/professor_admin.html", active_page="admin")
+
+
+@bp.get("/professor/alunos")
+def professor_alunos():
+    if err := require_teacher():
+        return err
+    return render_template("pages/professor_alunos.html", active_page="professor_alunos")

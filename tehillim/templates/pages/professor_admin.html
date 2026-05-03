@@ -1,0 +1,172 @@
+{% extends "base_app.html" %}
+
+{% block title %}Administração | Tehillim{% endblock %}
+
+{% block header %}
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
+  <div class="flex items-center justify-between relative z-10">
+    <div>
+      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Professor</p>
+      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Administração</h1>
+      <p class="text-[13px] text-gray-500 mt-0.5">Gerencie alunos e permissões de acesso</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="/professor/alunos"
+         class="hidden sm:flex items-center gap-2 bg-white text-gray-700 text-[13px] font-semibold px-4 py-2.5 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+        Ver Evolução
+      </a>
+      <button id="open-create-btn"
+              class="flex items-center gap-1.5 bg-[#C4943A] hover:bg-[#B3852F] text-white text-[13px] font-semibold px-4 py-2.5 rounded-xl transition-colors shadow-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+        Novo Aluno
+      </button>
+    </div>
+  </div>
+  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-5">
+
+  <!-- Stats rápidas -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white rounded-2xl p-5 shadow-sm">
+      <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Total de Alunos</p>
+      <p class="text-[28px] font-bold text-gray-800 mt-1" id="stat-total">—</p>
+    </div>
+    <div class="bg-white rounded-2xl p-5 shadow-sm">
+      <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Módulos Completos</p>
+      <p class="text-[28px] font-bold text-[#C4943A] mt-1" id="stat-completed">—</p>
+    </div>
+    <div class="bg-white rounded-2xl p-5 shadow-sm">
+      <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Dias de Estudo</p>
+      <p class="text-[28px] font-bold text-[#4E7A60] mt-1" id="stat-days">—</p>
+    </div>
+    <div class="bg-white rounded-2xl p-5 shadow-sm">
+      <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Ativos (7 dias)</p>
+      <p class="text-[28px] font-bold text-gray-800 mt-1" id="stat-active">—</p>
+    </div>
+  </div>
+
+  <!-- Formulário criar aluno (inline, oculto por padrão) -->
+  <div id="create-form-card" style="display:none"
+       class="bg-white rounded-2xl shadow-sm overflow-hidden flex-col">
+    <div class="px-6 py-4 bg-[#FAF7F2] border-b border-gray-100 flex items-center justify-between">
+      <h2 class="font-bold text-[15px] text-gray-800">Criar Novo Aluno</h2>
+      <button id="cancel-create-btn" class="text-gray-400 hover:text-gray-600 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <form id="create-form" novalidate class="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label class="text-[12px] font-semibold text-gray-600 block mb-1.5">Nome do aluno</label>
+        <input id="new-name" type="text" placeholder="Ex: João Silva" autocomplete="off"
+               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+      </div>
+      <div>
+        <label class="text-[12px] font-semibold text-gray-600 block mb-1.5">E-mail</label>
+        <input id="new-email" type="email" placeholder="aluno@email.com" autocomplete="off" required
+               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+      </div>
+      <div>
+        <label class="text-[12px] font-semibold text-gray-600 block mb-1.5">Senha inicial</label>
+        <div class="relative">
+          <input id="new-password" type="password" placeholder="mínimo 6 caracteres"
+                 autocomplete="new-password" required minlength="6"
+                 class="w-full px-4 py-2.5 pr-10 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+          <button type="button" class="toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]" data-target="new-password">👁</button>
+        </div>
+      </div>
+      <div class="md:col-span-3 flex items-center gap-4 pt-1">
+        <button type="submit" id="create-btn"
+                class="px-6 py-2.5 rounded-xl bg-[#C4943A] text-white text-[13px] font-semibold hover:bg-[#B3852F] transition-colors">
+          Criar Aluno
+        </button>
+        <p id="create-feedback" class="text-[13px] min-h-[18px]"></p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Lista de alunos -->
+  <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+    <div class="px-6 py-4 bg-[#FAF7F2] border-b border-gray-100 flex items-center justify-between">
+      <h2 class="font-bold text-[15px] text-gray-800">Alunos</h2>
+      <p id="admin-loading" class="text-[12px] text-gray-400">Carregando...</p>
+    </div>
+    <p id="admin-error" class="px-6 py-4 text-[13px] text-red-500" style="display:none"></p>
+    <div id="admin-student-list"></div>
+  </div>
+
+</div>
+
+<!-- Modal: controle de acesso -->
+<div id="access-backdrop" style="display:none"
+     class="fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl max-h-[85vh] flex flex-col">
+    <div class="px-6 pt-6 pb-4 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
+      <div>
+        <h3 class="font-bold text-[17px] text-gray-800">Controle de Acesso</h3>
+        <p class="text-[13px] text-gray-400 mt-0.5" id="access-modal-label"></p>
+      </div>
+      <button id="cancel-access-btn" class="text-gray-400 hover:text-gray-600 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div id="access-modal-body" class="flex-1 overflow-y-auto p-5">
+      <p class="text-[13px] text-gray-400">Carregando módulos...</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: redefinir senha -->
+<div id="reset-backdrop" style="display:none"
+     class="fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl w-full max-w-sm shadow-2xl">
+    <div class="px-6 pt-6 pb-4 border-b border-gray-100 flex items-center justify-between">
+      <div>
+        <h3 class="font-bold text-[17px] text-gray-800">Redefinir Senha</h3>
+        <p class="text-[13px] text-gray-400 mt-0.5" id="reset-email-label"></p>
+      </div>
+      <button id="cancel-reset-btn" class="text-gray-400 hover:text-gray-600 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <form id="reset-form" novalidate class="p-6 flex flex-col gap-4">
+      <div>
+        <label class="text-[12px] font-semibold text-gray-600 block mb-1.5">Nova senha</label>
+        <div class="relative">
+          <input id="reset-password" type="password" placeholder="mínimo 6 caracteres"
+                 autocomplete="new-password" required minlength="6"
+                 class="w-full px-4 py-2.5 pr-10 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+          <button type="button" class="toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]" data-target="reset-password">👁</button>
+        </div>
+      </div>
+      <p id="reset-feedback" class="text-[12px] text-center min-h-[18px]"></p>
+      <div class="flex gap-3">
+        <button type="button" id="cancel-reset-btn-2"
+                onclick="document.getElementById('reset-backdrop').style.display='none'"
+                class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
+          Cancelar
+        </button>
+        <button type="submit" id="reset-btn"
+                class="flex-1 px-4 py-2.5 rounded-xl bg-[#C4943A] text-white text-[13px] font-semibold hover:bg-[#B3852F] transition-colors">
+          Salvar Senha
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin.js"></script>
+{% endblock %}
