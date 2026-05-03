@@ -98,8 +98,19 @@ def teacher_students():
         for u in users_raw
     }
 
-    progress  = sb_get("module_progress", {"select": "user_id,module_slug,completed,updated_at", "order": "updated_at.desc"})
-    study     = sb_get("study_days",      {"select": "user_id,day", "order": "day.desc"})
+    try:
+        progress = sb_get("module_progress", {"select": "user_id,module_slug,completed,updated_at", "order": "updated_at.desc"})
+        study    = sb_get("study_days",      {"select": "user_id,day", "order": "day.desc"})
+    except Exception as exc:
+        import traceback; traceback.print_exc()
+        # Retorna alunos sem dados de progresso em vez de explodir
+        result = [
+            {"id": uid, "email": info["email"], "name": info["name"], "role": info["role"],
+             "modules_completed": 0, "study_days": 0, "last_activity": None}
+            for uid, info in users.items()
+        ]
+        return jsonify({"students": result, "warning": f"Progresso indisponível: {exc}"})
+
     prog_map  = defaultdict(list)
     study_map = defaultdict(list)
 
@@ -189,9 +200,12 @@ def teacher_delete_comment(comment_id: str):
 def teacher_student_detail(user_id: str):
     if err := require_teacher_token():
         return err
-    progress = sb_get("module_progress",  {"select": "module_slug,completed,updated_at", "user_id": f"eq.{user_id}", "order": "updated_at.desc"})
-    study    = sb_get("study_days",       {"select": "day", "user_id": f"eq.{user_id}", "order": "day.desc"})
-    comments = sb_get("teacher_comments", {"select": "id,module_slug,content,created_at", "student_id": f"eq.{user_id}", "order": "created_at.desc"})
+    try:
+        progress = sb_get("module_progress",  {"select": "module_slug,completed,updated_at", "user_id": f"eq.{user_id}", "order": "updated_at.desc"})
+        study    = sb_get("study_days",       {"select": "day", "user_id": f"eq.{user_id}", "order": "day.desc"})
+        comments = sb_get("teacher_comments", {"select": "id,module_slug,content,created_at", "student_id": f"eq.{user_id}", "order": "created_at.desc"})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
     return jsonify({"progress": progress, "study_days": [r["day"] for r in study], "comments": comments})
 
 
