@@ -1,0 +1,412 @@
+{% extends "base_app.html" %}
+
+{% block title %}Evolução dos Alunos | Tehillim{% endblock %}
+
+{% block header %}
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
+  <div class="flex items-center justify-between relative z-10">
+    <div>
+      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Professor</p>
+      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Evolução dos Alunos</h1>
+      <p class="text-[13px] text-gray-500 mt-0.5">Acompanhe o progresso de cada aluno</p>
+    </div>
+    <a href="/admin"
+       class="bg-white text-gray-700 text-[13px] font-semibold px-4 py-2.5 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
+      Administração
+    </a>
+  </div>
+  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="flex-1 overflow-hidden flex">
+
+  <!-- ── Lista de alunos ── -->
+  <div class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-5" id="alunos-main">
+
+    <!-- Stats rápidas -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+        <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Total de Alunos</p>
+        <p class="text-[28px] font-bold text-gray-800 mt-1" id="pa-stat-total">—</p>
+      </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+        <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Módulos Completos</p>
+        <p class="text-[28px] font-bold text-[#C4943A] mt-1" id="pa-stat-completed">—</p>
+      </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+        <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Total Dias de Estudo</p>
+        <p class="text-[28px] font-bold text-[#4E7A60] mt-1" id="pa-stat-days">—</p>
+      </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+        <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Ativos (7 dias)</p>
+        <p class="text-[28px] font-bold text-gray-800 mt-1" id="pa-stat-active">—</p>
+      </div>
+    </div>
+
+    <!-- Cards de alunos -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div class="px-6 py-4 bg-[#FAF7F2] border-b border-gray-100 flex items-center justify-between">
+        <h2 class="font-bold text-[15px] text-gray-800">Alunos</h2>
+        <p id="pa-loading" class="text-[12px] text-gray-400">Carregando...</p>
+      </div>
+      <p id="pa-error" class="px-6 py-4 text-[13px] text-red-500" style="display:none"></p>
+      <div id="pa-student-list"></div>
+    </div>
+
+  </div>
+
+  <!-- ── Painel de detalhe do aluno (slide-in) ── -->
+  <div id="detail-panel"
+       class="flex-shrink-0 overflow-hidden bg-white border-l border-gray-100 shadow-xl flex flex-col"
+       style="width:0;transition:width 0.28s cubic-bezier(0.4,0,0.2,1)">
+
+    <!-- Header do painel -->
+    <div class="flex-shrink-0 px-6 py-5 bg-[#FAF7F2] border-b border-gray-100 flex items-center gap-4" id="detail-header">
+      <div id="detail-avatar"
+           style="width:44px;height:44px;border-radius:50%;background:#EDD9B0;color:#C4943A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0">
+        —
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-bold text-[15px] text-gray-800 truncate" id="detail-name">—</p>
+        <p class="text-[11px] text-gray-400 truncate" id="detail-email">—</p>
+      </div>
+      <button onclick="closeDetail()" class="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Conteúdo scrollável -->
+    <div class="flex-1 overflow-y-auto" id="detail-body">
+      <p class="px-6 py-8 text-center text-[13px] text-gray-400">Selecione um aluno</p>
+    </div>
+
+    <!-- Campo de comentário -->
+    <div class="flex-shrink-0 border-t border-gray-100 px-5 py-4" id="detail-comment-area">
+      <p class="text-[12px] font-semibold text-gray-600 mb-2">Adicionar anotação</p>
+      <div class="flex gap-2">
+        <input id="comment-input" type="text" placeholder="Ex: Precisa revisar ritmo..."
+               class="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+        <button id="comment-btn"
+                class="bg-[#C4943A] hover:bg-[#B3852F] text-white text-[12px] font-semibold px-4 py-2 rounded-xl transition-colors flex-shrink-0">
+          Enviar
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Overlay para mobile (fecha o painel) -->
+<div id="detail-overlay"
+     onclick="closeDetail()"
+     style="display:none;position:fixed;inset:0;z-index:20;background:rgba(0,0,0,0.3)"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const GROUPS_DATA = {{ groups | tojson }};
+const TOTAL_MODULES = {{ groups | sum(attribute='module_count') }};
+
+// Mapa slug → info do módulo
+const MODULE_MAP = {};
+GROUPS_DATA.forEach(g => g.modules.forEach(m => { MODULE_MAP[m.slug] = { ...m, group: g.name }; }));
+
+let currentStudentId = null;
+
+// ── Auth helper ────────────────────────────────────────────────────────────────
+
+async function api(path, opts = {}) {
+  if (window.auth) await window.auth.ready;
+  const token = window.auth?.session?.access_token;
+  const headers = {
+    "Content-Type": "application/json",
+    ...(token ? { "Authorization": `Bearer ${token}` } : {}),
+  };
+  const r = await fetch(path, { headers, ...opts });
+  if (r.status === 204) return null;
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || r.statusText);
+  return data;
+}
+
+// ── Carregar lista de alunos ───────────────────────────────────────────────────
+
+document.addEventListener("DOMContentLoaded", async () => {
+  if (window.auth) await window.auth.ready;
+  loadStudents();
+});
+
+async function loadStudents() {
+  const loading = document.getElementById("pa-loading");
+  const errBox  = document.getElementById("pa-error");
+  const listEl  = document.getElementById("pa-student-list");
+  if (loading) loading.style.display = "";
+
+  try {
+    const { students } = await api("/api/teacher/students");
+    if (loading) loading.style.display = "none";
+    renderStats(students);
+    renderList(students, listEl);
+  } catch (err) {
+    if (loading) loading.style.display = "none";
+    if (errBox) { errBox.textContent = "Erro ao carregar: " + err.message; errBox.style.display = ""; }
+  }
+}
+
+function renderStats(students) {
+  const s = students.filter(u => u.role !== "teacher");
+  const oneWeekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+  document.getElementById("pa-stat-total").textContent     = s.length;
+  document.getElementById("pa-stat-completed").textContent = s.reduce((a, u) => a + u.modules_completed, 0);
+  document.getElementById("pa-stat-days").textContent      = s.reduce((a, u) => a + u.study_days, 0);
+  document.getElementById("pa-stat-active").textContent    = s.filter(u => u.last_activity && u.last_activity > oneWeekAgo).length;
+}
+
+function renderList(students, listEl) {
+  const s = students.filter(u => u.role !== "teacher");
+  if (!s.length) {
+    listEl.innerHTML = '<p class="px-6 py-10 text-center text-[13px] text-gray-400">Nenhum aluno cadastrado.</p>';
+    return;
+  }
+
+  listEl.innerHTML = s.map(u => {
+    const name    = u.name || u.email.split("@")[0];
+    const initial = name[0].toUpperCase();
+    const pct     = TOTAL_MODULES > 0 ? Math.round((u.modules_completed / TOTAL_MODULES) * 100) : 0;
+    const last    = u.last_activity
+      ? new Date(u.last_activity).toLocaleDateString("pt-BR", { day: "numeric", month: "short" })
+      : "—";
+    return `
+      <div class="flex items-center gap-4 px-6 py-4 border-b border-gray-50 hover:bg-[#FAF7F2] cursor-pointer transition-colors group"
+           onclick="openDetail('${u.id}', '${name.replace(/'/g, "\\'")}', '${u.email.replace(/'/g, "\\'")}')">
+        <div class="w-10 h-10 rounded-full bg-[#EDD9B0] text-[#C4943A] flex items-center justify-center font-bold text-[15px] flex-shrink-0">
+          ${initial}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-[14px] text-gray-800">${name}</p>
+          <p class="text-[11px] text-gray-400 truncate">${u.email}</p>
+          <div class="flex items-center gap-2 mt-2">
+            <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden max-w-[120px]">
+              <div class="h-full bg-[#C4943A] rounded-full" style="width:${pct}%"></div>
+            </div>
+            <span class="text-[11px] text-gray-500 font-semibold">${u.modules_completed}/${TOTAL_MODULES}</span>
+            <span class="text-[11px] text-gray-300">·</span>
+            <span class="text-[11px] text-gray-400">📅 ${u.study_days} dias</span>
+            <span class="text-[11px] text-gray-300">·</span>
+            <span class="text-[11px] text-gray-400">${last}</span>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-gray-300 group-hover:text-[#C4943A] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+        </svg>
+      </div>
+    `;
+  }).join("");
+}
+
+// ── Painel de detalhe ─────────────────────────────────────────────────────────
+
+async function openDetail(userId, name, email) {
+  currentStudentId = userId;
+
+  // Avatar e header
+  document.getElementById("detail-avatar").textContent = name[0]?.toUpperCase() || "—";
+  document.getElementById("detail-name").textContent   = name;
+  document.getElementById("detail-email").textContent  = email;
+
+  // Mostra painel
+  const panel   = document.getElementById("detail-panel");
+  const overlay = document.getElementById("detail-overlay");
+  const isMobile = window.innerWidth < 768;
+
+  if (isMobile) {
+    panel.style.position = "fixed";
+    panel.style.top      = "0";
+    panel.style.right    = "0";
+    panel.style.bottom   = "0";
+    panel.style.zIndex   = "30";
+    panel.style.width    = "min(360px, 100vw)";
+    overlay.style.display = "block";
+  } else {
+    panel.style.position = "";
+    panel.style.width    = "360px";
+    overlay.style.display = "none";
+  }
+
+  document.getElementById("detail-body").innerHTML =
+    '<div class="flex justify-center py-12"><div style="width:32px;height:32px;border:3px solid #C4943A;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite"></div></div>';
+
+  try {
+    const data = await api(`/api/teacher/student/${userId}`);
+    renderDetailBody(data, userId);
+  } catch (err) {
+    document.getElementById("detail-body").innerHTML =
+      `<p class="px-6 py-8 text-center text-[13px] text-red-500">Erro: ${err.message}</p>`;
+  }
+}
+
+function closeDetail() {
+  const panel   = document.getElementById("detail-panel");
+  const overlay = document.getElementById("detail-overlay");
+  panel.style.width    = "0";
+  panel.style.position = "";
+  overlay.style.display = "none";
+  currentStudentId     = null;
+}
+
+function renderDetailBody(data, userId) {
+  const { progress, study_days, comments } = data;
+  const doneSet = new Set(progress.filter(p => p.completed > 0).map(p => p.module_slug));
+  const streak  = computeStreak(study_days);
+
+  // Stats mini
+  const statsHtml = `
+    <div class="grid grid-cols-3 gap-3 mb-5">
+      <div class="bg-[#FBF6EE] rounded-xl p-3 text-center">
+        <p class="text-[18px] font-bold text-[#C4943A]">${doneSet.size}</p>
+        <p class="text-[10px] text-gray-500 mt-0.5">Módulos</p>
+      </div>
+      <div class="bg-[#F4FAF7] rounded-xl p-3 text-center">
+        <p class="text-[18px] font-bold text-[#4E7A60]">${streak}</p>
+        <p class="text-[10px] text-gray-500 mt-0.5">Sequência</p>
+      </div>
+      <div class="bg-[#F9F9F9] rounded-xl p-3 text-center">
+        <p class="text-[18px] font-bold text-gray-700">${study_days.length}</p>
+        <p class="text-[10px] text-gray-500 mt-0.5">Dias</p>
+      </div>
+    </div>
+  `;
+
+  // Progresso por grupo
+  const groupsHtml = GROUPS_DATA.map(g => {
+    const done  = g.modules.filter(m => doneSet.has(m.slug)).length;
+    const total = g.modules.length;
+    const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    const modsHtml = g.modules.map(m => {
+      const isDone = doneSet.has(m.slug);
+      return `
+        <div class="flex items-center gap-2.5 py-1.5">
+          <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${isDone ? 'bg-[#4E7A60]' : 'bg-gray-100'}">
+            ${isDone
+              ? '<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
+              : '<span style="width:6px;height:6px;border-radius:50%;background:#d1d5db;display:block;margin:auto"></span>'}
+          </div>
+          <span class="text-[12px] font-semibold text-[#C4943A] bg-[#FBF6EE] px-1.5 py-0.5 rounded flex-shrink-0">M${String(m.number).padStart(2,'0')}</span>
+          <span class="text-[12px] text-gray-600 truncate">${m.title}</span>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <div class="mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <img src="/static/icons/${g.icon_file}" class="w-4 h-4">
+            <span class="font-semibold text-[12px] text-gray-700">${g.name}</span>
+          </div>
+          <span class="text-[11px] font-bold text-gray-500">${done}/${total}</span>
+        </div>
+        <div class="h-1 bg-gray-100 rounded-full mb-3">
+          <div class="h-full bg-[#C4943A] rounded-full" style="width:${pct}%"></div>
+        </div>
+        ${modsHtml}
+      </div>
+    `;
+  }).join("");
+
+  // Comentários
+  const commentsHtml = comments.length ? comments.map(c => `
+    <div class="bg-[#FAF7F2] rounded-xl px-4 py-3 mb-2 relative group">
+      <p class="text-[12px] text-gray-700">${c.content}</p>
+      <div class="flex items-center justify-between mt-1">
+        <span class="text-[10px] text-gray-400">${new Date(c.created_at).toLocaleDateString("pt-BR")}</span>
+        <button onclick="deleteComment('${c.id}')"
+                class="text-[10px] text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
+          Apagar
+        </button>
+      </div>
+    </div>
+  `).join("") : '<p class="text-[12px] text-gray-400 py-2">Nenhuma anotação ainda.</p>';
+
+  document.getElementById("detail-body").innerHTML = `
+    <div class="p-5">
+      ${statsHtml}
+
+      <h4 class="font-bold text-[13px] text-gray-700 mb-3 uppercase tracking-wider">Progresso por grupo</h4>
+      ${groupsHtml}
+
+      <h4 class="font-bold text-[13px] text-gray-700 mb-3 mt-5 uppercase tracking-wider">Anotações do professor</h4>
+      <div id="comments-list">${commentsHtml}</div>
+    </div>
+  `;
+}
+
+function computeStreak(days) {
+  if (!days.length) return 0;
+  const sorted = [...days].sort().reverse();
+  const today  = new Date().toISOString().slice(0, 10);
+  let streak   = 0, cur = today;
+  for (const d of sorted) {
+    if (d === cur) {
+      streak++;
+      const dt = new Date(cur);
+      dt.setDate(dt.getDate() - 1);
+      cur = dt.toISOString().slice(0, 10);
+    } else if (d < cur) break;
+  }
+  return streak;
+}
+
+// ── Comentários ───────────────────────────────────────────────────────────────
+
+document.getElementById("comment-btn")?.addEventListener("click", addComment);
+document.getElementById("comment-input")?.addEventListener("keydown", e => {
+  if (e.key === "Enter") addComment();
+});
+
+async function addComment() {
+  const input = document.getElementById("comment-input");
+  const content = input.value.trim();
+  if (!content || !currentStudentId) return;
+
+  const btn = document.getElementById("comment-btn");
+  btn.disabled = true;
+
+  try {
+    await api("/api/teacher/comments", {
+      method: "POST",
+      body: JSON.stringify({ student_id: currentStudentId, content }),
+    });
+    input.value = "";
+    // Recarrega o detalhe para mostrar o novo comentário
+    const name  = document.getElementById("detail-name").textContent;
+    const email = document.getElementById("detail-email").textContent;
+    openDetail(currentStudentId, name, email);
+  } catch (err) {
+    alert("Erro ao salvar: " + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function deleteComment(commentId) {
+  if (!confirm("Apagar esta anotação?")) return;
+  try {
+    await api(`/api/teacher/comments/${commentId}`, { method: "DELETE" });
+    const name  = document.getElementById("detail-name").textContent;
+    const email = document.getElementById("detail-email").textContent;
+    openDetail(currentStudentId, name, email);
+  } catch (err) {
+    alert("Erro: " + err.message);
+  }
+}
+</script>
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+{% endblock %}
