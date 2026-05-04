@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Step 1: completed (filled circle + checkmark) -->
+  <circle cx="10" cy="40" r="6" fill="#7A5C2E"/>
+  <path d="M7 40L9.5 42.5L13.5 37.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Connector 1→2 -->
+  <line x1="16" y1="36" x2="20" y2="28" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 2"/>
+  <!-- Step 2: completed (filled circle + checkmark) -->
+  <circle cx="24" cy="24" r="6" fill="#7A5C2E"/>
+  <path d="M21 24L23.5 26.5L27.5 21.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Connector 2→3 -->
+  <line x1="30" y1="20" x2="34" y2="12" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 2"/>
+  <!-- Step 3: in progress (outline + center dot) -->
+  <circle cx="38" cy="8" r="6" stroke="#7A5C2E" stroke-width="2.5"/>
+  <circle cx="38" cy="8" r="2" fill="#7A5C2E"/>
+</svg>

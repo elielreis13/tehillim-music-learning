@@ -1,0 +1,635 @@
+{% extends "base_app.html" %}
+
+{% block title %}Módulo {{ module.number }} — {{ module.title }} | Tehillim{% endblock %}
+
+{% block head %}
+<style>
+  /* ── Layout ─────────────────────────────────────── */
+  .study-layout {
+    display: flex;
+    gap: 20px;
+    padding: 20px 24px 24px;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  /* ── Trilha lateral ──────────────────────────────── */
+  .study-path {
+    width: 230px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+  }
+
+  .path-node {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, box-shadow 0.15s;
+    width: 100%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .path-node:hover:not(:disabled) { background: #FAF7F2; }
+  .path-node:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .path-node span {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #F3F4F6;
+    color: #9CA3AF;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .path-node.done span {
+    background: #4E7A60;
+    color: white;
+  }
+
+  .path-node.active {
+    background: #F2EAD8;
+    box-shadow: 0 1px 4px rgba(196,148,58,0.15);
+  }
+
+  .path-node.active span {
+    background: #C4943A;
+    color: white;
+  }
+
+  .path-node strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    display: block;
+    line-height: 1.3;
+  }
+
+  .path-node small {
+    font-size: 11px;
+    color: #9CA3AF;
+    display: block;
+    margin-top: 1px;
+  }
+
+  .path-node.active strong { color: #7A5C2E; }
+  .path-node.active small  { color: #C4943A; }
+
+  /* ── Stage (área principal) ───────────────────────── */
+  .study-stage {
+    flex: 1;
+    background: white;
+    border-radius: 20px;
+    padding: 28px 32px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: #C4943A;
+    margin: 0 0 8px;
+  }
+
+  #stage-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #1F2937;
+    margin: 0 0 6px;
+    line-height: 1.25;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  #stage-summary {
+    font-size: 14px;
+    color: #6B7280;
+    margin: 0 0 20px;
+    line-height: 1.6;
+  }
+
+  .stage-body {
+    margin-bottom: 16px;
+  }
+
+  .stage-body p {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.8;
+    margin: 0 0 12px;
+  }
+
+  .stage-activity { margin-bottom: 16px; }
+
+  /* ── Feedback ────────────────────────────────────── */
+  #stage-feedback {
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 18px;
+    padding: 0;
+    margin: 0 0 16px;
+    border-radius: 8px;
+  }
+
+  #stage-feedback:not(:empty) {
+    padding: 10px 14px;
+  }
+
+  #stage-feedback.ok {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  #stage-feedback.no {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  /* ── Botões ──────────────────────────────────────── */
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 8px;
+  }
+
+  .action {
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s, opacity 0.15s;
+    font-family: inherit;
+  }
+
+  .action.primary {
+    background: #C4943A;
+    color: white;
+  }
+
+  .action.primary:hover:not(:disabled) { background: #B3852F; }
+  .action.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .action:not(.primary) {
+    background: #F3F4F6;
+    color: #6B7280;
+  }
+
+  .action:not(.primary):hover { background: #E5E7EB; }
+
+  /* ── Activity card ───────────────────────────────── */
+  .activity-card {
+    background: #FAF7F2;
+    border: 1.5px solid #E9E0CE;
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .activity-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #C4943A;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .activity-card p {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* ── Quiz / Exercício ────────────────────────────── */
+  .quiz-box {
+    background: #F9FAFB;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+
+  .exercise-type-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9CA3AF;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .quiz-box h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1F2937;
+    margin: 0 0 14px;
+    line-height: 1.4;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .choice {
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1.5px solid #E5E7EB;
+    background: white;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-family: inherit;
+    width: 100%;
+  }
+
+  .choice:hover { border-color: #C4943A; background: #FFFBF2; }
+  .choice.selected.correct { border-color: #4E7A60; background: #D1FAE5; color: #065F46; }
+  .choice.selected.wrong   { border-color: #EF4444; background: #FEE2E2; color: #991B1B; }
+
+  /* ── Vídeo ───────────────────────────────────────── */
+  .video-wrapper {
+    border-radius: 14px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    background: #000;
+  }
+
+  .video-wrapper iframe { width: 100%; height: 100%; display: block; border: none; }
+  .video-prompt { font-size: 13px; color: #6B7280; margin-top: 10px; line-height: 1.6; }
+
+  /* ── Visual / VexFlow ────────────────────────────── */
+  .visual-lab {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .vf-staff-container {
+    background: white;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 16px;
+    overflow-x: auto;
+  }
+
+  /* ── Match Exercise ──────────────────────────────── */
+  .match-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #F3F4F6;
+    font-size: 13px;
+  }
+
+  .match-left  { font-weight: 600; color: #374151; flex: 1; }
+  .match-arrow { color: #C4943A; font-weight: 700; }
+  .match-right { color: #6B7280; flex: 1; }
+
+  .check-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #374151;
+    padding: 6px 0;
+    cursor: pointer;
+  }
+
+  /* ── Visual fallbacks ────────────────────────────── */
+  .meter-grid {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: #F9FAFB;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #374151;
+  }
+
+  .meter-grid b { color: #C4943A; margin: 0 4px; }
+
+  .expression-scale {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #F9FAFB;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .expression-scale div { flex: 1; height: 6px; background: linear-gradient(to right, #E5E7EB, #C4943A); border-radius: 3px; }
+  .expression-scale i   { display: none; }
+
+  .creation-board {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .creation-board span {
+    background: #F2EAD8;
+    color: #7A5C2E;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* ── Jogo de Memória ─────────────────────────────── */
+  .memory-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+  }
+
+  .memory-card {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    border: 2px solid #E5E7EB;
+    background: white;
+    cursor: pointer;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .memory-card.flipped, .memory-card.matched {
+    border-color: #C4943A;
+    background: #FEF9EE;
+  }
+
+  .memory-card.matched { border-color: #4E7A60; background: #F0FDF4; opacity: 0.7; }
+
+  /* ── Challenge / Quiz dinâmico ───────────────────── */
+  .challenge-box {
+    background: #F9FAFB;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .challenge-question {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1F2937;
+  }
+
+  /* ── Challenge card (game-challenge, game-listen, etc.) ── */
+  .challenge-card {
+    background: #FAF7F2;
+    border: 1.5px solid #E9E0CE;
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .challenge-card p {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .challenge-checks {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 4px;
+    border-top: 1px solid #E9E0CE;
+  }
+
+  /* ── Memory game ────────────────────────────────── */
+  .memory-game {
+    background: #FAF7F2;
+    border: 1.5px solid #E9E0CE;
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .memory-game p {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .memory-game small {
+    font-size: 11px;
+    color: #9CA3AF;
+  }
+
+  .memory-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .memory-chip {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #E5E7EB;
+    background: white;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .memory-chip:hover { border-color: #C4943A; background: #FFFBF2; }
+
+  .memory-chip.selected {
+    border-color: #4E7A60;
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  /* ── Match exercise ─────────────────────────────── */
+  .match-exercise {
+    background: #F9FAFB;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .match-exercise h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1F2937;
+    margin: 0;
+  }
+
+  .match-pairs {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .match-confirm {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 10px;
+    border-top: 1px solid #E5E7EB;
+  }
+
+  @media (max-width: 768px) {
+    .study-layout {
+      flex-direction: column;
+      gap: 14px;
+      height: auto;
+      min-height: 100%;
+      overflow: visible;
+      padding: 14px;
+    }
+
+    .study-path {
+      width: 100%;
+      flex-direction: row;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .path-node {
+      min-width: 150px;
+      flex: 0 0 auto;
+      padding: 9px 10px;
+    }
+
+    .study-stage {
+      border-radius: 16px;
+      padding: 20px 16px;
+      overflow: visible;
+    }
+
+    #stage-title {
+      font-size: 22px;
+    }
+
+    .activity-card,
+    .match-row,
+    .actions {
+      flex-direction: column;
+    }
+
+    .actions .action {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block header %}
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
+  <div class="flex items-center justify-between relative z-10">
+    <div class="flex flex-wrap items-center gap-3">
+      <a href="/index.html"
+         class="w-8 h-8 rounded-lg bg-white/60 hover:bg-white flex items-center justify-center transition-colors flex-shrink-0">
+        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </a>
+      <div>
+        <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Módulo {{ module.number }}</p>
+        <h1 class="text-[20px] font-bold text-gray-800 mt-0.5">{{ module.title }}</h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-[13px] text-gray-500" id="progress-label">0 de {{ module.steps|length }}</span>
+      <div class="w-36 h-1.5 bg-white/60 rounded-full overflow-hidden">
+        <div class="h-full bg-[#C4943A] rounded-full transition-all duration-300" id="progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none"
+       style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
+</header>
+{% endblock %}
+
+{% block content %}
+<section class="study-layout">
+  <nav class="study-path" id="study-path" aria-label="Trilha do módulo"></nav>
+
+  <article class="study-stage" id="study-stage">
+    <p class="eyebrow" id="stage-kind">Trilha</p>
+    <h2 id="stage-title">Carregando...</h2>
+    <p id="stage-summary"></p>
+    <div class="stage-body" id="stage-body"></div>
+    <div class="stage-activity" id="stage-activity"></div>
+    <p class="feedback" id="stage-feedback" aria-live="polite"></p>
+    <div class="actions">
+      <button class="action primary" id="complete-step">Concluir etapa</button>
+      <button class="action" id="reset-module">Reiniciar módulo</button>
+    </div>
+  </article>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.body.dataset.moduleSlug = "{{ module.slug }}";
+  document.body.dataset.accessOk   = "{{ 'true' if access_ok else 'false' }}";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vexflow@3.0.9/releases/vexflow-min.js"></script>
+<script src="/static/js/vexflow-utils.js"></script>
+<script src="/static/js/audio.js"></script>
+<script src="/static/js/recorder.js"></script>
+<script src="/static/js/app.js"></script>
+{% endblock %}

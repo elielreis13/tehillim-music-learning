@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Ear shape -->
+  <path d="M18 8C11 8 6 15 6 24C6 33 11 40 16 40V35C12 33 9 29 9 24C9 19 12 15 18 15C23 15 26 19 26 24C26 27 24 29 22 31L21 33C20 35 20 37 22 39" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Inner ear -->
+  <path d="M18 24C18 22 19.5 20 22 20" stroke="#7A5C2E" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Sound waves from right toward ear -->
+  <path d="M32 18C34 21 34 27 32 30" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round"/>
+  <path d="M37 14C41 18 41 30 37 34" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round"/>
+  <!-- Note source -->
+  <ellipse cx="42" cy="10" rx="4" ry="3" transform="rotate(-15 42 10)" fill="#7A5C2E"/>
+  <line x1="45.5" y1="7.5" x2="45.5" y2="2" stroke="#7A5C2E" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

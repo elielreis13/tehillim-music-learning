@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Left column items -->
+  <rect x="4" y="8"  width="14" height="10" rx="2.5" stroke="#7A5C2E" stroke-width="2"/>
+  <rect x="4" y="22" width="14" height="10" rx="2.5" stroke="#7A5C2E" stroke-width="2"/>
+  <rect x="4" y="36" width="14" height="10" rx="2.5" stroke="#7A5C2E" stroke-width="2" opacity="0.45"/>
+  <!-- Right column items -->
+  <rect x="30" y="8"  width="14" height="10" rx="2.5" stroke="#7A5C2E" stroke-width="2" opacity="0.45"/>
+  <rect x="30" y="22" width="14" height="10" rx="2.5" stroke="#7A5C2E" stroke-width="2"/>
+  <rect x="30" y="36" width="14" height="10" rx="2.5" stroke="#7A5C2E" stroke-width="2"/>
+  <!-- Connection lines (matched pairs) -->
+  <path d="M18 13L30 27" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round"/>
+  <path d="M18 27L30 41" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" opacity="0.45" stroke-dasharray="3 2"/>
+  <!-- Note icons inside boxes -->
+  <ellipse cx="10" cy="13" rx="3.5" ry="2.5" transform="rotate(-15 10 13)" fill="#7A5C2E" opacity="0.75"/>
+  <ellipse cx="37" cy="27" rx="3.5" ry="2.5" transform="rotate(-15 37 27)" fill="#7A5C2E" opacity="0.75"/>
+</svg>

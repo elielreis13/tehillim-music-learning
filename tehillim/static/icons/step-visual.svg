@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Eye outline -->
+  <path d="M6 24C6 24 13 10 24 10C35 10 42 24 42 24C42 24 35 38 24 38C13 38 6 24 6 24Z" stroke="#7A5C2E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Iris -->
+  <circle cx="24" cy="24" r="7" stroke="#7A5C2E" stroke-width="2.5"/>
+  <!-- Pupil -->
+  <circle cx="24" cy="24" r="3" fill="#7A5C2E"/>
+</svg>

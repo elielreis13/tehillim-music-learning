@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Laboratório de Jogos | tehillim{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="/static/css/games.css">
+{% endblock %}
+
+{% block body %}
+<main class="app">
+  <header class="site-header">
+    <a class="logo" href="/">tehillim</a>
+    <div id="auth-badge" class="auth-badge"></div>
+    <a class="back-link" href="/">Início</a>
+  </header>
+
+  <div class="lab-hero">
+    <h1>Laboratório de Jogos</h1>
+    <p>Visualize e teste todos os tipos de jogo da plataforma. <span id="lab-count"></span></p>
+  </div>
+
+  <div class="lab-layout">
+    <nav class="lab-nav" id="lab-nav" aria-label="Lista de jogos"></nav>
+    <section class="lab-stage" id="lab-stage">
+      <div class="lab-empty">
+        <span>▶</span>
+        <p>Selecione um jogo ao lado para visualizá-lo.</p>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/vexflow@3.0.9/releases/vexflow-min.js"></script>
+  <script src="/static/js/vexflow-utils.js"></script>
+  <script src="/static/js/audio.js"></script>
+  <script src="/static/js/games.js"></script>
+{% endblock %}

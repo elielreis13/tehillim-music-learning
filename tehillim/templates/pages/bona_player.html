@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Impede que conteúdo largo expanda o iframe além da largura do pai */
+    html, body { overflow-x: hidden; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #fff;
+      color: #1f2937;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Controles ── */
+    #controls {
+      flex-shrink: 0;
+      border-bottom: 1px solid #e5e7eb;
+      background: #fafafa;
+      padding: 8px 12px;
+    }
+
+    #ctrl-row1, #ctrl-row2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    #ctrl-row2 { margin-top: 6px; }
+
+    .ctrl-spacer { flex: 1; min-width: 0; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    #btn-play  { background: #C4943A; color: #fff; }
+    #btn-play:not(:disabled):hover  { background: #B3852F; }
+    #btn-reset { background: #f3f4f6; color: #374151; }
+    #btn-reset:not(:disabled):hover { background: #e5e7eb; }
+
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      color: #6b7280;
+      min-width: 0;
+    }
+    .ctrl-group label { white-space: nowrap; font-weight: 600; }
+
+    #bpm-slider { width: 80px; accent-color: #C4943A; cursor: pointer; flex-shrink: 0; }
+    #bpm-value  { font-weight: 700; color: #111827; min-width: 26px; }
+
+    #instrument-select {
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.78rem;
+      background: #fff;
+      cursor: pointer;
+      color: #374151;
+      max-width: 120px;
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: #6b7280;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .toggle-label input { accent-color: #C4943A; width: 14px; height: 14px; cursor: pointer; }
+
+    #status { font-size: 0.72rem; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* ── Partitura ── */
+    #score-container {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: auto;
+      padding: 12px 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Nomes de notas renderizados pelo OSMD como texto SVG */
+    #score-container text.vf-lyric,
+    #score-container text.lyric,
+    #score-container text[class*="lyric"] {
+      font-size: 3px !important;
+    }
+
+    @media (max-width: 640px) {
+      .btn { padding: 7px 10px; font-size: 0.78rem; }
+      #bpm-slider { width: 65px; }
+      #instrument-select { max-width: 100px; font-size: 0.75rem; }
+      .toggle-label { font-size: 0.75rem; }
+      #score-container { padding: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+{% if not has_sheet %}
+<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#9ca3af;font-size:0.9rem;">
+  Partitura não disponível.
+</div>
+{% else %}
+
+<div id="controls">
+  <!-- Linha 1: play, reset, BPM, status -->
+  <div id="ctrl-row1">
+    <button id="btn-play" class="btn" disabled>
+      <svg id="icon-play"  width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="icon-pause" width="13" height="13" fill="currentColor" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      <span id="btn-play-label">Tocar</span>
+    </button>
+    <button id="btn-reset" class="btn" disabled>
+      <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.46-4.46M20 15a9 9 0 01-15.46 4.46"/>
+      </svg>
+      Reiniciar
+    </button>
+    <div class="ctrl-group">
+      <label>BPM</label>
+      <input id="bpm-slider" type="range" min="40" max="160" value="80">
+      <span id="bpm-value">80</span>
+    </div>
+    <div class="ctrl-spacer"></div>
+    <span id="status"></span>
+  </div>
+
+  <!-- Linha 2: instrumento e mostrar notas -->
+  <div id="ctrl-row2">
+    <div class="ctrl-group">
+      <label>Instrumento</label>
+      <select id="instrument-select">
+        <option value="piano">Piano</option>
+        <option value="violin">Violino</option>
+        <option value="flute">Flauta</option>
+        <option value="saxophone">Saxofone</option>
+        <option value="clarinet">Clarinete</option>
+        <option value="trumpet">Trompete</option>
+      </select>
+    </div>
+    <label class="toggle-label">
+      <input id="toggle-note-names" type="checkbox">
+      Mostrar notas
+    </label>
+  </div>
+</div>
+
+<div id="score-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.8.7/build/opensheetmusicdisplay.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.js"></script>
+<script>
+const SHEET_URL = '/api/bona/{{ slug }}';
+
+let osmd            = null;
+let rawXml          = null;
+let isPlaying       = false;
+let playbackTimer   = null;
+let synth           = null;
+let showNoteNames   = false;
+let audioReady      = null;
+let loadedInstrument = null;
+
+const btnPlay        = document.getElementById('btn-play');
+const btnReset       = document.getElementById('btn-reset');
+const bpmSlider      = document.getElementById('bpm-slider');
+const bpmValue       = document.getElementById('bpm-value');
+const scoreContainer = document.getElementById('score-container');
+const statusEl       = document.getElementById('status');
+
+// ── Score ─────────────────────────────────────────────────────────────────────
+const NOTE_PT = { C:'Dó', D:'Ré', E:'Mi', F:'Fá', G:'Sol', A:'Lá', B:'Si' };
+const ACC_PT  = { 1:'#', [-1]:'b' };
+
+function addNoteNamesToXml(xmlString) {
+  const doc = new DOMParser().parseFromString(xmlString, 'application/xml');
+  doc.querySelectorAll('note').forEach(note => {
+    if (note.querySelector('rest')) return;
+    const step = note.querySelector('step')?.textContent;
+    if (!step) return;
+    const alter = parseFloat(note.querySelector('alter')?.textContent ?? '0');
+    const acc   = ACC_PT[alter] ?? '';
+    const label = (NOTE_PT[step] ?? step) + acc;
+    note.querySelectorAll('lyric').forEach(l => l.remove());
+    const lyric    = doc.createElement('lyric');
+    lyric.setAttribute('number', '1');
+    const syllabic = doc.createElement('syllabic');
+    syllabic.textContent = 'single';
+    const text     = doc.createElement('text');
+    text.textContent = label;
+    lyric.appendChild(syllabic);
+    lyric.appendChild(text);
+    note.appendChild(lyric);
+  });
+  return new XMLSerializer().serializeToString(doc);
+}
+
+function shrinkLyricText() {
+  scoreContainer.querySelectorAll('svg text').forEach(el => {
+    const t = el.textContent.trim();
+    if (/^(Dó|Ré|Mi|Fá|Sol|Lá|Si)[#b]?$/.test(t)) {
+      el.setAttribute('font-size', '12');
+      el.style.fontSize = '12px';
+    }
+  });
+}
+
+async function reloadScore() {
+  const xml = showNoteNames ? addNoteNamesToXml(rawXml) : rawXml;
+  await osmd.load(xml);
+  osmd.render();
+  if (showNoteNames) shrinkLyricText();
+  osmd.cursor.show();
+  osmd.cursor.reset();
+}
+
+async function initScore() {
+  setStatus('Carregando partitura...');
+  osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(scoreContainer, {
+    autoResize: true,
+    backend: 'svg',
+    drawingParameters: 'default',
+    followCursor: true,
+    autoBeam: true,
+    autoBeamOptions: {
+      beam_middle_rests_only: false,
+      beam_rests: false,
+      maintain_stem_directions: false,
+    },
+  });
+  osmd.setOptions({
+    cursorsOptions: [{ type: 0, color: '#dccab1', alpha: 0.5, follow: true }],
+  });
+  try {
+    const res = await fetch(SHEET_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    rawXml = await res.text();
+    await reloadScore();
+    btnPlay.disabled  = false;
+    btnReset.disabled = false;
+    setStatus('Pronto.');
+  } catch (err) {
+    setStatus(`Erro: ${err.message}`);
+    console.error(err);
+  }
+}
+
+// ── Instrumentos ──────────────────────────────────────────────────────────────
+const INSTRUMENTS = {
+  piano: {
+    baseUrl: 'https://tonejs.github.io/audio/salamander/',
+    urls: {
+      A0:'A0.mp3',  C1:'C1.mp3',  'D#1':'Ds1.mp3', 'F#1':'Fs1.mp3',
+      A1:'A1.mp3',  C2:'C2.mp3',  'D#2':'Ds2.mp3', 'F#2':'Fs2.mp3',
+      A2:'A2.mp3',  C3:'C3.mp3',  'D#3':'Ds3.mp3', 'F#3':'Fs3.mp3',
+      A3:'A3.mp3',  C4:'C4.mp3',  'D#4':'Ds4.mp3', 'F#4':'Fs4.mp3',
+      A4:'A4.mp3',  C5:'C5.mp3',  'D#5':'Ds5.mp3', 'F#5':'Fs5.mp3',
+      A5:'A5.mp3',  C6:'C6.mp3',  'D#6':'Ds6.mp3', 'F#6':'Fs6.mp3',
+      A6:'A6.mp3',  C7:'C7.mp3',  'D#7':'Ds7.mp3', 'F#7':'Fs7.mp3',
+      A7:'A7.mp3',  C8:'C8.mp3',
+    },
+  },
+  violin:    { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/violin-mp3/',    urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
+  flute:     { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/flute-mp3/',     urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
+  saxophone: { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/alto_sax-mp3/', urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
+  clarinet:  { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/clarinet-mp3/', urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
+  trumpet:   { baseUrl: 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/trumpet-mp3/',  urls: { A3:'A3.mp3', C4:'C4.mp3', Eb4:'Eb4.mp3', Gb4:'Gb4.mp3', A4:'A4.mp3', C5:'C5.mp3', Eb5:'Eb5.mp3', Gb5:'Gb5.mp3', A5:'A5.mp3' } },
+};
+
+function initAudio() {
+  const key = document.getElementById('instrument-select').value;
+  if (audioReady && loadedInstrument === key) return audioReady;
+  synth?.dispose();
+  synth = null;
+  audioReady = null;
+  loadedInstrument = key;
+  const cfg = INSTRUMENTS[key];
+  audioReady = new Promise(resolve => {
+    synth = new Tone.Sampler({ urls: cfg.urls, baseUrl: cfg.baseUrl, onload: resolve }).toDestination();
+  });
+  return audioReady;
+}
+
+// ── Pitch ─────────────────────────────────────────────────────────────────────
+const STEP_MAP = { 0:'C', 2:'D', 4:'E', 5:'F', 7:'G', 9:'A', 11:'B' };
+
+function pitchToNoteName(pitch) {
+  try {
+    const step = STEP_MAP[pitch.fundamentalNote];
+    if (!step) return null;
+    const acc = pitch.accidental;
+    return `${step}${acc === 1 ? '#' : acc === -1 ? 'b' : ''}${pitch.octave + 2}`;
+  } catch { return null; }
+}
+
+function getNotesAtCursor() {
+  try {
+    const entries = osmd.cursor.iterator.currentVoiceEntries;
+    if (!entries?.length) return [];
+    const notes = [];
+    for (const entry of entries) {
+      for (const note of entry.notes) {
+        if (!note.Pitch) continue;
+        const name = pitchToNoteName(note.Pitch);
+        if (name) notes.push(name);
+      }
+    }
+    return notes;
+  } catch { return []; }
+}
+
+function playCurrentNotes() {
+  if (!synth) return;
+  const notes = getNotesAtCursor();
+  if (!notes.length) return;
+  const durationSec = getCurrentNoteDuration() * 4 * (60 / getBpm()) * 0.85;
+  synth.triggerAttackRelease(notes, durationSec);
+}
+
+// ── Playback ──────────────────────────────────────────────────────────────────
+function getBpm() { return parseInt(bpmSlider.value, 10); }
+
+function getCurrentNoteDuration() {
+  try {
+    const entries = osmd.cursor.iterator.currentVoiceEntries;
+    if (!entries?.length) return 0.25;
+    let min = Infinity;
+    for (const entry of entries) {
+      for (const note of entry.notes) {
+        const len = note.Length?.realValue;
+        if (len > 0) min = Math.min(min, len);
+      }
+    }
+    return min === Infinity ? 0.25 : min;
+  } catch { return 0.25; }
+}
+
+function msForCurrentNote() {
+  return getCurrentNoteDuration() * 4 * (60000 / getBpm());
+}
+
+function scheduleStep() {
+  playCurrentNotes();
+  playbackTimer = setTimeout(() => {
+    if (!isPlaying) return;
+    osmd.cursor.next();
+    if (osmd.cursor.iterator.endReached) { finishPlayback(); return; }
+    scheduleStep();
+  }, msForCurrentNote());
+}
+
+async function startPlayback() {
+  if (!osmd || isPlaying) return;
+  setStatus('Carregando amostras...');
+  await initAudio();
+  isPlaying = true;
+  setPlayUI(true);
+  setStatus('Reproduzindo...');
+  scheduleStep();
+}
+
+function pausePlayback() {
+  if (!isPlaying) return;
+  isPlaying = false;
+  clearTimeout(playbackTimer);
+  synth?.releaseAll();
+  setPlayUI(false);
+  setStatus('Pausado.');
+}
+
+function finishPlayback() {
+  isPlaying = false;
+  clearTimeout(playbackTimer);
+  setPlayUI(false);
+  setStatus('Fim da lição.');
+}
+
+function resetPlayback() {
+  finishPlayback();
+  synth?.releaseAll();
+  if (!osmd) return;
+  osmd.cursor.reset();
+  osmd.cursor.show();
+  setStatus('Pronto.');
+}
+
+// ── UI ────────────────────────────────────────────────────────────────────────
+function setPlayUI(playing) {
+  document.getElementById('icon-play').style.display  = playing ? 'none' : '';
+  document.getElementById('icon-pause').style.display = playing ? '' : 'none';
+  document.getElementById('btn-play-label').textContent = playing ? 'Pausar' : 'Tocar';
+}
+
+function setStatus(msg) { statusEl.textContent = msg; }
+
+// ── Eventos ───────────────────────────────────────────────────────────────────
+
+// Desbloqueio do AudioContext no primeiro toque (crítico para iOS Safari)
+document.addEventListener('touchstart', () => Tone.start(), { once: true, passive: true });
+
+btnPlay.addEventListener('click', () => {
+  // Chama Tone.start() sincronamente dentro do handler de gesto — necessário para iOS
+  Tone.start();
+  isPlaying ? pausePlayback() : startPlayback();
+});
+
+btnReset.addEventListener('click', resetPlayback);
+bpmSlider.addEventListener('input', () => { bpmValue.textContent = bpmSlider.value; });
+
+document.getElementById('instrument-select').addEventListener('change', () => {
+  if (isPlaying) pausePlayback();
+  synth?.dispose();
+  synth = null;
+  audioReady = null;
+  loadedInstrument = null;
+});
+
+document.getElementById('toggle-note-names').addEventListener('change', async (e) => {
+  if (isPlaying) pausePlayback();
+  showNoteNames = e.target.checked;
+  if (rawXml) {
+    setStatus('Atualizando...');
+    await reloadScore();
+    setStatus('Pronto.');
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+  if (e.code === 'Space') { e.preventDefault(); isPlaying ? pausePlayback() : startPlayback(); }
+  else if (e.key === 'r' || e.key === 'R') resetPlayback();
+  else if (e.key === 'n' || e.key === 'N') {
+    const cb = document.getElementById('toggle-note-names');
+    cb.checked = !cb.checked;
+    cb.dispatchEvent(new Event('change'));
+  } else if (e.key === 'ArrowRight') {
+    bpmSlider.value = Math.min(160, parseInt(bpmSlider.value) + 5);
+    bpmValue.textContent = bpmSlider.value;
+  } else if (e.key === 'ArrowLeft') {
+    bpmSlider.value = Math.max(40, parseInt(bpmSlider.value) - 5);
+    bpmValue.textContent = bpmSlider.value;
+  }
+});
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+initScore();
+</script>
+
+{% endif %}
+</body>
+</html>

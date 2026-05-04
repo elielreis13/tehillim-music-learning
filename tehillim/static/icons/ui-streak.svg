@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Outer flame -->
+  <path d="M24 44C16 44 10 38 10 30C10 25 12 21 15 19C15 25 19 27 19 27C19 21 21 15 25 9C27 17 31 19 31 26C33 24 33 20 31 16C37 20 39 26 39 30C39 38 32 44 24 44Z" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="#7A5C2E" fill-opacity="0.12"/>
+  <!-- Inner flame (slightly smaller, more opaque) -->
+  <path d="M24 40C20 40 17 37 17 33C17 30 19 28 20 27C20 30 22.5 31.5 22.5 31.5C22.5 28 24 25 24 22C25.5 26 28.5 27.5 28.5 31C29.5 30 29.5 28 28.5 26C31 28 32 31 32 33C32 37 28 40 24 40Z" fill="#7A5C2E" fill-opacity="0.45"/>
+</svg>

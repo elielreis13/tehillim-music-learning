@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Checkbox 1 (checked) -->
+  <rect x="6" y="8" width="11" height="11" rx="2" stroke="#7A5C2E" stroke-width="2"/>
+  <path d="M8.5 13.5L11 16L14.5 10.5" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="21" y1="13.5" x2="42" y2="13.5" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+  <!-- Checkbox 2 (checked) -->
+  <rect x="6" y="23" width="11" height="11" rx="2" stroke="#7A5C2E" stroke-width="2"/>
+  <path d="M8.5 28.5L11 31L14.5 25.5" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="21" y1="28.5" x2="42" y2="28.5" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+  <!-- Checkbox 3 (empty, upcoming) -->
+  <rect x="6" y="38" width="11" height="11" rx="2" stroke="#7A5C2E" stroke-width="2" opacity="0.5"/>
+  <line x1="21" y1="43.5" x2="38" y2="43.5" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+</svg>

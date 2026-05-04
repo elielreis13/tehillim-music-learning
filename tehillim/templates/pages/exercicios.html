@@ -1,0 +1,197 @@
+{% extends "base_app.html" %}
+
+{% block title %}Exercícios | Tehillim{% endblock %}
+
+{% block header %}
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
+  <div class="flex items-center justify-between relative z-10">
+    <div>
+      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Prática</p>
+      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Exercícios</h1>
+      <p class="text-[13px] text-gray-500 mt-0.5">Pratique teoria, leitura e percepção musical</p>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
+        <div class="leading-tight">
+          <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
+          <p class="text-[10px] text-gray-500">dias de sequência</p>
+        </div>
+      </div>
+      <div class="w-px h-7 bg-[#D4C4A8]"></div>
+    </div>
+  </div>
+  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="p-4 md:p-6 flex flex-col xl:flex-row gap-5">
+
+  <!-- ── COLUNA PRINCIPAL ── -->
+  <div class="flex-1 flex flex-col gap-5 min-w-0">
+
+    <!-- Cards de tipo de exercício -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {% set ex_types = [
+        ('📝', 'bg-[#FEF3C7]', 'text-amber-700', 'Múltipla Escolha', 'Escolha a alternativa correta entre 4 opções.', 'exercise-mc'),
+        ('✅', 'bg-[#D1FAE5]', 'text-emerald-700', 'Verdadeiro ou Falso', 'Avalie se a afirmação é verdadeira ou falsa.', 'exercise-tf'),
+        ('🔗', 'bg-[#DBEAFE]', 'text-blue-700', 'Associação', 'Relacione colunas para fixar conceitos.', 'exercise-match'),
+        ('✍️', 'bg-[#EDE9FE]', 'text-violet-700', 'Completar', 'Preencha os espaços em branco.', 'exercise-fill'),
+      ] %}
+      {% for icon, bg, tc, name, desc, kind in ex_types %}
+      <div class="{{ bg }} rounded-2xl p-5 shadow-sm">
+        <div class="text-3xl mb-3">{{ icon }}</div>
+        <h3 class="font-bold text-[15px] {{ tc }}">{{ name }}</h3>
+        <p class="text-[12px] text-gray-600 mt-1 leading-relaxed">{{ desc }}</p>
+        <div class="mt-3 flex items-center justify-between">
+          <span class="text-[11px] text-gray-500" id="count-{{ kind }}">— disponíveis</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Módulos com exercícios disponíveis -->
+    <div>
+      <h2 class="font-bold text-[16px] text-gray-800 mb-3">Exercícios por Módulo</h2>
+      <div class="flex flex-col gap-3" id="exercise-list">
+        <p class="text-[13px] text-gray-400">Carregando...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── PAINEL DIREITO ── -->
+  <div class="w-full xl:w-[260px] flex-shrink-0 flex flex-col gap-4">
+
+    <!-- Próximo módulo para exercitar -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm">
+      <h3 class="font-bold text-[14px] text-gray-800 mb-3">Próximo a Praticar</h3>
+      <div id="next-exercise-widget">
+        <p class="text-[13px] text-gray-400">Carregando...</p>
+      </div>
+    </div>
+
+    <!-- Tipos de exercícios -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm">
+      <h3 class="font-bold text-[14px] text-gray-800 mb-4">Legenda</h3>
+      <div class="flex flex-col gap-2">
+        {% for icon, bg, tc, name, _, kind in ex_types %}
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-lg {{ bg }} flex items-center justify-center flex-shrink-0 text-base">{{ icon }}</div>
+          <span class="text-[12px] text-gray-600">{{ name }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Jogos -->
+    <div class="bg-white rounded-2xl p-5 shadow-sm">
+      <h3 class="font-bold text-[14px] text-gray-800 mb-3">🎮 Laboratório de Jogos</h3>
+      <p class="text-[12px] text-gray-500 leading-relaxed mb-3">Visualize e teste todos os tipos de jogo da plataforma.</p>
+      <a href="/jogos" class="block w-full text-center text-[13px] font-semibold py-2.5 rounded-xl bg-[#F2EAD8] text-[#7A5C2E] hover:bg-[#EDD9B0] transition-colors">
+        Abrir Laboratório
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const GROUPS_DATA = {{ groups | tojson }};
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await waitForProgress();
+  renderExercises();
+});
+
+function waitForProgress() {
+  return new Promise(resolve => {
+    if (window._progress !== undefined) return resolve();
+    const t = setInterval(() => { if (window._progress !== undefined) { clearInterval(t); resolve(); } }, 100);
+    setTimeout(() => { clearInterval(t); resolve(); }, 5000);
+  });
+}
+
+function renderExercises() {
+  const doneSet = new Set((window._progress || []).filter(p => p.completed > 0).map(p => p.module_slug));
+  const list = document.getElementById('exercise-list');
+  const nextW = document.getElementById('next-exercise-widget');
+  if (!list) return;
+
+  const groupColors = ['#C4943A', '#5A8A6A', '#7B5EA7'];
+  const groupBgs   = ['bg-[#F2EAD8]', 'bg-[#DFF0E8]', 'bg-[#E8E0F4]'];
+
+  let allModules = [];
+  GROUPS_DATA.forEach((g, gi) => {
+    g.modules.forEach(m => allModules.push({ ...m, group: g, gi }));
+  });
+
+  // Módulos acessíveis (desbloqueados ou em andamento)
+  const available = allModules.filter((_, i) => {
+    // Mostra módulos já concluídos + o próximo não concluído
+    const prev = allModules.slice(0, i);
+    return i === 0 || prev.some(p => doneSet.has(p.slug));
+  }).slice(0, 12);
+
+  if (!available.length) {
+    list.innerHTML = '<p class="text-[13px] text-gray-400">Nenhum módulo disponível ainda.</p>';
+    return;
+  }
+
+  list.innerHTML = available.map(m => {
+    const done  = doneSet.has(m.slug);
+    const color = groupColors[m.gi % 3];
+    const bg    = groupBgs[m.gi % 3];
+    return `
+      <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
+        <div class="w-10 h-10 rounded-xl ${bg} flex items-center justify-center flex-shrink-0">
+          <span class="text-[11px] font-bold" style="color:${color}">M${String(m.number).padStart(2,'0')}</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-[13px] text-gray-800 truncate">${m.title}</p>
+          <p class="text-[10px] text-gray-400">${groupIconHtml(m.group, 'w-3 h-3 inline-block align-[-2px] mr-1')}${m.group.name}</p>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          ${done ? '<span class="text-[10px] bg-[#E8F4EE] text-[#4E7A60] font-bold px-2 py-1 rounded-full">Concluído</span>' : ''}
+          <a href="/modulos/${m.slug}"
+             class="text-[12px] font-semibold px-3 py-1.5 rounded-lg transition-colors"
+             style="background-color:${color}1a;color:${color}">
+            ${done ? 'Revisar' : 'Praticar'}
+          </a>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Próximo a praticar
+  const nextModule = available.find(m => !doneSet.has(m.slug)) || available[available.length - 1];
+  if (nextModule && nextW) {
+    const color = groupColors[nextModule.gi % 3];
+    const bg    = groupBgs[nextModule.gi % 3];
+    nextW.innerHTML = `
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-xl ${bg} flex items-center justify-center">
+          <span class="text-[11px] font-bold" style="color:${color}">M${String(nextModule.number).padStart(2,'0')}</span>
+        </div>
+        <div>
+          <p class="font-bold text-[13px] text-gray-800">${nextModule.title}</p>
+          <p class="text-[11px] text-gray-400">${groupIconHtml(nextModule.group)}${nextModule.group.name}</p>
+        </div>
+      </div>
+      <a href="/modulos/${nextModule.slug}"
+         class="block w-full text-center text-[13px] font-semibold py-2.5 rounded-xl text-white transition-colors"
+         style="background-color:${color}">
+        Ir para Exercícios
+      </a>`;
+  }
+}
+
+function groupIconHtml(group, className = 'w-4 h-4 inline-block align-[-3px] mr-1') {
+  return group && group.icon_file
+    ? `<img src="/static/icons/${group.icon_file}" alt="" class="${className}">`
+    : `${group ? group.icon : ''} `;
+}
+</script>
+{% endblock %}

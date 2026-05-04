@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Five staff lines -->
+  <line x1="4" y1="16" x2="44" y2="16" stroke="#7A5C2E" stroke-width="1.5"/>
+  <line x1="4" y1="21" x2="44" y2="21" stroke="#7A5C2E" stroke-width="1.5"/>
+  <line x1="4" y1="26" x2="44" y2="26" stroke="#7A5C2E" stroke-width="1.5"/>
+  <line x1="4" y1="31" x2="44" y2="31" stroke="#7A5C2E" stroke-width="1.5"/>
+  <line x1="4" y1="36" x2="44" y2="36" stroke="#7A5C2E" stroke-width="1.5"/>
+  <!-- Barlines -->
+  <line x1="4"  y1="14" x2="4"  y2="38" stroke="#7A5C2E" stroke-width="2.5"/>
+  <line x1="44" y1="14" x2="44" y2="38" stroke="#7A5C2E" stroke-width="2.5"/>
+  <!-- Three ascending notes -->
+  <ellipse cx="12" cy="33.5" rx="4.5" ry="3" transform="rotate(-15 12 33.5)" fill="#7A5C2E"/>
+  <line x1="16" y1="31"   x2="16" y2="18" stroke="#7A5C2E" stroke-width="1.5" stroke-linecap="round"/>
+  <ellipse cx="24" cy="28.5" rx="4.5" ry="3" transform="rotate(-15 24 28.5)" fill="#7A5C2E"/>
+  <line x1="28" y1="26"   x2="28" y2="13" stroke="#7A5C2E" stroke-width="1.5" stroke-linecap="round"/>
+  <ellipse cx="36" cy="23.5" rx="4.5" ry="3" transform="rotate(-15 36 23.5)" fill="#7A5C2E"/>
+  <line x1="40" y1="21"   x2="40" y2="8"  stroke="#7A5C2E" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Slur arc over all three notes -->
+  <path d="M12 27C20 22 28 22 36 27" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Crescendo hairpin below staff -->
+  <path d="M14 43L28 40L42 43" stroke="#7A5C2E" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+</svg>

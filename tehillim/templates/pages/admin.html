@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Administração | tehillim{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="stylesheet" href="/static/css/admin.css">
+{% endblock %}
+
+{% block body %}
+<main class="app dashboard-app">
+  <header class="site-header">
+    <a class="logo" href="/">tehillim</a>
+    <nav class="dash-tabs">
+      <a class="dash-tab active" href="/admin">Alunos</a>
+      <a class="dash-tab" href="/dashboard">Dashboard</a>
+    </nav>
+    <div id="auth-badge" class="auth-badge"></div>
+  </header>
+
+  <section class="admin-section">
+    <div class="admin-header">
+      <h2>Gerenciar Alunos</h2>
+      <button class="action primary" id="open-create-btn">+ Novo aluno</button>
+    </div>
+
+    <!-- ── Formulário criar aluno ── -->
+    <div class="admin-card" id="create-form-card" style="display:none">
+      <h3>Criar novo aluno</h3>
+      <form id="create-form" class="admin-form" novalidate>
+        <div class="form-row">
+          <label for="new-name">Nome do aluno</label>
+          <input id="new-name" type="text" placeholder="Ex: João Silva"
+                 autocomplete="off" required />
+        </div>
+        <div class="form-row">
+          <label for="new-email">E-mail</label>
+          <input id="new-email" type="email" placeholder="aluno@email.com"
+                 autocomplete="off" required />
+        </div>
+        <div class="form-row">
+          <label for="new-password">Senha inicial</label>
+          <div class="password-wrap">
+            <input id="new-password" type="password" placeholder="mínimo 6 caracteres"
+                   autocomplete="new-password" required minlength="6" />
+            <button type="button" class="toggle-pw" data-target="new-password">👁</button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="action primary" id="create-btn">Criar aluno</button>
+          <button type="button" class="action" id="cancel-create-btn">Cancelar</button>
+        </div>
+        <p class="admin-feedback" id="create-feedback" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <!-- ── Lista de alunos ── -->
+    <div id="admin-loading" class="dash-loading">Carregando alunos...</div>
+    <div id="admin-error"   class="dash-error" style="display:none"></div>
+    <div class="admin-student-list" id="admin-student-list"></div>
+  </section>
+
+  <!-- ── Modal controle de acesso ── -->
+  <div class="modal-backdrop" id="access-backdrop" style="display:none">
+    <div class="modal-card modal-card-wide" id="access-modal">
+      <h3>Controle de acesso</h3>
+      <p id="access-modal-label"></p>
+      <div id="access-modal-body">
+        <p class="dash-loading">Carregando módulos...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="action" id="cancel-access-btn">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modal reset de senha ── -->
+  <div class="modal-backdrop" id="reset-backdrop" style="display:none">
+    <div class="modal-card" id="reset-modal">
+      <h3>Redefinir senha</h3>
+      <p id="reset-email-label"></p>
+      <form id="reset-form" class="admin-form" novalidate>
+        <div class="form-row">
+          <label for="reset-password">Nova senha</label>
+          <div class="password-wrap">
+            <input id="reset-password" type="password" placeholder="mínimo 6 caracteres"
+                   autocomplete="new-password" required minlength="6" />
+            <button type="button" class="toggle-pw" data-target="reset-password">👁</button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="action primary" id="reset-btn">Salvar nova senha</button>
+          <button type="button" class="action" id="cancel-reset-btn">Cancelar</button>
+        </div>
+        <p class="admin-feedback" id="reset-feedback" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/admin.js"></script>
+{% endblock %}

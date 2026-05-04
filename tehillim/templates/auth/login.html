@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Entrar — Tehillim{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex items-center justify-center px-4 py-12"
+     style="background: linear-gradient(135deg, #FAF7F2 0%, #F2EAD8 50%, #EAE0C8 100%);">
+
+  <div class="w-full max-w-sm">
+
+    <!-- Logo -->
+    <div class="flex flex-col items-center mb-8">
+      <a href="/landing" class="flex flex-col items-center gap-2 group">
+        <div class="w-14 h-14 rounded-full border-2 border-gray-800 flex items-center justify-center
+                    group-hover:border-[#7A5C2E] transition-colors">
+          <img src="{{ url_for('static', filename='icons/tehillim-logo.svg') }}"
+               alt="Tehillim" class="w-9 h-9 object-contain">
+        </div>
+        <p class="font-bold text-[11px] tracking-[3px] text-gray-800 uppercase">TEHILLIM</p>
+      </a>
+      <p class="mt-4 text-gray-500 text-sm text-center">Entre na sua conta para continuar estudando</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-2xl shadow-lg shadow-gray-200/60 p-6">
+
+      <!-- Mensagem de erro -->
+      <div id="msg-error"
+           class="hidden mb-4 px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm">
+      </div>
+
+      <!-- Formulário -->
+      <form onsubmit="submitLogin(event)" novalidate>
+        <div class="flex flex-col gap-4">
+
+          <div class="flex flex-col gap-1.5">
+            <label for="email" class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              E-mail
+            </label>
+            <input id="email" type="email" autocomplete="email" required
+                   placeholder="seu@email.com"
+                   class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
+                          placeholder-gray-300 outline-none
+                          focus:border-[#7A5C2E] focus:ring-2 focus:ring-[#7A5C2E]/10 transition">
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="senha" class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              Senha
+            </label>
+            <input id="senha" type="password" autocomplete="current-password" required
+                   placeholder="••••••••"
+                   class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
+                          placeholder-gray-300 outline-none
+                          focus:border-[#7A5C2E] focus:ring-2 focus:ring-[#7A5C2E]/10 transition">
+          </div>
+
+          <button type="submit" id="btn-entrar"
+                  class="w-full py-2.5 rounded-full bg-[#7A5C2E] text-white text-sm font-semibold
+                         hover:bg-[#6A4C1E] active:scale-95 transition-all
+                         disabled:opacity-60 disabled:cursor-not-allowed">
+            Entrar
+          </button>
+
+        </div>
+      </form>
+
+    </div>
+
+    <!-- Voltar -->
+    <div class="mt-6 text-center">
+      <a href="/" class="text-sm text-gray-400 hover:text-[#7A5C2E] transition-colors">
+        ← Voltar para o site
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.auth.ready.then(() => {
+    if (window.auth.isLoggedIn()) window.location.href = getNextUrl();
+  });
+
+  function getNextUrl() {
+    const next = new URLSearchParams(window.location.search).get('next') || '/index.html';
+    if (!next.startsWith('/') || next.startsWith('//')) return '/index.html';
+    return next;
+  }
+
+  async function submitLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value;
+    const btn   = document.getElementById('btn-entrar');
+    const erro  = document.getElementById('msg-error');
+
+    // Validação de campos vazios
+    if (!email) { mostrarErro('Informe seu e-mail!', erro); return; }
+    if (!senha)  { mostrarErro('Informe sua senha!', erro); return; }
+
+    erro.classList.add('hidden');
+    btn.disabled    = true;
+    btn.textContent = 'Entrando…';
+
+    try {
+      const error = await window.auth.signInWithPassword(email, senha);
+      if (error) throw error;
+      window.location.href = getNextUrl();
+    } catch (err) {
+      mostrarErro(traduzirErro(err), erro);
+      btn.disabled    = false;
+      btn.textContent = 'Entrar';
+    }
+  }
+
+  function mostrarErro(msg, el) {
+    el.textContent = msg;
+    el.classList.remove('hidden');
+  }
+
+  function traduzirErro(err) {
+    const msg = err?.message || String(err);
+    if (!msg || msg.includes('null'))              return 'Serviço indisponível. Tente novamente em instantes.';
+    if (msg.includes('Invalid login credentials')) return 'E-mail ou senha incorretos.';
+    if (msg.includes('Email not confirmed'))       return 'Confirme seu e-mail antes de entrar.';
+    if (msg.includes('User not found'))            return 'Nenhuma conta encontrada com este e-mail.';
+    if (msg.includes('rate limit'))                return 'Muitas tentativas. Aguarde alguns minutos.';
+    if (msg.includes('Failed to fetch'))           return 'Sem conexão. Verifique sua internet.';
+    return 'Algo deu errado. Tente novamente.';
+  }
+</script>
+{% endblock %}

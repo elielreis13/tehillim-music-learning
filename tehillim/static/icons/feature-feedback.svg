@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Speech bubble body -->
+  <path d="M8 6H40C41.1 6 42 6.9 42 8V28C42 29.1 41.1 30 40 30H18L8 42V30H8C6.9 30 6 29.1 6 28V8C6 6.9 6.9 6 8 6Z" stroke="#7A5C2E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Checkmark inside bubble -->
+  <path d="M16 18L22 24L32 13" stroke="#7A5C2E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

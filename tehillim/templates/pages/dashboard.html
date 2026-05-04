@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard do Professor | tehillim{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+{% endblock %}
+
+{% block body %}
+<main class="app dashboard-app">
+  <header class="site-header">
+    <a class="logo" href="/">tehillim</a>
+    <nav class="dash-tabs" id="dash-tabs">
+      <button class="dash-tab active" data-tab="students">Alunos</button>
+      <button class="dash-tab" data-tab="recordings">Gravações</button>
+      <button class="dash-tab" data-tab="progress">Progresso</button>
+    </nav>
+    <div id="auth-badge" class="auth-badge"></div>
+  </header>
+
+  <div id="dash-loading" class="dash-loading">Carregando dados...</div>
+  <div id="dash-error"   class="dash-error" style="display:none"></div>
+
+  <!-- ── Aba Alunos ──────────────────────────────────────────────────── -->
+  <section id="tab-students" class="dash-section">
+    <h2>Alunos <span class="badge" id="student-count"></span></h2>
+    <div class="student-grid" id="student-grid"></div>
+  </section>
+
+  <!-- ── Aba Gravações ───────────────────────────────────────────────── -->
+  <section id="tab-recordings" class="dash-section" style="display:none">
+    <h2>Gravações <span class="badge" id="recordings-count"></span></h2>
+    <div class="recordings-list" id="recordings-list"></div>
+  </section>
+
+  <!-- ── Aba Progresso ───────────────────────────────────────────────── -->
+  <section id="tab-progress" class="dash-section" style="display:none">
+    <h2>Progresso por Módulo</h2>
+    <div class="progress-table-wrap" id="progress-table-wrap"></div>
+  </section>
+</main>
+
+<!-- ── Drawer de detalhe do aluno ─────────────────────────────────────── -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="student-drawer" id="student-drawer" aria-label="Detalhes do aluno">
+  <div class="drawer-header">
+    <div class="drawer-avatar" id="drawer-avatar"></div>
+    <h3 class="drawer-title" id="drawer-title"></h3>
+    <button class="drawer-close" id="drawer-close" aria-label="Fechar">✕</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</aside>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/dashboard.js"></script>
+{% endblock %}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Bubble body with bottom-left tail -->
+  <path d="M8 6H40C41.1 6 42 6.9 42 8V28C42 29.1 41.1 30 40 30H16L6 42V30H8C6.9 30 6 29.1 6 28V8C6 6.9 6.9 6 8 6Z" stroke="#7A5C2E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Three dots inside -->
+  <circle cx="18" cy="19" r="2.5" fill="#7A5C2E"/>
+  <circle cx="24" cy="19" r="2.5" fill="#7A5C2E"/>
+  <circle cx="30" cy="19" r="2.5" fill="#7A5C2E"/>
+</svg>
