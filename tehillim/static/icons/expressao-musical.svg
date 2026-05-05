@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Crescendo hairpin (< shape) -->
+  <path d="M6 18 L28 24 L6 30" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Decrescendo hairpin (> shape) -->
+  <path d="M20 18 L42 24 L20 30" stroke="#7A5C2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+  <!-- Dynamic marking dots representing p and f -->
+  <circle cx="10" cy="38" r="2" fill="#7A5C2E"/>
+  <circle cx="22" cy="38" r="2" fill="#7A5C2E"/>
+  <circle cx="34" cy="38" r="2" fill="#7A5C2E"/>
+  <circle cx="38" cy="38" r="2" fill="#7A5C2E"/>
+</svg>

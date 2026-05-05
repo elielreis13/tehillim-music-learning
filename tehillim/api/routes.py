@@ -5,10 +5,18 @@ import requests as http
 
 from . import bp
 from tehillim.content import get_module, groups_summary, modules_payload
+from tehillim.content.demo_games import DEMO_GAMES
 from tehillim.extensions import (
     get_user_from_token, sb_delete, sb_get, sb_headers, sb_post, sb_put,
     require_teacher_token,
 )
+
+
+# ── Jogos ─────────────────────────────────────────────────────────────────────
+
+@bp.get("/games/demo")
+def games_demo():
+    return jsonify({"games": DEMO_GAMES})
 
 
 # ── Conteúdo público ──────────────────────────────────────────────────────────

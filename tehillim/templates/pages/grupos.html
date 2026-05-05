@@ -8,7 +8,7 @@
     <div>
       <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Plataforma</p>
       <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Grupos de Estudo</h1>
-      <p class="text-[13px] text-gray-500 mt-0.5">{{ groups | sum(attribute='module_count') }} módulos em {{ groups | length }} grupos progressivos</p>
+      <p class="text-[13px] text-gray-500 mt-0.5">{{ groups | sum(attribute='module_count') }} módulos em {{ groups | selectattr('module_count', 'gt', 0) | list | length }} grupos progressivos</p>
     </div>
     <div class="flex items-center gap-4">
       <div class="flex items-center gap-2">
@@ -34,7 +34,7 @@
     ('bg-[#EDE8F4]', '#7B5EA7', 'bg-[#F6F3FC]', 'bg-[#E8E0F4]'),
   ] %}
 
-  {% for group in groups %}
+  {% for group in groups if group.module_count > 0 %}
   {% set c = group_colors[loop.index0 % 3] %}
   <section>
     <div class="{{ c[2] }} rounded-2xl overflow-hidden shadow-sm">
@@ -44,7 +44,7 @@
               onclick="toggleGroup('{{ group.slug }}')"
               class="{{ c[3] }} w-full px-4 md:px-6 py-4 flex items-center justify-between gap-3 text-left">
         <div class="flex items-center gap-3 min-w-0">
-          <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-8 h-8 object-contain flex-shrink-0">
+          <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-8 h-8 object-contain flex-shrink-0" style="width:32px;height:32px;max-width:32px">
           <div class="min-w-0">
             <h2 class="font-bold text-[16px] text-gray-800">{{ group.name }}</h2>
             <p class="text-[12px] text-gray-500 truncate">{{ group.description }}</p>

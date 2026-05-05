@@ -303,8 +303,13 @@ function initAudio() {
   audioReady = null;
   loadedInstrument = key;
   const cfg = INSTRUMENTS[key];
-  audioReady = new Promise(resolve => {
-    synth = new Tone.Sampler({ urls: cfg.urls, baseUrl: cfg.baseUrl, onload: resolve }).toDestination();
+  audioReady = new Promise((resolve, reject) => {
+    synth = new Tone.Sampler({
+      urls: cfg.urls,
+      baseUrl: cfg.baseUrl,
+      onload: resolve,
+      onerror: (err) => reject(new Error('Falha ao carregar amostras de áudio. Verifique sua conexão.')),
+    }).toDestination();
   });
   return audioReady;
 }
@@ -379,8 +384,23 @@ function scheduleStep() {
 
 async function startPlayback() {
   if (!osmd || isPlaying) return;
+
+  // Verifica se o AudioContext foi desbloqueado (falha silenciosa no iOS com switch de silêncio)
+  if (Tone.context.state !== 'running') {
+    setStatus('⚠️ Áudio bloqueado. No iPhone, verifique o interruptor de silêncio na lateral.');
+    return;
+  }
+
   setStatus('Carregando amostras...');
-  await initAudio();
+  try {
+    await initAudio();
+  } catch (err) {
+    setStatus(`⚠️ ${err.message}`);
+    setPlayUI(false);
+    isPlaying = false;
+    return;
+  }
+
   isPlaying = true;
   setPlayUI(true);
   setStatus('Reproduzindo...');
