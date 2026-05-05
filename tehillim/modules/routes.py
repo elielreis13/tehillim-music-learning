@@ -122,6 +122,11 @@ def module_page(module_slug: str):
     )
 
 
+@bp.get("/jogos")
+def jogos_page():
+    return render_template("pages/jogos.html", active_page="jogos")
+
+
 @bp.get("/bona-player/<slug>")
 def bona_player(slug: str):
     has_sheet = (_BONA_SHEETS / f"{slug}.musicxml").exists()
