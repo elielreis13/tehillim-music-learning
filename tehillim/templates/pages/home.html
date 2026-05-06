@@ -2,154 +2,378 @@
 
 {% block title %}Início | Tehillim{% endblock %}
 
-{% block header %}
-<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet"/>
+<style>
+  .fraunces { font-family: 'Fraunces', serif; }
 
-  <div class="flex items-center justify-between relative z-10">
+  .quest-bar { transition: width 0.6s ease; }
+  .xp-bar-fill { transition: width 0.8s ease; }
+
+  @media (max-width: 1024px) {
+    .home-grid { grid-template-columns: 1fr !important; }
+    .right-col { display: none !important; }
+    .quest-grid { grid-template-columns: 1fr !important; }
+    .groups-grid { grid-template-columns: 1fr !important; }
+    .bottom-grid { grid-template-columns: 1fr !important; }
+  }
+
+  @media (max-width: 768px) {
+    .hero-stats { flex-wrap: wrap; gap: 8px !important; }
+    .hero-level-badge { display: none !important; }
+    .hero-xp-total { display: none !important; }
+    .quest-grid { grid-template-columns: 1fr !important; }
+  }
+</style>
+{% endblock %}
+
+{% block header %}
+<header style="background: linear-gradient(120deg, #2A2419 0%, #3D3018 60%, #5A4520 100%); padding: 22px 28px; position: relative; overflow: hidden; color: white; flex-shrink: 0;">
+
+  <!-- Sound wave decoration (drawn by JS) -->
+  <svg id="hero-wave-svg" width="520" height="100%" viewBox="0 0 520 100" preserveAspectRatio="none"
+    style="position:absolute;right:0;top:0;bottom:0;pointer-events:none;opacity:0.22;height:100%;"></svg>
+
+  <!-- Glow orb -->
+  <div style="position:absolute;right:-80px;top:-80px;width:360px;height:360px;background:radial-gradient(circle,rgba(232,199,122,0.28) 0%,transparent 70%);pointer-events:none;"></div>
+
+  <div class="flex justify-between items-center relative" style="z-index:2;">
     <!-- Greeting -->
     <div>
-      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Bem-vindo de volta 👋</p>
-      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Olá, <span data-user-name>Aluno</span>!</h1>
-      <p class="text-[13px] text-gray-500 mt-0.5">Vamos continuar sua jornada musical hoje?</p>
+      <p style="font-size:10px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.22em;font-weight:700;margin:0;">♪ De volta ao palco</p>
+      <h1 class="fraunces" style="font-size:36px;font-weight:400;line-height:1.05;margin:6px 0 6px;letter-spacing:-0.02em;">
+        Olá, <em style="font-style:italic;font-weight:300;color:#E8C77A;" data-user-name>Aluno</em>
+      </h1>
+      <p style="font-size:13px;color:#C4B89A;margin:0;">
+        Você está a <strong style="color:#E8C77A;" id="xp-to-next">—</strong> XP de subir para nível <span id="next-level-lbl">—</span>.
+      </p>
     </div>
 
-    <!-- Top bar -->
-    <div class="flex items-center gap-3">
-      <div class="flex items-center gap-2">
-        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-6 h-6 flex-shrink-0"/>
-        <div class="leading-tight">
-          <p class="font-bold text-[16px] text-gray-800 leading-none" data-streak>—</p>
-          <p class="text-[10px] text-gray-500">dias de sequência</p>
+    <!-- Stat cluster -->
+    <div class="hero-stats flex items-center" style="gap:12px;">
+
+      <!-- Level + XP ring -->
+      <div class="hero-level-badge flex items-center" style="background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);border:1px solid rgba(232,199,122,0.3);border-radius:14px;padding:10px 16px;gap:12px;">
+        <div id="xp-ring" style="width:48px;height:48px;border-radius:50%;background:conic-gradient(#E8C77A 0%,rgba(255,255,255,0.1) 0%);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#E8C77A,#C4943A);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:#2A2419;box-shadow:inset 0 -2px 4px rgba(122,92,46,0.3);" id="level-badge">1</div>
+        </div>
+        <div style="line-height:1.2;">
+          <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;" id="level-label">Nível 1 · Iniciante</div>
+          <div class="fraunces" style="font-size:14px;font-weight:700;color:#E8C77A;">
+            <span id="xp-display">0</span>
+            <span style="font-size:11px;color:#9C8B68;font-weight:400;"> / <span id="xp-next-display">300</span> XP</span>
+          </div>
+          <div style="width:110px;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:5px;overflow:hidden;">
+            <div class="xp-bar-fill" id="xp-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#C4943A,#E8C77A);border-radius:2px;"></div>
+          </div>
         </div>
       </div>
-      <div class="w-px h-6 bg-[#D4C4A8]"></div>
-      <a href="/notificacoes" class="w-8 h-8 rounded-full bg-white/70 flex items-center justify-center shadow-sm hover:bg-white transition-colors" id="notif-bell-btn">
-        <img src="{{ url_for('static', filename='icons/ui-comment.svg') }}" class="w-4 h-4"/>
+
+      <!-- Streak -->
+      <div class="flex items-center" style="background:rgba(232,99,42,0.15);border:1px solid rgba(232,99,42,0.4);border-radius:14px;padding:10px 14px;gap:8px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#E8632A"><path d="M12 2c0 4-3 5-3 9a3 3 0 0 0 6 0c0-2 1-3 1-3s2 2 2 5a6 6 0 0 1-12 0c0-5 6-7 6-11z"/></svg>
+        <div style="line-height:1.05;">
+          <div class="fraunces" style="font-size:20px;font-weight:600;color:#FFB78F;" data-streak>—</div>
+          <div style="font-size:9px;color:#FFB78F;text-transform:uppercase;letter-spacing:0.1em;">seguidos</div>
+        </div>
+      </div>
+
+      <!-- XP total -->
+      <div class="hero-xp-total flex items-center" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:10px 12px;gap:8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#E8C77A"><path d="M12 2l3 7h7l-5.5 4.5L18 22l-6-4-6 4 1.5-8.5L2 9h7z"/></svg>
+        <div style="line-height:1.05;">
+          <div class="fraunces" style="font-size:16px;font-weight:600;" id="xp-total-display">0</div>
+          <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;">XP total</div>
+        </div>
+      </div>
+
+      <!-- Bell -->
+      <a href="/notificacoes" id="notif-bell-btn"
+        style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;position:relative;text-decoration:none;flex-shrink:0;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8C77A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+        </svg>
       </a>
     </div>
   </div>
-
-  <!-- Decorative -->
-  <div class="absolute right-[60px] top-[-10px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:140px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
 </header>
 {% endblock %}
 
 {% block content %}
-<div class="p-4 md:p-5 flex flex-col xl:flex-row gap-4 min-h-full">
+<div class="p-4 md:p-5 home-grid" style="display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start;">
 
-  <!-- ── LEFT / CENTER COLUMN ── -->
-  <div class="flex-1 flex flex-col gap-4 min-w-0">
+  <!-- ══════════ MAIN COLUMN ══════════ -->
+  <div class="flex flex-col" style="gap:16px;min-width:0;">
 
-    <!-- Grupos de Estudo -->
-    <section>
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="font-bold text-[16px] text-gray-800">Seus Grupos de Estudo</h2>
-        <a href="/grupos" class="text-[13px] text-gray-400 hover:text-gray-600 transition-colors">Ver todos</a>
+    <!-- Daily Quests -->
+    <section style="background:linear-gradient(135deg,#FFFAF0 0%,#F2EAD8 100%);border-radius:18px;padding:20px 22px;border:1px solid #ECE3D0;position:relative;overflow:hidden;">
+      <div class="flex justify-between items-start" style="margin-bottom:16px;">
+        <div>
+          <p style="font-size:10px;color:#7A5C2E;text-transform:uppercase;letter-spacing:0.18em;font-weight:700;margin:0;">⚡ Missões diárias</p>
+          <h2 class="fraunces" style="font-size:20px;font-weight:500;margin:4px 0 0;color:#2A2419;">Complete e ganhe XP</h2>
+        </div>
+        <div style="background:white;border-radius:10px;padding:7px 13px;border:1px solid #ECE3D0;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;color:#9C8460;">Reset em</span>
+          <span class="fraunces" style="font-size:13px;font-weight:700;color:#7A5C2E;" id="quest-timer">—</span>
+        </div>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {% set colors = ['#EDD9B0', '#C4D9CE', '#C4D4E4'] %}
-        {% set prog_colors = ['#C4943A', '#5A8A6A', '#4A4A5A'] %}
-        {% for group in groups[:3] %}
-        <a href="/grupos/{{ group.slug }}" class="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow block">
-          <div class="flex justify-center mb-4">
-            <div class="w-[70px] h-[70px] rounded-full flex items-center justify-center" style="background-color: {{ colors[loop.index0 % 3] }}">
-              <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-12 h-12 object-contain">
-            </div>
+      <div class="quest-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        <!-- Quest 1: Acesse a plataforma (always complete) -->
+        <div style="background:white;border-radius:14px;padding:16px;border:2px solid #5A8A6A;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:#5A8A6A;display:flex;align-items:center;justify-content:center;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
           </div>
-          <h3 class="font-bold text-[14px] text-center text-gray-800">{{ group.name }}</h3>
-          <p class="text-[11px] text-center text-gray-400 mt-1">{{ group.module_count }} módulos</p>
-          <div class="mt-3.5">
-            <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-              <div class="h-full rounded-full transition-all duration-500" style="background-color: {{ prog_colors[loop.index0 % 3] }}; width:0%"
-                   data-group-progress="{{ group.slug }}"></div>
+          <div class="flex items-center" style="gap:6px;margin-bottom:10px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#5A8A6A"><path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5z"/></svg>
+            <span style="font-size:10px;color:#5A8A6A;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">+20 XP</span>
+          </div>
+          <p style="font-size:13px;font-weight:600;color:#2A2419;margin:0 0 10px;line-height:1.3;">Acesse a plataforma</p>
+          <div style="height:6px;background:#F4ECD8;border-radius:3px;overflow:hidden;margin-bottom:6px;">
+            <div class="quest-bar" style="height:100%;width:100%;background:#5A8A6A;border-radius:3px;"></div>
+          </div>
+          <div class="flex justify-between">
+            <span style="font-size:10px;color:#9C8460;">1/1</span>
+            <span class="fraunces" style="font-size:10px;font-weight:700;color:#5A8A6A;">100%</span>
+          </div>
+        </div>
+        <!-- Quest 2: Continue sua trilha -->
+        <div style="background:white;border-radius:14px;padding:16px;border:1px solid #ECE3D0;position:relative;overflow:hidden;">
+          <div class="flex items-center" style="gap:6px;margin-bottom:10px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#C4943A"><path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5z"/></svg>
+            <span style="font-size:10px;color:#C4943A;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">+50 XP</span>
+          </div>
+          <p style="font-size:13px;font-weight:600;color:#2A2419;margin:0 0 10px;line-height:1.3;">Conclua 1 módulo</p>
+          <div style="height:6px;background:#F4ECD8;border-radius:3px;overflow:hidden;margin-bottom:6px;">
+            <div class="quest-bar" id="q2-bar" style="height:100%;width:0%;background:#C4943A;border-radius:3px;"></div>
+          </div>
+          <div class="flex justify-between">
+            <span style="font-size:10px;color:#9C8460;"><span id="q2-cur">0</span>/1</span>
+            <span class="fraunces" style="font-size:10px;font-weight:700;color:#C4943A;" id="q2-pct">0%</span>
+          </div>
+        </div>
+        <!-- Quest 3: Mantenha o streak -->
+        <div style="background:white;border-radius:14px;padding:16px;border:1px solid #ECE3D0;position:relative;overflow:hidden;" id="q3-card">
+          <div class="flex items-center" style="gap:6px;margin-bottom:10px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#7B5EA7"><path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5z"/></svg>
+            <span style="font-size:10px;color:#7B5EA7;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">+30 XP</span>
+          </div>
+          <p style="font-size:13px;font-weight:600;color:#2A2419;margin:0 0 10px;line-height:1.3;">Mantenha o streak</p>
+          <div style="height:6px;background:#F4ECD8;border-radius:3px;overflow:hidden;margin-bottom:6px;">
+            <div class="quest-bar" id="q3-bar" style="height:100%;width:0%;background:#7B5EA7;border-radius:3px;"></div>
+          </div>
+          <div class="flex justify-between">
+            <span style="font-size:10px;color:#9C8460;"><span id="q3-cur">0</span>/1</span>
+            <span class="fraunces" style="font-size:10px;font-weight:700;color:#7B5EA7;" id="q3-pct">0%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Continue Trilha -->
+    <div style="background:white;border-radius:18px;padding:0;border:1px solid #F0E8D4;overflow:hidden;display:flex;" id="trail-card">
+      <!-- Color panel -->
+      <div style="width:180px;background:linear-gradient(135deg,#C4943A 0%,#8B6920 100%);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <!-- Pentagram lines -->
+        <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.15;" preserveAspectRatio="none">
+          <defs><pattern id="staff-v3" x="0" y="0" width="100" height="80" patternUnits="userSpaceOnUse">
+            {% for y in [0,8,16,24,32] %}<line x1="0" y1="{{ y+24 }}" x2="100" y2="{{ y+24 }}" stroke="white" stroke-width="0.5"/>{% endfor %}
+          </pattern></defs>
+          <rect width="100%" height="100%" fill="url(#staff-v3)"/>
+        </svg>
+        <div style="position:relative;text-align:center;color:white;">
+          <p style="font-size:9px;text-transform:uppercase;letter-spacing:0.2em;opacity:0.85;margin:0;font-weight:700;" id="trail-module-label">Atual</p>
+          <p class="fraunces" style="font-size:28px;font-weight:400;margin:6px 0 4px;letter-spacing:-0.02em;" id="trail-module-title">—</p>
+          <!-- Treble clef SVG -->
+          <svg width="36" height="57" viewBox="0 0 60 96" fill="white" opacity="0.9">
+            <path d="M30 6c-6 4-10 12-10 22 0 8 4 14 10 18-2 6-3 12-3 18 0 12 8 22 18 22 8 0 13-6 13-13 0-6-4-11-10-11-4 0-7 3-7 7 0 3 2 5 5 5-1 3-3 5-7 5-7 0-12-7-12-15 0-5 1-10 3-15 8 5 17 12 17 22 0 8-5 14-12 16v3c11-2 17-9 17-19 0-12-10-20-19-26 1-3 2-7 2-12 0-6 2-13 7-17 0-2-2-3-3-3-3 0-9 5-9 13 0 4 2 9 4 13-3-3-6-7-6-13s4-13 8-13c2 0 5 2 5 5z"/>
+          </svg>
+        </div>
+      </div>
+      <!-- Content -->
+      <div style="flex:1;padding:20px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;">
+        <div>
+          <div class="flex justify-between items-baseline" style="margin-bottom:6px;">
+            <h3 class="fraunces" style="font-size:17px;font-weight:500;margin:0;color:#2A2419;">Continue sua trilha</h3>
+            <span style="font-size:11px;color:#9C8460;" id="trail-group-label">—</span>
+          </div>
+          <p style="font-size:12px;color:#7A6A4D;line-height:1.5;margin:0 0 14px;" id="trail-module-desc">Carregando...</p>
+          <!-- Step pills -->
+          <div style="display:flex;gap:4px;margin-bottom:10px;" id="trail-steps">
+            {% for i in range(7) %}
+            <div style="flex:1;height:6px;border-radius:3px;background:#F4ECD8;"></div>
+            {% endfor %}
+          </div>
+          <p style="font-size:11px;color:#9C8460;margin:0;" id="trail-step-label">—</p>
+        </div>
+        <div class="flex" style="gap:10px;margin-top:14px;">
+          <a id="trail-continue-btn" href="#" style="flex:1;padding:12px 0;background:#C4943A;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:block;">
+            Continuar módulo
+          </a>
+          <a href="/trilhas" style="padding:12px 16px;background:#F4ECD8;color:#7A5C2E;border:1px solid #ECE3D0;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap;">
+            Ver trilha
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grupos de estudo -->
+    <section>
+      <div class="flex justify-between items-baseline" style="margin-bottom:12px;">
+        <h2 class="fraunces" style="font-size:18px;font-weight:500;margin:0;color:#2A2419;">Grupos de estudo</h2>
+        <a href="/grupos" style="font-size:12px;color:#9C8460;text-decoration:none;">Ver todos →</a>
+      </div>
+      <div class="groups-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        {% set group_colors = ['#C4943A', '#5A8A6A', '#7B5EA7'] %}
+        {% set group_bgs    = ['#F2EAD8', '#DFF0E8', '#E8E0F4'] %}
+        {% for group in groups[:3] %}
+        {% set ci = loop.index0 % 3 %}
+        <a href="/grupos/{{ group.slug }}" style="background:white;border-radius:14px;padding:14px;border:1px solid #F0E8D4;text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;">
+          <div style="width:44px;height:44px;border-radius:11px;background:{{ group_bgs[ci] }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" style="width:22px;height:22px;object-fit:contain;"/>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <p style="font-size:12px;font-weight:700;color:#2A2419;margin:0;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ group.name }}</p>
+            <div class="flex items-center" style="gap:8px;margin-top:7px;">
+              <div style="flex:1;height:4px;background:#F4ECD8;border-radius:2px;overflow:hidden;">
+                <div class="quest-bar" style="height:100%;width:0%;background:{{ group_colors[ci] }};border-radius:2px;" data-group-progress="{{ group.slug }}"></div>
+              </div>
+              <span class="fraunces" style="font-size:11px;font-weight:700;color:{{ group_colors[ci] }};" data-group-pct="{{ group.slug }}">0%</span>
             </div>
-            <p class="text-right text-[11px] font-semibold text-gray-500 mt-1" data-group-pct="{{ group.slug }}">—</p>
           </div>
         </a>
         {% endfor %}
       </div>
     </section>
 
-    <!-- Continue Trilha + Desempenho -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-      <!-- Continue sua Trilha -->
-      <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 class="font-bold text-[15px] text-gray-800 mb-4">Continue sua Trilha</h2>
-        <div id="trail-widget">
-          <p class="text-[13px] text-gray-400">Carregando...</p>
+    <!-- Quote + Exercício do dia -->
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:14px;" class="bottom-grid">
+      <!-- Quote -->
+      <div style="background:linear-gradient(135deg,#2A2419 0%,#3D3018 100%);border-radius:16px;padding:20px 24px;position:relative;overflow:hidden;color:white;">
+        <div style="position:absolute;right:18px;bottom:8px;opacity:0.12;">
+          <svg width="80" height="128" viewBox="0 0 60 96" fill="#E8C77A">
+            <path d="M30 6c-6 4-10 12-10 22 0 8 4 14 10 18-2 6-3 12-3 18 0 12 8 22 18 22 8 0 13-6 13-13 0-6-4-11-10-11-4 0-7 3-7 7 0 3 2 5 5 5-1 3-3 5-7 5-7 0-12-7-12-15 0-5 1-10 3-15 8 5 17 12 17 22 0 8-5 14-12 16v3c11-2 17-9 17-19 0-12-10-20-19-26 1-3 2-7 2-12 0-6 2-13 7-17 0-2-2-3-3-3-3 0-9 5-9 13 0 4 2 9 4 13-3-3-6-7-6-13s4-13 8-13c2 0 5 2 5 5z"/>
+          </svg>
         </div>
+        <p style="font-size:9px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.22em;font-weight:700;margin:0 0 8px;">♪ Pensamento</p>
+        <p class="fraunces" style="font-size:17px;font-style:italic;font-weight:300;margin:0;line-height:1.35;color:#F2EAD8;letter-spacing:-0.01em;padding-right:60px;position:relative;z-index:2;">
+          "A música é a linguagem universal da humanidade."
+        </p>
+        <p style="font-size:10px;color:#A89165;margin:8px 0 0;text-transform:uppercase;letter-spacing:0.15em;font-weight:600;">— Henry Wadsworth Longfellow</p>
       </div>
-
-      <!-- Desempenho Geral -->
-      <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="font-bold text-[15px] text-gray-800">Desempenho Geral</h2>
-          <a href="/desempenho" class="text-[11px] text-gray-400 hover:text-gray-600 transition-colors">Ver relatório</a>
+      <!-- Exercício do dia -->
+      <div style="background:white;border-radius:16px;padding:16px;border:1px solid #F0E8D4;">
+        <div class="flex justify-between" style="margin-bottom:12px;">
+          <h3 class="fraunces" style="font-size:14px;font-weight:500;margin:0;">Exercício do dia</h3>
+          <span style="font-size:9px;color:#7B5EA7;font-weight:700;background:#EDE9FE;padding:2px 7px;border-radius:6px;">+25 XP</span>
         </div>
-        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div class="relative flex-shrink-0 w-[100px] h-[100px]">
-            <svg class="w-full h-full" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" fill="none" stroke="#D4EAE0" stroke-width="10"/>
-              <circle cx="50" cy="50" r="42" fill="none" stroke="#3D7A5E" stroke-width="10"
-                id="perf-circle" stroke-dasharray="0 263.9" stroke-linecap="round" transform="rotate(-90 50 50)"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <span class="font-bold text-[18px] text-gray-800 leading-tight" id="perf-pct">—</span>
-              <span class="text-[9px] text-gray-400 mt-0.5">Desempenho</span>
-            </div>
-          </div>
-          <div class="flex-1 flex flex-col gap-3">
-            <div class="flex items-center justify-between">
-              <span class="text-[12px] text-gray-500">Módulos Concluídos</span>
-              <span class="text-[12px] font-bold text-gray-700" id="perf-modules">—</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-[12px] text-gray-500">🔥 Sequência</span>
-              <span class="text-[12px] font-bold text-gray-700"><span data-streak>—</span> dias</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-[12px] text-gray-500">Dias de estudo</span>
-              <span class="text-[12px] font-bold text-gray-700" id="perf-days">—</span>
-            </div>
+        <div class="flex items-center" style="gap:10px;">
+          <a href="/aulas" style="width:38px;height:38px;border-radius:50%;background:#C4943A;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-decoration:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+          </a>
+          <div style="flex:1;min-width:0;">
+            <p style="font-size:11px;font-weight:600;margin:0 0 6px;color:#2A2419;" id="exercise-title">Aula do dia</p>
+            <!-- Mini sound wave -->
+            <svg width="150" height="20" id="mini-wave-svg"></svg>
           </div>
         </div>
+        <a href="/aulas" style="display:block;width:100%;margin-top:12px;padding:9px 0;background:#F4ECD8;color:#7A5C2E;border:1px solid #ECE3D0;border-radius:9px;font-size:12px;font-weight:700;text-align:center;text-decoration:none;">
+          Ir para aulas
+        </a>
       </div>
     </div>
 
-    <!-- Quote -->
-    <div class="bg-[#EEF3FA] rounded-2xl px-7 py-5 relative overflow-hidden">
-      <div class="relative z-10 max-w-full md:max-w-[60%]">
-        <svg class="w-8 h-6 text-[#4A78B0] opacity-30 mb-1" fill="currentColor" viewBox="0 0 32 24">
-          <path d="M0 24V14.4C0 6.72 4.8 1.92 14.4 0l1.6 2.56C10.56 3.84 7.68 6.56 7.04 10.4H12V24H0zm18 0V14.4C18 6.72 22.8 1.92 32.4 0L34 2.56c-5.44 1.28-8.32 4-8.96 7.84H30V24H18z"/>
-        </svg>
-        <p class="text-gray-700 font-medium text-[14px] leading-relaxed">A música é a linguagem universal da humanidade.</p>
-        <p class="text-gray-400 text-[12px] mt-2">— Henry Wadsworth Longfellow</p>
+    <!-- Heatmap + Atividade recente -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="bottom-grid">
+      <!-- Heatmap -->
+      <div style="background:white;border-radius:16px;padding:18px;border:1px solid #F0E8D4;">
+        <div class="flex justify-between items-baseline" style="margin-bottom:12px;">
+          <h3 class="fraunces" style="font-size:15px;font-weight:500;margin:0;">Hábito de prática</h3>
+          <span style="font-size:10px;color:#5A8A6A;font-weight:700;" id="heatmap-count">0/28</span>
+        </div>
+        <!-- Day-of-week labels -->
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;">
+          {% for d in ['D','S','T','Q','Q','S','S'] %}
+          <div style="font-size:8px;color:#C4B89A;text-align:center;font-weight:600;">{{ d }}</div>
+          {% endfor %}
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;" id="heatmap-grid">
+          {% for i in range(28) %}
+          <div style="aspect-ratio:1;border-radius:4px;background:#F4ECD8;" class="heatmap-cell" data-day="{{ i }}"></div>
+          {% endfor %}
+        </div>
+        <div class="flex items-center justify-end" style="gap:6px;margin-top:8px;">
+          <span style="font-size:9px;color:#C4B89A;">Menos</span>
+          {% for bg in ['#F4ECD8','#E8C77A','#C4943A','#5A8A6A'] %}
+          <div style="width:10px;height:10px;border-radius:2px;background:{{ bg }};"></div>
+          {% endfor %}
+          <span style="font-size:9px;color:#C4B89A;">Mais</span>
+        </div>
       </div>
-      <div class="absolute right-6 -bottom-2 opacity-[0.08] pointer-events-none select-none" style="font-size:90px;line-height:1;">🎻</div>
-    </div>
 
+      <!-- Atividade recente -->
+      <div style="background:white;border-radius:16px;padding:18px;border:1px solid #F0E8D4;">
+        <h3 class="fraunces" style="font-size:15px;font-weight:500;margin:0 0 14px;">Atividade recente</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;" id="activity-list">
+          <p style="font-size:12px;color:#C4B89A;text-align:center;margin:20px 0;" id="activity-empty">Sem atividade registrada ainda.</p>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- ── RIGHT PANEL ── -->
-  <div class="w-full xl:w-[272px] flex-shrink-0 flex flex-col gap-4">
+  <!-- ══════════ RIGHT COLUMN ══════════ -->
+  <div class="right-col flex flex-col" style="gap:14px;">
 
-    <!-- Próxima Aula -->
-    <div class="bg-white rounded-2xl overflow-hidden shadow-sm">
-      <p class="font-bold text-[15px] text-gray-800 px-5 pt-5 pb-3">Próxima Aula</p>
-      <div id="next-lesson-widget" class="px-5 pb-5">
-        <p class="text-[13px] text-gray-400">Carregando...</p>
+    <!-- Naipe / Ranking -->
+    <div style="background:linear-gradient(180deg,#FFFAF0 0%,#F2EAD8 100%);border-radius:18px;padding:20px;border:1px solid #ECE3D0;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-18px;top:-18px;opacity:0.08;">
+        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#C4943A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 4h3v3a3 3 0 0 1-3 3M7 4H4v3a3 3 0 0 0 3 3"/>
+        </svg>
+      </div>
+      <div class="flex justify-between items-baseline" style="margin-bottom:4px;position:relative;">
+        <h3 class="fraunces" style="font-size:17px;font-weight:500;margin:0;color:#2A2419;">Naipe da semana</h3>
+        <span style="font-size:10px;color:#7A5C2E;font-weight:700;">Ranking</span>
+      </div>
+      <p style="font-size:11px;color:#9C8460;margin:0 0 14px;">Pontuação por módulos concluídos</p>
+      <div style="display:flex;flex-direction:column;gap:7px;position:relative;" id="ranking-list">
+        <!-- Filled by JS -->
+        <p style="font-size:12px;color:#C4B89A;text-align:center;padding:10px 0;">Carregando...</p>
       </div>
     </div>
 
-    <!-- Conquistas Recentes -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold text-[15px] text-gray-800">Conquistas Recentes</h3>
-        <a href="/conquistas" class="text-[11px] text-gray-400 hover:text-gray-600 transition-colors">Ver todas</a>
+    <!-- Próxima Aula -->
+    <div style="background:white;border-radius:16px;padding:18px;border:1px solid #F0E8D4;">
+      <div class="flex justify-between items-baseline" style="margin-bottom:10px;">
+        <h3 class="fraunces" style="font-size:15px;font-weight:500;margin:0;">Próxima aula</h3>
+        <span style="font-size:9px;color:#7B5EA7;font-weight:700;background:#EDE9FE;padding:2px 7px;border-radius:6px;">+50 XP</span>
       </div>
-      <div class="flex flex-col gap-3.5" id="achievements-widget">
-        <p class="text-[13px] text-gray-400">Carregando...</p>
+      <div style="height:90px;border-radius:10px;margin-bottom:10px;background:linear-gradient(135deg,#F2EAD8,#E8DEC0);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+        <div style="position:absolute;right:-8px;bottom:-10px;opacity:0.16;">
+          <svg width="80" height="128" viewBox="0 0 60 96" fill="#7A5C2E">
+            <path d="M30 6c-6 4-10 12-10 22 0 8 4 14 10 18-2 6-3 12-3 18 0 12 8 22 18 22 8 0 13-6 13-13 0-6-4-11-10-11-4 0-7 3-7 7 0 3 2 5 5 5-1 3-3 5-7 5-7 0-12-7-12-15 0-5 1-10 3-15 8 5 17 12 17 22 0 8-5 14-12 16v3c11-2 17-9 17-19 0-12-10-20-19-26 1-3 2-7 2-12 0-6 2-13 7-17 0-2-2-3-3-3-3 0-9 5-9 13 0 4 2 9 4 13-3-3-6-7-6-13s4-13 8-13c2 0 5 2 5 5z"/>
+          </svg>
+        </div>
+        <a id="next-lesson-play-btn" href="#" style="width:36px;height:36px;border-radius:50%;background:rgba(42,36,25,0.85);display:flex;align-items:center;justify-content:center;text-decoration:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+        </a>
+      </div>
+      <p class="fraunces" style="font-size:17px;font-weight:500;margin:0 0 4px;color:#2A2419;" id="next-lesson-title">—</p>
+      <p style="font-size:10px;color:#9C8460;margin:0 0 10px;" id="next-lesson-meta">—</p>
+      <a id="next-lesson-btn" href="#" style="display:block;width:100%;padding:10px 0;background:#C4943A;color:white;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;">
+        Continuar aula
+      </a>
+    </div>
+
+    <!-- Conquistas -->
+    <div style="background:white;border-radius:16px;padding:18px;border:1px solid #F0E8D4;">
+      <div class="flex justify-between items-baseline" style="margin-bottom:12px;">
+        <h3 class="fraunces" style="font-size:15px;font-weight:500;margin:0;">Conquistas</h3>
+        <a href="/conquistas" style="font-size:10px;color:#9C8460;text-decoration:none;" id="achievements-count">0/3</a>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;" id="achievements-grid">
+        <!-- Filled by JS -->
       </div>
     </div>
 
@@ -161,15 +385,319 @@
 <script>
 const GROUPS_DATA = {{ groups | tojson }};
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await waitForProgress();
-  renderGroupProgress();
-  renderPerformance();
-  renderTrailWidget();
-  renderNextLesson();
-  renderAchievements();
-});
+/* ── Hero sound wave ── */
+(function() {
+  const svg = document.getElementById('hero-wave-svg');
+  if (!svg) return;
+  const W = 520, H = 100, bars = 85;
+  let html = '';
+  for (let i = 0; i < bars; i++) {
+    const h = Math.abs(Math.sin(i * 0.22) * Math.cos(i * 0.15)) * 76 + 10;
+    const y = (H - h) / 2;
+    const fill = i % 5 === 0 ? '#E8C77A' : '#C4943A';
+    html += `<rect x="${i * 6.1}" y="${y.toFixed(1)}" width="3" height="${h.toFixed(1)}" fill="${fill}" rx="1.5"/>`;
+  }
+  svg.innerHTML = html;
+})();
 
+/* ── Mini wave for exercise card ── */
+(function() {
+  const svg = document.getElementById('mini-wave-svg');
+  if (!svg) return;
+  const W = 150, H = 20, bars = 40;
+  let html = '';
+  for (let i = 0; i < bars; i++) {
+    const h = Math.abs(Math.sin(i * 0.3) * Math.cos(i * 0.18)) * H * 0.75 + 3;
+    html += `<rect x="${i * (W/bars)}" y="${((H-h)/2).toFixed(1)}" width="${(W/bars - 1.5).toFixed(1)}" height="${h.toFixed(1)}" fill="#C4943A" rx="1" opacity="0.65"/>`;
+  }
+  svg.innerHTML = html;
+})();
+
+/* ── Quest timer countdown ── */
+(function() {
+  function updateTimer() {
+    const now = new Date();
+    const midnight = new Date(now); midnight.setHours(24,0,0,0);
+    const diff = midnight - now;
+    const h = String(Math.floor(diff / 3600000)).padStart(2,'0');
+    const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
+    const s = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');
+    const el = document.getElementById('quest-timer');
+    if (el) el.textContent = `${h}:${m}:${s}`;
+  }
+  updateTimer();
+  setInterval(updateTimer, 1000);
+})();
+
+/* ── XP / Level system ── */
+const XP_PER_MODULE = 50;
+const XP_PER_LEVEL  = 300;
+
+function computeXP(done) { return done * XP_PER_MODULE; }
+function computeLevel(xp) { return Math.floor(xp / XP_PER_LEVEL) + 1; }
+
+const LEVEL_TITLES = ['Iniciante','Aprendiz','Estudioso','Dedicado','Músico','Virtuose','Maestro','Lenda'];
+
+function renderXPStats() {
+  const done  = window._doneModules || 0;
+  const xp    = computeXP(done);
+  const level = computeLevel(xp);
+  const xpInLevel  = xp - (level - 1) * XP_PER_LEVEL;
+  const xpToNext   = XP_PER_LEVEL - xpInLevel;
+  const pct        = Math.round((xpInLevel / XP_PER_LEVEL) * 100);
+  const title      = LEVEL_TITLES[Math.min(level - 1, LEVEL_TITLES.length - 1)];
+
+  // Header
+  const ring = document.getElementById('xp-ring');
+  if (ring) ring.style.background = `conic-gradient(#E8C77A ${pct}%, rgba(255,255,255,0.1) 0%)`;
+  setText('level-badge', level);
+  setText('level-label', `Nível ${level} · ${title}`);
+  setText('xp-display', xp.toLocaleString('pt-BR'));
+  setText('xp-next-display', (level * XP_PER_LEVEL).toLocaleString('pt-BR'));
+  setText('xp-to-next', xpToNext.toLocaleString('pt-BR'));
+  setText('next-level-lbl', level + 1);
+  setText('xp-total-display', xp.toLocaleString('pt-BR'));
+  const bar = document.getElementById('xp-bar');
+  if (bar) setTimeout(() => bar.style.width = pct + '%', 100);
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+/* ── Group progress ── */
+function renderGroupProgress() {
+  if (!window._progress) return;
+  const doneSet = new Set(window._progress.filter(p => p.completed > 0).map(p => p.module_slug));
+  GROUPS_DATA.forEach(group => {
+    const slugs = (group.modules || []).map(m => m.slug);
+    const done  = slugs.filter(s => doneSet.has(s)).length;
+    const pct   = group.module_count > 0 ? Math.round((done / group.module_count) * 100) : 0;
+    const bar   = document.querySelector(`[data-group-progress="${group.slug}"]`);
+    const lbl   = document.querySelector(`[data-group-pct="${group.slug}"]`);
+    if (bar) setTimeout(() => bar.style.width = pct + '%', 200);
+    if (lbl) lbl.textContent = pct + '%';
+  });
+}
+
+/* ── Daily quests ── */
+function renderQuests() {
+  const done   = window._doneModules || 0;
+  const streak = window._streak || 0;
+
+  // Quest 2: Conclua 1 módulo (we can only check if ever done, not today)
+  const q2done = done > 0 ? 1 : 0;
+  document.getElementById('q2-cur').textContent = q2done;
+  document.getElementById('q2-pct').textContent  = q2done ? '100%' : '0%';
+  const q2bar = document.getElementById('q2-bar');
+  if (q2bar) setTimeout(() => q2bar.style.width = (q2done * 100) + '%', 300);
+  if (q2done) {
+    const card = q2bar?.closest('div[style*="border-radius:14px"]');
+    if (card) {
+      card.style.border = '2px solid #C4943A';
+      const check = document.createElement('div');
+      check.style.cssText = 'position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:#C4943A;display:flex;align-items:center;justify-content:center;';
+      check.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+      card.appendChild(check);
+    }
+  }
+
+  // Quest 3: Mantenha o streak
+  const q3done = streak > 0 ? 1 : 0;
+  document.getElementById('q3-cur').textContent = q3done;
+  document.getElementById('q3-pct').textContent  = q3done ? '100%' : '0%';
+  const q3bar = document.getElementById('q3-bar');
+  if (q3bar) setTimeout(() => q3bar.style.width = (q3done * 100) + '%', 400);
+  if (q3done) {
+    const card = document.getElementById('q3-card');
+    if (card) {
+      card.style.border = '2px solid #7B5EA7';
+      const check = document.createElement('div');
+      check.style.cssText = 'position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:#7B5EA7;display:flex;align-items:center;justify-content:center;';
+      check.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+      card.appendChild(check);
+    }
+  }
+}
+
+/* ── Trail widget ── */
+function renderTrailWidget() {
+  const prog   = window._progress || [];
+  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
+  let current  = null, groupName = '';
+  for (const group of GROUPS_DATA) {
+    for (const m of group.modules || []) {
+      if (!doneSet.has(m.slug)) { current = m; groupName = group.name; break; }
+    }
+    if (current) break;
+  }
+
+  if (!current) {
+    document.getElementById('trail-module-title').textContent = '✓ Completo';
+    document.getElementById('trail-module-desc').textContent  = '🎉 Todos os módulos concluídos!';
+    document.getElementById('trail-step-label').textContent   = 'Parabéns pelo progresso!';
+    document.getElementById('trail-module-label').textContent = 'Finalizado';
+    return;
+  }
+
+  document.getElementById('trail-module-label').textContent  = `Atual · M${String(current.number || '?').padStart(2,'0')}`;
+  document.getElementById('trail-module-title').textContent  = current.title || '—';
+  document.getElementById('trail-module-desc').textContent   = current.description || 'Módulo da sua trilha atual.';
+  document.getElementById('trail-group-label').textContent   = groupName;
+
+  // Step pills
+  const steps   = Math.min(current.step_count || 7, 7);
+  const stepsEl = document.getElementById('trail-steps');
+  if (stepsEl) {
+    stepsEl.innerHTML = Array.from({length: steps}, (_, i) =>
+      `<div style="flex:1;height:6px;border-radius:3px;background:${i < 2 ? '#5A8A6A' : i === 2 ? '#C4943A' : '#F4ECD8'};"></div>`
+    ).join('');
+  }
+  document.getElementById('trail-step-label').textContent = `2 de ${steps} etapas concluídas`;
+
+  // CTA
+  const btn = document.getElementById('trail-continue-btn');
+  if (btn) btn.href = `/modulos/${current.slug}`;
+
+  // Exercise title
+  setText('exercise-title', current.title || 'Aula do dia');
+}
+
+/* ── Next Lesson ── */
+function renderNextLesson() {
+  const prog    = window._progress || [];
+  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
+  let next = null;
+  for (const group of GROUPS_DATA) {
+    for (const m of group.modules || []) {
+      if (!doneSet.has(m.slug)) { next = m; break; }
+    }
+    if (next) break;
+  }
+
+  if (!next) {
+    setText('next-lesson-title', '🎉 Tudo concluído!');
+    setText('next-lesson-meta', 'Parabéns pelo progresso!');
+    return;
+  }
+
+  setText('next-lesson-title', next.title || '—');
+  const topics = (next.topics || []).slice(0, 2).join(' · ');
+  setText('next-lesson-meta', (next.duration ? next.duration + ' · ' : '') + (topics || next.description || ''));
+  const btn  = document.getElementById('next-lesson-btn');
+  const play = document.getElementById('next-lesson-play-btn');
+  if (btn)  btn.href  = `/modulos/${next.slug}`;
+  if (play) play.href = `/modulos/${next.slug}`;
+}
+
+/* ── Heatmap ── */
+function renderHeatmap() {
+  const studyDays = new Set((window._studyDays || []).map(d => d.day));
+  const cells     = document.querySelectorAll('.heatmap-cell');
+  const today     = new Date();
+  let count = 0;
+  cells.forEach((cell, i) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() - (27 - i));
+    const key = d.toISOString().slice(0, 10);
+    const isToday  = i === 27;
+    const studied  = studyDays.has(key);
+    if (studied) count++;
+    cell.style.background = isToday
+      ? '#5A8A6A'
+      : studied ? '#C4943A' : '#F4ECD8';
+    if (isToday) cell.style.border = '1.5px solid #2A2419';
+  });
+  setText('heatmap-count', `${count}/28`);
+}
+
+/* ── Activity (from progress transitions) ── */
+function renderActivity() {
+  const prog    = window._progress || [];
+  const doneSet = prog.filter(p => p.completed > 0).map(p => p.module_slug);
+  if (!doneSet.length) return;
+
+  const colors  = { '#5A8A6A': 'Concluído', '#C4943A': 'Em progresso' };
+  const container = document.getElementById('activity-list');
+  const empty     = document.getElementById('activity-empty');
+  if (!container) return;
+
+  const items = [];
+  for (const group of GROUPS_DATA) {
+    for (const m of (group.modules || [])) {
+      if (doneSet.includes(m.slug)) {
+        items.push({ title: `Concluiu ${m.title}`, group: group.name, color: '#5A8A6A' });
+      }
+      if (items.length >= 4) break;
+    }
+    if (items.length >= 4) break;
+  }
+
+  if (!items.length) return;
+  if (empty) empty.remove();
+
+  container.innerHTML = items.map(a => `
+    <div style="display:flex;align-items:flex-start;gap:8px;">
+      <div style="width:6px;height:6px;border-radius:50%;background:${a.color};margin-top:5px;flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <p style="font-size:11px;color:#2A2419;margin:0;font-weight:500;line-height:1.3;">${a.title}</p>
+        <p style="font-size:9px;color:#9C8460;margin:1px 0 0;">${a.group}</p>
+      </div>
+    </div>`).join('');
+}
+
+/* ── Ranking (computed from local data — no server ranking available) ── */
+function renderRanking() {
+  const done  = window._doneModules || 0;
+  const xp    = computeXP(done);
+  const name  = window._userName || 'Você';
+
+  // Show just the user's position with some mock context
+  const list = document.getElementById('ranking-list');
+  if (!list) return;
+
+  const yourInitial = name.charAt(0).toUpperCase();
+
+  list.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:white;border-radius:10px;border:2px solid #C4943A;box-shadow:0 2px 8px rgba(196,148,58,0.15);margin:0 -4px;">
+      <div style="width:22px;height:22px;border-radius:6px;background:#F4ECD8;color:#9C8460;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;">—</div>
+      <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#C4943A,#8B6920);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">${yourInitial}</div>
+      <span style="flex:1;font-size:12px;font-weight:700;color:#2A2419;">${name}</span>
+      <span style="font-size:11px;font-weight:700;color:#C4943A;font-family:'Fraunces',serif;">${xp} XP</span>
+    </div>
+    <p style="font-size:10px;color:#C4B89A;text-align:center;margin:10px 0 0;line-height:1.4;">Ranking entre colegas<br>em breve disponível.</p>
+  `;
+}
+
+/* ── Achievements ── */
+function renderAchievements() {
+  const done   = window._doneModules || 0;
+  const streak = window._streak || 0;
+
+  const all = [
+    { icon: '🎵', name: 'Primeiros Passos', bg: '#C4D9CE', earned: done >= 1 },
+    { icon: '⭐', name: 'Dedicado',          bg: '#F0E4B8', earned: streak >= 10 },
+    { icon: '🎯', name: 'Em Ritmo',          bg: '#F4CACA', earned: done >= 5 },
+    { icon: '🔥', name: 'Semana Perfeita',   bg: '#FFE4E6', earned: streak >= 7 },
+    { icon: '⚡', name: 'Veloz',             bg: '#FEF3C7', earned: done >= 10 },
+    { icon: '🎼', name: 'Leitor',            bg: '#DBEAFE', earned: done >= 15 },
+    { icon: '🏆', name: 'Top Aluno',         bg: '#F0E4B8', earned: done >= 20 },
+    { icon: '💎', name: 'Mês Perfeito',      bg: '#D1FAE5', earned: streak >= 30 },
+  ];
+
+  const earned = all.filter(a => a.earned).length;
+  setText('achievements-count', `${earned}/${all.length}`);
+
+  const grid = document.getElementById('achievements-grid');
+  if (!grid) return;
+  grid.innerHTML = all.map(a => `
+    <div title="${a.name}" style="aspect-ratio:1;border-radius:10px;background:${a.bg};display:flex;align-items:center;justify-content:center;font-size:18px;opacity:${a.earned ? 1 : 0.3};filter:${a.earned ? 'none' : 'grayscale(60%)'};cursor:default;">
+      ${a.earned ? a.icon : '🔒'}
+    </div>`).join('');
+}
+
+/* ── Boot ── */
 function waitForProgress() {
   return new Promise(resolve => {
     if (window._progress !== undefined) return resolve();
@@ -180,134 +708,17 @@ function waitForProgress() {
   });
 }
 
-function renderGroupProgress() {
-  if (!window._progress) return;
-  const doneSet = new Set(window._progress.filter(p => p.completed > 0).map(p => p.module_slug));
-  GROUPS_DATA.forEach(group => {
-    const slugsInGroup = group.modules.map(m => m.slug);
-    const done = slugsInGroup.filter(s => doneSet.has(s)).length;
-    const pct = group.module_count > 0 ? Math.round((done / group.module_count) * 100) : 0;
-    const bar = document.querySelector(`[data-group-progress="${group.slug}"]`);
-    const lbl = document.querySelector(`[data-group-pct="${group.slug}"]`);
-    if (bar) bar.style.width = pct + '%';
-    if (lbl) lbl.textContent = pct + '%';
-  });
-}
-
-function renderPerformance() {
-  const done = window._doneModules || 0;
-  const total = window._totalModules || 1;
-  const pct = Math.round((done / total) * 100);
-  const circumference = 263.9;
-  const dashArr = (pct / 100) * circumference;
-
-  const circle = document.getElementById('perf-circle');
-  if (circle) circle.setAttribute('stroke-dasharray', `${dashArr} ${circumference}`);
-  const pctEl = document.getElementById('perf-pct');
-  if (pctEl) pctEl.textContent = pct + '%';
-  const modEl = document.getElementById('perf-modules');
-  if (modEl) modEl.textContent = `${done} / ${total}`;
-  const daysEl = document.getElementById('perf-days');
-  if (daysEl) daysEl.textContent = (window._studyDays || []).length;
-}
-
-function renderTrailWidget() {
-  const container = document.getElementById('trail-widget');
-  if (!container) return;
-  const prog = window._progress || [];
-  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
-  let currentModule = null;
-  for (const group of GROUPS_DATA) {
-    for (const m of group.modules) {
-      if (!doneSet.has(m.slug)) { currentModule = m; break; }
-    }
-    if (currentModule) break;
-  }
-
-  if (!currentModule) {
-    container.innerHTML = '<p class="text-[13px] text-[#4E7A60] font-semibold">🎉 Todos os módulos concluídos!</p>';
-    return;
-  }
-
-  const steps = currentModule.step_count || 7;
-  const stepsHTML = Array.from({length: Math.min(steps, 5)}, (_, i) => `
-    <div class="flex flex-col items-center gap-1.5 z-10">
-      <div class="w-8 h-8 rounded-full ${i < 2 ? 'bg-[#4E7A60]' : i === 2 ? 'bg-[#C4943A] ring-4 ring-[#C4943A]/20' : 'bg-[#F5EFE4] border-2 border-gray-200'} flex items-center justify-center shadow-sm">
-        ${i < 2 ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
-          : i === 2 ? '<span class="text-white text-sm">&#9834;</span>'
-          : '<svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>'}
-      </div>
-    </div>`).join('');
-
-  container.innerHTML = `
-    <div class="relative flex items-start justify-between px-1 mb-4">
-      <div class="absolute left-4 right-4 top-4 h-0.5 bg-gray-200 z-0"></div>
-      ${stepsHTML}
-    </div>
-    <p class="font-semibold text-[13px] text-gray-700">M${String(currentModule.number).padStart(2,'0')} — ${currentModule.title}</p>
-    <p class="text-[11px] text-gray-400 mt-1">${currentModule.description}</p>
-    <a href="/modulos/${currentModule.slug}" class="block w-full mt-3 bg-[#C4943A] hover:bg-[#B3852F] text-white font-semibold text-[13px] py-2.5 rounded-xl transition-colors text-center">
-      Continuar Módulo
-    </a>`;
-}
-
-function renderNextLesson() {
-  const container = document.getElementById('next-lesson-widget');
-  if (!container) return;
-  const prog = window._progress || [];
-  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
-  let nextModule = null;
-  for (const group of GROUPS_DATA) {
-    for (const m of group.modules) {
-      if (!doneSet.has(m.slug)) { nextModule = m; break; }
-    }
-    if (nextModule) break;
-  }
-
-  if (!nextModule) {
-    container.innerHTML = '<p class="text-[13px] text-[#4E7A60]">Todos concluídos! 🎉</p>';
-    return;
-  }
-
-  container.innerHTML = `
-    <div class="rounded-xl bg-[#F2EAD8] h-[110px] relative overflow-hidden flex items-center justify-center mb-3">
-      <span class="absolute text-[#C4943A] opacity-20 select-none" style="font-size:80px;font-family:'Georgia',serif;right:-10px;bottom:-10px;">&#119070;</span>
-      <a href="/modulos/${nextModule.slug}" class="absolute inset-0 flex items-center justify-center">
-        <div class="w-10 h-10 rounded-full bg-gray-800/75 flex items-center justify-center shadow-lg hover:bg-gray-800/90 transition-colors">
-          <svg class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-      </a>
-    </div>
-    <p class="font-bold text-[14px] text-gray-800">${nextModule.title}</p>
-    <p class="text-[11px] text-gray-400 mt-0.5">${nextModule.topics ? nextModule.topics.slice(0,2).join(' · ') : ''}</p>
-    <a href="/modulos/${nextModule.slug}" class="block w-full mt-3 bg-[#C4943A] hover:bg-[#B3852F] text-white font-semibold text-[13px] py-2.5 rounded-xl transition-colors text-center">
-      Continuar Aula
-    </a>`;
-}
-
-function renderAchievements() {
-  const container = document.getElementById('achievements-widget');
-  if (!container) return;
-  const done = window._doneModules || 0;
-  const streak = window._streak || 0;
-
-  const list = [
-    { icon: '🎵', bg: 'bg-[#C4D9CE]', name: 'Primeiros Passos', desc: 'Concluiu sua primeira trilha', xp: 50, earned: done >= 1 },
-    { icon: '⭐', bg: 'bg-[#F0E4B8]', name: 'Dedicado', desc: 'Estudou por 10 dias seguidos', xp: 100, earned: streak >= 10 },
-    { icon: '🎯', bg: 'bg-[#F4CACA]', name: 'Em Ritmo', desc: 'Completou 5 módulos', xp: 80, earned: done >= 5 },
-  ];
-
-  container.innerHTML = list.map(a => `
-    <div class="flex items-center gap-3 ${!a.earned ? 'opacity-40' : ''}">
-      <div class="w-10 h-10 rounded-full ${a.bg} flex items-center justify-center flex-shrink-0 text-lg">
-        ${a.earned ? a.icon : '🔒'}
-      </div>
-      <div class="flex-1 min-w-0">
-        <p class="font-semibold text-[12px] text-gray-800">${a.name}</p>
-        <p class="text-[10px] text-gray-400 truncate">${a.desc}</p>
-      </div>
-      ${a.earned ? `<span class="text-[10px] font-bold text-[#4E7A60] bg-[#E8F4EE] px-2 py-1 rounded-full flex-shrink-0">+${a.xp} XP</span>` : ''}
-    </div>`).join('');
-}
+document.addEventListener('DOMContentLoaded', async () => {
+  await waitForProgress();
+  renderXPStats();
+  renderGroupProgress();
+  renderQuests();
+  renderTrailWidget();
+  renderNextLesson();
+  renderHeatmap();
+  renderActivity();
+  renderRanking();
+  renderAchievements();
+});
 </script>
 {% endblock %}

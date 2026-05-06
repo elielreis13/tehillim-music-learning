@@ -2,96 +2,69 @@
 
 {% block title %}Conquistas | Tehillim{% endblock %}
 
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  .medal-glow { transition: box-shadow 0.2s, transform 0.2s; }
+  .medal-glow:hover { transform: translateY(-2px); }
+</style>
+{% endblock %}
+
 {% block header %}
-<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
-  <div class="flex items-center justify-between relative z-10">
-    <div>
-      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Progresso</p>
-      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Conquistas</h1>
-      <p class="text-[13px] text-gray-500 mt-0.5">Desbloqueie recompensas ao avançar na jornada</p>
-    </div>
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2 bg-white/60 px-3 py-1.5 rounded-full shadow-sm">
-        <span class="text-base">⭐</span>
-        <span class="font-bold text-[16px] text-gray-800" id="total-xp">0</span>
-        <span class="text-[11px] text-gray-500">XP</span>
-      </div>
-      <div class="w-px h-7 bg-[#D4C4A8]"></div>
-      <div class="flex items-center gap-2">
-        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
-        <div class="leading-tight">
-          <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
-          <p class="text-[10px] text-gray-500">dias</p>
-        </div>
-      </div>
-      <div class="w-px h-7 bg-[#D4C4A8]"></div>
-    </div>
-  </div>
-  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
+<header style="background:linear-gradient(135deg,#F2EAD8 0%,#ECD9B0 100%);padding:26px 32px;position:relative;overflow:hidden;flex-shrink:0;">
+  <div style="position:absolute;right:50px;top:-30px;opacity:0.10;pointer-events:none;font-size:220px;line-height:1;font-family:'Georgia',serif;color:#7A5C2E;">&#119070;</div>
+  <p style="font-size:11px;color:#7A5C2E;text-transform:uppercase;letter-spacing:0.22em;font-weight:700;margin:0;">♪ Vitrine</p>
+  <h1 style="font-family:'Fraunces',serif;font-size:40px;font-weight:400;line-height:1.05;margin:8px 0 6px;letter-spacing:-0.02em;color:#2A2419;">
+    Suas <em style="font-style:italic;font-weight:300;color:#7A5C2E;">medalhas</em>
+  </h1>
+  <p style="font-size:13px;color:#7A6A4D;margin:0;">
+    <span id="header-summary">— conquistadas · — em busca</span> · cada uma é uma pequena sinfonia.
+  </p>
 </header>
 {% endblock %}
 
 {% block content %}
-<div class="p-4 md:p-6 flex flex-col xl:flex-row gap-5">
+<div style="padding:24px 28px;display:flex;flex-direction:column;gap:20px;">
 
-  <!-- ── COLUNA PRINCIPAL ── -->
-  <div class="flex-1 flex flex-col gap-5 min-w-0">
-
-    <!-- Resumo rápido -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-[#F2EAD8] flex items-center justify-center text-xl">🏆</div>
-        <div>
-          <p class="font-bold text-[20px] text-gray-800" id="ach-earned">0</p>
-          <p class="text-[11px] text-gray-400">Conquistadas</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-xl">🔒</div>
-        <div>
-          <p class="font-bold text-[20px] text-gray-800" id="ach-locked">—</p>
-          <p class="text-[11px] text-gray-400">A desbloquear</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-[#FEF3C7] flex items-center justify-center text-xl">⭐</div>
-        <div>
-          <p class="font-bold text-[20px] text-gray-800" id="ach-xp">0 XP</p>
-          <p class="text-[11px] text-gray-400">Total acumulado</p>
+  <!-- Featured: conquista mais recente -->
+  <div id="featured-achievement" style="display:none;background:linear-gradient(135deg,#2A2419 0%,#3D3018 60%,#5A4520 100%);border-radius:22px;padding:26px 28px;color:white;position:relative;overflow:hidden;">
+    <div style="position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,183,143,0.4) 0%,transparent 70%);pointer-events:none;"></div>
+    <p style="font-size:11px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.22em;font-weight:700;margin:0;">★ Mais recente</p>
+    <div style="display:flex;align-items:center;gap:24px;margin-top:14px;">
+      <div id="feat-icon" style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#E8C77A 0%,#C4943A 100%);display:flex;align-items:center;justify-content:center;font-size:52px;box-shadow:0 0 40px rgba(232,199,122,0.6);border:4px solid rgba(255,255,255,0.15);flex-shrink:0;">🏆</div>
+      <div style="flex:1;min-width:0;">
+        <h2 id="feat-name" style="font-family:'Fraunces',serif;font-size:28px;font-weight:500;margin:0 0 6px;">—</h2>
+        <p id="feat-desc" style="font-size:13px;color:#C4B89A;margin:0 0 12px;line-height:1.4;">—</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span id="feat-rarity" style="background:rgba(255,255,255,0.12);color:#C4B89A;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;">—</span>
+          <span id="feat-xp" style="background:rgba(255,255,255,0.1);color:#C4B89A;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;">+0 XP</span>
         </div>
       </div>
     </div>
-
-    <!-- Grid de conquistas -->
-    <div>
-      <h2 class="font-bold text-[16px] text-gray-800 mb-3">Todas as Conquistas</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" id="achievements-grid">
-        <p class="text-[13px] text-gray-400 sm:col-span-2 xl:col-span-3">Carregando...</p>
-      </div>
-    </div>
-
   </div>
 
-  <!-- ── PAINEL DIREITO ── -->
-  <div class="w-full xl:w-[240px] flex-shrink-0 flex flex-col gap-4">
-
-    <!-- Próximas conquistas -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <h3 class="font-bold text-[14px] text-gray-800 mb-4">Próximas Conquistas</h3>
-      <div class="flex flex-col gap-3" id="next-achievements">
-        <p class="text-[12px] text-gray-400">Carregando...</p>
-      </div>
+  <!-- Conquistadas -->
+  <div>
+    <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0 0 12px;color:#2A2419;">
+      Conquistadas <span id="earned-count" style="color:#9C8460;font-weight:400;">· 0</span>
+    </h3>
+    <div id="earned-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;">
+      <p style="font-size:12px;color:#9C8460;">Carregando...</p>
     </div>
-
-    <!-- Dica -->
-    <div class="bg-[#F2EAD8] rounded-2xl p-5">
-      <p class="text-[13px] font-semibold text-[#7A5C2E] mb-1">💡 Dica</p>
-      <p class="text-[12px] text-gray-600 leading-relaxed">
-        Estude todos os dias para manter sua sequência e ganhar conquistas de dedicação!
-      </p>
-    </div>
-
   </div>
+
+  <!-- Em busca -->
+  <div>
+    <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0 0 12px;color:#2A2419;">
+      Em busca <span id="inprogress-count" style="color:#9C8460;font-weight:400;">· 0</span>
+    </h3>
+    <div id="inprogress-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
 </div>
 {% endblock %}
 
@@ -99,21 +72,27 @@
 <script>
 const GROUPS_DATA = {{ groups | tojson }};
 
-// Definição de todas as conquistas
 const ACHIEVEMENTS = [
-  { id:'first_module',    icon:'🎵', bg:'bg-[#C4D9CE]', name:'Primeiros Passos',    desc:'Concluiu o primeiro módulo',           xp:50,  check: (d,s,g) => d >= 1 },
-  { id:'five_modules',    icon:'🎸', bg:'bg-[#F0E4B8]', name:'Em Ritmo',            desc:'Completou 5 módulos',                  xp:100, check: (d,s,g) => d >= 5 },
-  { id:'ten_modules',     icon:'🎹', bg:'bg-[#DBEAFE]', name:'Instrumentista',      desc:'Completou 10 módulos',                 xp:150, check: (d,s,g) => d >= 10 },
-  { id:'all_music',       icon:'🔰', bg:'bg-[#F2EAD8]', name:'Musicalizando',       desc:'Concluiu o grupo Musicalização Infantil', xp:200, check: (d,s,g) => g['musicalizacao-infantil'] >= 10 },
-  { id:'all_leitura',     icon:'🎼', bg:'bg-[#DFF0E8]', name:'Leitor Musical',      desc:'Concluiu o grupo Alfabetização Musical',  xp:250, check: (d,s,g) => g['alfabetizacao-musical'] >= 7 },
-  { id:'all_teoria',      icon:'🎹', bg:'bg-[#EDE9FE]', name:'Teórico Completo',    desc:'Concluiu o grupo Teoria e Harmonia',      xp:300, check: (d,s,g) => g['teoria-e-harmonia'] >= 14 },
-  { id:'streak_3',        icon:'🔥', bg:'bg-[#FFE4E6]', name:'Consistente',         desc:'3 dias de sequência',                  xp:30,  check: (d,s,g) => s >= 3 },
-  { id:'streak_7',        icon:'⚡', bg:'bg-[#FEF3C7]', name:'Semana Perfeita',     desc:'7 dias de sequência',                  xp:70,  check: (d,s,g) => s >= 7 },
-  { id:'streak_30',       icon:'💎', bg:'bg-[#D1FAE5]', name:'Mês de Ouro',         desc:'30 dias de sequência',                 xp:300, check: (d,s,g) => s >= 30 },
-  { id:'explorer',        icon:'🗺️', bg:'bg-[#E8E0F4]', name:'Explorador',          desc:'Visitou todos os grupos',              xp:80,  check: (d,s,g) => Object.keys(g).length >= 7 },
-  { id:'hundred_modules', icon:'🌟', bg:'bg-[#FEF3C7]', name:'Centurião',           desc:'Completou todos os módulos principais', xp:500, check: (d,s,g) => d >= 45 },
-  { id:'daily_10',        icon:'📅', bg:'bg-[#C4D9CE]', name:'Hábito Formado',      desc:'10 dias de estudo registrados',        xp:100, check: (d,s,g) => Object.values(g).some ? true : false },
+  { id:'first_module',    icon:'🎵', name:'Primeiros Passos',    desc:'Concluiu o primeiro módulo',              xp:50,  rarity:'comum',    check: (d,s,g) => d >= 1,                                                   progress: d => Math.min(d,1),  total:1 },
+  { id:'five_modules',    icon:'🎸', name:'Em Ritmo',            desc:'Completou 5 módulos',                     xp:100, rarity:'comum',    check: (d,s,g) => d >= 5,                                                   progress: d => Math.min(d,5),  total:5 },
+  { id:'ten_modules',     icon:'🎹', name:'Instrumentista',      desc:'Completou 10 módulos',                    xp:150, rarity:'raro',     check: (d,s,g) => d >= 10,                                                  progress: d => Math.min(d,10), total:10 },
+  { id:'streak_3',        icon:'🔥', name:'Consistente',         desc:'3 dias de sequência',                     xp:30,  rarity:'comum',    check: (d,s,g) => s >= 3,                                                   progress: (d,s) => Math.min(s,3),  total:3 },
+  { id:'streak_7',        icon:'⚡', name:'Semana Perfeita',     desc:'7 dias de sequência',                     xp:70,  rarity:'raro',     check: (d,s,g) => s >= 7,                                                   progress: (d,s) => Math.min(s,7),  total:7 },
+  { id:'streak_30',       icon:'💎', name:'Mês de Ouro',         desc:'30 dias de sequência',                    xp:300, rarity:'épico',    check: (d,s,g) => s >= 30,                                                  progress: (d,s) => Math.min(s,30), total:30 },
+  { id:'ouvido',          icon:'👂', name:'Ouvido Apurado',      desc:'Complete todos os módulos de Fundamentos', xp:200, rarity:'raro',    check: (d,s,g) => (g['fundamentos']||0) === 100,                            progress: (d,s,g) => g['fundamentos']||0, total:100 },
+  { id:'all_music',       icon:'🔰', name:'Musicalizando',       desc:'Conclua o grupo Musicalização',           xp:200, rarity:'raro',     check: (d,s,g) => (g['musicalizacao']||0) === 100,                          progress: (d,s,g) => g['musicalizacao']||0, total:100 },
+  { id:'polymata',        icon:'🎼', name:'Polímata Musical',    desc:'Conclua 3 grupos diferentes',             xp:800, rarity:'épico',    check: (d,s,g) => Object.values(g).filter(v => v === 100).length >= 3,      progress: (d,s,g) => Object.values(g).filter(v => v === 100).length, total:3 },
+  { id:'madrugador',      icon:'🌅', name:'Madrugador',          desc:'Estude por 5 dias diferentes',            xp:80,  rarity:'comum',    check: (d,s,g) => (window._studyDays||[]).length >= 5,                      progress: d => Math.min((window._studyDays||[]).length,5), total:5 },
+  { id:'perfeccionista',  icon:'💎', name:'Perfeccionista',      desc:'Complete 100 módulos',                    xp:600, rarity:'épico',    check: (d,s,g) => d >= 100,                                                 progress: d => Math.min(d,100), total:100 },
+  { id:'lenda',           icon:'👑', name:'Lenda Tehillim',      desc:'Termine todos os módulos',                xp:2000,rarity:'lendário', check: (d,s,g) => d >= (window._totalModules||999),                         progress: d => d, total: window._totalModules||149 },
 ];
+
+const RARITY_COLORS = {
+  comum:    { bg:'#F2EAD8',  border:'#C4943A',  text:'#7A5C2E',  glow:'rgba(196,148,58,0.3)' },
+  raro:     { bg:'#DBEAFE',  border:'#4A78B0',  text:'#2A4F7A',  glow:'rgba(74,120,176,0.35)' },
+  épico:    { bg:'#E8E0F4',  border:'#7B5EA7',  text:'#4A3470',  glow:'rgba(123,94,167,0.4)' },
+  lendário: { bg:'linear-gradient(135deg,#FFE0B8 0%,#FFB78F 100%)', border:'#E8632A', text:'#7A2E0F', glow:'rgba(232,99,42,0.5)' },
+};
 
 document.addEventListener('DOMContentLoaded', async () => {
   await waitForProgress();
@@ -132,63 +111,92 @@ function renderAchievements() {
   const prog   = window._progress || [];
   const done   = window._doneModules || 0;
   const streak = window._streak || 0;
-  const days   = (window._studyDays || []).length;
   const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
 
-  // Progresso por grupo
-  const groupDone = {};
+  // Group progress percentages
+  const groupPct = {};
   GROUPS_DATA.forEach(g => {
-    groupDone[g.slug] = g.modules.filter(m => doneSet.has(m.slug)).length;
+    const gDone = g.modules.filter(m => doneSet.has(m.slug)).length;
+    groupPct[g.slug] = g.module_count > 0 ? Math.round((gDone / g.module_count) * 100) : 0;
   });
 
-  const evaluated = ACHIEVEMENTS.map(a => ({
-    ...a,
-    earned: a.check(done, streak, groupDone)
-  }));
+  const evaluated = ACHIEVEMENTS.map(a => {
+    const earned = a.check(done, streak, groupPct);
+    const prog_val = typeof a.progress === 'function' ? a.progress(done, streak, groupPct) : 0;
+    return { ...a, earned, progressVal: Math.min(Math.round(prog_val), a.total) };
+  });
 
   const earned = evaluated.filter(a => a.earned);
-  const locked = evaluated.filter(a => !a.earned);
-  const xp     = earned.reduce((s, a) => s + a.xp, 0);
+  const inProgress = evaluated.filter(a => !a.earned);
 
-  // Resumo
-  set('ach-earned', earned.length);
-  set('ach-locked', locked.length);
-  set('ach-xp',     xp + ' XP');
-  set('total-xp',   xp);
+  // Header summary
+  set('header-summary', `${earned.length} conquistadas · ${inProgress.length} em busca`);
+  set('earned-count', `· ${earned.length}`);
+  set('inprogress-count', `· ${inProgress.length}`);
 
-  // Grid
-  const grid = document.getElementById('achievements-grid');
-  if (grid) {
-    grid.innerHTML = evaluated.map(a => `
-      <div class="bg-white rounded-2xl p-5 shadow-sm ${!a.earned ? 'opacity-50' : ''} relative overflow-hidden">
-        ${a.earned ? '<div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#4E7A60] flex items-center justify-center"><svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div>' : ''}
-        <div class="w-12 h-12 rounded-2xl ${a.bg} flex items-center justify-center text-2xl mb-3 ${!a.earned ? 'grayscale' : ''}">
-          ${a.earned ? a.icon : '🔒'}
-        </div>
-        <p class="font-bold text-[13px] text-gray-800">${a.name}</p>
-        <p class="text-[11px] text-gray-400 mt-1 leading-snug">${a.desc}</p>
-        <span class="inline-block mt-2 text-[10px] font-bold ${a.earned ? 'text-[#4E7A60] bg-[#E8F4EE]' : 'text-gray-400 bg-gray-100'} px-2 py-0.5 rounded-full">
-          ${a.earned ? '+' : ''}${a.xp} XP
-        </span>
-      </div>`).join('');
+  // Featured (most recent earned = last in list that is earned)
+  const latestEarned = earned[earned.length - 1];
+  if (latestEarned) {
+    const r = RARITY_COLORS[latestEarned.rarity];
+    document.getElementById('featured-achievement').style.display = 'block';
+    set('feat-name', latestEarned.name);
+    set('feat-desc', latestEarned.desc);
+    document.getElementById('feat-icon').textContent = latestEarned.icon;
+    document.getElementById('feat-rarity').textContent = latestEarned.rarity.toUpperCase();
+    document.getElementById('feat-rarity').style.background = r.border + '40';
+    document.getElementById('feat-rarity').style.color = r.border;
+    set('feat-xp', `+${latestEarned.xp} XP`);
   }
 
-  // Próximas conquistas (primeiras 3 não ganhas)
-  const nextEl = document.getElementById('next-achievements');
-  if (nextEl) {
-    const next = locked.slice(0, 3);
-    if (!next.length) {
-      nextEl.innerHTML = '<p class="text-[12px] text-[#4E7A60] font-semibold">🎉 Todas conquistadas!</p>';
+  // Earned medals grid (6 columns)
+  const earnedGrid = document.getElementById('earned-grid');
+  if (earnedGrid) {
+    if (!earned.length) {
+      earnedGrid.innerHTML = '<p style="font-size:12px;color:#9C8460;grid-column:1/-1;">Nenhuma conquista ainda — continue estudando!</p>';
     } else {
-      nextEl.innerHTML = next.map(a => `
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl ${a.bg} grayscale flex items-center justify-center flex-shrink-0 text-lg">🔒</div>
-          <div class="flex-1 min-w-0">
-            <p class="font-semibold text-[12px] text-gray-700">${a.name}</p>
-            <p class="text-[10px] text-gray-400 truncate">${a.desc}</p>
-          </div>
-          <span class="text-[10px] text-gray-400 flex-shrink-0">+${a.xp} XP</span>
-        </div>`).join('');
+      earnedGrid.innerHTML = earned.map(a => {
+        const r = RARITY_COLORS[a.rarity];
+        const bgIsGrad = r.bg.includes('gradient');
+        return `
+          <div class="medal-glow" style="background:white;border-radius:16px;padding:14px;border:2px solid ${r.border}40;text-align:center;position:relative;overflow:hidden;cursor:default;">
+            <div style="position:absolute;inset:0;background:radial-gradient(circle at center,${r.glow} 0%,transparent 60%);opacity:0.5;pointer-events:none;"></div>
+            <div style="width:64px;height:64px;border-radius:50%;background:${bgIsGrad ? r.bg : r.bg};display:flex;align-items:center;justify-content:center;margin:4px auto 10px;font-size:30px;box-shadow:0 6px 20px ${r.glow};position:relative;z-index:1;">${a.icon}</div>
+            <h4 style="font-family:'Fraunces',serif;font-size:12px;font-weight:500;margin:0 0 3px;color:#2A2419;line-height:1.2;position:relative;z-index:1;min-height:28px;">${a.name}</h4>
+            <p style="font-size:9px;color:${r.text};text-transform:uppercase;letter-spacing:0.15em;font-weight:700;margin:0 0 8px;position:relative;z-index:1;">${a.rarity}</p>
+            <div style="border-top:1px dashed #F0E8D4;padding-top:8px;font-size:10px;color:#9C8460;display:flex;justify-content:space-between;position:relative;z-index:1;">
+              <span>✓</span>
+              <span style="font-weight:700;color:${r.text};">+${a.xp}</span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+  }
+
+  // In-progress grid (3 columns)
+  const inProgressGrid = document.getElementById('inprogress-grid');
+  if (inProgressGrid) {
+    if (!inProgress.length) {
+      inProgressGrid.innerHTML = '<p style="font-size:12px;color:#5A8A6A;font-weight:600;">🎉 Todas conquistadas!</p>';
+    } else {
+      inProgressGrid.innerHTML = inProgress.map(a => {
+        const r = RARITY_COLORS[a.rarity];
+        const pct = Math.round((a.progressVal / a.total) * 100);
+        return `
+          <div style="background:white;border-radius:16px;padding:18px;border:1px solid #F0E8D4;display:flex;align-items:center;gap:14px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:#F4ECD8;display:flex;align-items:center;justify-content:center;font-size:24px;filter:grayscale(0.5);flex-shrink:0;">${a.icon}</div>
+            <div style="flex:1;min-width:0;">
+              <p style="font-size:9px;color:${r.text};text-transform:uppercase;letter-spacing:0.15em;font-weight:700;margin:0;">${a.rarity}</p>
+              <h4 style="font-family:'Fraunces',serif;font-size:14px;font-weight:500;margin:2px 0 3px;color:#2A2419;">${a.name}</h4>
+              <p style="font-size:10px;color:#9C8460;margin:0 0 8px;line-height:1.3;">${a.desc}</p>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="flex:1;height:5px;background:#F4ECD8;border-radius:3px;overflow:hidden;">
+                  <div style="height:100%;width:${pct}%;background:${r.border};border-radius:3px;"></div>
+                </div>
+                <span style="font-size:10px;color:${r.text};font-weight:700;font-family:'Fraunces',serif;">${a.progressVal}/${a.total}</span>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
     }
   }
 }

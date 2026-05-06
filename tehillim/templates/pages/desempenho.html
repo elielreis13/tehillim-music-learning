@@ -2,153 +2,145 @@
 
 {% block title %}Desempenho | Tehillim{% endblock %}
 
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
+{% endblock %}
+
 {% block header %}
-<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
-  <div class="flex items-center justify-between relative z-10">
+<header style="background:linear-gradient(120deg,#2A2419 0%,#3D3018 60%,#5A4520 100%);padding:22px 32px;position:relative;overflow:hidden;color:white;flex-shrink:0;">
+  <div style="position:absolute;right:-100px;top:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(232,199,122,0.3) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
     <div>
-      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Análise</p>
-      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Desempenho</h1>
-      <p class="text-[13px] text-gray-500 mt-0.5">Acompanhe sua evolução e hábitos de estudo</p>
+      <p style="font-size:11px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.22em;font-weight:700;margin:0;">📊 Estatísticas</p>
+      <h1 style="font-family:'Fraunces',serif;font-size:34px;font-weight:400;line-height:1.05;margin:6px 0 4px;letter-spacing:-0.02em;">Seu desempenho</h1>
+      <p style="font-size:12px;color:#C4B89A;margin:0;" id="perf-subtitle">Nível — · — XP</p>
     </div>
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2">
-        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
-        <div class="leading-tight">
-          <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
-          <p class="text-[10px] text-gray-500">dias de sequência</p>
-        </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <div style="background:rgba(232,199,122,0.10);border:1px solid rgba(232,199,122,0.25);border-radius:12px;padding:8px 14px;min-width:80px;text-align:center;">
+        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#E8C77A;line-height:1;" id="stat-modules">—</div>
+        <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Módulos</div>
       </div>
-      <div class="w-px h-7 bg-[#D4C4A8]"></div>
+      <div style="background:rgba(232,199,122,0.10);border:1px solid rgba(232,199,122,0.25);border-radius:12px;padding:8px 14px;min-width:80px;text-align:center;">
+        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#FFB78F;line-height:1;" id="stat-streak">—</div>
+        <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Sequência</div>
+      </div>
+      <div style="background:rgba(232,199,122,0.10);border:1px solid rgba(232,199,122,0.25);border-radius:12px;padding:8px 14px;min-width:80px;text-align:center;">
+        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#A8D6B5;line-height:1;" id="stat-days">—</div>
+        <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Dias estudo</div>
+      </div>
+      <div style="background:rgba(232,199,122,0.10);border:1px solid rgba(232,199,122,0.25);border-radius:12px;padding:8px 14px;min-width:80px;text-align:center;">
+        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#B8B0E8;line-height:1;" id="stat-xp">—</div>
+        <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">XP Total</div>
+      </div>
     </div>
   </div>
-  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
 </header>
 {% endblock %}
 
 {% block content %}
-<div class="p-4 md:p-6 flex flex-col xl:flex-row gap-5">
+<div style="padding:20px 24px;display:grid;grid-template-columns:1.4fr 1fr;gap:16px;">
 
-  <!-- ── COLUNA PRINCIPAL ── -->
-  <div class="flex-1 flex flex-col gap-5 min-w-0">
+  <!-- ── COLUNA ESQUERDA ── -->
+  <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
 
-    <!-- Stats cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      {% set stats = [
-        ('📚', 'Módulos Concluídos', 'stat-modules', 'bg-[#F2EAD8]', '#C4943A'),
-        ('🔥', 'Sequência Atual', 'stat-streak', 'bg-[#DFF0E8]', '#4E7A60'),
-        ('📅', 'Dias de Estudo', 'stat-days', 'bg-[#EDE9FE]', '#7B5EA7'),
-        ('⭐', 'XP Total', 'stat-xp', 'bg-[#FEF3C7]', '#D97706'),
-      ] %}
-      {% for icon, label, id, bg, color in stats %}
-      <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <div class="w-10 h-10 rounded-xl {{ bg }} flex items-center justify-center text-xl mb-3">{{ icon }}</div>
-        <p class="font-bold text-[22px] text-gray-800" id="{{ id }}">—</p>
-        <p class="text-[12px] text-gray-400 mt-0.5">{{ label }}</p>
+    <!-- Weekly study chart (dias da semana) -->
+    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0;color:#2A2419;">⚡ Esta semana</h3>
+        <div style="font-size:11px;color:#9C8460;" id="week-summary">7 dias</div>
       </div>
-      {% endfor %}
-    </div>
-
-    <!-- Progresso por grupo -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm">
-      <h2 class="font-bold text-[15px] text-gray-800 mb-5">Progresso por Grupo</h2>
-      {% set group_colors = [('#C4943A', 'bg-[#F2EAD8]'), ('#5A8A6A', 'bg-[#DFF0E8]'), ('#7B5EA7', 'bg-[#E8E0F4]')] %}
-      {% for group in groups %}
-      {% set c = group_colors[loop.index0 % 3] %}
-      <div class="mb-4 last:mb-0">
-        <div class="flex items-center justify-between mb-2">
-          <div class="flex items-center gap-2">
-            <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-5 h-5 object-contain flex-shrink-0">
-            <span class="font-semibold text-[13px] text-gray-700">{{ group.name }}</span>
-            <span class="text-[11px] text-gray-400">{{ group.module_count }} módulos</span>
-          </div>
-          <span class="font-bold text-[13px]" style="color:{{ c[0] }}" data-gperf-pct="{{ group.slug }}">—</span>
-        </div>
-        <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
-          <div class="h-full rounded-full transition-all duration-700" style="background-color:{{ c[0] }};width:0%"
-               data-gperf-bar="{{ group.slug }}"></div>
-        </div>
-        <p class="text-[11px] text-gray-400 mt-1" data-gperf-count="{{ group.slug }}"></p>
-      </div>
-      {% endfor %}
-    </div>
-
-    <!-- Calendário de estudo (últimos 28 dias) -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm">
-      <h2 class="font-bold text-[15px] text-gray-800 mb-4">Hábito de Estudo — Últimos 28 dias</h2>
-      <div class="grid gap-1.5" style="grid-template-columns: repeat(7, 1fr)" id="study-calendar">
+      <div id="week-chart" style="display:flex;gap:10px;align-items:flex-end;height:110px;">
         <!-- Filled by JS -->
       </div>
-      <div class="flex items-center gap-3 mt-3">
-        <div class="flex items-center gap-1.5">
-          <div class="w-4 h-4 rounded-sm bg-gray-100"></div>
-          <span class="text-[11px] text-gray-400">Sem estudo</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <div class="w-4 h-4 rounded-sm bg-[#C4943A]"></div>
-          <span class="text-[11px] text-gray-400">Estudou</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <div class="w-4 h-4 rounded-sm bg-[#4E7A60]"></div>
-          <span class="text-[11px] text-gray-400">Hoje</span>
-        </div>
+    </div>
+
+    <!-- Skills / Atributos -->
+    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
+      <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0 0 16px;color:#2A2419;">⚔️ Atributos</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;" id="skills-grid">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+
+    <!-- Heatmap -->
+    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:14px;">
+        <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0;color:#2A2419;">🔥 Frequência</h3>
+        <span style="font-size:11px;color:#9C8460;">Últimas 12 semanas</span>
+      </div>
+      <div id="heatmap-grid" style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;">
+        <!-- Filled by JS -->
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+        <div style="width:12px;height:12px;border-radius:2px;background:#F4ECD8;"></div>
+        <span style="font-size:10px;color:#9C8460;">Sem estudo</span>
+        <div style="width:12px;height:12px;border-radius:2px;background:#FFB78F;margin-left:8px;"></div>
+        <span style="font-size:10px;color:#9C8460;">Estudou</span>
+        <div style="width:12px;height:12px;border-radius:2px;background:#E8632A;margin-left:8px;"></div>
+        <span style="font-size:10px;color:#9C8460;">Hoje</span>
       </div>
     </div>
 
   </div>
 
-  <!-- ── PAINEL DIREITO ── -->
-  <div class="w-full xl:w-[260px] flex-shrink-0 flex flex-col gap-4">
+  <!-- ── COLUNA DIREITA ── -->
+  <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
 
-    <!-- Gauge circular -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <h3 class="font-bold text-[14px] text-gray-800 mb-4">Desempenho Geral</h3>
-      <div class="flex flex-col items-center">
-        <div class="relative w-[120px] h-[120px] mb-4">
-          <svg class="w-full h-full" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="42" fill="none" stroke="#F2C4A8" stroke-width="10"/>
-            <circle cx="50" cy="50" r="42" fill="none" stroke="#3D7A5E" stroke-width="10"
-              id="perf-circle-big"
-              stroke-dasharray="0 263.9"
-              stroke-linecap="round"
-              transform="rotate(-90 50 50)"/>
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span class="font-bold text-[22px] text-gray-800 leading-tight" id="perf-pct-big">—</span>
-            <span class="text-[9px] text-gray-400 mt-0.5">Geral</span>
-          </div>
-        </div>
-        <div class="w-full flex flex-col gap-2.5">
-          <div class="flex justify-between">
-            <span class="text-[12px] text-gray-500">Módulos feitos</span>
-            <span class="text-[12px] font-bold text-gray-700" id="r-modules">—</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-[12px] text-gray-500">🔥 Sequência</span>
-            <span class="text-[12px] font-bold text-gray-700"><span data-streak>—</span> dias</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-[12px] text-gray-500">Dias de estudo</span>
-            <span class="text-[12px] font-bold text-gray-700" id="r-days">—</span>
-          </div>
-        </div>
+    <!-- Próximo nível — XP card -->
+    <div style="background:linear-gradient(135deg,#2A2419 0%,#3D3018 100%);border-radius:16px;padding:20px;color:white;">
+      <p style="font-size:10px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.18em;font-weight:700;margin:0;">🎯 Progresso de nível</p>
+      <h3 style="font-family:'Fraunces',serif;font-size:20px;font-weight:500;margin:6px 0 14px;" id="level-title">Nível —</h3>
+      <div style="height:10px;background:rgba(255,255,255,0.12);border-radius:5px;overflow:hidden;margin-bottom:8px;">
+        <div id="xp-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#E8C77A,#FFB78F);border-radius:5px;transition:width 0.8s ease;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#C4B89A;">
+        <span id="xp-current">0 XP</span>
+        <span id="xp-needed">faltam — XP</span>
+        <span id="xp-next">— XP</span>
+      </div>
+    </div>
+
+    <!-- Distribuição por grupo -->
+    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
+      <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0 0 16px;color:#2A2419;">📊 Por grupo</h3>
+      <div style="display:flex;flex-direction:column;gap:12px;" id="groups-dist">
+        <!-- Filled by JS -->
       </div>
     </div>
 
     <!-- Módulos recentes -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <h3 class="font-bold text-[14px] text-gray-800 mb-3">Últimos Concluídos</h3>
-      <div class="flex flex-col gap-2" id="recent-modules">
-        <p class="text-[12px] text-gray-400">Carregando...</p>
+    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
+      <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0 0 14px;color:#2A2419;">🏆 Últimos concluídos</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;" id="recent-modules">
+        <p style="font-size:12px;color:#9C8460;margin:0;">Carregando...</p>
       </div>
     </div>
 
   </div>
+
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 const GROUPS_DATA = {{ groups | tojson }};
+
+const XP_PER_MODULE = 50;
+const XP_PER_LEVEL  = 300;
+const LEVEL_TITLES   = ['Iniciante','Aprendiz','Estudioso','Dedicado','Músico','Virtuose','Maestro','Lenda'];
+const GROUP_COLORS   = ['#C4943A','#5A8A6A','#7B5EA7','#4A78B0','#E8632A'];
+const WEEK_DAYS      = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+const SKILLS = [
+  { name: 'Percepção', key: 'fundamentos',    color: '#C4943A' },
+  { name: 'Musicalização', key: 'musicalizacao', color: '#5A8A6A' },
+  { name: 'Alfabetização', key: 'alfabetizacao', color: '#7B5EA7' },
+  { name: 'Teoria',    key: 'teoria',         color: '#4A78B0' },
+  { name: 'Ritmo',     key: 'ritmo',          color: '#E8632A' },
+  { name: 'Geral',     key: '__all__',         color: '#9C8460' },
+];
 
 document.addEventListener('DOMContentLoaded', async () => {
   await waitForProgress();
@@ -164,97 +156,186 @@ function waitForProgress() {
 }
 
 function renderAll() {
-  const prog  = window._progress || [];
-  const done  = window._doneModules || 0;
-  const total = window._totalModules || 1;
-  const days  = (window._studyDays || []).length;
-  const streak = window._streak || 0;
-  const xp    = done * 50 + days * 10;
-  const pct   = Math.round((done / total) * 100);
+  const prog    = window._progress || [];
+  const done    = window._doneModules || 0;
+  const total   = window._totalModules || 1;
+  const streak  = window._streak || 0;
+  const studyDays = window._studyDays || [];
+  const days    = studyDays.length;
+  const xp      = done * XP_PER_MODULE;
+  const level   = Math.floor(xp / XP_PER_LEVEL) + 1;
+  const levelTitle = LEVEL_TITLES[Math.min(level - 1, LEVEL_TITLES.length - 1)];
+  const xpInLevel  = xp % XP_PER_LEVEL;
+  const xpNextLevel = XP_PER_LEVEL;
 
-  // Stats cards
-  set('stat-modules', done);
-  set('stat-streak',  streak + ' dias');
+  // Header stats
+  set('stat-modules', `${done} / ${total}`);
+  set('stat-streak',  streak + ' 🔥');
   set('stat-days',    days);
   set('stat-xp',      xp + ' XP');
+  set('perf-subtitle', `Nível ${level} · ${levelTitle} · top dos alunos`);
 
-  // Gauge
-  const circumference = 263.9;
-  const circle = document.getElementById('perf-circle-big');
-  if (circle) circle.setAttribute('stroke-dasharray', `${(pct/100)*circumference} ${circumference}`);
-  set('perf-pct-big', pct + '%');
-  set('r-modules', `${done} / ${total}`);
-  set('r-days', days);
+  // XP card
+  set('level-title', `Nível ${level} — ${levelTitle}`);
+  const barPct = Math.round((xpInLevel / xpNextLevel) * 100);
+  const barEl = document.getElementById('xp-bar');
+  if (barEl) setTimeout(() => { barEl.style.width = barPct + '%'; }, 100);
+  set('xp-current', xp + ' XP');
+  set('xp-needed', `faltam ${xpNextLevel - xpInLevel} XP`);
+  set('xp-next', (level * XP_PER_LEVEL) + ' XP');
 
-  // Progresso por grupo
+  // Week chart (last 7 days study activity)
+  renderWeekChart(studyDays);
+
+  // Skills from real group progress
   const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
-  GROUPS_DATA.forEach(group => {
-    const slugs = group.modules.map(m => m.slug);
-    const gDone = slugs.filter(s => doneSet.has(s)).length;
-    const gPct  = group.module_count > 0 ? Math.round((gDone / group.module_count) * 100) : 0;
+  renderSkills(doneSet);
+  renderGroupsDist(doneSet);
 
-    const barEl   = document.querySelector(`[data-gperf-bar="${group.slug}"]`);
-    const pctEl   = document.querySelector(`[data-gperf-pct="${group.slug}"]`);
-    const countEl = document.querySelector(`[data-gperf-count="${group.slug}"]`);
-    if (barEl)   barEl.style.width = gPct + '%';
-    if (pctEl)   pctEl.textContent = gPct + '%';
-    if (countEl) countEl.textContent = `${gDone} de ${group.module_count} concluídos`;
+  // Heatmap (12 weeks = 84 days)
+  renderHeatmap(studyDays);
+
+  // Recent modules
+  renderRecent(prog);
+}
+
+function renderWeekChart(studyDays) {
+  const chart = document.getElementById('week-chart');
+  if (!chart) return;
+  const studySet = new Set(studyDays.map(d => d.day));
+  const today = new Date();
+  const cells = [];
+  let studiedCount = 0;
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    const dayLabel = WEEK_DAYS[d.getDay()];
+    const isToday = i === 0;
+    const hasStudy = studySet.has(key);
+    if (hasStudy) studiedCount++;
+    const barH = hasStudy ? (isToday ? 80 : 65) : 14;
+    const barColor = isToday ? 'linear-gradient(180deg,#E8C77A 0%,#C4943A 100%)' : hasStudy ? '#F2EAD8' : '#F4ECD8';
+    const xpLabel = hasStudy ? `+${XP_PER_MODULE}` : '';
+    cells.push(`
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+        ${xpLabel ? `<span style="font-size:9px;color:#7B5EA7;font-weight:700;font-family:'Fraunces',serif;">${xpLabel}</span>` : '<span style="font-size:9px;"> </span>'}
+        <div style="width:100%;height:${barH}px;background:${barColor};border-radius:6px 6px 0 0;position:relative;">
+          ${isToday ? '<span style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;">🔥</span>' : ''}
+        </div>
+        <span style="font-size:11px;color:#2A2419;font-weight:700;">${dayLabel}</span>
+      </div>`);
+  }
+  chart.innerHTML = cells.join('');
+  set('week-summary', `${studiedCount} dias estudados esta semana`);
+}
+
+function renderSkills(doneSet) {
+  const grid = document.getElementById('skills-grid');
+  if (!grid) return;
+  const total = window._totalModules || 1;
+  const done  = window._doneModules || 0;
+  const groupProgress = {};
+  GROUPS_DATA.forEach(g => {
+    const gDone = g.modules.filter(m => doneSet.has(m.slug)).length;
+    groupProgress[g.slug] = g.module_count > 0 ? Math.round((gDone / g.module_count) * 100) : 0;
   });
+  const overallPct = total > 0 ? Math.round((done / total) * 100) : 0;
+  groupProgress['__all__'] = overallPct;
 
-  // Calendário últimos 28 dias
-  const studyDays = new Set((window._studyDays || []).map(d => d.day));
-  const cal = document.getElementById('study-calendar');
-  if (cal) {
-    const today = new Date();
-    const cells = [];
-    for (let i = 27; i >= 0; i--) {
+  grid.innerHTML = SKILLS.map(s => {
+    const slugKey = Object.keys(groupProgress).find(k => k.startsWith(s.key)) || s.key;
+    const val = groupProgress[slugKey] || groupProgress[s.key] || 0;
+    const tier = val >= 80 ? 'S' : val >= 65 ? 'A' : val >= 50 ? 'B' : 'C';
+    const tierColor = val >= 80 ? '#7B5EA7' : val >= 65 ? '#5A8A6A' : val >= 50 ? '#C4943A' : '#9C8460';
+    return `
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:28px;height:28px;border-radius:8px;background:${tierColor};color:white;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:13px;flex-shrink:0;">${tier}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;">
+            <span style="color:#2A2419;font-weight:600;">${s.name}</span>
+            <span style="color:${tierColor};font-weight:700;font-family:'Fraunces',serif;">${val}</span>
+          </div>
+          <div style="height:6px;background:#F4ECD8;border-radius:3px;overflow:hidden;">
+            <div style="height:100%;width:${val}%;background:${tierColor};border-radius:3px;"></div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderGroupsDist(doneSet) {
+  const cont = document.getElementById('groups-dist');
+  if (!cont) return;
+  cont.innerHTML = GROUPS_DATA.map((g, i) => {
+    const color = GROUP_COLORS[i % GROUP_COLORS.length];
+    const gDone = g.modules.filter(m => doneSet.has(m.slug)).length;
+    const pct = g.module_count > 0 ? Math.round((gDone / g.module_count) * 100) : 0;
+    return `
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:11px;">
+          <span style="color:#2A2419;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:65%;">${g.name}</span>
+          <span style="color:${color};font-family:'Fraunces',serif;font-weight:700;">${gDone}/${g.module_count}</span>
+        </div>
+        <div style="height:8px;background:#F4ECD8;border-radius:4px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,${color},${color}DD);border-radius:4px;"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderHeatmap(studyDays) {
+  const grid = document.getElementById('heatmap-grid');
+  if (!grid) return;
+  const studySet = new Set(studyDays.map(d => d.day));
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10);
+  // 84 days = 12 weeks × 7 days, arranged as 12 cols × 7 rows
+  const cells = [];
+  for (let row = 0; row < 7; row++) {
+    for (let col = 0; col < 12; col++) {
+      const offset = (11 - col) * 7 + (6 - row);
       const d = new Date(today);
-      d.setDate(d.getDate() - i);
+      d.setDate(d.getDate() - offset);
       const key = d.toISOString().slice(0, 10);
-      const isToday = i === 0;
-      const hasStudy = studyDays.has(key);
-      const color = isToday ? 'bg-[#4E7A60]' : hasStudy ? 'bg-[#C4943A]' : 'bg-gray-100';
-      const title = `${key}${hasStudy ? ' ✓' : ''}`;
-      cells.push(`<div class="${color} rounded-sm aspect-square" title="${title}"></div>`);
+      const isToday = key === todayStr;
+      const hasStudy = studySet.has(key);
+      const bg = isToday ? '#E8632A' : hasStudy ? '#FFB78F' : '#F4ECD8';
+      cells.push(`<div style="aspect-ratio:1;background:${bg};border-radius:3px;" title="${key}"></div>`);
     }
-    cal.innerHTML = cells.join('');
   }
+  grid.innerHTML = cells.join('');
+}
 
-  // Últimos concluídos
-  const recentEl = document.getElementById('recent-modules');
-  if (recentEl) {
-    const doneProg = prog.filter(p => p.completed > 0).slice(-5).reverse();
-    if (!doneProg.length) {
-      recentEl.innerHTML = '<p class="text-[12px] text-gray-400">Nenhum módulo concluído ainda.</p>';
-    } else {
-      const allModules = GROUPS_DATA.flatMap(g => g.modules.map(m => ({ ...m, group: g })));
-      recentEl.innerHTML = doneProg.map(p => {
-        const m = allModules.find(x => x.slug === p.module_slug);
-        if (!m) return '';
-        return `
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded-full bg-[#4E7A60] flex items-center justify-center flex-shrink-0">
-              <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-[12px] font-semibold text-gray-700 truncate">${m.title}</p>
-              <p class="text-[10px] text-gray-400">${groupIconHtml(m.group, 'w-3 h-3 inline-block align-[-2px] mr-1')}${m.group.name}</p>
-            </div>
-          </div>`;
-      }).join('');
-    }
+function renderRecent(prog) {
+  const el = document.getElementById('recent-modules');
+  if (!el) return;
+  const doneProg = prog.filter(p => p.completed > 0).slice(-5).reverse();
+  if (!doneProg.length) {
+    el.innerHTML = '<p style="font-size:12px;color:#9C8460;margin:0;">Nenhum módulo concluído ainda.</p>';
+    return;
   }
+  const allModules = GROUPS_DATA.flatMap((g, i) => g.modules.map(m => ({ ...m, group: g, color: GROUP_COLORS[i % GROUP_COLORS.length] })));
+  el.innerHTML = doneProg.map(p => {
+    const m = allModules.find(x => x.slug === p.module_slug);
+    if (!m) return '';
+    const xpEarned = XP_PER_MODULE;
+    return `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#FAF5EB;border-radius:10px;">
+        <div style="width:38px;height:38px;border-radius:9px;background:${m.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:12px;color:#2A2419;margin:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.title}</p>
+          <p style="font-size:10px;color:#9C8460;margin:0;">+${xpEarned} XP</p>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 function set(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = val;
-}
-
-function groupIconHtml(group, className = 'w-4 h-4 inline-block align-[-3px] mr-1') {
-  return group && group.icon_file
-    ? `<img src="/static/icons/${group.icon_file}" alt="" class="${className}">`
-    : `${group ? group.icon : ''} `;
 }
 </script>
 {% endblock %}
