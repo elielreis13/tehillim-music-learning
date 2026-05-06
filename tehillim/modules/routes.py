@@ -1,31 +1,24 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
-from urllib.parse import quote, unquote
+from urllib.parse import quote
 
-from flask import abort, redirect, render_template, request
+from flask import abort, redirect, render_template, request, session
 
 from . import bp
 from tehillim.content import get_group, get_module
 
 
-def _ta_cookie() -> tuple[set, bool]:
-    try:
-        raw  = request.cookies.get("ta", "")
-        data = json.loads(unquote(raw)) if raw else {}
-        return set(data.get("s", [])), bool(data.get("t", False))
-    except Exception:
-        return set(), False
+def _get_access() -> tuple[set, bool]:
+    return set(session.get("module_slugs", [])), session.get("is_teacher", False)
 
 
 @bp.before_request
 def require_login_for_app_pages():
     if request.endpoint == "modules.landing":
         return None
-    if request.cookies.get("ta"):
+    if session.get("user_id"):
         return None
-
     next_url = request.full_path.rstrip("?")
     return redirect(f"/login?next={quote(next_url)}")
 
@@ -42,17 +35,12 @@ def index():
     return render_template("pages/home.html", active_page="inicio")
 
 
-@bp.get("/grupos")
-def grupos_page():
-    return render_template("pages/grupos.html", active_page="grupos")
-
-
 @bp.get("/grupos/<group_slug>")
 def group_page(group_slug: str):
     selected_group = get_group(group_slug)
     if selected_group is None:
         abort(404)
-    granted_slugs, is_teacher_cookie = _ta_cookie()
+    granted_slugs, is_teacher_cookie = _get_access()
     return render_template(
         "pages/group.html",
         group=selected_group,
@@ -105,7 +93,7 @@ def module_page(module_slug: str):
     selected_module = get_module(module_slug)
     if selected_module is None:
         abort(404)
-    granted_slugs, is_teacher_cookie = _ta_cookie()
+    granted_slugs, is_teacher_cookie = _get_access()
     access_ok = is_teacher_cookie or module_slug in granted_slugs
     if 101 <= selected_module.number <= 140:
         has_sheet = (_BONA_SHEETS / f"{module_slug}.musicxml").exists()

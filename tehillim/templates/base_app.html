@@ -102,7 +102,7 @@
   </style>
   {% block head %}{% endblock %}
 </head>
-<body class="app-shell bg-[#FAF7F2] h-screen flex overflow-hidden text-gray-800" style="visibility:hidden">
+<body class="app-shell bg-[#FAF7F2] h-screen flex overflow-hidden text-gray-800">
 
   <!-- ══════════════ SIDEBAR ══════════════ -->
   <aside class="app-sidebar w-[210px] bg-white flex flex-col shadow-sm flex-shrink-0">
@@ -125,13 +125,7 @@
         Início
       </a>
 
-      <a href="/grupos" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
-        {% if active_page == 'grupos' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
-        <img src="{{ url_for('static', filename='icons/nav-grupos.svg') }}" class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'grupos' %}opacity-40{% endif %}"/>
-        Grupos
-      </a>
-
-      <a href="/trilhas" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
+<a href="/trilhas" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
         {% if active_page == 'trilhas' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
         <img src="{{ url_for('static', filename='icons/nav-trilhas.svg') }}" class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'trilhas' %}opacity-40{% endif %}"/>
         Minhas Trilhas
@@ -249,23 +243,10 @@
     </div>
   </div>
 
-  <!-- Supabase config -->
   <script>
-    window.SUPABASE_URL      = "{{ supabase_url }}";
-    window.SUPABASE_ANON_KEY = "{{ supabase_anon_key }}";
+    window.CURRENT_USER = {{ current_user | tojson }};
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/static/js/auth.js"></script>
-  <script>
-    window.auth.ready.then(() => {
-      if (!window.auth.isLoggedIn()) {
-        const next = encodeURIComponent(window.location.pathname + window.location.search);
-        window.location.replace(`/login?next=${next}`);
-        return;
-      }
-      document.body.style.visibility = 'visible';
-    });
-  </script>
+  <script src="/static/js/auth.js?v=4"></script>
 
   <!-- ① Leitura SÍNCRONA do localStorage — roda antes do DOMContentLoaded
        Garante que window._progress já existe quando as páginas renderizam      -->
@@ -311,46 +292,26 @@
 
     (async () => {
       try {
-        await window.auth.ready;
-        if (!window.auth.isLoggedIn()) return;
+        if (!window.CURRENT_USER) return;
 
-        const session    = window.auth.session;
-        window._sb       = window.auth.client;
-        window._userId   = session.user.id;
-        window._userName = window.auth.getName();
+        window._userId   = window.CURRENT_USER.id;
+        window._userName = window.CURRENT_USER.name || window.CURRENT_USER.email?.split('@')[0] || 'Aluno';
 
         document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = window._userName);
 
         // Popula perfil na sidebar e popup
-        const _user  = window.auth.getUser();
-        const _email = _user?.email || '';
-        const _role  = (_user?.user_metadata?.role === 'teacher') ? 'Professor' : 'Aluno';
+        const _email = window.CURRENT_USER.email || '';
+        const _role  = window.CURRENT_USER.is_teacher ? 'Professor' : 'Aluno';
         ['sidebar-user-name','popup-user-name'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = window._userName; });
         const roleEl  = document.getElementById('sidebar-user-role'); if (roleEl)  roleEl.textContent  = _role;
         const emailEl = document.getElementById('popup-user-email');  if (emailEl) emailEl.textContent = _email;
 
         // Mostra itens de navegação exclusivos do professor
-        if (_user?.user_metadata?.role === 'teacher') {
+        if (window.CURRENT_USER.is_teacher) {
           document.querySelectorAll('.teacher-nav').forEach(el => el.classList.remove('hidden'));
         }
 
-        // Re-lê localStorage após auth.js possivelmente sincronizar dados novos
-        const total = {{ groups | sum(attribute='module_count') }};
-        const prog  = [];
-        let done    = 0;
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (!key?.startsWith('tehillim:') || !key.endsWith(':completed')) continue;
-          const slug      = key.split(':')[1];
-          const completed = Number(localStorage.getItem(key) || 0);
-          prog.push({ module_slug: slug, completed });
-          if (completed > 0) done++;
-        }
-        window._progress     = prog;
-        window._totalModules = total;
-        window._doneModules  = done;
-
-        // Streak — cache diário (só faz fetch quando o dia muda)
+        // Streak — cache diário
         const today = new Date().toISOString().slice(0, 10);
         let sc = null;
         try { sc = JSON.parse(localStorage.getItem('tehillim:streak') || 'null'); } catch {}
@@ -361,12 +322,10 @@
           return;
         }
 
-        // Cache expirado → busca em background, sem bloquear
-        if (!window.auth.client) return;
-        window.auth.client
-          .from('study_days').select('day')
-          .eq('user_id', session.user.id).order('day', { ascending: false })
-          .then(({ data: days }) => {
+        // Cache expirado → busca via Flask API em background
+        fetch('/api/study-days')
+          .then(r => r.ok ? r.json() : { days: [] })
+          .then(({ days }) => {
             window._studyDays = days || [];
             window._streak    = _computeStreak(days || []);
             document.querySelectorAll('[data-streak]').forEach(el => el.textContent = window._streak);

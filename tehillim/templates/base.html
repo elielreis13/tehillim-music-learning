@@ -14,12 +14,6 @@
 <body>
   {% block body %}{% endblock %}
 
-  <script>
-    window.SUPABASE_URL      = "{{ supabase_url }}";
-    window.SUPABASE_ANON_KEY = "{{ supabase_anon_key }}";
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/static/js/auth.js"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>
