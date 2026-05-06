@@ -2,178 +2,123 @@
 
 {% block title %}Minhas Trilhas | Tehillim{% endblock %}
 
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  .mod-mission { transition: box-shadow 0.2s, opacity 0.2s; }
+  .mod-mission:hover:not(.locked) { box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+</style>
+{% endblock %}
+
 {% block header %}
-<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
-  <div class="flex items-center justify-between relative z-10">
+<header style="background:linear-gradient(120deg,#2A2419 0%,#3D3018 60%,#5A4520 100%);padding:22px 32px;position:relative;overflow:hidden;color:white;flex-shrink:0;">
+  <div style="position:absolute;right:-100px;top:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(232,199,122,0.3) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;flex-wrap:wrap;gap:12px;">
     <div>
-      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Aprendizado</p>
-      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Minhas Trilhas</h1>
-      <p class="text-[13px] text-gray-500 mt-0.5">Acompanhe seu progresso módulo a módulo</p>
+      <p style="font-size:11px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.22em;font-weight:700;margin:0;">⚔️ Caminho do herói</p>
+      <h1 style="font-family:'Fraunces',serif;font-size:34px;font-weight:400;line-height:1.05;margin:6px 0 4px;letter-spacing:-0.02em;">Minhas trilhas</h1>
+      <p style="font-size:13px;color:#C4B89A;margin:0;">Cada módulo é uma missão. Conquiste todos para virar Mestre.</p>
     </div>
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2">
-        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
-        <div class="leading-tight">
-          <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
-          <p class="text-[10px] text-gray-500">dias de sequência</p>
-        </div>
-      </div>
-      <div class="w-px h-7 bg-[#D4C4A8]"></div>
+    <div style="background:rgba(232,199,122,0.15);border:1px solid rgba(232,199,122,0.3);border-radius:12px;padding:8px 16px;text-align:center;">
+      <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#E8C77A;line-height:1;" id="header-progress">— / —</div>
+      <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">missões feitas</div>
     </div>
   </div>
-  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
 </header>
 {% endblock %}
 
 {% block content %}
-<div class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col xl:flex-row gap-5">
 
-  <!-- ── COLUNA ESQUERDA ── -->
-  <div class="flex-1 flex flex-col gap-5 min-w-0">
+{% set group_colors = [
+  ('#C4943A', '#F2EAD8', '#FBF6EE'),
+  ('#5A8A6A', '#DFF0E8', '#F4FAF7'),
+  ('#7B5EA7', '#E8E0F4', '#F6F3FC'),
+  ('#4A78B0', '#DBEAFE', '#EEF3FA'),
+  ('#E8632A', '#FFE4D6', '#FFF5EE'),
+] %}
+{% set group_levels = ['Iniciante', 'Iniciante', 'Intermediário', 'Avançado', 'Intermediário'] %}
 
-    <!-- Módulo ativo -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm">
-      <div id="active-module-header" class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+<div style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;">
+
+  {% for group in groups %}
+  {% set c = group_colors[loop.index0 % 5] %}
+  {% set level = group_levels[loop.index0 % 5] %}
+
+  <section style="background:white;border-radius:18px;border:1px solid #F0E8D4;overflow:hidden;">
+    <div style="display:flex;align-items:stretch;">
+
+      <!-- Left: description panel -->
+      <div style="width:240px;background:{{ c[2] }};padding:26px;display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;">
         <div>
-          <span class="text-[11px] bg-[#C4943A]/10 text-[#C4943A] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Em andamento</span>
-          <h2 class="font-bold text-[17px] text-gray-800 mt-2" id="active-module-title">Carregando...</h2>
-          <p class="text-[12px] text-gray-400 mt-0.5" id="active-module-sub"></p>
+          <p style="font-size:10px;color:{{ c[0] }};text-transform:uppercase;letter-spacing:0.2em;font-weight:700;margin:0;">
+            Grupo {{ '%02d'|format(loop.index) }} · {{ level }}
+          </p>
+          <h2 style="font-family:'Fraunces',serif;font-size:20px;font-weight:500;line-height:1.15;margin:8px 0 6px;color:#2A2419;">
+            {{ group.name }}
+          </h2>
+          <p style="font-size:12px;color:#7A6A4D;margin:0;line-height:1.45;">{{ group.description }}</p>
         </div>
-        <a href="#" class="w-full sm:w-auto text-center bg-[#C4943A] hover:bg-[#B3852F] text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors" id="active-module-btn">
-          Continuar
-        </a>
-      </div>
-
-      <!-- Steps trail -->
-      <div class="relative overflow-x-auto py-2 px-2">
-        <div class="absolute top-7 left-7 right-7 h-0.5 bg-gray-200 z-0"></div>
-        <div class="absolute top-7 left-7 h-0.5 bg-[#4E7A60] z-0" id="steps-line" style="width:0"></div>
-        <div class="relative z-10 flex justify-between min-w-[420px]" id="steps-track">
-          <!-- Filled by JS -->
-          <div class="flex flex-col items-center gap-2">
-            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center"><span class="text-gray-300 text-xs">…</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-5 flex items-center gap-3">
-        <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-          <div class="h-full bg-[#C4943A] rounded-full transition-all" id="active-bar" style="width:0%"></div>
-        </div>
-        <span class="text-[12px] font-semibold text-gray-500" id="active-step-label">—</span>
-      </div>
-    </div>
-
-    <!-- Todos os grupos -->
-    {% set group_colors = [
-      ('#EDD9B0', '#C4943A', '#4E7A60', 'bg-[#FBF6EE]', 'bg-[#F2EAD8]', '🔰'),
-      ('#C4D9CE', '#5A8A6A', '#4E7A60', 'bg-[#F4FAF7]', 'bg-[#DFF0E8]', '🎼'),
-      ('#C4BEDE', '#7B5EA7', '#4E7A60', 'bg-[#F6F3FC]', 'bg-[#E8E0F4]', '🎹'),
-    ] %}
-
-    {% for group in groups %}
-    {% set c = group_colors[loop.index0 % 3] %}
-    <div class="{{ c[3] }} rounded-2xl overflow-hidden shadow-sm">
-      <div class="{{ c[4] }} px-5 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-7 h-7 object-contain flex-shrink-0">
-          <div>
-            <h2 class="font-bold text-[15px] text-gray-800">{{ group.name }}</h2>
-            <p class="text-[11px] text-gray-500">{% if group.modules %}Módulos {{ group.modules[0].number }} a {{ group.modules[-1].number }}{% else %}Sem módulos ainda{% endif %}</p>
-          </div>
-        </div>
-        <span class="font-bold text-[14px]" style="color:{{ c[1] }}" data-trail-pct="{{ group.slug }}">—</span>
-      </div>
-
-      <!-- Module dots -->
-      <div class="px-5 py-4">
-        <div class="flex gap-1.5 flex-wrap mb-3" id="dots-{{ group.slug }}">
-          {% for module in group.modules %}
-          <div class="w-7 h-7 rounded-lg bg-gray-200 flex items-center justify-center transition-colors cursor-pointer"
-               title="M{{ '%02d'|format(module.number) }} — {{ module.title }}"
-               onclick="window.location.href='/modulos/{{ module.slug }}'"
-               id="dot-{{ module.slug }}">
-            <span class="text-[9px] font-bold text-gray-400">{{ module.number }}</span>
-          </div>
-          {% endfor %}
-        </div>
-        <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-          <div class="h-full rounded-full transition-all duration-500" style="background-color:{{ c[1] }};width:0%" id="trail-bar-{{ group.slug }}"></div>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-
-  </div>
-
-  <!-- ── PAINEL DIREITO ── -->
-  <div class="w-full xl:w-[250px] flex-shrink-0 flex flex-col gap-4">
-
-    <!-- Tipos de etapa -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <h3 class="font-bold text-[14px] text-gray-800 mb-4">Tipos de Etapa</h3>
-      <div class="flex flex-col gap-2.5">
-        {% set step_types = [
-          ('bg-[#FEF3C7]', 'text-amber-600', 'Teoria', 'Texto explicativo'),
-          ('bg-[#DBEAFE]', 'text-blue-600', 'Vídeo', 'YouTube embed'),
-          ('bg-[#EDE9FE]', 'text-violet-600', 'Visualizar', 'Partitura VexFlow'),
-          ('bg-[#D1FAE5]', 'text-emerald-600', 'Exercícios', 'MC, V/F, Completar…'),
-          ('bg-[#FFE4E6]', 'text-rose-500', 'Jogo Final', 'Memória, Desafio…'),
-        ] %}
-        {% for bg, tc, name, desc in step_types %}
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg {{ bg }} flex items-center justify-center flex-shrink-0">
-            <div class="w-4 h-4 rounded-full border-2 border-current {{ tc }}"></div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:20px;">
+          <div style="width:52px;height:52px;border-radius:50%;background:{{ c[1] }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" style="width:26px;height:26px;object-fit:contain;">
           </div>
           <div>
-            <p class="text-[12px] font-semibold text-gray-700">{{ name }}</p>
-            <p class="text-[10px] text-gray-400">{{ desc }}</p>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- Progresso geral -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <h3 class="font-bold text-[14px] text-gray-800 mb-4">Progresso Geral</h3>
-      <div class="space-y-3">
-        <div>
-          <div class="flex justify-between mb-1">
-            <span class="text-[12px] text-gray-500">Módulos concluídos</span>
-            <span class="text-[12px] font-bold text-gray-700" id="stat-modules">—</span>
-          </div>
-          <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <div class="h-full bg-[#C4943A] rounded-full transition-all" id="stat-bar-modules" style="width:0%"></div>
-          </div>
-        </div>
-        <div>
-          <div class="flex justify-between mb-1">
-            <span class="text-[12px] text-gray-500">🔥 Sequência atual</span>
-            <span class="text-[12px] font-bold text-gray-700"><span data-streak>—</span> dias</span>
-          </div>
-        </div>
-        <div>
-          <div class="flex justify-between mb-1">
-            <span class="text-[12px] text-gray-500">Dias de estudo</span>
-            <span class="text-[12px] font-bold text-gray-700" id="stat-days">—</span>
+            <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:500;color:{{ c[0] }};line-height:1;" data-trail-pct="{{ group.slug }}">—</div>
+            <div style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;" data-trail-count="{{ group.slug }}">
+              0 DE {{ group.module_count }} MÓDULOS
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-  </div>
+      <!-- Right: module cards + thin progress bar at bottom -->
+      <div style="flex:1;padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;">
+            <h3 style="font-family:'Fraunces',serif;font-size:14px;font-weight:500;margin:0;color:#7A6A4D;">Módulos</h3>
+            <a href="/grupos/{{ group.slug }}" style="font-size:12px;color:{{ c[0] }};text-decoration:none;font-weight:600;" id="trail-cta-{{ group.slug }}">Começar →</a>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;" id="trail-modules-{{ group.slug }}">
+            {% for module in group.modules %}
+            <div class="mod-mission" style="background:#FAF5EB;border:1px solid #F0E8D4;border-radius:10px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;position:relative;"
+                 onclick="window.location.href='/modulos/{{ module.slug }}'"
+                 id="mission-{{ module.slug }}">
+              <div style="width:34px;height:34px;border-radius:9px;background:#E8DEC8;display:flex;align-items:center;justify-content:center;" id="mission-icon-{{ module.slug }}">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9C8460" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <p style="font-size:9px;font-weight:500;color:#B8A07A;text-align:center;margin:0;line-height:1.2;min-height:22px;" id="mission-title-{{ module.slug }}">{{ module.title }}</p>
+              <span style="font-size:8px;font-weight:700;color:#9C8460;padding:2px 5px;border-radius:5px;" id="mission-xp-{{ module.slug }}">+50 XP</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Thin progress bar at bottom -->
+        <div style="margin-top:16px;height:4px;background:#F4ECD8;border-radius:2px;overflow:hidden;">
+          <div style="height:100%;width:0%;background:{{ c[0] }};border-radius:2px;transition:width 0.7s ease;" id="trail-bar-{{ group.slug }}"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  {% endfor %}
+
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 const GROUPS_DATA = {{ groups | tojson }};
-const STEP_KINDS = ['teoria', 'video', 'visualizar', 'exercicio', 'jogo'];
+const GROUP_COLORS = ['#C4943A','#5A8A6A','#7B5EA7','#4A78B0','#E8632A'];
+const GROUP_BG     = ['#F2EAD8','#DFF0E8','#E8E0F4','#DBEAFE','#FFE4D6'];
+const XP_PER_MODULE = 50;
 
 document.addEventListener('DOMContentLoaded', async () => {
   await waitForProgress();
-  renderAll();
+  renderTrails();
 });
 
 function waitForProgress() {
@@ -184,102 +129,79 @@ function waitForProgress() {
   });
 }
 
-function renderAll() {
-  const prog = window._progress || [];
+function renderTrails() {
+  const prog    = window._progress || [];
+  const done    = window._doneModules || 0;
+  const total   = window._totalModules || 0;
   const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
-  const total = window._totalModules || 1;
-  const done = window._doneModules || 0;
 
-  // Stats
-  const statM = document.getElementById('stat-modules');
-  if (statM) statM.textContent = `${done} / ${total}`;
-  const statBar = document.getElementById('stat-bar-modules');
-  if (statBar) statBar.style.width = Math.round((done/total)*100) + '%';
-  const statD = document.getElementById('stat-days');
-  if (statD) statD.textContent = (window._studyDays || []).length;
+  set('header-progress', `${done} / ${total}`);
 
-  // Find current module
-  let currentModule = null, currentGroup = null;
-  for (const group of GROUPS_DATA) {
-    for (const m of group.modules) {
-      if (!doneSet.has(m.slug)) { currentModule = m; currentGroup = group; break; }
-    }
-    if (currentModule) break;
-  }
-
-  renderActiveModule(currentModule, currentGroup, doneSet);
-  renderTrailDots(doneSet);
-}
-
-function renderActiveModule(mod, group, doneSet) {
-  if (!mod) {
-    const h = document.getElementById('active-module-header');
-    if (h) h.innerHTML = '<p class="text-[#4E7A60] font-semibold text-[15px]">🎉 Todos os módulos concluídos!</p>';
-    return;
-  }
-  const title = document.getElementById('active-module-title');
-  const sub   = document.getElementById('active-module-sub');
-  const btn   = document.getElementById('active-module-btn');
-  if (title) title.textContent = `M${String(mod.number).padStart(2,'0')} — ${mod.title}`;
-  if (sub)   sub.innerHTML     = `${group ? groupIconHtml(group) + group.name : ''} · ${mod.topics ? mod.topics.slice(0,2).join(' · ') : ''}`;
-  if (btn)   btn.href          = `/modulos/${mod.slug}`;
-
-  // Steps
-  const stepCount = mod.step_count || 7;
-  const stepsDone = 0; // Would come from quiz_answers — default 0
-  const track = document.getElementById('steps-track');
-  if (track) {
-    const kinds = ['Teoria', 'Vídeo', 'Partitura', 'Exerc.', 'V/F', 'Assoc.', 'Jogo'];
-    track.innerHTML = kinds.slice(0, Math.min(stepCount, 7)).map((k, i) => `
-      <div class="flex flex-col items-center gap-2">
-        <div class="w-10 h-10 rounded-full ${i < stepsDone ? 'bg-[#4E7A60]' : i === stepsDone ? 'bg-[#C4943A] ring-4 ring-[#C4943A]/20' : 'bg-gray-200'} flex items-center justify-center shadow-sm">
-          ${i < stepsDone
-            ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
-            : i === stepsDone
-              ? '<span class="text-white text-sm">&#9834;</span>'
-              : '<svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>'}
-        </div>
-        <div class="text-center"><p class="text-[9px] ${i === stepsDone ? 'font-bold text-[#C4943A]' : 'text-gray-400'}">${k}</p></div>
-      </div>`).join('');
-  }
-
-  const barEl  = document.getElementById('active-bar');
-  const labelEl = document.getElementById('active-step-label');
-  if (barEl)   barEl.style.width = Math.round((stepsDone / stepCount) * 100) + '%';
-  if (labelEl) labelEl.textContent = `${stepsDone} / ${stepCount} etapas`;
-}
-
-function renderTrailDots(doneSet) {
-  GROUPS_DATA.forEach(group => {
+  GROUPS_DATA.forEach((group, idx) => {
+    const color = GROUP_COLORS[idx % GROUP_COLORS.length];
+    const bg    = GROUP_BG[idx % GROUP_BG.length];
     const slugs = group.modules.map(m => m.slug);
-    const done = slugs.filter(s => doneSet.has(s)).length;
-    const pct = group.module_count > 0 ? Math.round((done / group.module_count) * 100) : 0;
+    const gDone = slugs.filter(s => doneSet.has(s)).length;
+    const pct   = group.module_count > 0 ? Math.round((gDone / group.module_count) * 100) : 0;
 
+    // Left panel
     const pctEl = document.querySelector(`[data-trail-pct="${group.slug}"]`);
     if (pctEl) pctEl.textContent = pct + '%';
-    const barEl = document.getElementById(`trail-bar-${group.slug}`);
-    if (barEl) barEl.style.width = pct + '%';
+    const countEl = document.querySelector(`[data-trail-count="${group.slug}"]`);
+    if (countEl) countEl.textContent = `${gDone} DE ${group.module_count} MÓDULOS`;
 
+    // Progress bar
+    const bar = document.getElementById(`trail-bar-${group.slug}`);
+    if (bar) setTimeout(() => { bar.style.width = pct + '%'; }, 100);
+
+    // CTA
+    const cta = document.getElementById(`trail-cta-${group.slug}`);
+    if (cta) cta.textContent = gDone > 0 ? 'Continuar →' : 'Começar →';
+
+    // Module cards
     let foundCurrent = false;
     group.modules.forEach(m => {
-      const dot = document.getElementById(`dot-${m.slug}`);
-      if (!dot) return;
+      const card  = document.getElementById(`mission-${m.slug}`);
+      const icon  = document.getElementById(`mission-icon-${m.slug}`);
+      const title = document.getElementById(`mission-title-${m.slug}`);
+      const xpEl  = document.getElementById(`mission-xp-${m.slug}`);
+      if (!card || !icon) return;
+
       if (doneSet.has(m.slug)) {
-        dot.className = 'w-7 h-7 rounded-lg bg-[#4E7A60] flex items-center justify-center transition-colors cursor-pointer';
-        dot.innerHTML = `<span class="text-[9px] font-bold text-white">${m.number}</span>`;
+        card.style.background = '#F4FAF7';
+        card.style.border = '2px solid #5A8A6A';
+        icon.style.background = '#5A8A6A';
+        icon.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+        if (title) { title.style.color = '#2A2419'; title.style.fontWeight = '600'; }
+        if (xpEl)  { xpEl.style.color = '#5A8A6A'; xpEl.style.background = '#E8F4EE'; }
+        if (!card.querySelector('.done-badge')) {
+          const badge = document.createElement('div');
+          badge.className = 'done-badge';
+          badge.style.cssText = 'position:absolute;top:4px;right:4px;width:14px;height:14px;border-radius:50%;background:#5A8A6A;display:flex;align-items:center;justify-content:center;';
+          badge.innerHTML = '<svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+          card.appendChild(badge);
+        }
       } else if (!foundCurrent) {
         foundCurrent = true;
-        dot.className = 'w-7 h-7 rounded-lg bg-[#C4943A] flex items-center justify-center ring-2 ring-[#C4943A]/30 transition-colors cursor-pointer';
-        dot.innerHTML = `<span class="text-[9px] font-bold text-white">${m.number}</span>`;
+        card.style.background = bg;
+        card.style.border = `2px solid ${color}`;
+        icon.style.background = color;
+        icon.innerHTML = `<span style="color:white;font-size:9px;font-weight:800;">M${String(m.number).padStart(2,'0')}</span>`;
+        if (title) { title.style.color = '#2A2419'; title.style.fontWeight = '700'; }
+        if (xpEl)  { xpEl.style.color = color; xpEl.style.background = 'white'; }
+      } else {
+        card.classList.add('locked');
+        card.style.opacity = '0.5';
+        card.style.cursor = 'default';
+        card.onclick = null;
       }
     });
   });
 }
 
-function groupIconHtml(group, className = 'w-4 h-4 inline-block align-[-3px] mr-1') {
-  return group && group.icon_file
-    ? `<img src="/static/icons/${group.icon_file}" alt="" class="${className}">`
-    : `${group ? group.icon : ''} `;
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
 }
 </script>
 {% endblock %}
