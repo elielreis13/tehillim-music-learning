@@ -1,12 +1,19 @@
-import json
-from urllib.parse import unquote
-
+import jwt
 import requests
-from flask import current_app, jsonify, redirect, request
+from flask import current_app, jsonify, redirect, session as flask_session
+
+_jwks_client: jwt.PyJWKClient | None = None
+
+
+def _get_jwks_client() -> jwt.PyJWKClient:
+    global _jwks_client
+    if _jwks_client is None:
+        url = f"{current_app.config['SUPABASE_URL']}/auth/v1/.well-known/jwks.json"
+        _jwks_client = jwt.PyJWKClient(url, cache_jwk_set=True, lifespan=3600)
+    return _jwks_client
 
 
 def sb_headers():
-    """Cabeçalhos com a service key para chamadas administrativas ao Supabase."""
     key = current_app.config["SUPABASE_SERVICE_KEY"]
     return {
         "apikey": key,
@@ -16,7 +23,6 @@ def sb_headers():
 
 
 def sb_get(table: str, params: dict | None = None) -> list:
-    """Faz GET na API REST do Supabase e retorna a lista de registros."""
     url = f"{current_app.config['SUPABASE_URL']}/rest/v1/{table}"
     r = requests.get(url, headers=sb_headers(), params=params, timeout=10)
     r.raise_for_status()
@@ -24,7 +30,6 @@ def sb_get(table: str, params: dict | None = None) -> list:
 
 
 def sb_post(table: str, payload, prefer: str = "return=representation"):
-    """Faz POST (inserção) na API REST do Supabase."""
     url = f"{current_app.config['SUPABASE_URL']}/rest/v1/{table}"
     r = requests.post(url, headers={**sb_headers(), "Prefer": prefer}, json=payload, timeout=10)
     r.raise_for_status()
@@ -32,7 +37,6 @@ def sb_post(table: str, payload, prefer: str = "return=representation"):
 
 
 def sb_put(path: str, payload: dict):
-    """Faz PUT na API de administração do Supabase Auth."""
     url = f"{current_app.config['SUPABASE_URL']}{path}"
     r = requests.put(url, headers=sb_headers(), json=payload, timeout=10)
     r.raise_for_status()
@@ -40,57 +44,58 @@ def sb_put(path: str, payload: dict):
 
 
 def sb_delete(table: str, params: dict):
-    """Faz DELETE na API REST do Supabase."""
     url = f"{current_app.config['SUPABASE_URL']}/rest/v1/{table}"
     r = requests.delete(url, headers=sb_headers(), params=params, timeout=10)
     r.raise_for_status()
 
 
-def get_user_from_token(token: str) -> dict | None:
-    """Valida um Bearer token e retorna os dados do usuário, ou None se inválido."""
-    url = f"{current_app.config['SUPABASE_URL']}/auth/v1/user"
-    r = requests.get(
-        url,
-        headers={"Authorization": f"Bearer {token}", "apikey": current_app.config["SUPABASE_ANON_KEY"]},
-        timeout=5,
-    )
-    return r.json() if r.ok else None
+def get_current_user() -> dict | None:
+    """Retorna o usuário da sessão Flask, ou None se não autenticado."""
+    user_id = flask_session.get("user_id")
+    if not user_id:
+        return None
+    return {
+        "id":            user_id,
+        "email":         flask_session.get("email", ""),
+        "user_metadata": {
+            "name": flask_session.get("name", ""),
+            "role": "teacher" if flask_session.get("is_teacher") else "aluno",
+        },
+    }
 
 
-def is_teacher_request() -> bool:
-    """Retorna True se o cookie 'ta' indica que o usuário é professor."""
-    try:
-        raw  = request.cookies.get("ta", "")
-        data = json.loads(unquote(raw)) if raw else {}
-        return bool(data.get("t", False))
-    except Exception:
-        return False
+def is_teacher_session() -> bool:
+    return flask_session.get("is_teacher", False)
 
 
 def require_teacher():
-    """Redireciona para '/' se o usuário não for professor. Uso: if err := require_teacher(): return err"""
-    if not is_teacher_request():
+    """Para rotas de página: redireciona se não for professor."""
+    if not is_teacher_session():
         return redirect("/")
     return None
 
 
 def require_teacher_token():
-    """Versão para APIs: valida Bearer token e verifica papel de professor. Retorna 403 ou None."""
-    auth_header = request.headers.get("Authorization", "")
-
-    # Modo dev: token especial é aceito como professor
-    if auth_header == "Bearer __dev__":
+    """Para APIs: retorna 403 se não for professor, None se ok."""
+    if is_teacher_session():
         return None
+    return jsonify({"error": "Acesso restrito ao professor"}), 403
 
-    if not auth_header.startswith("Bearer "):
-        return jsonify({"error": "Não autorizado"}), 403
 
-    user_data = get_user_from_token(auth_header[7:])
-    if not user_data:
-        return jsonify({"error": "Token inválido"}), 403
-
-    is_teacher = (user_data.get("user_metadata") or {}).get("role") == "teacher"
-    if not is_teacher:
-        return jsonify({"error": "Acesso restrito ao professor"}), 403
-
-    return None
+# Mantido para compatibilidade — valida JWT via JWKS (usado apenas se necessário)
+def get_user_from_token(token: str) -> dict | None:
+    try:
+        signing_key = _get_jwks_client().get_signing_key_from_jwt(token)
+        payload = jwt.decode(
+            token,
+            signing_key.key,
+            algorithms=["ES256", "HS256"],
+            audience="authenticated",
+        )
+        return {
+            "id":            payload.get("sub"),
+            "email":         payload.get("email", ""),
+            "user_metadata": payload.get("user_metadata", {}),
+        }
+    except Exception:
+        return None

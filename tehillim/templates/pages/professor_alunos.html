@@ -120,13 +120,10 @@ let currentStudentId = null;
 // ── Auth helper ────────────────────────────────────────────────────────────────
 
 async function api(path, opts = {}) {
-  if (window.auth) await window.auth.ready;
-  const token = window.auth?.session?.access_token;
-  const headers = {
-    "Content-Type": "application/json",
-    ...(token ? { "Authorization": `Bearer ${token}` } : {}),
-  };
-  const r = await fetch(path, { headers, ...opts });
+  const r = await fetch(path, {
+    headers: { "Content-Type": "application/json" },
+    ...opts,
+  });
   if (r.status === 204) return null;
   const data = await r.json();
   if (!r.ok) throw new Error(data.error || r.statusText);
@@ -136,7 +133,6 @@ async function api(path, opts = {}) {
 // ── Carregar lista de alunos ───────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", async () => {
-  if (window.auth) await window.auth.ready;
   loadStudents();
 });
 
@@ -259,7 +255,7 @@ function closeDetail() {
 }
 
 function renderDetailBody(data, userId) {
-  const { progress, study_days, comments } = data;
+  const { progress, study_days, comments, extra_lessons = {} } = data;
   const doneSet = new Set(progress.filter(p => p.completed > 0).map(p => p.module_slug));
   const streak  = computeStreak(study_days);
 
@@ -319,6 +315,56 @@ function renderDetailBody(data, userId) {
     `;
   }).join("");
 
+  // Aulas Extras
+  const extraSlugs = Object.keys(extra_lessons);
+  const extraTotal = extraSlugs.reduce((s, k) => s + extra_lessons[k].length, 0);
+
+  const extraListHtml = extraSlugs.length ? extraSlugs.map(slug => {
+    const info = MODULE_MAP[slug];
+    const lessons = extra_lessons[slug] || [];
+    const label = info ? `M${String(info.number).padStart(2,'0')} · ${info.title}` : slug;
+    return lessons.map(l => `
+      <div class="flex items-center gap-2.5 py-1.5 group">
+        <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#F2EAD8] text-[#C4943A] flex-shrink-0 truncate max-w-[90px]">${label}</span>
+        <span class="text-[12px] text-gray-700 flex-1 truncate">${l.title}</span>
+        <span class="text-[9px] text-gray-400 uppercase flex-shrink-0">${l.type}</span>
+        <button onclick="deleteExtraLesson('${userId}','${l.id}')"
+                class="text-[10px] text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+          Apagar
+        </button>
+      </div>
+    `).join('');
+  }).join('') : '<p class="text-[12px] text-gray-400 py-2">Nenhuma aula extra adicionada.</p>';
+
+  // Form inline para nova aula extra
+  const extraFormHtml = `
+    <div class="mt-3 bg-[#FBF6EE] rounded-xl p-3" id="extra-form-${userId}">
+      <p class="text-[11px] font-semibold text-gray-600 mb-2">+ Nova aula extra</p>
+      <select id="ef-module-${userId}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[12px] mb-2 focus:outline-none focus:border-[#C4943A]">
+        <option value="">Selecionar módulo...</option>
+        ${GROUPS_DATA.map(g => `<optgroup label="${g.name}">${
+          g.modules.map(m => `<option value="${m.slug}">M${String(m.number).padStart(2,'0')} · ${m.title}</option>`).join('')
+        }</optgroup>`).join('')}
+      </select>
+      <input id="ef-title-${userId}" type="text" placeholder="Título" maxlength="80"
+             class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[12px] mb-2 focus:outline-none focus:border-[#C4943A]">
+      <div class="flex gap-2 mb-2">
+        <select id="ef-type-${userId}" class="flex-1 px-2.5 py-1.5 rounded-lg border border-gray-200 text-[12px] focus:outline-none focus:border-[#C4943A]">
+          <option value="video">📹 Vídeo</option>
+          <option value="pdf">📄 PDF</option>
+          <option value="link">🔗 Link</option>
+        </select>
+        <input id="ef-url-${userId}" type="url" placeholder="https://..."
+               class="flex-1 px-2.5 py-1.5 rounded-lg border border-gray-200 text-[12px] focus:outline-none focus:border-[#C4943A]">
+      </div>
+      <textarea id="ef-desc-${userId}" rows="2" placeholder="Descrição (opcional)"
+                class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[12px] mb-2 resize-none focus:outline-none focus:border-[#C4943A] font-sans"></textarea>
+      <button onclick="addExtraLesson('${userId}')"
+              class="w-full bg-[#C4943A] hover:bg-[#B3852F] text-white text-[12px] font-semibold py-2 rounded-lg transition-colors">
+        Adicionar
+      </button>
+    </div>`;
+
   // Comentários
   const commentsHtml = comments.length ? comments.map(c => `
     <div class="bg-[#FAF7F2] rounded-xl px-4 py-3 mb-2 relative group">
@@ -339,6 +385,12 @@ function renderDetailBody(data, userId) {
 
       <h4 class="font-bold text-[13px] text-gray-700 mb-3 uppercase tracking-wider">Progresso por grupo</h4>
       ${groupsHtml}
+
+      <div class="flex items-center justify-between mt-5 mb-3">
+        <h4 class="font-bold text-[13px] text-gray-700 uppercase tracking-wider">Aulas Extras <span class="text-[#C4943A]">${extraTotal > 0 ? extraTotal : ''}</span></h4>
+      </div>
+      <div id="extra-list-${userId}">${extraListHtml}</div>
+      ${extraFormHtml}
 
       <h4 class="font-bold text-[13px] text-gray-700 mb-3 mt-5 uppercase tracking-wider">Anotações do professor</h4>
       <div id="comments-list">${commentsHtml}</div>
@@ -391,6 +443,43 @@ async function addComment() {
     alert("Erro ao salvar: " + err.message);
   } finally {
     btn.disabled = false;
+  }
+}
+
+async function addExtraLesson(userId) {
+  const module_slug = document.getElementById(`ef-module-${userId}`)?.value;
+  const title       = document.getElementById(`ef-title-${userId}`)?.value.trim();
+  const type        = document.getElementById(`ef-type-${userId}`)?.value;
+  const url         = document.getElementById(`ef-url-${userId}`)?.value.trim();
+  const description = document.getElementById(`ef-desc-${userId}`)?.value.trim();
+
+  if (!module_slug || !title || !url) {
+    alert('Preencha módulo, título e URL.');
+    return;
+  }
+
+  try {
+    await api(`/api/teacher/student/${userId}/extra-lessons`, {
+      method: 'POST',
+      body: JSON.stringify({ module_slug, title, description, type, url }),
+    });
+    const name  = document.getElementById('detail-name').textContent;
+    const email = document.getElementById('detail-email').textContent;
+    openDetail(userId, name, email);
+  } catch (err) {
+    alert('Erro ao adicionar: ' + err.message);
+  }
+}
+
+async function deleteExtraLesson(userId, lessonId) {
+  if (!confirm('Remover esta aula extra?')) return;
+  try {
+    await api(`/api/teacher/student/${userId}/extra-lessons/${lessonId}`, { method: 'DELETE' });
+    const name  = document.getElementById('detail-name').textContent;
+    const email = document.getElementById('detail-email').textContent;
+    openDetail(userId, name, email);
+  } catch (err) {
+    alert('Erro ao remover: ' + err.message);
   }
 }
 
