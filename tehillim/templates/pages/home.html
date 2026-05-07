@@ -25,6 +25,17 @@
     .hero-level-badge { display: none !important; }
     .hero-xp-total { display: none !important; }
     .quest-grid { grid-template-columns: 1fr !important; }
+
+    /* Trail card: empilha verticalmente no mobile */
+    #trail-card { flex-direction: column !important; }
+    #trail-card-panel { width: 100% !important; min-height: 90px !important; flex-shrink: unset !important; }
+    #trail-card-content { padding: 16px !important; }
+
+    /* Grupos: 2 colunas no mobile (cards pequenos) */
+    .groups-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+
+    /* Padding geral da home */
+    .home-content-wrap { padding: 12px !important; gap: 12px !important; }
   }
 </style>
 {% endblock %}
@@ -105,7 +116,7 @@
 <div class="p-4 md:p-5 home-grid" style="display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start;">
 
   <!-- ══════════ MAIN COLUMN ══════════ -->
-  <div class="flex flex-col" style="gap:16px;min-width:0;">
+  <div class="home-content-wrap flex flex-col" style="gap:16px;min-width:0;">
 
     <!-- Daily Quests -->
     <section style="background:linear-gradient(135deg,#FFFAF0 0%,#F2EAD8 100%);border-radius:18px;padding:20px 22px;border:1px solid #ECE3D0;position:relative;overflow:hidden;">
@@ -174,7 +185,7 @@
     <!-- Continue Trilha -->
     <div style="background:white;border-radius:18px;padding:0;border:1px solid #F0E8D4;overflow:hidden;display:flex;" id="trail-card">
       <!-- Color panel -->
-      <div style="width:180px;background:linear-gradient(135deg,#C4943A 0%,#8B6920 100%);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <div id="trail-card-panel" style="width:180px;background:linear-gradient(135deg,#C4943A 0%,#8B6920 100%);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
         <!-- Pentagram lines -->
         <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.15;" preserveAspectRatio="none">
           <defs><pattern id="staff-v3" x="0" y="0" width="100" height="80" patternUnits="userSpaceOnUse">
@@ -192,7 +203,7 @@
         </div>
       </div>
       <!-- Content -->
-      <div style="flex:1;padding:20px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;">
+      <div id="trail-card-content" style="flex:1;padding:20px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;">
         <div>
           <div class="flex justify-between items-baseline" style="margin-bottom:6px;">
             <h3 class="fraunces" style="font-size:17px;font-weight:500;margin:0;color:#2A2419;">Continue sua trilha</h3>

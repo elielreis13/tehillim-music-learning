@@ -4,10 +4,30 @@
 
 {% block head %}
 <style>
-  /* Desktop: partitura cabe bem em 480px */
-  .bona-frame { height: 480px; display: block; }
-  /* Mobile: controles ocupam 2 linhas (~90px), score precisa de mais espaço */
-  @media (max-width: 640px) { .bona-frame { height: 540px; } }
+  /* Fallback height while iframe content is loading */
+  .bona-frame { height: 520px; display: block; transition: height 0.2s ease; }
+  @media (max-width: 640px) { .bona-frame { height: 400px; } }
+
+  /* Back-to-top button — mobile only */
+  #bona-top-btn {
+    display: none;
+    position: fixed;
+    bottom: 80px; /* above bottom nav */
+    right: 16px;
+    z-index: 999;
+    background: #C4943A;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    align-items: center;
+    justify-content: center;
+  }
+  @media (max-width: 768px) { #bona-top-btn { display: flex; } }
 </style>
 {% endblock %}
 
@@ -140,4 +160,15 @@
 </div>
 {% endblock %}
 
-{% block scripts %}{% endblock %}
+{% block scripts %}
+<button id="bona-top-btn" onclick="(document.querySelector('.app-content')||window).scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">↑</button>
+<script>
+// Resize iframe to match its content height (eliminates inner scroll on mobile)
+window.addEventListener('message', e => {
+  if (e.data?.type === 'bona-height') {
+    const frame = document.querySelector('iframe.bona-frame');
+    if (frame) frame.style.height = (e.data.height + 8) + 'px';
+  }
+});
+</script>
+{% endblock %}

@@ -11,6 +11,17 @@
   .grupo-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
   .mod-card { transition: border-color 0.2s, box-shadow 0.2s; }
   .mod-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+
+  @media (max-width: 768px) {
+    .grupos-outer   { padding: 10px !important; gap: 10px !important; }
+    .grupo-row      { flex-direction: column !important; }
+    .grupo-left     { width: 100% !important; flex-direction: row !important; align-items: center !important; padding: 14px 16px !important; gap: 14px !important; justify-content: space-between !important; }
+    .grupo-left-text > p:last-of-type { display: none !important; }
+    .grupo-left h2  { font-size: 15px !important; margin: 4px 0 0 !important; }
+    .grupo-left-bottom { margin-top: 0 !important; }
+    .grupo-right    { padding: 14px 16px !important; }
+    .grupo-mods-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+  }
 </style>
 {% endblock %}
 
@@ -38,18 +49,18 @@
 ] %}
 {% set group_levels = ['Iniciante', 'Iniciante', 'Intermediário', 'Avançado', 'Intermediário'] %}
 
-<div style="padding:24px 28px;display:flex;flex-direction:column;gap:16px;">
+<div class="grupos-outer" style="padding:24px 28px;display:flex;flex-direction:column;gap:16px;">
 
   {% for group in groups %}
   {% set c = group_colors[loop.index0 % 5] %}
   {% set level = group_levels[loop.index0 % 5] %}
 
   <section class="grupo-card" style="background:white;border-radius:18px;border:1px solid #F0E8D4;overflow:hidden;">
-    <div style="display:flex;align-items:stretch;">
+    <div class="grupo-row" style="display:flex;align-items:stretch;">
 
       <!-- Left info panel -->
-      <div style="width:240px;background:{{ c[2] }};padding:26px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;flex-shrink:0;">
-        <div>
+      <div class="grupo-left" style="width:240px;background:{{ c[2] }};padding:26px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;flex-shrink:0;">
+        <div class="grupo-left-text">
           <p style="font-size:10px;color:{{ c[0] }};text-transform:uppercase;letter-spacing:0.2em;font-weight:700;margin:0;">
             Grupo {{ '%02d'|format(loop.index) }} · {{ level }}
           </p>
@@ -58,7 +69,7 @@
           </h2>
           <p style="font-size:12px;color:#7A6A4D;margin:0;line-height:1.4;">{{ group.description }}</p>
         </div>
-        <div style="display:flex;align-items:center;gap:12px;margin-top:18px;">
+        <div class="grupo-left-bottom" style="display:flex;align-items:center;gap:12px;margin-top:18px;">
           <div style="width:52px;height:52px;border-radius:50%;background:{{ c[1] }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" style="width:26px;height:26px;object-fit:contain;">
           </div>
@@ -72,7 +83,7 @@
       </div>
 
       <!-- Right modules panel -->
-      <div style="flex:1;padding:22px 24px;display:flex;flex-direction:column;">
+      <div class="grupo-right" style="flex:1;padding:22px 24px;display:flex;flex-direction:column;">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;">
           <h3 style="font-family:'Fraunces',serif;font-size:14px;font-weight:500;margin:0;color:#7A6A4D;">Próximos módulos</h3>
           <a href="/grupos/{{ group.slug }}" style="font-size:12px;color:{{ c[0] }};text-decoration:none;font-weight:600;" id="group-cta-{{ group.slug }}">
@@ -80,7 +91,7 @@
           </a>
         </div>
 
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;" id="modules-grid-{{ group.slug }}">
+        <div class="grupo-mods-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;" id="modules-grid-{{ group.slug }}">
           {% for module in group.modules[:6] %}
           <div class="mod-card" style="background:white;border:1px solid #F0E8D4;border-radius:10px;padding:11px;display:flex;align-items:center;gap:10px;cursor:pointer;"
                onclick="window.location.href='/modulos/{{ module.slug }}'"
