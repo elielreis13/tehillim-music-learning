@@ -1,23 +1,27 @@
 ---
 number: 10
 slug: pulso-musical
-title: Pulso musical
-description: Lição focada em Pulso musical, separada do antigo módulo "Pulso, Andamento e Tempo" para estudar um conceito por vez.
+title: Pulso Musical
+description: Coloque a mão no peito. Aquela batida regular e inabalável é exatamente o que o pulso musical faz pela música.
 topics: Pulso musical
 game_kind: game-challenge
 ---
 
 ## Teoria
 
-O pulso musical é a batida regular e constante que sustenta toda a música — como o batimento cardíaco sustenta o corpo. Você o sente instintivamente quando bate o pé ao ouvir uma música, ou quando palma no ritmo de um hino. O pulso não está sempre explícito (nem sempre há um instrumento tocando em cada batida), mas ele existe por baixo de tudo, invisível e constante. Músicos experientes o carregam internamente, como um relógio interno que nunca para.
+Coloque a mão no peito. Sinta o coração: bat, bat, bat, bat — regular, constante, sem vacilar. Agora pense no que acontece na música quando a bateria entra: aquela primeira batida do bumbo que todo mundo aguardava. Esse é o **pulso musical**. Não é metáfora — a estrutura é a mesma.
 
-É fundamental distinguir pulso de ritmo. O pulso é uniforme, constante, igual — como o tique-taque de um relógio. O ritmo é o padrão variado de durações que acontece sobre esse pulso — algumas notas caem no pulso, outras caem nos intervalos entre pulsos, algumas duram dois pulsos, outras duram meio. Uma música pode ter um ritmo extremamente complexo e sincopado, mas o pulso subjacente continua igual. É sobre esse pulso constante que o ritmo complexo faz sentido.
+O pulso é a batida regular e constante que sustenta toda a música. Você o sente instintivamente quando bate o pé ao ouvir uma música, ou quando palma no ritmo de um hino. O pulso não está sempre explícito — nem sempre há um instrumento tocando em cada batida — mas ele existe por baixo de tudo, invisível e constante. Músicos experientes o carregam internamente como um relógio que nunca para.
 
-No contexto do louvor, o pulso é o elemento que une a banda e a congregação. Quando o regente ou o maestro marca com a mão ou com a batuta, está principalmente comunicando o pulso — sua localização no tempo e sua velocidade. A bateria da banda de louvor normalmente reforça o pulso com o bumbo (nos tempos fortes) e o prato de condução (em todos os tempos ou subdivisões). Quando uma banda tem problema de "arrastar" ou "correr", o problema muitas vezes é que os músicos perderam o pulso compartilhado.
+<img src="/static/img/modules/pulso-musical.gif" alt="Animação de metrônomo com pontos de pulso regular e notas variadas acima" class="module-img" onerror="this.style.display='none'">
+
+É fundamental distinguir pulso de ritmo. O **pulso** é uniforme, igual — como o tique-taque de um relógio. O **ritmo** é o padrão variado de durações que acontece sobre esse pulso: algumas notas caem no pulso, outras entre os pulsos, algumas duram dois pulsos. Uma música pode ter ritmo extremamente complexo e sincopado — e o pulso subjacente continua igual, inabalável.
+
+No louvor, o pulso une a banda e a congregação. Quando uma banda "arrasta" ou "corre", o problema quase sempre é que os músicos perderam o pulso compartilhado. Quando o regente marca com a mão, está comunicando principalmente uma coisa: onde está o pulso agora.
 
 ## Visual
 
-Uma linha do tempo com pontos igualmente espaçados representando o pulso constante (como pontos de metrônomo). Acima dos pontos, notas de durações variadas (algumas cobrindo um ponto, outras dois, algumas entre pontos) mostrando o ritmo. Uma seta aponta para os pontos com o rótulo "PULSO — sempre igual" e outra para as notas com o rótulo "RITMO — varia sobre o pulso".
+Uma linha do tempo com pontos igualmente espaçados representando o pulso constante (como círculos de metrônomo). Acima dos pontos, notas de durações variadas — algumas cobrindo um ponto, outras dois, algumas caindo entre pontos — mostrando o ritmo. Uma seta aponta para os pontos com o rótulo "PULSO — sempre igual" e outra para as notas com o rótulo "RITMO — varia sobre o pulso".
 
 ## Exercícios
 

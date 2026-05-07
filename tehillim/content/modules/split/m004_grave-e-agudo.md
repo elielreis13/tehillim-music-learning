@@ -2,22 +2,26 @@
 number: 4
 slug: grave-e-agudo
 title: Grave e Agudo
-description: Lição focada em Grave e Agudo, separada do antigo módulo "Percepção Auditiva" para estudar um conceito por vez.
+description: O bumbo e a flauta piccolo vivem a quilômetros de distância sonora. Entenda o que os separa e por que isso importa na prática.
 topics: Grave e Agudo
 game_kind: game-listen
 ---
 
 ## Teoria
 
-A altura de um som — se ele é grave ou agudo — é determinada pela frequência de vibração, medida em Hertz (Hz). Quanto mais lenta a vibração, mais grave o som; quanto mais rápida, mais agudo. O Lá central usado para afinar orquestras vibra a 440 Hz. O bumbo da bateria produz frequências entre 50 e 100 Hz (bem grave), enquanto o prato de condução pode chegar a 8.000 Hz ou mais (muito agudo). O ouvido humano percebe sons entre aproximadamente 20 Hz e 20.000 Hz.
+O bumbo da bateria treme o chão. A flauta piccolo perfura o espaço. Os dois são instrumentos musicais — mas existe um abismo entre eles. Esse abismo chama-se **altura**, e é determinado pela frequência de vibração, medida em Hertz (Hz).
 
-No pentagrama (as cinco linhas da partitura), a altura é representada visualmente: quanto mais alta a posição de uma nota na pauta, mais aguda ela é. Uma nota na linha ou espaço de cima é mais aguda do que uma nota na linha de baixo. Isso facilita a leitura — você literalmente vê a melodia subindo e descendo conforme lê da esquerda para a direita. Notas abaixo da pauta são mais graves do que qualquer nota dentro dela, e o mesmo vale para notas acima da pauta.
+Quanto mais lenta a vibração, mais **grave** o som. Quanto mais rápida, mais **agudo**. O bumbo produz frequências entre 50 e 100 Hz. O prato de condução pode chegar a 8.000 Hz. O Lá padrão de orquestra — a nota usada para afinar todos os instrumentos — vibra exatamente a 440 Hz. O ouvido humano percebe sons entre 20 Hz e 20.000 Hz.
 
-Treinar o ouvido para distinguir grave e agudo é o primeiro passo da percepção musical. Um exercício simples: toque a corda mais grossa do violão (Mi grave) e depois a mais fina (Mi agudo) — ambas têm o mesmo nome, mas estão separadas por duas oitavas. No teclado, as teclas à esquerda são graves e as à direita são agudas. No coro, o baixo canta as notas mais graves e o soprano as mais agudas.
+<img src="/static/img/modules/grave-e-agudo.png" alt="Teclado de piano com setas indicando sons graves à esquerda e agudos à direita" class="module-img" onerror="this.style.display='none'">
+
+No **pentagrama**, grave e agudo viram visual: quanto mais alta a posição de uma nota na pauta, mais aguda ela é. Você literalmente vê a melodia subindo e descendo conforme lê da esquerda para a direita. Isso torna a leitura musical muito mais intuitiva do que parece.
+
+No teclado de piano, as teclas à esquerda são graves, as à direita são agudas. No coro, o baixo canta as notas mais graves e o soprano as mais agudas. No violão, a corda mais grossa (Mi grave) fica na parte superior do braço. Com o tempo, você começa a ver altura em tudo.
 
 ## Visual
 
-Um teclado de piano com setas: à esquerda, uma seta apontando para baixo com o rótulo "GRAVE — vibrações lentas, frequência baixa"; à direita, uma seta apontando para cima com o rótulo "AGUDO — vibrações rápidas, frequência alta". Abaixo, um pentagrama vazio com uma nota na linha de baixo (grave) e uma nota na linha de cima (aguda).
+Um teclado de piano com setas indicando direção: à esquerda, seta apontando para baixo com rótulo "GRAVE — vibrações lentas, Hz baixo"; à direita, seta apontando para cima com rótulo "AGUDO — vibrações rápidas, Hz alto". Abaixo do teclado, um pentagrama vazio com uma nota solitária na linha de baixo (rotulada "grave") e uma nota na linha de cima (rotulada "agudo").
 
 ## Exercícios
 

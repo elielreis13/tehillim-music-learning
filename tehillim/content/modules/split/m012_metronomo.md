@@ -2,22 +2,26 @@
 number: 12
 slug: metronomo
 title: Metrônomo
-description: Lição focada em Metrônomo, separada do antigo módulo "Pulso, Andamento e Tempo" para estudar um conceito por vez.
+description: O metrônomo não é seu inimigo — é o espelho mais honesto que um músico pode ter.
 topics: Metrônomo
 game_kind: game-challenge
 ---
 
 ## Teoria
 
-O metrônomo é um dispositivo que produz uma batida regular e constante em um BPM definido, usado para manter o músico em tempo durante o estudo. O metrônomo mecânico clássico (inventado por Johann Maelzel em 1815) funciona com um pêndulo invertido com um peso deslizante: quanto mais alto o peso, mais lento o pêndulo oscila. O metrônomo eletrônico emite um clique ou bipe e é mais preciso e portátil. Hoje, aplicativos de metrônomo no celular (como o Metronome Beats, Pro Metronome ou simplesmente o metrônomo nativo de qualquer DAW) são os mais usados por músicos de louvor.
+Existe um ditado entre músicos: "o metrônomo não mente". Você pode achar que toca no tempo — e o metrônomo vai mostrar exatamente onde você escorrega. Alguns músicos evitam o metrônomo por isso. Os bons o usam exatamente por isso.
 
-A forma certa de usar o metrônomo não é tentar "acompanhar" o clique no momento em que ele soa — isso leva a um atraso crônico. O correto é antecipar o clique: você deve tocar a nota exatamente com o clique, o que na prática significa iniciar o movimento da mão ou da boca um instante antes. Com treino, o clique passa a soar no meio da nota que você já está tocando, e isso é o ideal. Músicos profissionais descrevem a sensação como "engolir o metrônomo" — o clique desaparece dentro do som do instrumento.
+O metrônomo é um dispositivo que produz uma batida regular em um BPM definido, usado para manter o músico em tempo durante o estudo. O metrônomo mecânico clássico (inventado em 1815) funciona com um pêndulo invertido: quanto mais alto o peso, mais lento o pêndulo oscila. O eletrônico emite cliques e é mais preciso. Hoje, aplicativos de metrônomo no celular — como Pro Metronome ou o metrônomo nativo de qualquer DAW — são os mais usados.
 
-A disciplina de tocar com metrônomo é construída em etapas. Comece sempre mais devagar do que você acha necessário: se você consegue tocar uma passagem bem a 100 BPM, treine a 80 BPM primeiro — a lentidão revela falhas técnicas que a velocidade esconde. Aumente o BPM gradualmente, em incrementos de 4 a 8 BPM, somente quando o trecho estiver absolutamente limpo. Tentar "forçar" a velocidade sem essa progressão resulta em erros que se fixam no músculo e se tornam muito difíceis de corrigir depois.
+<img src="/static/img/modules/metronomo.gif" alt="Animação de metrônomo de pêndulo oscilando regularmente" class="module-img" onerror="this.style.display='none'">
+
+A forma certa de usar o metrônomo não é esperar o clique soar para então tocar — isso gera atraso crônico. O correto é **antecipar**: você deve tocar com o clique, o que na prática significa iniciar o movimento antes do clique chegar. Com treino, o clique passa a soar no meio da nota que você já está tocando — os músicos chamam isso de "engolir o metrônomo". O clique desaparece dentro do som do instrumento.
+
+A disciplina com metrônomo é construída em etapas. Comece **mais devagar do que você acha necessário**: se você toca uma passagem bem a 100 BPM, treine a 80 BPM primeiro. A lentidão revela falhas que a velocidade esconde. Aumente o BPM em incrementos de 4 a 8 somente quando o trecho estiver absolutamente limpo. Forçar velocidade sem essa progressão fixa os erros nos músculos — e eles são muito difíceis de desfazer depois.
 
 ## Visual
 
-Três metrônomos lado a lado: (1) metrônomo mecânico de pêndulo com o peso indicado em diferentes posições (lento/rápido); (2) metrônomo eletrônico portátil com display de BPM; (3) tela de celular com aplicativo de metrônomo. Abaixo de todos, a linha: "Mesmo objetivo: pulso constante e confiável."
+Três metrônomos lado a lado com labels: (1) metrônomo mecânico de pêndulo com o peso indicado em duas posições — alto (lento) e baixo (rápido); (2) metrônomo eletrônico portátil com display de BPM; (3) tela de celular com aplicativo de metrônomo. Abaixo dos três, a frase: "Mesmo objetivo: pulso constante e confiável."
 
 ## Exercícios
 

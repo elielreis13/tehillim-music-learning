@@ -2,22 +2,26 @@
 number: 14
 slug: orquestra-sinfonica
 title: Orquestra Sinfônica
-description: Lição focada em Orquestra Sinfônica, separada do antigo módulo "Explorando Instrumentos Musicais" para estudar um conceito por vez.
+description: 100 músicos, um maestro, e todos precisam soar como um único instrumento. Entenda como isso é possível.
 topics: Orquestra Sinfônica
 game_kind: game-match
 ---
 
 ## Teoria
 
-A orquestra sinfônica é o maior e mais complexo conjunto musical ocidental, podendo reunir de 60 a mais de 100 músicos. Ela é organizada em quatro naipes principais. O **naipe de cordas** é o maior e forma a espinha dorsal da orquestra: violinos (divididos em primeiros e segundos), violas, violoncelos, contrabaixos — e às vezes harpa. O **naipe de madeiras** inclui flautas, oboés, clarinetes e fagotes. O **naipe de metais** inclui trompas, trompetes, trombones e tuba. O **naipe de percussão** inclui tímpanos, caixa, pratos, triângulo, xilofone e outros instrumentos de efeito.
+Imagine coordenar 100 pessoas para que toquem a nota certa, na intensidade certa, no tempo exato — sem uma palavra sequer. Isso é o que acontece em toda performance de uma **orquestra sinfônica**. E funciona porque cada músico sabe exatamente qual é seu lugar, seu naipe e sua função.
 
-O maestro rege a orquestra do podium central, à frente de todos. Com a batuta na mão direita, o maestro indica o pulso, o andamento, as entradas e as dinâmicas. Com a mão esquerda e expressões faciais, comunica nuances expressivas — intensidade, caráter, fraseado. O spalla (ou concertino) é o primeiro violinista, posicionado à esquerda do maestro — ele é o líder musical do naipe de cordas e o interlocutor entre o maestro e os músicos. A disposição padrão coloca as cordas mais próximas do maestro, madeiras no centro, metais atrás e percussão ao fundo.
+A orquestra sinfônica é organizada em quatro naipes principais. O **naipe de cordas** é o maior — forma a espinha dorsal da orquestra: violinos (divididos em primeiros e segundos), violas, violoncelos, contrabaixos e às vezes harpa. O **naipe de madeiras** inclui flautas, oboés, clarinetes e fagotes. O **naipe de metais** inclui trompas, trompetes, trombones e tuba. O **naipe de percussão** inclui tímpanos, caixa, pratos e instrumentos de efeito.
 
-Para músicos de igreja, a orquestra sinfônica tem relevância direta: muitas igrejas maiores no Brasil mantêm **orquestras de louvor** com formação similar, adaptada ao contexto evangélico (com guitarra, teclado e bateria integrados). Compositores como Marcos Witt, Ministério Diante do Trono e grupos como o IBPC têm produzido arranjos orquestrais de louvor. Conhecer a função de cada naipe ajuda o músico a entender partituras de orquestra, a colocar cada instrumento em seu espaço no mix e a escrever arranjos mais idiomáticos.
+<img src="/static/img/modules/orquestra-sinfonica.png" alt="Diagrama do palco da orquestra visto de cima com os naipes em posições distintas" class="module-img" onerror="this.style.display='none'">
+
+O **maestro** rege do podium central com a batuta na mão direita — indicando pulso, andamento, entradas e dinâmicas — e com a mão esquerda comunicando nuances expressivas. O **spalla** (concertino) é o primeiro violinista, à esquerda do maestro: é o líder musical das cordas e o interlocutor entre maestro e orquestra. A disposição padrão coloca cordas na frente, madeiras no centro, metais atrás e percussão ao fundo.
+
+Para músicos de igreja, isso tem relevância direta: igrejas maiores no Brasil mantêm **orquestras de louvor** com formação similar. Entender a função de cada naipe ajuda a colocar cada instrumento em seu espaço no mix e a escrever arranjos mais naturais para cada família.
 
 ## Visual
 
-Diagrama de palco da orquestra visto de cima: o maestro no centro-frente, à sua esquerda os primeiros violinos, à direita os segundos violinos, violas ao centro, violoncelos e contrabaixos à direita. Atrás: madeiras no centro, metais atrás das madeiras, percussão ao fundo. Cada naipe colorido com uma cor diferente e rotulado.
+Diagrama de palco da orquestra visto de cima (planta baixa): o maestro no centro-frente, à sua esquerda os primeiros violinos, à direita os segundos violinos, violas ao centro-frente, violoncelos e contrabaixos à direita. Atrás: madeiras no centro, metais atrás das madeiras, percussão ao fundo. Cada naipe em uma cor diferente com label identificando o grupo.
 
 ## Exercícios
 

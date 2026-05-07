@@ -133,11 +133,19 @@ function renderStage() {
   }
 }
 
+function renderInlineMarkdown(text) {
+  return text
+    .replace(/==(.+?)==/g, "<mark>$1</mark>")
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/_(.+?)_/g, "<em>$1</em>");
+}
+
 function renderTextBlock(text) {
   return text
     .split("\n\n")
     .filter(Boolean)
-    .map((paragraph) => `<p>${paragraph}</p>`)
+    .map((paragraph) => `<p>${renderInlineMarkdown(paragraph)}</p>`)
     .join("");
 }
 
