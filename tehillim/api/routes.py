@@ -58,10 +58,15 @@ def bona_sheet(slug: str):
 def my_access():
     if not session.get("user_id"):
         return jsonify({"slugs": [], "isTeacher": False})
-    return jsonify({
-        "slugs":     session.get("module_slugs", []),
-        "isTeacher": session.get("is_teacher", False),
-    })
+    if session.get("is_teacher"):
+        return jsonify({"slugs": [], "isTeacher": True})
+    try:
+        rows  = sb_get("student_access", {"select": "module_slug", "user_id": f"eq.{session['user_id']}"})
+        slugs = [r["module_slug"] for r in rows]
+        session["module_slugs"] = slugs
+        return jsonify({"slugs": slugs, "isTeacher": False})
+    except Exception:
+        return jsonify({"slugs": session.get("module_slugs", []), "isTeacher": False})
 
 
 # ── Progresso ─────────────────────────────────────────────────────────────────
