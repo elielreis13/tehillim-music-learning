@@ -118,7 +118,8 @@ const XP_PER_MODULE = 50;
 
 document.addEventListener('DOMContentLoaded', async () => {
   await waitForProgress();
-  renderTrails();
+  const access = await window.auth?.getAccess?.() ?? { slugs: new Set(), isTeacher: false };
+  renderTrails(access);
 });
 
 function waitForProgress() {
@@ -129,7 +130,7 @@ function waitForProgress() {
   });
 }
 
-function renderTrails() {
+function renderTrails(access = { slugs: new Set(), isTeacher: false }) {
   const prog    = window._progress || [];
   const done    = window._doneModules || 0;
   const total   = window._totalModules || 0;
@@ -167,7 +168,10 @@ function renderTrails() {
       const xpEl  = document.getElementById(`mission-xp-${m.slug}`);
       if (!card || !icon) return;
 
+      const isAccessible = access.isTeacher || access.slugs.has(m.slug);
+
       if (doneSet.has(m.slug)) {
+        // Concluído
         card.style.background = '#F4FAF7';
         card.style.border = '2px solid #5A8A6A';
         icon.style.background = '#5A8A6A';
@@ -181,15 +185,27 @@ function renderTrails() {
           badge.innerHTML = '<svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
           card.appendChild(badge);
         }
-      } else if (!foundCurrent) {
-        foundCurrent = true;
-        card.style.background = bg;
-        card.style.border = `2px solid ${color}`;
-        icon.style.background = color;
-        icon.innerHTML = `<span style="color:white;font-size:9px;font-weight:800;">M${String(m.number).padStart(2,'0')}</span>`;
-        if (title) { title.style.color = '#2A2419'; title.style.fontWeight = '700'; }
-        if (xpEl)  { xpEl.style.color = color; xpEl.style.background = 'white'; }
+      } else if (isAccessible) {
+        // Liberado pelo professor — destaca o primeiro como "atual"
+        if (!foundCurrent) {
+          foundCurrent = true;
+          card.style.background = bg;
+          card.style.border = `2px solid ${color}`;
+          icon.style.background = color;
+          icon.innerHTML = `<span style="color:white;font-size:9px;font-weight:800;">M${String(m.number).padStart(2,'0')}</span>`;
+          if (title) { title.style.color = '#2A2419'; title.style.fontWeight = '700'; }
+          if (xpEl)  { xpEl.style.color = color; xpEl.style.background = 'white'; }
+        } else {
+          // Liberado mas não é o atual — mostra disponível sem cadeado
+          card.style.background = 'white';
+          card.style.border = `1.5px solid ${color}44`;
+          icon.style.background = `${color}22`;
+          icon.innerHTML = `<span style="color:${color};font-size:9px;font-weight:800;">M${String(m.number).padStart(2,'0')}</span>`;
+          if (title) { title.style.color = '#5A4820'; }
+          if (xpEl)  { xpEl.style.color = color; }
+        }
       } else {
+        // Bloqueado
         card.classList.add('locked');
         card.style.opacity = '0.5';
         card.style.cursor = 'default';

@@ -7,10 +7,21 @@ from flask import abort, redirect, render_template, request, session
 
 from . import bp
 from tehillim.content import get_group, get_module
+from tehillim.extensions import sb_get
 
 
 def _get_access() -> tuple[set, bool]:
-    return set(session.get("module_slugs", [])), session.get("is_teacher", False)
+    is_teacher = session.get("is_teacher", False)
+    user_id    = session.get("user_id")
+    if not user_id or is_teacher:
+        return set(), is_teacher
+    try:
+        rows  = sb_get("student_access", {"select": "module_slug", "user_id": f"eq.{user_id}"})
+        slugs = {r["module_slug"] for r in rows}
+        session["module_slugs"] = list(slugs)
+        return slugs, False
+    except Exception:
+        return set(session.get("module_slugs", [])), False
 
 
 @bp.before_request
