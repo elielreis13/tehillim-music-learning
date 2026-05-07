@@ -6,6 +6,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  @media (max-width: 768px) {
+    .perf-main-grid { grid-template-columns: 1fr !important; padding: 12px !important; gap: 12px !important; }
+    #skills-grid    { grid-template-columns: 1fr !important; }
+    #heatmap-grid   { grid-template-columns: repeat(6, 1fr) !important; }
+    .perf-header-stats { gap: 6px !important; }
+    .perf-header-stats > div { min-width: 64px !important; padding: 6px 10px !important; }
+  }
+</style>
 {% endblock %}
 
 {% block header %}
@@ -17,7 +26,7 @@
       <h1 style="font-family:'Fraunces',serif;font-size:34px;font-weight:400;line-height:1.05;margin:6px 0 4px;letter-spacing:-0.02em;">Seu desempenho</h1>
       <p style="font-size:12px;color:#C4B89A;margin:0;" id="perf-subtitle">Nível — · — XP</p>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <div class="perf-header-stats" style="display:flex;gap:10px;flex-wrap:wrap;">
       <div style="background:rgba(232,199,122,0.10);border:1px solid rgba(232,199,122,0.25);border-radius:12px;padding:8px 14px;min-width:80px;text-align:center;">
         <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#E8C77A;line-height:1;" id="stat-modules">—</div>
         <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Módulos</div>
@@ -40,7 +49,7 @@
 {% endblock %}
 
 {% block content %}
-<div style="padding:20px 24px;display:grid;grid-template-columns:1.4fr 1fr;gap:16px;">
+<div class="perf-main-grid" style="padding:20px 24px;display:grid;grid-template-columns:1.4fr 1fr;gap:16px;">
 
   <!-- ── COLUNA ESQUERDA ── -->
   <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">

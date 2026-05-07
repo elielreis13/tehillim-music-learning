@@ -9,6 +9,18 @@
 <style>
   .mod-mission { transition: box-shadow 0.2s, opacity 0.2s; }
   .mod-mission:hover:not(.locked) { box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+
+  @media (max-width: 768px) {
+    .trail-outer   { padding: 10px !important; gap: 10px !important; }
+    .trail-row     { flex-direction: column !important; }
+    .trail-left    { width: 100% !important; flex-direction: row !important; align-items: center !important; padding: 14px 16px !important; gap: 14px !important; justify-content: space-between !important; }
+    .trail-left-text > p:last-of-type { display: none !important; }  /* esconde descrição longa */
+    .trail-left h2 { font-size: 15px !important; margin: 4px 0 0 !important; }
+    .trail-left-bottom { margin-top: 0 !important; }
+    .trail-right   { padding: 14px 16px !important; }
+    .trail-modules { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)) !important; gap: 6px !important; }
+    .mod-mission   { padding: 8px 6px !important; }
+  }
 </style>
 {% endblock %}
 
@@ -40,18 +52,18 @@
 ] %}
 {% set group_levels = ['Iniciante', 'Iniciante', 'Intermediário', 'Avançado', 'Intermediário'] %}
 
-<div style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;">
+<div class="trail-outer" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;">
 
   {% for group in groups %}
   {% set c = group_colors[loop.index0 % 5] %}
   {% set level = group_levels[loop.index0 % 5] %}
 
-  <section style="background:white;border-radius:18px;border:1px solid #F0E8D4;overflow:hidden;">
-    <div style="display:flex;align-items:stretch;">
+  <section class="trail-section" style="background:white;border-radius:18px;border:1px solid #F0E8D4;overflow:hidden;">
+    <div class="trail-row" style="display:flex;align-items:stretch;">
 
       <!-- Left: description panel -->
-      <div style="width:240px;background:{{ c[2] }};padding:26px;display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;">
-        <div>
+      <div class="trail-left" style="width:240px;background:{{ c[2] }};padding:26px;display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;">
+        <div class="trail-left-text">
           <p style="font-size:10px;color:{{ c[0] }};text-transform:uppercase;letter-spacing:0.2em;font-weight:700;margin:0;">
             Grupo {{ '%02d'|format(loop.index) }} · {{ level }}
           </p>
@@ -60,7 +72,7 @@
           </h2>
           <p style="font-size:12px;color:#7A6A4D;margin:0;line-height:1.45;">{{ group.description }}</p>
         </div>
-        <div style="display:flex;align-items:center;gap:12px;margin-top:20px;">
+        <div class="trail-left-bottom" style="display:flex;align-items:center;gap:12px;margin-top:20px;">
           <div style="width:52px;height:52px;border-radius:50%;background:{{ c[1] }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" style="width:26px;height:26px;object-fit:contain;">
           </div>
@@ -74,13 +86,13 @@
       </div>
 
       <!-- Right: module cards + thin progress bar at bottom -->
-      <div style="flex:1;padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between;">
+      <div class="trail-right" style="flex:1;padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between;">
         <div>
           <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;">
             <h3 style="font-family:'Fraunces',serif;font-size:14px;font-weight:500;margin:0;color:#7A6A4D;">Módulos</h3>
             <a href="/grupos/{{ group.slug }}" style="font-size:12px;color:{{ c[0] }};text-decoration:none;font-weight:600;" id="trail-cta-{{ group.slug }}">Começar →</a>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;" id="trail-modules-{{ group.slug }}">
+          <div class="trail-modules" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;" id="trail-modules-{{ group.slug }}">
             {% for module in group.modules %}
             <div class="mod-mission" style="background:#FAF5EB;border:1px solid #F0E8D4;border-radius:10px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;position:relative;"
                  onclick="window.location.href='/modulos/{{ module.slug }}'"
@@ -219,5 +231,38 @@ function set(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = val;
 }
+
+function initMobileCollapse() {
+  if (window.innerWidth > 768) return;
+
+  document.querySelectorAll('.trail-section').forEach((section, i) => {
+    const left  = section.querySelector('.trail-left');
+    const right = section.querySelector('.trail-right');
+    if (!left || !right) return;
+
+    const isOpen = i === 0;
+    if (!isOpen) right.style.display = 'none';
+
+    const chevron = document.createElement('span');
+    chevron.style.cssText = 'font-size:14px;color:#9C8460;transition:transform 0.2s;flex-shrink:0;';
+    chevron.textContent = isOpen ? '▲' : '▼';
+    left.appendChild(chevron);
+    left.style.cursor = 'pointer';
+
+    left.addEventListener('click', () => {
+      const hidden = right.style.display === 'none';
+      right.style.display = hidden ? '' : 'none';
+      chevron.textContent = hidden ? '▲' : '▼';
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initMobileCollapse);
+window.addEventListener('resize', () => {
+  // If resized to desktop, make sure all sections visible
+  if (window.innerWidth > 768) {
+    document.querySelectorAll('.trail-section .trail-right').forEach(r => { r.style.display = ''; });
+  }
+});
 </script>
 {% endblock %}

@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 .env
 .git/
+.github/
+.claude/
 *.md
 docs/
 sql/
+memory/
+tehillim/books/
+*.pdf
