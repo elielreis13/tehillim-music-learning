@@ -48,8 +48,6 @@
 
     e.preventDefault();
 
-    if (window.auth) window.auth._accessCache = null;
-
     const loggedIn = window.auth?.isLoggedIn() ?? false;
     if (!loggedIn) {
       _showToast("Faça login para acessar os módulos.");

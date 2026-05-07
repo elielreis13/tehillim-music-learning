@@ -48,6 +48,17 @@
       fetch("/api/study-day", { method: "POST" }).catch(() => {});
     },
 
+    async getAccess() {
+      if (!this.isLoggedIn()) return { slugs: new Set(), isTeacher: false };
+      try {
+        const r    = await fetch("/api/my-access");
+        const data = r.ok ? await r.json() : {};
+        return { slugs: new Set(data.slugs || []), isTeacher: !!data.isTeacher };
+      } catch {
+        return { slugs: new Set(), isTeacher: false };
+      }
+    },
+
     // ── UI ──────────────────────────────────────────────────────────────────
 
     _renderBadge() {
