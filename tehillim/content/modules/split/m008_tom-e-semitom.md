@@ -2,22 +2,26 @@
 number: 8
 slug: tom-e-semitom
 title: Tom e Semitom
-description: Lição focada em Tom e Semitom, separada do antigo módulo "As Notas Musicais" para estudar um conceito por vez.
+description: O menor passo possível em um teclado é um semitom. Toda a teoria musical é construída a partir dessa distância mínima.
 topics: Tom e Semitom
 game_kind: game-quiz
 ---
 
 ## Teoria
 
-O semitom é a menor distância entre dois sons no sistema musical ocidental. No teclado de piano, um semitom é sempre a distância entre uma tecla e a tecla imediatamente ao lado — seja branca para preta, preta para branca, ou branca para branca quando não há tecla preta entre elas. Um tom é exatamente o dobro de um semitom: duas teclas de distância. Então de Dó para Ré (passando pelo Dó sustenido, a tecla preta no meio) há um tom = 2 semitons.
+Se a nota é o átomo da música, o **semitom** é o elétron — a menor unidade de distância entre dois sons no sistema musical ocidental. No teclado de piano, um semitom é a distância entre uma tecla e a tecla imediatamente ao lado, seja branca para preta, preta para branca, ou branca para branca quando não há tecla preta entre elas. Um **tom** é exatamente o dobro: dois semitons, duas teclas de distância.
 
-Dois pares de notas naturais (sem sustenido ou bemol) formam semitons naturais: **Mi-Fá** e **Si-Dó**. No teclado, observe que entre Mi e Fá não existe tecla preta — elas estão diretamente adjacentes. O mesmo acontece entre Si e Dó. Por isso, a distância entre Mi e Fá é de apenas um semitom, assim como entre Si e Dó. Todos os outros pares de notas naturais adjacentes (Dó-Ré, Ré-Mi, Fá-Sol, Sol-Lá, Lá-Si) têm uma tecla preta entre eles e formam um tom.
+Há dois pares de notas naturais que formam **semitons sem tecla preta no meio**: **Mi–Fá** e **Si–Dó**. Observe no teclado: entre Mi e Fá não existe tecla preta — elas se tocam diretamente. O mesmo acontece entre Si e Dó. Todos os outros pares de notas naturais adjacentes (Dó–Ré, Ré–Mi, Fá–Sol, Sol–Lá, Lá–Si) têm uma tecla preta entre eles e formam um tom.
 
-Esse padrão de tons e semitons não é acidental — ele define a estrutura da escala maior. A escala de Dó maior segue exatamente este padrão a partir do Dó: Tom-Tom-Semitom-Tom-Tom-Tom-Semitom (T-T-S-T-T-T-S). Você pode ver isso facilmente no teclado: Dó→Ré (tom), Ré→Mi (tom), Mi→Fá (semitom), Fá→Sol (tom), Sol→Lá (tom), Lá→Si (tom), Si→Dó (semitom). Toda escala maior, em qualquer tonalidade, segue esse mesmo padrão.
+<img src="/static/img/modules/tom-e-semitom.png" alt="Teclado de piano de uma oitava com marcações T (tom) e S (semitom) entre cada par de notas" class="module-img" onerror="this.style.display='none'">
+
+Esse padrão não é acidental — ele define a estrutura da **escala maior**. A escala de Dó maior segue exatamente: Tom–Tom–Semitom–Tom–Tom–Tom–Semitom (T–T–S–T–T–T–S). Veja no teclado: Dó→Ré (T), Ré→Mi (T), Mi→Fá (S), Fá→Sol (T), Sol→Lá (T), Lá→Si (T), Si→Dó (S). Toda escala maior, em qualquer tonalidade, segue esse mesmo padrão.
+
+Quando você entende tons e semitons, escalar maior deixa de ser um exercício de memorização e vira uma fórmula que funciona em qualquer tecla do piano — ou em qualquer posição do braço do violão.
 
 ## Visual
 
-Um segmento de teclado de piano mostrando uma oitava completa (de Dó a Dó), com setas indicando a distância entre cada par de notas adjacentes: "T" (tom) entre Dó-Ré, Ré-Mi, Fá-Sol, Sol-Lá, Lá-Si; e "S" (semitom) entre Mi-Fá e Si-Dó. Teclas pretas rotuladas com seus nomes (Dó#, Ré#, etc.).
+Um segmento de teclado de piano mostrando uma oitava completa (de Dó a Dó), com setas indicando a distância entre cada par de notas adjacentes: "T" (tom) em verde entre Dó–Ré, Ré–Mi, Fá–Sol, Sol–Lá, Lá–Si; "S" (semitom) em vermelho entre Mi–Fá e Si–Dó. Teclas pretas rotuladas com seus nomes (Dó#/Réb, Ré#/Mib, etc.). Legenda: "T = 2 semitons | S = 1 semitom".
 
 ## Exercícios
 

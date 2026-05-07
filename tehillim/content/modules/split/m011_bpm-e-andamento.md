@@ -2,22 +2,26 @@
 number: 11
 slug: bpm-e-andamento
 title: BPM e Andamento
-description: Lição focada em BPM e Andamento, separada do antigo módulo "Pulso, Andamento e Tempo" para estudar um conceito por vez.
+description: Um número que muda tudo: entenda como o BPM define o caráter emocional de qualquer música de louvor.
 topics: BPM e Andamento
 game_kind: game-challenge
 ---
 
 ## Teoria
 
-BPM significa "batidas por minuto" (beats per minute) e é a unidade de medida do andamento musical — a velocidade do pulso. Um andamento de 60 BPM significa uma batida por segundo, como o ponteiro dos segundos de um relógio analógico. A 120 BPM, há duas batidas por segundo. Quanto maior o número de BPM, mais rápida a música. Saber o BPM de uma música é essencial para configurar looper, playback, metrônomo, bateria eletrônica e qualquer tecnologia de estúdio ou ao vivo.
+Um gospel animado de domingo pela manhã: 120 BPM. Uma adoração contemplativa de quarta à noite: 70 BPM. O mesmo hino "Santo, Santo, Santo" pode soar majestoso ou apressado — a diferença está em um único número: o **BPM**.
 
-A tradição clássica usa termos em italiano para indicar o andamento aproximado, e esses termos ainda aparecem em partituras e nos menus de metrônomo. Os principais são: **Largo** (~50 BPM) — muito lento, pesado; **Adagio** (~66 BPM) — lento, expressivo; **Andante** (~76 BPM) — em passo de caminhada; **Moderato** (~100 BPM) — moderado; **Allegro** (~132 BPM) — rápido, animado; **Presto** (~180 BPM) — muito rápido. Esses termos são aproximações — o BPM exato é sempre mais preciso.
+BPM significa "batidas por minuto" (beats per minute) e é a unidade de medida do andamento — a velocidade do pulso. A 60 BPM, há uma batida por segundo, como o ponteiro dos segundos de um relógio analógico. A 120 BPM, duas batidas por segundo. Quanto maior o número, mais rápida a música. Saber o BPM é essencial para configurar looper, playback, metrônomo e qualquer tecnologia de palco.
 
-O andamento afeta profundamente o caráter emocional de uma música de louvor. O hino "Santo, Santo, Santo" em Largo (50 BPM) evoca reverência e solenidade. O mesmo hino em Allegro (132 BPM) soaria apressado e perderia seu peso. Músicas de proclamação e adoração viva costumam estar entre Moderato e Allegro (96–132 BPM). Músicas de adoração íntima e contemplação costumam ficar entre Andante e Moderato (72–96 BPM). Conhecer esses padrões ajuda o músico de louvor a escolher andamentos adequados para cada momento do culto.
+<img src="/static/img/modules/bpm-e-andamento.png" alt="Linha horizontal com termos italianos de andamento de Largo a Presto, com BPM e ícones de velocidade" class="module-img" onerror="this.style.display='none'">
+
+A tradição clássica usa termos em italiano para indicar o andamento aproximado. Os principais: **Largo** (~50 BPM) — muito lento, pesado; **Adagio** (~66 BPM) — lento, expressivo; **Andante** (~76 BPM) — em passo de caminhada; **Moderato** (~100 BPM) — moderado; **Allegro** (~132 BPM) — rápido, animado; **Presto** (~180 BPM) — muito rápido. Esses termos aparecem em partituras e nos menus de metrônomo.
+
+Músicas de proclamação e adoração viva costumam ficar entre Moderato e Allegro (96–132 BPM). Músicas de adoração íntima e contemplação costumam ficar entre Andante e Moderato (72–96 BPM). Conhecer esses padrões ajuda o músico a escolher andamentos que correspondam à intenção de cada momento do culto.
 
 ## Visual
 
-Uma linha horizontal com os termos de andamento distribuídos da esquerda (mais lento) para a direita (mais rápido): Largo (50) → Adagio (66) → Andante (76) → Moderato (100) → Allegro (132) → Presto (180). Abaixo de cada termo, o BPM aproximado. Acima da linha, ícones representando o clima: tartaruga (Largo), pessoa caminhando (Andante), pessoa correndo (Allegro), raio (Presto).
+Uma linha horizontal com os termos de andamento distribuídos da esquerda (mais lento) para a direita (mais rápido): Largo (50) → Adagio (66) → Andante (76) → Moderato (100) → Allegro (132) → Presto (180). Abaixo de cada termo, o BPM aproximado. Acima da linha, ícones representando o clima: tartaruga (Largo), pessoa caminhando devagar (Andante), pessoa correndo (Allegro), raio (Presto).
 
 ## Exercícios
 

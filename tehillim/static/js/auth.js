@@ -48,6 +48,28 @@
       fetch("/api/study-day", { method: "POST" }).catch(() => {});
     },
 
+    // Cache simples para não bater em /api/my-access em cada card
+    _accessCache: null,
+    _accessCacheAt: 0,
+
+    async getAccess() {
+      const now = Date.now();
+      if (this._accessCache && now - this._accessCacheAt < 30_000) {
+        return this._accessCache;
+      }
+      try {
+        const r = await fetch("/api/my-access");
+        if (!r.ok) throw new Error("my-access failed");
+        const data = await r.json();
+        this._accessCache   = { slugs: new Set(data.slugs), isTeacher: data.isTeacher };
+        this._accessCacheAt = now;
+      } catch {
+        this._accessCache   = { slugs: new Set(), isTeacher: false };
+        this._accessCacheAt = now;
+      }
+      return this._accessCache;
+    },
+
     // ── UI ──────────────────────────────────────────────────────────────────
 
     _renderBadge() {

@@ -1,23 +1,27 @@
 ---
 number: 13
 slug: familias-de-instrumentos
-title: Famílias de instrumentos
-description: Lição focada em Famílias de instrumentos, separada do antigo módulo "Explorando Instrumentos Musicais" para estudar um conceito por vez.
+title: Famílias de Instrumentos
+description: Por que o saxofone é parente da flauta, e não do trompete? Porque o que define a família é como o som nasce, não do que é feito.
 topics: Famílias de instrumentos
 game_kind: game-match
 ---
 
 ## Teoria
 
-Os instrumentos musicais são classificados em famílias de acordo com como produzem o som. A família das **cordas** inclui instrumentos cujo som vem da vibração de cordas tensionadas: violão, guitarra elétrica, baixo elétrico, violino, viola, violoncelo e contrabaixo. As cordas podem ser dedilhadas (violão, baixo), friccionadas com arco (violino, celo) ou percutidas com martelos (piano — sim, o piano é tecnicamente um instrumento de cordas percutidas).
+O saxofone é feito de metal. O clarinete é feito de resina. Mesmo assim, ambos são **sopros-madeiras** — e o trompete, que também é de metal, é um **sopro-metal**. O material não define a família. O que define é **como o instrumento produz o som**.
 
-A família dos **sopros** divide-se em madeiras e metais. As madeiras (flauta, clarinete, saxofone, oboé) produzem som pela vibração de uma coluna de ar — seja por um bocal com palheta, seja pelo sopro sobre uma embocadura. Os metais (trompete, trombone, tuba, trompa) produzem som pela vibração dos lábios do músico pressionados contra um bocal cônico de metal. A família da **percussão** inclui instrumentos tocados pela ação de bater, sacudir ou raspar: bateria, pandeiro, tímpano, xilofone, chocalho, triângulo.
+A família das **cordas** inclui instrumentos cujo som nasce da vibração de cordas tensionadas: violão, guitarra elétrica, baixo elétrico, violino, viola, violoncelo, contrabaixo. As cordas podem ser dedilhadas (violão, baixo), friccionadas com arco (violino, celo) ou percutidas com martelos — o que coloca o **piano** surpreendentemente na família das cordas.
 
-A família dos **teclados** é muitas vezes considerada separadamente por ter mecanismos específicos, embora piano e cravo sejam tecnicamente cordas. O teclado eletrônico (sintetizador, órgão eletrônico) é o instrumento de teclado mais presente nas bandas de louvor. Na igreja evangélica brasileira, as famílias mais presentes são: cordas elétricas (guitarra, baixo, violão), percussão (bateria, pandeiro), teclados e voz. Sopros aparecem em conjuntos maiores e orquestras de louvor.
+<img src="/static/img/modules/familias-de-instrumentos.png" alt="Quatro quadrantes coloridos com os nomes e exemplos de cada família de instrumentos" class="module-img" onerror="this.style.display='none'">
+
+Os **sopros-madeiras** (flauta, clarinete, saxofone, oboé) produzem som pela vibração de uma coluna de ar — via palheta ou embocadura. Os **sopros-metais** (trompete, trombone, tuba, trompa) produzem som pela vibração dos lábios do músico pressionados contra um bocal cônico de metal. A família da **percussão** inclui instrumentos tocados por ação de bater, sacudir ou raspar: bateria, pandeiro, tímpano, xilofone, chocalho.
+
+Na igleja evangélica brasileira, as famílias mais presentes são: cordas elétricas (guitarra, baixo, violão), percussão (bateria, pandeiro), teclados e voz. Em orquestras de louvor maiores, todos os naipes aparecem — e entender a função de cada família ajuda o músico a criar arranjos que respeitam as características idiomáticas de cada instrumento.
 
 ## Visual
 
-Quatro quadrantes coloridos, cada um com o nome da família e exemplos ilustrados: (1) CORDAS — violão, violino, baixo; (2) SOPROS MADEIRAS — flauta, saxofone, clarinete; (3) SOPROS METAIS — trompete, trombone; (4) PERCUSSÃO — bateria, pandeiro, xilofone. Cada quadrante tem a descrição resumida de como o som é produzido.
+Quatro quadrantes coloridos em layout 2x2, cada um com o nome da família em destaque e exemplos ilustrados: (1) CORDAS em azul — violão, violino, baixo; (2) SOPROS MADEIRAS em verde — flauta, saxofone, clarinete; (3) SOPROS METAIS em dourado — trompete, trombone; (4) PERCUSSÃO em vermelho — bateria, pandeiro, xilofone. Cada quadrante tem a descrição resumida de como o som é produzido.
 
 ## Exercícios
 

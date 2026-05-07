@@ -2,22 +2,26 @@
 number: 15
 slug: banda-de-louvor
 title: Banda de Louvor
-description: Lição focada em Banda de Louvor, separada do antigo módulo "Explorando Instrumentos Musicais" para estudar um conceito por vez.
+description: Você não toca para se destacar. Você toca para servir a música. Essa mentalidade transforma músicos bons em excelentes.
 topics: Banda de Louvor
 game_kind: game-match
 ---
 
 ## Teoria
 
-A banda de louvor brasileira típica é formada por: **bateria** (fundação rítmica), **baixo elétrico** (fundação harmônica e rítmica), **guitarra elétrica** (harmonia, riffs, contracantos), **teclado** (harmonia, pads, texturas), **violão** (harmonia acústica, levada), e **vocais** (melodia principal e backing vocals). Cada instrumento ocupa um espaço específico no espectro sonoro: o baixo e o bumbo dominam as frequências graves; a guitarra e o teclado habitam o médio; os vocais e os pratos ocupam o agudo. Um bom som de banda começa com cada músico entendendo onde seu instrumento mora no espectro.
+Existe uma diferença fundamental entre um músico que toca bem e um músico de louvor que serve bem. O primeiro pensa em si mesmo. O segundo pensa no conjunto. Essa diferença não está nas mãos — está na cabeça.
 
-O **baixo** e a **bateria** formam o que se chama de "seção rítmica" — eles são a fundação sobre a qual todos os outros instrumentos constroem. Quando a seção rítmica está firme e coesa, a banda toda soa grande mesmo com poucos instrumentos. O **teclado** frequentemente preenche o espaço harmônico com pads (notas sustentadas longas) durante momentos de adoração mais suaves, e com comping rítmico durante momentos mais animados. A **guitarra** pode fazer contracantos (linhas melódicas que respondem ao vocal), power chords (acordes de distorção), ou arpegios delicados conforme o momento do louvor.
+A banda de louvor brasileira típica é formada por: **bateria** (fundação rítmica), **baixo elétrico** (fundação harmônica e rítmica), **guitarra elétrica** (harmonia, riffs, contracantos), **teclado** (harmonia, pads, texturas), **violão** (harmonia acústica, levada) e **vocais** (melodia principal e backing vocals). Cada instrumento ocupa um espaço específico no espectro sonoro: baixo e bumbo dominam as frequências graves; guitarra e teclado habitam o médio; vocais e pratos ocupam o agudo.
 
-A mentalidade fundamental de um músico de louvor de excelência é **servir a música, não se exibir**. Isso significa: tocar menos notas quando a música pede silêncio, diminuir o volume quando o vocal precisa de espaço, não improvisar durante a letra principal da música, e sempre perguntar "o que essa música precisa agora?" em vez de "o que eu posso fazer aqui para aparecer?". Escuta ativa — ouvir atentamente cada membro da banda enquanto toca — é a habilidade mais importante em um ensemble. Músicos que não ouvem os outros membros do grupo tocam "em cima" uns dos outros e criam confusão sonora.
+<img src="/static/img/modules/banda-de-louvor.png" alt="Diagrama do palco da banda de louvor visto de cima com posições e funções de cada instrumento" class="module-img" onerror="this.style.display='none'">
+
+O **baixo** e a **bateria** formam a seção rítmica — a fundação sobre a qual todos os outros instrumentos constroem. Quando a seção rítmica está firme e coesa, a banda toda soa grande mesmo com poucos instrumentos. O **teclado** frequentemente preenche o espaço harmônico com **pads** (notas sustentadas longas) durante momentos de adoração mais suaves, e com comping rítmico durante momentos mais animados. A **guitarra** pode fazer contracantos, power chords ou arpegios conforme o momento pede.
+
+A mentalidade essencial é **servir a música, não se exibir**. Isso significa: tocar menos notas quando a música pede silêncio, diminuir o volume quando o vocal precisa de espaço, não improvisar durante a letra principal. A habilidade mais importante em um ensemble é a **escuta ativa** — ouvir atentamente cada membro da banda enquanto toca. Músicos que não ouvem os outros tocam "em cima" uns dos outros e criam confusão sonora.
 
 ## Visual
 
-Diagrama do palco da banda de louvor visto de cima: bateria ao centro-fundo, baixo à esquerda, guitarra à direita, teclado ao lado da guitarra, violão ao lado do baixo, vocais na frente ao centro. Setas indicando a direção do monitoramento (quem ouve quem) e ícones de frequência (grave/agudo) abaixo de cada instrumento.
+Diagrama do palco da banda de louvor visto de cima: bateria ao centro-fundo, baixo à esquerda, guitarra à direita, teclado ao lado da guitarra, violão ao lado do baixo, vocais na frente ao centro. Setas indicando o fluxo de escuta (quem deve ouvir quem). Abaixo de cada instrumento, um ícone de frequência indicando se habita o grave, médio ou agudo.
 
 ## Exercícios
 

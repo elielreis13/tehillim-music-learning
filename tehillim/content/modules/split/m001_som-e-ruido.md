@@ -2,22 +2,26 @@
 number: 1
 slug: som-e-ruido
 title: Som e Ruído
-description: Lição focada em Som e Ruído, separada do antigo módulo "O Que É Som?" para estudar um conceito por vez.
+description: Entenda por que alguns sons viram música e outros ficam só no barulho — e como isso muda a forma de tocar.
 topics: Som e Ruído
 game_kind: game-listen
 ---
 
 ## Teoria
 
-Som é produzido por vibração. Quando uma corda de violão é puxada, ela vibra e empurra o ar ao redor — essas ondas de pressão chegam aos seus ouvidos como som. A característica fundamental que distingue o som musical do ruído é a regularidade dessas vibrações: vibrações regulares e periódicas produzem uma altura definida (como o Dó de um piano), enquanto vibrações irregulares e caóticas produzem ruído — como o barulho de folhas ao vento ou palmas.
+Imagine um culto de louvor. A bateria entra, o violão arpegia, o teclado sustenta um pad. Tudo ali é som. Mas o zumbido do microfone com defeito, o ruído do ar-condicionado, o chiado no amplificador — isso é ruído. A diferença não é questão de gosto: é física.
 
-Na prática musical, essa distinção não é absoluta. Instrumentos de percussão como o bumbo e o prato da bateria tecnicamente produzem ruído (sem altura definida), mas são indispensáveis na música. Já o timpano e o xilofone são instrumentos de percussão que produzem alturas definidas. Músicos utilizam sons e ruídos de forma intencional: uma batida de palma no tempo certo é tão musical quanto uma nota de piano.
+**Som musical** nasce de ==vibrações regulares e periódicas. Quando você aperta uma corda de violão, ela vibra em um padrão preciso== e repetido — e essa regularidade produz uma nota com altura definida. **Ruído** vem de vibrações caóticas e irregulares, sem padrão previsível. É por isso que o bumbo da bateria "soa grave" mas não tem uma nota cantável — suas vibrações são irregulares demais para definir uma altura exata.
 
-O silêncio também é parte da música — não é ausência de música, mas um elemento ativo. Uma pausa bem colocada pode ser mais expressiva do que qualquer nota. Em um culto de louvor, o momento em que toda a banda para de tocar ao mesmo tempo é frequentemente um dos mais poderosos de toda a música. A música existe no espaço entre som e silêncio.
+<img src="/static/img/modules/som-e-ruido.png" alt="Comparação entre onda de som musical (regular) e ruído (irregular)" class="module-img" onerror="this.style.display='none'">
+
+O silêncio completa esse trio. Ele não é ausência de música — é o elemento mais intencional de todos. Nos momentos em que a banda para e a congregação respira junto, o silêncio carrega peso. É usado como vírgula, ponto final, suspensão. Em partitura, o silêncio tem nome e duração: chama-se pausa.
+
+A percepção de som e ruído também é contextual. O prato de condução da bateria tecnicamente produz ruído (sem altura definida), mas na música ele é tão essencial quanto qualquer nota. Um músico de louvor consciente usa sons e ruídos de forma deliberada — inclusive o silêncio.
 
 ## Visual
 
-Dois gráficos de onda lado a lado: à esquerda, uma onda senoidal perfeita e uniforme representando um som com altura definida (um Lá de 440 Hz); à direita, uma forma de onda irregular e dentada representando ruído, como o chiado de um microfone.
+Dois gráficos de onda lado a lado com fundo branco limpo: à esquerda, uma onda senoidal perfeita e uniforme representando um Lá de 440 Hz, com a legenda "SOM MUSICAL — vibrações regulares, altura definida"; à direita, uma forma de onda caótica e dentada representando ruído de microfone, com a legenda "RUÍDO — vibrações irregulares, sem altura definida". Abaixo dos dois gráficos, a frase: "O que seu ouvido reconhece como nota é fruto da regularidade da vibração."
 
 ## Exercícios
 
@@ -51,4 +55,4 @@ O silêncio é considerado um elemento ativo na música, não apenas uma ausênc
 
 ## Jogo
 
-CAÇA AO SOM E RUÍDO — Fique em silêncio por 60 segundos e anote todos os sons que ouvir ao seu redor. Depois, classifique cada um: é um som com altura definida (alguma nota reconhecível) ou é ruído (sem altura definida)? Exemplos: o zumbido de um ventilador, uma notificação de celular, vozes ao longe, o ronco de um carro. Compartilhe sua lista com um colega e discutam: algum desses ruídos poderia ser usado de forma musical?
+CAÇA AO SOM E RUÍDO — Fique em silêncio por 60 segundos e anote todos os sons que ouvir ao redor. Depois, classifique cada um: é um som com altura definida (alguma nota reconhecível) ou é ruído (sem altura definida)? Exemplos: o zumbido de um ventilador, uma notificação de celular, vozes ao longe, o ronco de um carro. Compartilhe sua lista com um colega e discutam: algum desses ruídos poderia ser usado de forma musical?

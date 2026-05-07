@@ -2,22 +2,26 @@
 number: 5
 slug: dinamica
 title: Dinâmica
-description: Lição focada em Dinâmica, separada do antigo módulo "Percepção Auditiva" para estudar um conceito por vez.
+description: Por que uma música que toca no máximo o tempo todo cansa o ouvido? Porque sem dinâmica não há emoção.
 topics: Dinâmica
 game_kind: game-listen
 ---
 
 ## Teoria
 
-Dinâmica é o estudo do volume na música — o quanto um som é forte ou suave. Na partitura, a dinâmica é indicada por símbolos derivados do italiano: **p** (piano = suave), **mp** (mezzo-piano = meio suave), **mf** (mezzo-forte = meio forte) e **f** (forte = forte). Existem também graus extremos: **pp** (pianissimo = muito suave) e **ff** (fortissimo = muito forte). Esses símbolos indicam ao músico a intensidade com que deve tocar.
+Uma música que começa no máximo, permanece no máximo e termina no máximo não é intensa — é monótona. A intensidade emocional nasce da variação, e na música essa variação tem nome: **dinâmica**.
 
-Além dos níveis fixos, a dinâmica pode mudar gradualmente. O crescendo (indicado pelo símbolo < — duas linhas que se abrem) significa aumentar gradualmente o volume. O decrescendo ou diminuendo (> — duas linhas que se fecham) significa diminuir gradualmente. Esses recursos são fundamentais para criar arcos emocionais em uma música: uma introdução suave (p) que cresce (crescendo) até um clímax poderoso (ff) e depois recua para um encerramento íntimo (pp).
+Dinâmica é o estudo do volume na música. Na partitura, é indicada por símbolos derivados do italiano: **pp** (pianissimo — muito suave), **p** (piano — suave), **mp** (mezzo-piano — meio suave), **mf** (mezzo-forte — meio forte), **f** (forte), **ff** (fortissimo — muito forte). Esses símbolos não são sugestões — são instruções precisas para o intérprete.
 
-Na música de louvor, a dinâmica é uma das ferramentas mais poderosas — e mais negligenciadas. Uma música que começa no máximo e fica no máximo durante todo o culto perde seu poder. Pense em músicas como "Oceanos" ou "Ó Senhor, Meu Deus" — a beleza delas está justamente na alternância entre momentos suaves e intensos. O líder de louvor que entende dinâmica sabe quando mandar a banda baixar para mp e quando soltar tudo no ff para o momento de proclamação.
+<img src="/static/img/modules/dinamica.png" alt="Régua de dinâmica de pp a ff com ícones de volume crescente" class="module-img" onerror="this.style.display='none'">
+
+Além dos níveis fixos, a dinâmica pode mudar gradualmente. O **crescendo** (símbolo < — como uma abertura) significa aumentar o volume progressivamente. O **decrescendo** ou diminuendo (> — como um fechamento) significa diminuir. São esses movimentos que criam os arcos emocionais: uma introdução suave (p) que cresce até um clímax (ff) e recua para um encerramento íntimo (pp).
+
+No louvor, a dinâmica é a ferramenta mais poderosa — e a mais desperdiçada. Músicas como "Oceanos" ou "Ó Senhor, Meu Deus" funcionam precisamente porque alternam entre momentos suaves e momentos de proclamação total. O líder de louvor que entende dinâmica sabe quando segurar a banda em mp para dar espaço ao vocal, e quando soltar tudo no ff para o momento de proclamação.
 
 ## Visual
 
-Uma régua horizontal de dinâmica, da esquerda para a direita: pp → p → mp → mf → f → ff, com ícones de caixas de som com tamanhos crescentes abaixo de cada símbolo. Abaixo da régua, os símbolos de crescendo (<) e decrescendo (>) com setas indicando a direção da mudança de volume.
+Uma régua horizontal de dinâmica, da esquerda para a direita: pp → p → mp → mf → f → ff, com ícones de caixas de som de tamanhos crescentes abaixo de cada símbolo. Abaixo da régua, os símbolos de crescendo (<) e decrescendo (>) com setas indicando a direção da mudança de volume. Fundo branco, cores em gradiente do azul claro (pp) ao laranja intenso (ff).
 
 ## Exercícios
 

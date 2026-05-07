@@ -2,22 +2,26 @@
 number: 7
 slug: do-re-mi-fa-sol-la-si
 title: Dó Ré Mi Fá Sol Lá Si
-description: Lição focada em Dó Ré Mi Fá Sol Lá Si, separada do antigo módulo "As Notas Musicais" para estudar um conceito por vez.
+description: Sete nomes. O alfabeto completo da música ocidental — em dois sistemas que você precisa dominar.
 topics: Dó Ré Mi Fá Sol Lá Si
 game_kind: game-quiz
 ---
 
 ## Teoria
 
-O sistema musical ocidental utiliza sete notas com nomes específicos. No Brasil e na maioria dos países de língua latina, usamos o sistema de solfejo fixo: **Dó, Ré, Mi, Fá, Sol, Lá, Si**. Esses nomes correspondem diretamente às sete letras usadas no sistema anglo-saxão (predominante nos EUA e no mundo do pop/jazz): Dó=C, Ré=D, Mi=E, Fá=F, Sol=G, Lá=A, Si=B. É importante conhecer ambos os sistemas, pois partituras, aplicativos e cifras internacionais usam as letras.
+Todo o universo da música ocidental cabe em sete nomes: **Dó, Ré, Mi, Fá, Sol, Lá, Si**. É o alfabeto musical — e assim como você precisa conhecer as letras antes de ler, precisa conhecer as notas antes de ler música.
 
-Após o Si, a sequência recomeça com o Dó — mas em uma oitava mais alta. Isso significa que o Dó mais grave e o Dó mais agudo têm o mesmo "caráter" musical, como se fossem a mesma cor em tons diferentes. Essa repetição de nomes a cada sete notas é o que define a oitava. No teclado, é fácil visualizar: o Dó é sempre a tecla branca imediatamente à esquerda de um grupo de duas teclas pretas. A partir daí, contando as teclas brancas para a direita: Dó, Ré, Mi, Fá, Sol, Lá, Si, Dó.
+No Brasil e nos países de língua latina, usamos o sistema de **solfejo fixo**: os nomes que você acabou de ver. Mas no sistema americano — o que aparece em aplicativos, cifras internacionais e partituras de pop e jazz — usamos letras: **C, D, E, F, G, A, B**. A correspondência é direta: Dó=C, Ré=D, Mi=E, Fá=F, Sol=G, Lá=A, Si=B. Músico de louvor precisa dos dois sistemas — a partitura está em um, a cifra está no outro.
 
-No pentagrama em clave de Sol, as notas ocupam linhas e espaços específicos. Da linha mais baixa para a mais alta, as linhas são: Mi, Sol, Si, Ré, Fá. Os espaços (de baixo para cima) são: Fá, Lá, Dó, Mi. Um macete tradicional para memorizar as linhas em clave de Sol é a frase: "**Meu Sol Brilha Reluzente Forte**" (Mi - Sol - Si - Ré - Fá). Conhecer as posições das notas no pentagrama é a base de toda leitura musical.
+<img src="/static/img/modules/do-re-mi-fa-sol-la-si.png" alt="Teclado de piano com as teclas brancas rotuladas Dó a Si e pentagrama em clave de Sol abaixo" class="module-img" onerror="this.style.display='none'">
+
+Após o Si, a sequência recomeça com o Dó — mas uma oitava acima. O mesmo Dó, em altura diferente. Essa repetição de nomes é o que define a oitava. No teclado, é fácil localizar o Dó: é sempre a tecla branca **imediatamente à esquerda de um grupo de duas teclas pretas**. A partir daí, as teclas brancas para a direita: Dó, Ré, Mi, Fá, Sol, Lá, Si, Dó.
+
+No pentagrama em clave de Sol, cada nota ocupa uma linha ou espaço específico. As **linhas** (de baixo para cima): Mi, Sol, Si, Ré, Fá. Macete: **"Meu Sol Brilha Reluzente Forte"**. Os **espaços** (de baixo para cima): Fá, Lá, Dó, Mi. Essa é a base de toda leitura musical.
 
 ## Visual
 
-Um pentagrama em clave de Sol com as sete notas escritas em sequência ascendente (Dó central abaixo da pauta até o Ré acima da pauta), cada nota com seu nome escrito abaixo. Ao lado, um teclado de uma oitava com as teclas brancas rotuladas: Dó, Ré, Mi, Fá, Sol, Lá, Si, Dó.
+Um pentagrama em clave de Sol com as sete notas escritas em sequência ascendente (do Dó central abaixo da pauta até o Ré acima), cada nota com seu nome escrito abaixo. Ao lado, um teclado de uma oitava completa com as teclas brancas rotuladas: Dó, Ré, Mi, Fá, Sol, Lá, Si, Dó. O Dó destacado em cor diferente para facilitar a localização no teclado.
 
 ## Exercícios
 
