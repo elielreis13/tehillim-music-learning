@@ -31,11 +31,11 @@
     #trail-card-panel { width: 100% !important; min-height: 90px !important; flex-shrink: unset !important; }
     #trail-card-content { padding: 16px !important; }
 
-    /* Grupos: 2 colunas no mobile (cards pequenos) */
-    .groups-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+    /* Grupos: 1 coluna no mobile (nomes longos demais para 2 colunas) */
+    .groups-grid { grid-template-columns: 1fr !important; gap: 8px !important; }
 
-    /* Padding geral da home */
-    .home-content-wrap { padding: 12px !important; gap: 12px !important; }
+    /* Remove padding duplo — o pai (home-grid) já tem p-4 do Tailwind */
+    .home-content-wrap { padding: 0 !important; gap: 12px !important; }
   }
 </style>
 {% endblock %}

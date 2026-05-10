@@ -71,6 +71,35 @@ def my_access():
 
 # ── Progresso ─────────────────────────────────────────────────────────────────
 
+@bp.post("/quiz-answer")
+def save_quiz_answer():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Não autenticado"}), 401
+    body = request.get_json(silent=True) or {}
+    module_slug = body.get("module_slug", "").strip()
+    step_index  = body.get("step_index")
+    step_kind   = body.get("step_kind", "").strip()
+    question    = body.get("question") or None
+    answer      = body.get("answer") or None
+    correct     = body.get("correct")
+    if not module_slug or step_index is None:
+        abort(400)
+    try:
+        sb_post("quiz_answers", {
+            "user_id":     user_id,
+            "module_slug": module_slug,
+            "step_index":  int(step_index),
+            "step_kind":   step_kind,
+            "question":    question,
+            "answer":      answer,
+            "correct":     bool(correct),
+        }, prefer="return=minimal")
+    except Exception:
+        pass
+    return jsonify({"ok": True})
+
+
 @bp.post("/progress")
 def save_progress():
     user_id = session.get("user_id")
@@ -264,14 +293,318 @@ def teacher_student_detail(user_id: str):
         progress = sb_get("module_progress",  {"select": "module_slug,completed,updated_at", "user_id": f"eq.{user_id}", "order": "updated_at.desc"})
         study    = sb_get("study_days",       {"select": "day", "user_id": f"eq.{user_id}", "order": "day.desc"})
         comments = sb_get("teacher_comments", {"select": "id,module_slug,content,created_at", "student_id": f"eq.{user_id}", "order": "created_at.desc"})
+        supabase_url = current_app.config["SUPABASE_URL"]
+        r_quiz = http.get(
+            f"{supabase_url}/rest/v1/quiz_answers",
+            headers=sb_headers(),
+            params={"select": "module_slug,question,correct", "user_id": f"eq.{user_id}"},
+            timeout=10,
+        )
+        quiz_rows = r_quiz.json() if r_quiz.ok else []
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
+
+    from collections import Counter
+    total_q   = len(quiz_rows)
+    correct_q = sum(1 for q in quiz_rows if q.get("correct"))
+    wrong     = [q["question"] for q in quiz_rows if not q.get("correct") and q.get("question")]
+    top_errors = [{"question": q, "count": c} for q, c in Counter(wrong).most_common(10)]
+
     return jsonify({
-        "progress":     progress,
-        "study_days":   [r["day"] for r in study],
-        "comments":     comments,
+        "progress":      progress,
+        "study_days":    [r["day"] for r in study],
+        "comments":      comments,
         "extra_lessons": get_student_extra_lessons(user_id),
+        "quiz": {
+            "total":     total_q,
+            "correct":   correct_q,
+            "accuracy":  round(correct_q / total_q * 100) if total_q > 0 else None,
+            "top_errors": top_errors,
+        },
     })
+
+
+@bp.get("/teacher/report")
+def teacher_period_report():
+    if err := require_teacher_token():
+        return err
+
+    start = request.args.get("start", "").strip()
+    end   = request.args.get("end",   "").strip()
+    if not start or not end:
+        return jsonify({"error": "Parâmetros start e end são obrigatórios"}), 400
+
+    supabase_url = current_app.config["SUPABASE_URL"]
+
+    r = http.get(
+        f"{supabase_url}/auth/v1/admin/users",
+        headers=sb_headers(),
+        params={"per_page": 200},
+        timeout=10,
+    )
+    if not r.ok:
+        return jsonify({"students": []})
+
+    users_raw = r.json().get("users", [])
+    users = {
+        u["id"]: {
+            "email": u["email"],
+            "name":  (u.get("user_metadata") or {}).get("name") or "",
+            "role":  (u.get("user_metadata") or {}).get("role") or "",
+        }
+        for u in users_raw
+    }
+
+    end_ts = f"{end}T23:59:59"
+    try:
+        r_study = http.get(
+            f"{supabase_url}/rest/v1/study_days",
+            headers=sb_headers(),
+            params=[("select", "user_id,day"), ("day", f"gte.{start}"), ("day", f"lte.{end}")],
+            timeout=10,
+        )
+        r_study.raise_for_status()
+
+        r_prog = http.get(
+            f"{supabase_url}/rest/v1/module_progress",
+            headers=sb_headers(),
+            params=[("select", "user_id,module_slug,updated_at"), ("completed", "gt.0"),
+                    ("updated_at", f"gte.{start}"), ("updated_at", f"lte.{end_ts}")],
+            timeout=10,
+        )
+        r_prog.raise_for_status()
+
+        r_quiz = http.get(
+            f"{supabase_url}/rest/v1/quiz_answers",
+            headers=sb_headers(),
+            params=[("select", "user_id,question,correct"),
+                    ("created_at", f"gte.{start}"), ("created_at", f"lte.{end_ts}")],
+            timeout=10,
+        )
+        r_quiz.raise_for_status()
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+    from collections import defaultdict, Counter
+    study_map = defaultdict(list)
+    prog_map  = defaultdict(list)
+    quiz_map  = defaultdict(list)
+
+    for row in r_study.json():
+        study_map[row["user_id"]].append(row["day"])
+    for row in r_prog.json():
+        prog_map[row["user_id"]].append(row)
+    for row in r_quiz.json():
+        quiz_map[row["user_id"]].append(row)
+
+    result = []
+    for uid, info in users.items():
+        if info["role"] == "teacher":
+            continue
+        quiz_user = quiz_map[uid]
+        total_q   = len(quiz_user)
+        correct_q = sum(1 for q in quiz_user if q.get("correct"))
+        wrong     = [q["question"] for q in quiz_user if not q.get("correct") and q.get("question")]
+        top_errors = [{"question": q, "count": c} for q, c in Counter(wrong).most_common(5)]
+        result.append({
+            "id":                uid,
+            "email":             info["email"],
+            "name":              info["name"],
+            "study_days":        len(study_map[uid]),
+            "modules_completed": len(prog_map[uid]),
+            "modules":           [p["module_slug"] for p in prog_map[uid]],
+            "quiz_total":        total_q,
+            "quiz_correct":      correct_q,
+            "quiz_accuracy":     round(correct_q / total_q * 100) if total_q > 0 else None,
+            "top_errors":        top_errors,
+        })
+
+    result.sort(key=lambda x: x["study_days"], reverse=True)
+    return jsonify({"students": result, "period": {"start": start, "end": end}})
+
+
+@bp.get("/teacher/student/<user_id>/exercises")
+def teacher_student_exercises(user_id: str):
+    if err := require_teacher_token():
+        return err
+    supabase_url = current_app.config["SUPABASE_URL"]
+    r = http.get(
+        f"{supabase_url}/rest/v1/quiz_answers",
+        headers=sb_headers(),
+        params={"select": "id,module_slug,step_index,step_kind,question,answer,correct,created_at",
+                "user_id": f"eq.{user_id}", "order": "created_at.desc"},
+        timeout=10,
+    )
+    if not r.ok:
+        return jsonify({"error": f"Supabase {r.status_code}: {r.text}", "exercises": []}), 500
+    return jsonify({"exercises": r.json()})
+
+
+@bp.get("/teacher/student/<user_id>/submissions")
+def teacher_student_submissions(user_id: str):
+    if err := require_teacher_token():
+        return err
+    try:
+        rows = sb_get("submissions", {"select": "id,module_slug,audio_path,status,created_at",
+                                      "user_id": f"eq.{user_id}", "order": "created_at.desc"})
+        return jsonify({"submissions": rows})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+@bp.get("/teacher/student/<user_id>/messages")
+def teacher_student_messages(user_id: str):
+    if err := require_teacher_token():
+        return err
+    try:
+        rows = sb_get("messages", {
+            "select":     "id,sender_type,module_slug,step_index,question_preview,content,read_at,created_at",
+            "student_id": f"eq.{user_id}",
+            "order":      "created_at.asc",
+        })
+        return jsonify({"messages": rows})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+@bp.patch("/teacher/student/<user_id>/messages/read-all")
+def teacher_mark_all_student_messages_read(user_id: str):
+    """Marca como lidas todas as mensagens do aluno ainda não lidas (sender_type=student)."""
+    if err := require_teacher_token():
+        return err
+    supabase_url = current_app.config["SUPABASE_URL"]
+    http.patch(
+        f"{supabase_url}/rest/v1/messages",
+        headers={**sb_headers(), "Prefer": "return=minimal"},
+        params={"student_id": f"eq.{user_id}", "sender_type": "eq.student", "read_at": "is.null"},
+        json={"read_at": _now_iso()},
+        timeout=10,
+    )
+    return "", 204
+
+
+@bp.post("/teacher/student/<user_id>/messages")
+def teacher_send_message(user_id: str):
+    if err := require_teacher_token():
+        return err
+    body             = request.get_json(silent=True) or {}
+    content          = body.get("content", "").strip()
+    module_slug      = body.get("module_slug") or None
+    step_index       = body.get("step_index")
+    question_preview = (body.get("question_preview") or "").strip() or None
+    if not content:
+        abort(400)
+    payload = {
+        "student_id": user_id, "sender_type": "teacher",
+        "content": content, "module_slug": module_slug,
+    }
+    if step_index is not None:
+        payload["step_index"] = int(step_index)
+    if question_preview:
+        payload["question_preview"] = question_preview[:200]
+    row = sb_post("messages", payload)
+    return jsonify(row[0] if isinstance(row, list) else row), 201
+
+
+@bp.patch("/teacher/messages/<msg_id>/read")
+def teacher_mark_message_read(msg_id: str):
+    if err := require_teacher_token():
+        return err
+    supabase_url = current_app.config["SUPABASE_URL"]
+    http.patch(
+        f"{supabase_url}/rest/v1/messages",
+        headers={**sb_headers(), "Prefer": "return=minimal"},
+        params={"id": f"eq.{msg_id}"},
+        json={"read_at": _now_iso()},
+        timeout=10,
+    )
+    return "", 204
+
+
+@bp.get("/teacher/messages/unread")
+def teacher_unread_messages():
+    """Retorna contagem de msgs não lidas de alunos, agrupada por aluno."""
+    if err := require_teacher_token():
+        return err
+    try:
+        rows = sb_get("messages", {
+            "select":      "student_id",
+            "sender_type": "eq.student",
+            "read_at":     "is.null",
+        })
+    except Exception as exc:
+        return jsonify({"total": 0, "students": [], "error": str(exc)})
+
+    from collections import Counter
+    counts = Counter(r["student_id"] for r in rows)
+    return jsonify({
+        "total":    sum(counts.values()),
+        "students": [{"id": sid, "count": c} for sid, c in counts.items()],
+    })
+
+
+# ── API Aluno — mensagens ──────────────────────────────────────────────────────
+
+@bp.get("/messages")
+def student_messages():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Não autenticado"}), 401
+    try:
+        rows = sb_get("messages", {
+            "select":     "id,sender_type,module_slug,step_index,question_preview,content,read_at,created_at",
+            "student_id": f"eq.{user_id}",
+            "order":      "created_at.asc",
+        })
+        return jsonify({"messages": rows})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+@bp.post("/messages")
+def student_send_message():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Não autenticado"}), 401
+    body        = request.get_json(silent=True) or {}
+    content     = body.get("content", "").strip()
+    module_slug = body.get("module_slug") or None
+    if not content:
+        abort(400)
+    row = sb_post("messages", {
+        "student_id": user_id, "sender_type": "student",
+        "content": content, "module_slug": module_slug,
+    })
+    return jsonify(row[0] if isinstance(row, list) else row), 201
+
+
+@bp.patch("/messages/<msg_id>/read")
+def student_mark_message_read(msg_id: str):
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Não autenticado"}), 401
+    supabase_url = current_app.config["SUPABASE_URL"]
+    http.patch(
+        f"{supabase_url}/rest/v1/messages",
+        headers={**sb_headers(), "Prefer": "return=minimal"},
+        params={"id": f"eq.{msg_id}", "student_id": f"eq.{user_id}"},
+        json={"read_at": _now_iso()},
+        timeout=10,
+    )
+    return "", 204
+
+
+@bp.get("/messages/unread-count")
+def student_unread_count():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"count": 0})
+    try:
+        rows = sb_get("messages", {"select": "id", "student_id": f"eq.{user_id}",
+                                   "sender_type": "eq.teacher", "read_at": "is.null"})
+        return jsonify({"count": len(rows)})
+    except Exception:
+        return jsonify({"count": 0})
 
 
 @bp.get("/my-extra-lessons")

@@ -45,10 +45,63 @@
       </div>
     </div>
 
+    <!-- Filtro de período -->
+    <div class="bg-white rounded-2xl shadow-sm px-6 py-4">
+      <p class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider mb-3">Relatório por Período</p>
+      <div class="flex flex-wrap gap-3 items-end">
+        <div class="flex flex-col gap-1">
+          <label for="report-start" class="text-[11px] text-gray-400 font-medium">De</label>
+          <input id="report-start" type="date"
+                 class="px-3 py-2 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="report-end" class="text-[11px] text-gray-400 font-medium">Até</label>
+          <input id="report-end" type="date"
+                 class="px-3 py-2 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+        </div>
+        <button id="report-btn" onclick="generateReport()"
+                class="bg-[#C4943A] hover:bg-[#B3852F] text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors flex items-center gap-2 flex-shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Gerar Relatório
+        </button>
+        <button id="report-clear" onclick="clearReport()" style="display:none"
+                class="text-[13px] text-gray-400 hover:text-gray-600 px-3 py-2 transition-colors">
+          Ver todos
+        </button>
+      </div>
+    </div>
+
+    <!-- Relatório do período (aparece após gerar) -->
+    <div id="report-section" style="display:none" class="bg-[#FBF6EE] rounded-2xl shadow-sm overflow-hidden border border-[#EDD9B0]">
+      <div class="px-6 py-4 bg-[#F5EDDA] border-b border-[#EDD9B0] flex items-center justify-between">
+        <div>
+          <h2 class="font-bold text-[15px] text-gray-800">Relatório do Período</h2>
+          <p id="report-period-label" class="text-[12px] text-gray-500 mt-0.5"></p>
+        </div>
+        <div class="flex gap-4 text-center">
+          <div>
+            <p class="text-[20px] font-bold text-[#C4943A]" id="rs-modules">—</p>
+            <p class="text-[10px] text-gray-500">Módulos</p>
+          </div>
+          <div>
+            <p class="text-[20px] font-bold text-[#4E7A60]" id="rs-days">—</p>
+            <p class="text-[10px] text-gray-500">Dias estudo</p>
+          </div>
+          <div>
+            <p class="text-[20px] font-bold text-gray-700" id="rs-accuracy">—</p>
+            <p class="text-[10px] text-gray-500">Taxa acerto</p>
+          </div>
+        </div>
+      </div>
+      <div id="report-list"></div>
+    </div>
+
     <!-- Cards de alunos -->
-    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden" id="all-students-section">
       <div class="px-6 py-4 bg-[#FAF7F2] border-b border-gray-100 flex items-center justify-between">
-        <h2 class="font-bold text-[15px] text-gray-800">Alunos</h2>
+        <h2 class="font-bold text-[15px] text-gray-800">Todos os Alunos</h2>
         <p id="pa-loading" class="text-[12px] text-gray-400">Carregando...</p>
       </div>
       <p id="pa-error" class="px-6 py-4 text-[13px] text-red-500" style="display:none"></p>
@@ -130,11 +183,21 @@ async function api(path, opts = {}) {
   return data;
 }
 
-// ── Carregar lista de alunos ───────────────────────────────────────────────────
+// ── Datas padrão: últimos 30 dias ─────────────────────────────────────────────
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
+  const today = new Date();
+  const ago30 = new Date(today);
+  ago30.setDate(today.getDate() - 30);
+  const fmt = d => d.toISOString().slice(0, 10);
+  document.getElementById("report-start").value = fmt(ago30);
+  document.getElementById("report-end").value   = fmt(today);
   loadStudents();
 });
+
+// ── Carregar lista de alunos ───────────────────────────────────────────────────
+
+let _unreadStudentIds = new Set();
 
 async function loadStudents() {
   const loading = document.getElementById("pa-loading");
@@ -143,7 +206,11 @@ async function loadStudents() {
   if (loading) loading.style.display = "";
 
   try {
-    const { students } = await api("/api/teacher/students");
+    const [{ students }, unreadData] = await Promise.all([
+      api("/api/teacher/students"),
+      api("/api/teacher/messages/unread").catch(() => ({ total: 0, students: [] })),
+    ]);
+    _unreadStudentIds = new Set((unreadData.students || []).map(s => s.id));
     if (loading) loading.style.display = "none";
     renderStats(students);
     renderList(students, listEl);
@@ -176,14 +243,21 @@ function renderList(students, listEl) {
     const last    = u.last_activity
       ? new Date(u.last_activity).toLocaleDateString("pt-BR", { day: "numeric", month: "short" })
       : "—";
+    const hasUnread = _unreadStudentIds.has(u.id);
     return `
-      <div class="flex items-center gap-4 px-6 py-4 border-b border-gray-50 hover:bg-[#FAF7F2] cursor-pointer transition-colors group"
-           onclick="openDetail('${u.id}', '${name.replace(/'/g, "\\'")}', '${u.email.replace(/'/g, "\\'")}')">
-        <div class="w-10 h-10 rounded-full bg-[#EDD9B0] text-[#C4943A] flex items-center justify-center font-bold text-[15px] flex-shrink-0">
-          ${initial}
+      <div class="flex items-center gap-4 px-6 py-4 border-b border-gray-50 hover:bg-[#FAF7F2] cursor-pointer transition-colors group ${hasUnread ? 'bg-blue-50/40' : ''}"
+           onclick="window.location.href='/professor/alunos/${u.id}'" >
+        <div class="relative flex-shrink-0">
+          <div class="w-10 h-10 rounded-full bg-[#EDD9B0] text-[#C4943A] flex items-center justify-center font-bold text-[15px]">
+            ${initial}
+          </div>
+          ${hasUnread ? '<span class="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white"></span>' : ''}
         </div>
         <div class="flex-1 min-w-0">
-          <p class="font-semibold text-[14px] text-gray-800">${name}</p>
+          <div class="flex items-center gap-2">
+            <p class="font-semibold text-[14px] text-gray-800">${name}</p>
+            ${hasUnread ? '<span class="text-[10px] bg-red-100 text-red-600 font-semibold px-1.5 py-0.5 rounded-full">Nova msg</span>' : ''}
+          </div>
           <p class="text-[11px] text-gray-400 truncate">${u.email}</p>
           <div class="flex items-center gap-2 mt-2">
             <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden max-w-[120px]">
@@ -199,6 +273,101 @@ function renderList(students, listEl) {
         <svg class="w-4 h-4 text-gray-300 group-hover:text-[#C4943A] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
         </svg>
+      </div>
+    `;
+  }).join("");
+}
+
+// ── Relatório por período ─────────────────────────────────────────────────────
+
+async function generateReport() {
+  const start = document.getElementById("report-start").value;
+  const end   = document.getElementById("report-end").value;
+  if (!start || !end) { alert("Selecione o período."); return; }
+  if (start > end)    { alert("A data de início deve ser anterior à data final."); return; }
+
+  const btn = document.getElementById("report-btn");
+  btn.disabled = true;
+  btn.textContent = "Carregando...";
+
+  try {
+    const { students, period } = await api(`/api/teacher/report?start=${start}&end=${end}`);
+    renderReport(students, period);
+    document.getElementById("report-section").style.display = "";
+    document.getElementById("all-students-section").style.display = "none";
+    document.getElementById("report-clear").style.display = "";
+  } catch (err) {
+    alert("Erro ao gerar relatório: " + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Gerar Relatório`;
+  }
+}
+
+function clearReport() {
+  document.getElementById("report-section").style.display = "none";
+  document.getElementById("all-students-section").style.display = "";
+  document.getElementById("report-clear").style.display = "none";
+}
+
+function renderReport(students, period) {
+  const fmtDate = iso => new Date(iso + "T00:00:00").toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" });
+  document.getElementById("report-period-label").textContent =
+    `${fmtDate(period.start)} → ${fmtDate(period.end)}`;
+
+  const totalModules  = students.reduce((a, s) => a + s.modules_completed, 0);
+  const totalDays     = students.reduce((a, s) => a + s.study_days, 0);
+  const totalQ        = students.reduce((a, s) => a + s.quiz_total, 0);
+  const totalCorrect  = students.reduce((a, s) => a + s.quiz_correct, 0);
+  const globalAcc     = totalQ > 0 ? Math.round(totalCorrect / totalQ * 100) + "%" : "—";
+
+  document.getElementById("rs-modules").textContent  = totalModules;
+  document.getElementById("rs-days").textContent     = totalDays;
+  document.getElementById("rs-accuracy").textContent = globalAcc;
+
+  const list = document.getElementById("report-list");
+  if (!students.length) {
+    list.innerHTML = '<p class="px-6 py-10 text-center text-[13px] text-gray-400">Nenhum aluno cadastrado.</p>';
+    return;
+  }
+
+  list.innerHTML = students.map(s => {
+    const name    = s.name || s.email.split("@")[0];
+    const initial = name[0].toUpperCase();
+    const acc     = s.quiz_accuracy !== null ? `${s.quiz_accuracy}%` : "—";
+    const accColor = s.quiz_accuracy === null ? "text-gray-400"
+                   : s.quiz_accuracy >= 70    ? "text-[#4E7A60]"
+                   : s.quiz_accuracy >= 40    ? "text-[#C4943A]"
+                   : "text-red-500";
+
+    const errorsHtml = s.top_errors.length
+      ? s.top_errors.slice(0, 3).map(e => `
+          <span class="inline-flex items-center gap-1 bg-red-50 text-red-600 text-[10px] px-2 py-0.5 rounded-full">
+            <span class="font-bold">${e.count}×</span> ${e.question.length > 40 ? e.question.slice(0, 40) + "…" : e.question}
+          </span>`).join("")
+      : '<span class="text-[11px] text-gray-400">Sem erros registrados</span>';
+
+    return `
+      <div class="px-6 py-4 border-b border-[#EDD9B0]/60 hover:bg-[#FDF9F3] cursor-pointer transition-colors group"
+           onclick="window.location.href='/professor/alunos/${s.id}'" >
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-full bg-[#EDD9B0] text-[#C4943A] flex items-center justify-center font-bold text-[15px] flex-shrink-0 mt-0.5">
+            ${initial}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-1">
+              <p class="font-semibold text-[14px] text-gray-800">${name}</p>
+              <div class="flex items-center gap-3 flex-shrink-0 ml-2">
+                <span class="text-[12px] text-gray-500"><span class="font-bold text-gray-700">${s.modules_completed}</span> módulos</span>
+                <span class="text-[12px] text-gray-500"><span class="font-bold text-[#4E7A60]">${s.study_days}</span> dias</span>
+                <span class="text-[12px] font-bold ${accColor}">${acc} acerto</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mt-1.5">
+              ${errorsHtml}
+            </div>
+          </div>
+        </div>
       </div>
     `;
   }).join("");
@@ -255,13 +424,17 @@ function closeDetail() {
 }
 
 function renderDetailBody(data, userId) {
-  const { progress, study_days, comments, extra_lessons = {} } = data;
+  const { progress, study_days, comments, extra_lessons = {}, quiz = {} } = data;
   const doneSet = new Set(progress.filter(p => p.completed > 0).map(p => p.module_slug));
   const streak  = computeStreak(study_days);
 
+  const acc      = quiz.accuracy !== null && quiz.accuracy !== undefined ? quiz.accuracy : null;
+  const accLabel = acc !== null ? `${acc}%` : "—";
+  const accColor = acc === null ? "#9ca3af" : acc >= 70 ? "#4E7A60" : acc >= 40 ? "#C4943A" : "#ef4444";
+
   // Stats mini
   const statsHtml = `
-    <div class="grid grid-cols-3 gap-3 mb-5">
+    <div class="grid grid-cols-4 gap-2 mb-5">
       <div class="bg-[#FBF6EE] rounded-xl p-3 text-center">
         <p class="text-[18px] font-bold text-[#C4943A]">${doneSet.size}</p>
         <p class="text-[10px] text-gray-500 mt-0.5">Módulos</p>
@@ -274,8 +447,22 @@ function renderDetailBody(data, userId) {
         <p class="text-[18px] font-bold text-gray-700">${study_days.length}</p>
         <p class="text-[10px] text-gray-500 mt-0.5">Dias</p>
       </div>
+      <div class="bg-[#F9F9F9] rounded-xl p-3 text-center">
+        <p class="text-[18px] font-bold" style="color:${accColor}">${accLabel}</p>
+        <p class="text-[10px] text-gray-500 mt-0.5">Acerto</p>
+      </div>
     </div>
   `;
+
+  // Erros frequentes
+  const topErrors = quiz.top_errors || [];
+  const errorsHtml = topErrors.length
+    ? topErrors.map(e => `
+        <div class="flex items-center gap-2.5 py-1.5 border-b border-red-50 last:border-0">
+          <span class="w-6 h-6 rounded-full bg-red-100 text-red-600 font-bold text-[11px] flex items-center justify-center flex-shrink-0">${e.count}</span>
+          <span class="text-[12px] text-gray-700 flex-1">${e.question}</span>
+        </div>`).join("")
+    : `<p class="text-[12px] text-gray-400 py-2">${quiz.total > 0 ? "Nenhum erro registrado." : "Sem exercícios respondidos ainda."}</p>`;
 
   // Progresso por grupo
   const groupsHtml = GROUPS_DATA.map(g => {
@@ -382,6 +569,14 @@ function renderDetailBody(data, userId) {
   document.getElementById("detail-body").innerHTML = `
     <div class="p-5">
       ${statsHtml}
+
+      ${topErrors.length ? `
+      <h4 class="font-bold text-[13px] text-red-500 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        Erros Frequentes
+      </h4>
+      <div class="bg-red-50/60 rounded-xl px-4 py-2 mb-5">${errorsHtml}</div>
+      ` : ''}
 
       <h4 class="font-bold text-[13px] text-gray-700 mb-3 uppercase tracking-wider">Progresso por grupo</h4>
       ${groupsHtml}
