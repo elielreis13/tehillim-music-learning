@@ -81,6 +81,11 @@ def conquistas_page():
     return render_template("pages/conquistas.html", active_page="conquistas")
 
 
+@bp.get("/mensagens")
+def mensagens_page():
+    return render_template("pages/mensagens.html", active_page="mensagens")
+
+
 @bp.get("/notificacoes")
 def notificacoes_page():
     return render_template("pages/notificacoes.html", active_page="notificacoes")
@@ -103,7 +108,7 @@ _BONA_SHEETS = Path(__file__).resolve().parent.parent / "static" / "bona"
 def module_page(module_slug: str):
     selected_module = get_module(module_slug)
     if selected_module is None:
-        abort(404)
+        return redirect("/trilhas")
     granted_slugs, is_teacher_cookie = _get_access()
     access_ok = is_teacher_cookie or module_slug in granted_slugs
     if 101 <= selected_module.number <= 140:

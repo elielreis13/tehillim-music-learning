@@ -428,21 +428,11 @@ function renderInteractiveGame(step) {
 }
 
 function saveAnswer(step, answer, correct) {
-  const client = window.auth?.client;
-  const user   = window.auth?.getUser();
-  if (!client || !user) return;
-  const token = window.auth.session?.access_token;
-  if (!token) return;
-  fetch(`${client.supabaseUrl}/rest/v1/quiz_answers`, {
+  if (!window.auth?.isLoggedIn()) return;
+  fetch("/api/quiz-answer", {
     method: "POST",
-    headers: {
-      "apikey":        client.supabaseKey,
-      "Authorization": `Bearer ${token}`,
-      "Content-Type":  "application/json",
-      "Prefer":        "return=minimal",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      user_id:     user.id,
       module_slug: state.module.slug,
       step_index:  state.activeIndex,
       step_kind:   step.kind,
@@ -450,7 +440,7 @@ function saveAnswer(step, answer, correct) {
       answer,
       correct,
     }),
-  });
+  }).catch(() => {});
 }
 
 function completeCurrentStep() {
@@ -494,27 +484,8 @@ function render() {
 }
 
 async function loadTeacherComments() {
-  const client = window.auth?.client;
-  const user   = window.auth?.getUser();
-  if (!client || !user) return;
-
-  const token = window.auth.session?.access_token;
-  if (!token) return;
-
-  const res = await fetch(
-    `${client.supabaseUrl}/rest/v1/teacher_comments` +
-    `?student_id=eq.${user.id}&module_slug=eq.${state.module.slug}&order=created_at.asc`,
-    {
-      headers: {
-        "apikey":        client.supabaseKey,
-        "Authorization": `Bearer ${token}`,
-      },
-    }
-  );
-
-  if (!res.ok) return;
-  const comments = await res.json();
-  renderTeacherComments(comments);
+  if (!window.auth?.isLoggedIn()) return;
+  // Comentários do professor chegam pela aba Mensagens — não exibe mais aqui
 }
 
 function renderTeacherComments(comments) {

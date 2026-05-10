@@ -160,6 +160,17 @@
         Conquistas
       </a>
 
+      <a href="/mensagens" id="nav-mensagens"
+         class="student-only hidden flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
+        {% if active_page == 'mensagens' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
+        <svg class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'mensagens' %}opacity-40{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+        </svg>
+        Mensagens
+        <span id="msg-nav-badge" style="display:none"
+              class="ml-auto bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] text-center"></span>
+      </a>
+
       <a href="/jogos" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
         {% if active_page == 'jogos' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
         <svg class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'jogos' %}opacity-40{% endif %}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -181,6 +192,8 @@
         {% if active_page == 'professor_alunos' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
         <img src="{{ url_for('static', filename='icons/nav-dashboard.svg') }}" class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'professor_alunos' %}opacity-40{% endif %}"/>
         Alunos
+        <span id="teacher-msg-badge" style="display:none"
+              class="ml-auto bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] text-center"></span>
       </a>
 
       <!-- ── Botão de perfil visível apenas no mobile ── -->
@@ -320,6 +333,31 @@
         // Mostra itens de navegação exclusivos do professor
         if (window.CURRENT_USER.is_teacher) {
           document.querySelectorAll('.teacher-nav').forEach(el => el.classList.remove('hidden'));
+          // Badge de mensagens não lidas de alunos
+          function refreshTeacherMsgBadge() {
+            fetch('/api/teacher/messages/unread')
+              .then(r => r.ok ? r.json() : { total: 0 })
+              .then(({ total }) => {
+                const badge = document.getElementById('teacher-msg-badge');
+                if (!badge) return;
+                if (total > 0) { badge.style.display = ''; badge.textContent = total; }
+                else           { badge.style.display = 'none'; }
+                window._teacherUnreadByStudent = {};
+              }).catch(() => {});
+          }
+          refreshTeacherMsgBadge();
+          setInterval(refreshTeacherMsgBadge, 60000);
+        } else {
+          // Mostra link de mensagens e carrega badge de não lidas
+          document.querySelectorAll('.student-only').forEach(el => el.classList.remove('hidden'));
+          fetch('/api/messages/unread-count')
+            .then(r => r.ok ? r.json() : { count: 0 })
+            .then(({ count }) => {
+              if (count > 0) {
+                const badge = document.getElementById('msg-nav-badge');
+                if (badge) { badge.style.display = ''; badge.textContent = count; }
+              }
+            }).catch(() => {});
         }
 
         // Streak — cache diário
