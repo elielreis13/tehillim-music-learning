@@ -192,7 +192,7 @@ def module_page(module_slug: str):
         return redirect("/trilhas")
     granted_slugs, is_teacher_cookie = _get_access()
     access_ok = is_teacher_cookie or module_slug in granted_slugs
-    if 101 <= selected_module.number <= 140:
+    if (101 <= selected_module.number <= 140) or (401 <= selected_module.number <= 460):
         has_sheet = (_BONA_SHEETS / f"{module_slug}.musicxml").exists()
         return render_template(
             "pages/bona_module.html",

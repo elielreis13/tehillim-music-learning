@@ -149,9 +149,10 @@ GROUPS: tuple[ModuleGroup, ...] = (
         level="Bona",
         description=(
             "Estudo sistemático do ritmo musical baseado no clássico Método Bona. "
-            "40 lições progressivas organizadas em quatro blocos (B1–B4)."
+            "100 lições progressivas: binário simples, ternário, quaternário e "
+            "compassos compostos (6/8 e 12/8)."
         ),
-        modules=_by_range(101, 140),
+        modules=_by_ranges((101, 140), (401, 460)),
     ),
     # ── Pozzoli ───────────────────────────────────────────────────────────────
     ModuleGroup(
