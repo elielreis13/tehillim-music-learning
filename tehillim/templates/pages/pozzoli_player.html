@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player Pozzoli</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow-x: hidden; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #fff;
+      color: #1f2937;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #controls {
+      flex-shrink: 0;
+      border-bottom: 1px solid #e5e7eb;
+      background: #fafafa;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ctrl-spacer { flex: 1; min-width: 0; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    #btn-play  { background: #4E7A60; color: #fff; }
+    #btn-play:not(:disabled):hover  { background: #3D6B52; }
+    #btn-reset { background: #f3f4f6; color: #374151; }
+    #btn-reset:not(:disabled):hover { background: #e5e7eb; }
+
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: #6b7280;
+    }
+    .ctrl-group label { white-space: nowrap; font-weight: 600; }
+
+    .bpm-btn {
+      padding: 4px 9px; border-radius: 6px; border: 1.5px solid #d1d5db;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      background: #fff; color: #374151; transition: all .12s;
+    }
+    .bpm-btn:hover  { border-color: #4E7A60; color: #4E7A60; }
+    .bpm-btn.active { background: #4E7A60; border-color: #4E7A60; color: #fff; }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: #6b7280;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .toggle-label input { accent-color: #4E7A60; width: 14px; height: 14px; cursor: pointer; }
+
+    #status { font-size: 0.72rem; color: #9ca3af; white-space: nowrap; }
+
+    /* ── Beat indicator ── */
+    #beat-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #d1d5db;
+      transition: background 0.04s;
+      flex-shrink: 0;
+    }
+    #beat-dot.on { background: #4E7A60; }
+
+    /* ── Título ── */
+    #score-title {
+      text-align: center;
+      padding: 14px 16px 4px;
+    }
+    .score-title-main {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1f2937;
+      letter-spacing: 0.01em;
+    }
+    .score-title-sub {
+      font-size: 0.72rem;
+      color: #6b7280;
+      font-style: italic;
+      margin-top: 1px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── Partitura ── */
+    #score-container {
+      overflow-x: auto;
+      padding: 8px 16px 14px;
+      -webkit-overflow-scrolling: touch;
+    }
+    #score-container text.vf-lyric,
+    #score-container text.lyric,
+    #score-container text[class*="lyric"] { font-size: 3px !important; }
+
+    @media (max-width: 640px) {
+      .btn { padding: 6px 10px; font-size: 0.76rem; }
+      #score-container { padding: 6px 8px 10px; }
+      .score-title-main { font-size: 0.88rem; }
+    }
+  </style>
+</head>
+<body>
+
+{% if not has_sheet %}
+<div style="display:flex;align-items:center;justify-content:center;height:180px;color:#9ca3af;font-size:0.9rem;">
+  Partitura não disponível.
+</div>
+{% else %}
+
+<div id="controls">
+  <button id="btn-play" class="btn" disabled>
+    <svg id="icon-play"  width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    <svg id="icon-pause" width="13" height="13" fill="currentColor" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    <span id="btn-play-label">Tocar</span>
+  </button>
+  <button id="btn-reset" class="btn" disabled>
+    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.46-4.46M20 15a9 9 0 01-15.46 4.46"/>
+    </svg>
+    Reiniciar
+  </button>
+  <div class="ctrl-group">
+    <label>BPM</label>
+    <div style="display:flex;gap:4px;">
+      <button type="button" class="bpm-btn" data-bpm="50" onclick="setBpm(50)">50</button>
+      <button type="button" class="bpm-btn active" data-bpm="70" onclick="setBpm(70)">70</button>
+      <button type="button" class="bpm-btn" data-bpm="90" onclick="setBpm(90)">90</button>
+      <button type="button" class="bpm-btn" data-bpm="110" onclick="setBpm(110)">110</button>
+    </div>
+  </div>
+  <div id="beat-dot"></div>
+  <div class="ctrl-spacer"></div>
+  <span id="status"></span>
+</div>
+
+<div id="score-title">
+  <p class="score-title-main">{{ module_title }}</p>
+  <p class="score-title-sub">Leitura Rítmica</p>
+</div>
+<div id="score-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@1.8.7/build/opensheetmusicdisplay.min.js"></script>
+<script src="/static/js/audio.js"></script>
+<script>
+const SHEET_URL = '/api/pozzoli/{{ slug }}';
+
+let osmd          = null;
+let rawXml        = null;
+let isPlaying     = false;
+let playbackTimer = null;
+
+const btnPlay        = document.getElementById('btn-play');
+const btnReset       = document.getElementById('btn-reset');
+const scoreContainer = document.getElementById('score-container');
+const statusEl       = document.getElementById('status');
+const beatDot        = document.getElementById('beat-dot');
+
+// ── Audio — mesmo tick do Ritmo Tap (audio.js) ───────────────────────────────
+async function ensureAudio() {
+  window.audio?.ctx; // força criação do AudioContext
+}
+
+function playTap() {
+  window.audio?.tick(true);
+}
+
+// ── Parent resize ─────────────────────────────────────────────────────────────
+function notifyParentHeight() {
+  setTimeout(() => {
+    const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, 200);
+    window.parent.postMessage({ type: 'pozzoli-height', height: h }, '*');
+  }, 80);
+}
+
+async function reloadScore() {
+  await osmd.load(rawXml);
+  osmd.render();
+  osmd.cursor.show();
+  osmd.cursor.reset();
+  notifyParentHeight();
+}
+
+async function initScore() {
+  setStatus('Carregando...');
+  osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(scoreContainer, {
+    autoResize: true,
+    backend: 'svg',
+    drawingParameters: 'default',
+    followCursor: true,
+    autoBeam: true,
+    autoBeamOptions: { beam_middle_rests_only: false, beam_rests: false, maintain_stem_directions: false },
+    drawPartNames: false,
+    drawMeasureNumbers: false,
+    drawTitle: false,
+    drawSubtitle: false,
+    drawComposer: false,
+    drawLyricist: false,
+  });
+  osmd.setOptions({
+    cursorsOptions: [{ type: 0, color: '#b8d4c0', alpha: 0.5, follow: true }],
+  });
+
+  osmd.zoom = window.innerWidth < 640 ? 0.65 : 0.85;
+
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(notifyParentHeight).observe(scoreContainer);
+  }
+
+  try {
+    const res = await fetch(SHEET_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    rawXml = await res.text();
+    await reloadScore();
+    btnPlay.disabled  = false;
+    btnReset.disabled = false;
+    setStatus('Pronto.');
+  } catch (err) {
+    setStatus(`Erro: ${err.message}`);
+  }
+}
+
+// ── Beat indicator ─────────────────────────────────────────────────────────────
+let _beatTimer = null, _beatOff = null;
+
+function startBeat(bpm) {
+  stopBeat();
+  const interval = 60000 / bpm;
+  function pulse() {
+    beatDot.classList.add('on');
+    _beatOff   = setTimeout(() => beatDot.classList.remove('on'), 80);
+    _beatTimer = setTimeout(pulse, interval);
+    window.parent.postMessage({ type: 'pozzoli-beat' }, '*');
+  }
+  pulse();
+}
+function stopBeat() {
+  clearTimeout(_beatTimer); clearTimeout(_beatOff);
+  _beatTimer = _beatOff = null;
+  beatDot.classList.remove('on');
+}
+
+// ── Playback ──────────────────────────────────────────────────────────────────
+let _bpm = 70;
+function getBpm() { return _bpm; }
+function setBpm(bpm) {
+  _bpm = bpm;
+  document.querySelectorAll('.bpm-btn').forEach(b =>
+    b.classList.toggle('active', parseInt(b.dataset.bpm) === bpm));
+  if (isPlaying) pausePlayback();
+}
+
+function getCurrentDuration() {
+  try {
+    const entries = osmd.cursor.iterator.currentVoiceEntries;
+    if (!entries?.length) return 0.25;
+    let min = Infinity;
+    for (const e of entries)
+      for (const n of e.notes) { const v = n.Length?.realValue; if (v > 0) min = Math.min(min, v); }
+    return min === Infinity ? 0.25 : min;
+  } catch { return 0.25; }
+}
+
+function msForNote() { return getCurrentDuration() * 4 * (60000 / getBpm()); }
+
+function isRest() {
+  try {
+    const entries = osmd.cursor.iterator.currentVoiceEntries;
+    if (!entries?.length) return false;
+    for (const e of entries)
+      for (const n of e.notes)
+        if (!n.isRest()) return false;
+    return true;
+  } catch { return false; }
+}
+
+function scheduleStep() {
+  if (!isRest()) playTap();
+  playbackTimer = setTimeout(() => {
+    if (!isPlaying) return;
+    osmd.cursor.next();
+    if (osmd.cursor.iterator.endReached) { finishPlayback(); return; }
+    scheduleStep();
+  }, msForNote());
+}
+
+async function startPlayback() {
+  if (!osmd || isPlaying) return;
+  await ensureAudio();
+  isPlaying = true;
+  setPlayUI(true);
+  setStatus('Reproduzindo...');
+  startBeat(getBpm());
+  scheduleStep();
+}
+
+function pausePlayback() {
+  if (!isPlaying) return;
+  isPlaying = false;
+  clearTimeout(playbackTimer);
+  stopBeat();
+  setPlayUI(false);
+  setStatus('Pausado.');
+}
+
+function finishPlayback() {
+  isPlaying = false;
+  clearTimeout(playbackTimer);
+  stopBeat();
+  setPlayUI(false);
+  setStatus('Fim.');
+}
+
+function resetPlayback() {
+  finishPlayback();
+  if (!osmd) return;
+  osmd.cursor.reset();
+  osmd.cursor.show();
+  setStatus('Pronto.');
+}
+
+// ── UI ────────────────────────────────────────────────────────────────────────
+function setPlayUI(playing) {
+  document.getElementById('icon-play').style.display  = playing ? 'none' : '';
+  document.getElementById('icon-pause').style.display = playing ? '' : 'none';
+  document.getElementById('btn-play-label').textContent = playing ? 'Pausar' : 'Tocar';
+}
+function setStatus(msg) { statusEl.textContent = msg; }
+
+// ── Eventos ───────────────────────────────────────────────────────────────────
+document.addEventListener('touchstart', () => window.audio?.ctx, { once: true, passive: true });
+
+btnPlay.addEventListener('click', () => {
+  window.audio?.ctx;
+  isPlaying ? pausePlayback() : startPlayback();
+});
+btnReset.addEventListener('click', resetPlayback);
+
+document.addEventListener('keydown', e => {
+  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+  if (e.code === 'Space') { e.preventDefault(); isPlaying ? pausePlayback() : startPlayback(); }
+  else if (e.key === 'r' || e.key === 'R') resetPlayback();
+});
+
+window.addEventListener('message', e => {
+  if (e.data?.type === 'set-bpm' && e.data.bpm) setBpm(e.data.bpm);
+});
+
+initScore();
+</script>
+
+{% endif %}
+</body>
+</html>
