@@ -204,35 +204,62 @@ function renderReadingActivity(step) {
 
 function toYouTubeEmbed(url) {
   if (!url) return url;
-  // already embed
   if (url.includes("youtube.com/embed/")) return url;
-  // watch URL
   let m = url.match(/[?&]v=([^&]+)/);
   if (m) return `https://www.youtube.com/embed/${m[1]}`;
-  // youtu.be short link
   m = url.match(/youtu\.be\/([^?&]+)/);
   if (m) return `https://www.youtube.com/embed/${m[1]}`;
-  // shorts
   m = url.match(/youtube\.com\/shorts\/([^?&]+)/);
   if (m) return `https://www.youtube.com/embed/${m[1]}`;
   return url;
 }
 
+function toYouTubeId(url) {
+  if (!url) return null;
+  let m = url.match(/[?&]v=([^&]+)/);
+  if (m) return m[1];
+  m = url.match(/youtu\.be\/([^?&]+)/);
+  if (m) return m[1];
+  m = url.match(/youtube\.com\/(?:shorts|embed)\/([^?&]+)/);
+  if (m) return m[1];
+  return null;
+}
+
 function renderVideoStep(step) {
   ui.stageBody.innerHTML = "";
   const embedSrc = toYouTubeEmbed(step.body);
-  ui.stageActivity.innerHTML = `
-    <div class="video-wrapper">
-      <iframe
-        src="${embedSrc}"
-        title="${step.title}"
-        frameborder="0"
+  const videoId  = toYouTubeId(step.body);
+  const thumb    = videoId
+    ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+    : null;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "video-wrapper";
+
+  if (thumb) {
+    wrapper.style.cssText = `background:url('${thumb}') center/cover no-repeat;cursor:pointer;position:relative;`;
+    wrapper.innerHTML = `
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.25);">
+        <svg width="68" height="48" viewBox="0 0 68 48" style="filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))">
+          <rect width="68" height="48" rx="12" fill="#FF0000"/>
+          <polygon points="26,14 50,24 26,34" fill="#fff"/>
+        </svg>
+      </div>`;
+    wrapper.addEventListener("click", () => {
+      wrapper.style.cssText = "";
+      wrapper.innerHTML = `<iframe src="${embedSrc}?autoplay=1" title="${step.title}" frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-    </div>
-    <p class="video-prompt">${step.prompt}</p>
-  `;
+        allowfullscreen></iframe>`;
+    }, { once: true });
+  } else {
+    wrapper.innerHTML = `<iframe src="${embedSrc}" title="${step.title}" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>`;
+  }
+
+  ui.stageActivity.innerHTML = "";
+  ui.stageActivity.appendChild(wrapper);
+  ui.stageActivity.insertAdjacentHTML("beforeend", `<p class="video-prompt">${step.prompt}</p>`);
 }
 
 function renderVisualActivity(step) {
