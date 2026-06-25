@@ -2,9 +2,9 @@
 number: 16
 slug: percussao-corporal
 title: Percussão corporal
-description: Lição focada em Percussão corporal, separada do antigo módulo "Ritmo com o Corpo" para estudar um conceito por vez.
+description: Você já tem um instrumento de percussão completo — e nunca vai esquecer ele em casa. Aprenda a usar seu próprio corpo para sentir o ritmo antes de qualquer instrumento.
 topics: Percussão corporal
-game_kind: game-listen
+game_kind: game-rhythm-tap
 ---
 
 ## Teoria
@@ -17,38 +17,43 @@ Edwin Gordon, no âmbito da Music Learning Theory, afirma que a audiation (imagi
 
 ## Visual
 
+<img src="/static/img/modules/percussao-corporal.svg" alt="Boneco com os 4 pontos de percussão corporal marcados: estalar de dedos, palma, batida no peito e stomping" class="module-img" onerror="this.style.display='none'">
+
 Diagrama de corpo humano de frente com quatro pontos marcados e nomeados: cabeça (estalar de dedos), peito (batida), palmas abertas na altura da cintura (palma), e solas dos pés (stomping), com setas indicando os tempos 1-2-3-4 que cada ponto representa no padrão de backbeat.
 
 ## Exercícios
 
 ### MC
-No padrão de backbeat corporal, onde os stompings (pisadas) devem cair?
-- Nos tempos 1 e 3
-- Nos tempos 2 e 4 ✓
-- Em todos os quatro tempos igualmente
-- Apenas no tempo 1 (o tempo forte)
+Você está cantando um louvor com a banda e o baterista pede: "bate palma comigo!". Ele toca o caixa da bateria com força repetidamente. Em quais tempos a palma da congregação deve cair?
+- Em todos os tempos (1, 2, 3, 4)
+- Só no tempo 1, que é o mais forte
+- Nos tempos 2 e 4, junto com o caixa ✓
+- Em nenhum tempo, só ouvir
 
 ### VF
-Carl Orff e Edwin Gordon defendem que o ritmo deve primeiro ser sentido no corpo antes de ser lido na partitura.
+Você consegue manter o pulso de uma música batendo o pé no chão, mesmo sem nenhum instrumento por perto.
 > Verdadeiro
 
 ### Fill
-No louvor gospel, o caixa da bateria geralmente toca nos tempos 2 e 4, criando o chamado ___.
+Quando você bate palma nos tempos 2 e 4 enquanto canta, está criando o famoso ___ que dá groove ao louvor.
 - downbeat
 - backbeat ✓
 - offbeat melódico
 
 ### MC
-Qual das alternativas descreve corretamente o som da batida no peito na percussão corporal?
-- Agudo e cortante, semelhante ao hi-hat
-- Grave e pesado como um bumbo profundo
-- Médio e profundo, diferente da palma seca ✓
-- Igual ao estalar de dedos em timbre
+O professor pede para você fazer três sons diferentes com o corpo: um som agudo e seco, um som médio e cheio, e um som grave e pesado. Qual combinação resolve o pedido?
+- Palma (agudo), batida no peito (médio), stomping (grave) ✓
+- Estalar de dedos, palma e bater na mesa
+- Três palmas com volumes diferentes
+- Assobio, palma e voz
 
-### VF
-Um músico que aprende percussão corporal não tem vantagem ao tocar instrumentos convencionais, pois são habilidades completamente separadas.
-> Falso
+### Match
+Associe cada som corporal ao seu timbre característico:
+- Palma → Agudo e cortante, parecido com o hi-hat
+- Batida no peito → Médio e profundo, ressonante
+- Stomping (pisada) → Grave e pesado, como um bumbo
+- Estalar de dedos → Seco, preciso, pontuado
 
 ## Jogo
 
-CORPO NA GRADE — Em grupo ou a sós, escolha uma música de louvor conhecida (ex: "Oceans", "Grandes Coisas"). Durante a introdução instrumental, estabeleça o pulso pisando suavemente (stomping silencioso). No verso, adicione a batida no peito nos tempos 1 e 3. No pré-refrão, troque: stomping no 1 e 3, palma no 2 e 4 (backbeat). No refrão, some o estalar de dedos na subdivisão (a cada colcheia). Observe qual parte do corpo "sai do trilho" primeiro — esse é o ponto de pulso mais fraco a trabalhar.
+CORPO NA GRADE — Em duplas ou grupo, escolha um louvor conhecido (Grandes Coisas, Oceans). Rodada 1: todos pisam suavemente o pulso durante a intro. Rodada 2: adicionam batida no peito nos tempos 1 e 3. Rodada 3: trocam para palma no 2 e 4 (backbeat) durante o refrão. Rodada 4: somam estalar de dedos nas colcheias. Quem "sair do trilho" sai da roda — ganha quem chegar inteiro ao final do refrão. Tempo total: 3 minutos por música.

@@ -2,7 +2,7 @@
 number: 61
 slug: solfejo-fixo
 title: Solfejo fixo
-description: Lição focada em Solfejo fixo, separada do antigo módulo "Solfejo: Cantando as Notas" para estudar um conceito por vez.
+description: No solfejo fixo, "Dó" é sempre Dó — não importa a tonalidade. Entenda por que isso importa e como esse sistema ajuda a desenvolver o ouvido absoluto.
 topics: Solfejo fixo
 game_kind: game-listen
 ---

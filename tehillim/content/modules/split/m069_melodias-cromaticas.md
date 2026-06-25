@@ -2,49 +2,57 @@
 number: 69
 slug: melodias-cromaticas
 title: Melodias cromáticas
-description: Lição focada em Melodias cromáticas, separada do antigo módulo “Leitura Melódica Progressiva” para estudar um conceito por vez.
+description: As notas "fora da escala" que criam tensão e cor em tantas músicas gospel são o cromatismo — entenda como lê-las e cantá-las sem perder a afinação.
 topics: Melodias cromáticas
 game_kind: game-listen
 ---
 
 ## Teoria
 
-Melodias cromáticas desenvolve a ligação entre ouvido, voz e leitura. O aluno aprende a imaginar o som antes de produzi-lo, o que melhora canto, instrumento e leitura à primeira vista.
+**Melodias cromáticas** são aquelas que usam **notas alteradas** — sustenidos ou bemóis que não pertencem à escala da tonalidade. Numa música em Dó Maior, a escala "natural" é Dó-Ré-Mi-Fá-Sol-Lá-Si-Dó. Se a melodia, no meio do caminho, usar um **Fá#** ou um **Sib**, essa nota é **cromática**: ela está "fora" da escala e cria uma cor especial, geralmente associada a tensão, surpresa ou expressividade.
 
-Pratique devagar: identifique a tonalidade, cante a escala de referência, leia o ritmo separadamente e então junte altura e duração. Corrija sem interromper a musicalidade.
+A **escala cromática** é a forma mais radical disso: sobe e desce por **semitons**, usando todas as 12 notas possíveis sem pular nenhuma. Dó-Dó#-Ré-Ré#-Mi-Fá-Fá#-Sol-Sol#-Lá-Lá#-Si-Dó. Pianistas iniciantes treinam essa escala para desenvolver técnica dos dedos. No canto, a escala cromática é desafiadora justamente porque o ouvido não está acostumado com tantos semitons em sequência — é um excelente exercício de afinação fina.
 
-A meta é formar ouvido interno. Quando o músico consegue prever a próxima nota, a partitura deixa de ser um enigma e passa a ser uma guia.
+Na música de louvor, o cromatismo aparece principalmente como **efeito expressivo**. Um cantor pode subir por semitom em direção a uma nota importante para criar emoção (técnica comum em ad-libs gospel). Guitarristas usam **glissandos** cromáticos para conectar acordes. Em arranjos mais sofisticados, **blue notes** (notas levemente desafinadas para baixo, típicas do gospel afro-americano) adicionam aquele "tempero" emocional inconfundível.
+
+Cuidado para não confundir **alteração ocasional** com **mudança de tonalidade**. Uma única nota cromática num refrão é só uma "cor", não muda a tonalidade. Mas se a partitura passa a usar **consistentemente** Fá# em vez de Fá, provavelmente houve uma **modulação** para Sol Maior. Saber distinguir esses casos é fundamental para ler com fluência partituras de hinos mais elaborados como "Maravilhosa Graça" ou "Tu És Fiel Senhor".
 
 ## Visual
 
-Cartão visual central com o título “Melodias cromáticas”, um exemplo musical simples e uma comparação lado a lado entre execução incorreta e execução correta.
+<img src="/static/img/modules/melodias-cromaticas.svg" alt="Comparação entre escala diatônica (7 notas) e escala cromática (12 semitons), com exemplos de cromatismo no gospel" class="module-img" onerror="this.style.display='none'">
+
+Imagem educacional mostrando dois pentagramas. No primeiro, a escala de Dó Maior com as 7 notas naturais. No segundo, a escala cromática subindo por semitons, com setas pequenas entre cada par de notas indicando "semitom". Ao lado, três exemplos de cromatismo em hinos: uma alteração isolada (cor expressiva), um glissando cromático (transição) e uma blue note (ornamento gospel).
 
 ## Exercícios
 
 ### MC
-Qual é o foco principal desta lição?
-- Decorar repertório sem entender o conceito
-- Estudar Melodias cromáticas de forma isolada e aplicável ✓
-- Pular diretamente para assuntos avançados
-- Substituir a escuta pela teoria
+O que torna uma melodia "cromática"?
+- O uso de notas que pertencem à escala da tonalidade
+- O uso de notas alteradas que não pertencem à escala ✓
+- O uso de acordes maiores apenas
+- O uso de instrumentos de sopro
 
 ### VF
-Um tópico musical bem estudado deve ser reconhecido na escuta, na leitura e na prática.
+A escala cromática sobe e desce por semitons usando todas as 12 notas possíveis.
 > Verdadeiro
 
 ### Fill
-Nesta lição, o tema central é ___.
-- andamento aleatório
-- Melodias cromáticas ✓
-- troca de instrumento
+Em uma música em Dó Maior, um Fá# usado pontualmente na melodia é uma nota ___.
+- diatônica
+- cromática ✓
+- repetida
 
-### Match
-Associe cada etapa de estudo à ação correta:
-- Conceito → Entender a ideia principal
-- Escuta → Reconhecer o tema em músicas reais
-- Prática → Aplicar com voz, corpo ou instrumento
-- Revisão → Corrigir e repetir com consciência
+### MC
+Qual é o uso típico do cromatismo em música de louvor?
+- Substituir completamente as notas naturais
+- Criar tensão e cor expressiva em momentos específicos ✓
+- Tornar a partitura impossível de ler
+- Trocar a tonalidade da música o tempo todo
+
+### VF
+Uma única alteração cromática numa melodia sempre indica mudança permanente de tonalidade.
+> Falso
 
 ## Jogo
 
-MISSÃO MELODIAS CROMÁTICAS: escolha uma música simples do repertório de louvor ou de estudo. Ouça uma vez procurando apenas Melodias cromáticas. Depois execute um trecho curto aplicando esse tema de propósito. Grave ou anote o resultado e responda: onde o conceito apareceu com clareza e onde ainda precisa de ajuste?
+MISSÃO CAÇA-CROMÁTICA: escolha uma música gospel mais elaborada (por exemplo, "Maravilhosa Graça" ou um arranjo de Hillsong). Ouça com atenção e tente identificar os momentos em que aparece uma nota "fora da escala" — geralmente são notas que criam um arrepio, um momento de tensão. Anote: em que parte da letra acontece? Que sentimento o cromatismo evoca ali?

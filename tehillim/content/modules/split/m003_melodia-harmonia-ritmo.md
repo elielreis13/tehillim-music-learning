@@ -28,33 +28,36 @@ Três faixas horizontais paralelas, como trilhas de áudio em um DAW: a trilha d
 ## Exercícios
 
 ### MC
-O que é a melodia de uma música?
-- O conjunto de acordes que sustenta a música
-- A sequência de notas tocadas uma após a outra no tempo ✓
-- O padrão de durações curtas e longas
-- A velocidade com que a música é executada
+Você está ouvindo uma música de louvor e começa a assobiar a parte que ficou na sua cabeça. Que camada da música você está assobiando?
+- A harmonia
+- A melodia ✓
+- O ritmo
+- O timbre
 
 ### VF
-A harmonia ocorre quando duas ou mais notas soam ao mesmo tempo, formando acordes.
+Você ouve o teclado tocando Dó + Mi + Sol ao mesmo tempo. Isso é harmonia.
 > Verdadeiro
 
 ### Fill
-O ___ organiza os sons no tempo por meio de padrões de durações longas e curtas.
+Quando você bate o pé acompanhando uma música, está sentindo o ___.
 - timbre
 - ritmo ✓
 - tom
 
 ### MC
-Qual instrumento da banda de louvor é mais diretamente responsável pelo elemento rítmico?
-- O teclado, que toca os acordes
-- A bateria, que marca pulsos e subdivisões ✓
-- O vocalista, que canta a melodia
-- O baixo elétrico, que faz a progressão harmônica
+O pastor pediu para você "segurar o ritmo" enquanto o vocalista improvisa. Qual instrumento você provavelmente está tocando?
+- O teclado fazendo pads sustentados
+- A bateria marcando pulsos e subdivisões ✓
+- O backing vocal cantando harmonias
+- A guitarra solando
 
-### VF
-A mesma sequência de acordes tocada em ritmos diferentes soa igual, pois a harmonia não depende do ritmo.
-> Falso
+### Match
+Associe cada instrumento à camada musical principal que ele costuma fazer no louvor:
+- Vocalista → Melodia (linha que se canta)
+- Teclado com acordes → Harmonia (notas simultâneas)
+- Bateria → Ritmo (organização no tempo)
+- Baixo elétrico → Harmonia + Ritmo (fundamenta os acordes no pulso)
 
 ## Jogo
 
-DISSECANDO UMA MÚSICA — Escolha um hino ou música de louvor que o grupo conheça. Ouçam juntos e identifiquem em voz alta: (1) qual instrumento está fazendo a melodia principal agora? (2) quais instrumentos estão fazendo harmonia? (3) quem está sustentando o ritmo? Troquem de música e repitam. O objetivo é treinar os ouvidos para ouvir cada camada separadamente, mesmo enquanto a música toca completa.
+DISSECANDO UMA MÚSICA — Em grupos de 3 ou 4, escolham uma música de louvor conhecida (4 minutos por rodada). Cada pessoa fica responsável por UMA camada: melodia, harmonia ou ritmo. Coloquem a música para tocar. Quando o líder gritar "MELODIA!", só quem é responsável pela melodia levanta a mão e diz qual instrumento está fazendo. O mesmo para "HARMONIA!" e "RITMO!". Vence quem acertar mais identificações em 3 músicas seguidas. Para dificultar: cada um troca de camada a cada rodada.

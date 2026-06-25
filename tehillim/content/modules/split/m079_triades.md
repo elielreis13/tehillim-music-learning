@@ -2,49 +2,57 @@
 number: 79
 slug: triades
 title: Tríades
-description: Lição focada em Tríades, separada do antigo módulo “Tríades, Campo Harmônico e Acordes de 7ª” para estudar um conceito por vez.
+description: Três notas soando juntas formam um acorde — entender como cada tríade é construída é o fundamento de tudo que vem depois em harmonia.
 topics: Tríades
 game_kind: game-challenge
 ---
 
 ## Teoria
 
-Tríades organiza os sons simultâneos e suas funções. A harmonia mostra de onde a música sai, para onde ela quer ir e onde encontra repouso.
+Uma **tríade** é um acorde formado por **três notas** empilhadas em **terças**. É a unidade básica da harmonia tonal — quase todo acorde que você toca em hinos é uma tríade ou uma expansão dela. A construção segue uma fórmula simples: pegue uma nota (a **tônica**), empilhe uma terça acima e mais uma terça acima. Por exemplo: Dó + Mi (3ª acima) + Sol (3ª acima de Mi) = tríade de Dó.
 
-Estude primeiro a construção: quais notas formam o acorde, qual grau da escala ele ocupa e que sensação produz. Depois aplique em músicas reais, ouvindo tensão, preparação e resolução.
+Existem **quatro tipos** de tríades, e a diferença entre elas está em quais terças são usadas. A **tríade Maior** combina uma **terça maior** (4 semitons) + uma **terça menor** (3 semitons). Em Dó Maior: Dó-Mi-Sol. Soa **alegre, estável**. É a base de hinos triunfantes. A **tríade menor** inverte essa ordem: **terça menor + terça maior** (3+4 semitons). Em Dó menor: Dó-Mib-Sol. Soa **triste, contemplativa**.
 
-Para ministério de louvor, esse tema ajuda a ler cifras, acompanhar cantores, transpor repertório e tocar com mais consciência em vez de depender apenas da memória muscular.
+A **tríade diminuta** empilha **duas terças menores** (3+3 semitons). Em Si diminuto: Si-Ré-Fá. Soa **instável, tensa** — como se "pedisse" para resolver em outro acorde. Aparece como vii° no campo harmônico maior e tem função de dominante. A **tríade aumentada** empilha **duas terças maiores** (4+4 semitons). Em Dó aumentado: Dó-Mi-Sol#. Soa **flutuante, suspenso**, sem direção clara. É rara em hinos tradicionais mas aparece em gospel moderno e jazz como ornamento expressivo.
+
+Todo o **campo harmônico maior** é construído inteiramente de tríades. Em Dó Maior, os 7 acordes diatônicos são: **Dó M** (I), **Ré m** (ii), **Mi m** (iii), **Fá M** (IV), **Sol M** (V), **Lá m** (vi), **Si dim** (vii°). Note o padrão: I, IV e V são maiores; ii, iii e vi são menores; vii° é diminuto. Esse padrão se repete em **toda** tonalidade maior, e dominá-lo é a chave para cifrar, transpor e improvisar com qualquer hino.
 
 ## Visual
 
-Cartão visual central com o título “Tríades”, um exemplo musical simples e uma comparação lado a lado entre execução incorreta e execução correta.
+<img src="/static/img/modules/triades.svg" alt="As quatro tríades (maior, menor, diminuta, aumentada) construídas a partir de Dó com empilhamento de terças" class="module-img" onerror="this.style.display='none'">
+
+Imagem educacional mostrando as quatro tríades construídas a partir de Dó: Maior (Dó-Mi-Sol), menor (Dó-Mib-Sol), diminuta (Dó-Mib-Solb) e aumentada (Dó-Mi-Sol#). Ao lado de cada uma, as proporções de semitons (4+3, 3+4, 3+3, 4+4) e uma "carinha" emocional: alegre, triste, tensa, suspensa. Abaixo, o campo harmônico de Dó Maior com os 7 acordes resultantes.
 
 ## Exercícios
 
 ### MC
-Qual é o foco principal desta lição?
-- Decorar repertório sem entender o conceito
-- Estudar Tríades de forma isolada e aplicável ✓
-- Pular diretamente para assuntos avançados
-- Substituir a escuta pela teoria
+Como é construída uma tríade?
+- Quatro notas em sequência cromática
+- Três notas empilhadas em terças ✓
+- Duas notas separadas por uma oitava
+- Cinco notas da escala maior
 
 ### VF
-Um tópico musical bem estudado deve ser reconhecido na escuta, na leitura e na prática.
+A tríade de Dó Maior é formada pelas notas Dó-Mi-Sol.
 > Verdadeiro
 
 ### Fill
-Nesta lição, o tema central é ___.
-- andamento aleatório
-- Tríades ✓
-- troca de instrumento
+A tríade construída com duas terças menores empilhadas (3+3 semitons) é chamada de tríade ___.
+- aumentada
+- diminuta ✓
+- suspensa
 
-### Match
-Associe cada etapa de estudo à ação correta:
-- Conceito → Entender a ideia principal
-- Escuta → Reconhecer o tema em músicas reais
-- Prática → Aplicar com voz, corpo ou instrumento
-- Revisão → Corrigir e repetir com consciência
+### MC
+Qual é a sonoridade típica de uma tríade aumentada?
+- Triste e contemplativa
+- Alegre e estável
+- Flutuante e suspensa, sem direção clara ✓
+- Marcial e firme
+
+### VF
+No campo harmônico maior, o acorde do V grau é sempre uma tríade menor.
+> Falso
 
 ## Jogo
 
-MISSÃO TRÍADES: escolha uma música simples do repertório de louvor ou de estudo. Ouça uma vez procurando apenas Tríades. Depois execute um trecho curto aplicando esse tema de propósito. Grave ou anote o resultado e responda: onde o conceito apareceu com clareza e onde ainda precisa de ajuste?
+MISSÃO QUATRO SABORES: no teclado, construa as quatro tríades a partir de Dó: Maior, menor, diminuta e aumentada. Toque cada uma várias vezes e sinta as diferenças emocionais. Agora pegue um hino conhecido (ex: "Castelo Forte") e identifique nas cifras: quais acordes são tríades maiores? Quais são menores? Tem alguma diminuta passando? Você acabou de mapear o esqueleto harmônico da música.

@@ -4,7 +4,7 @@ slug: timbre
 title: Timbre
 description: Dois instrumentos tocam a mesma nota no mesmo volume. Por que soam tão diferentes? A resposta é o timbre.
 topics: Timbre
-game_kind: game-listen
+game_kind: game-identify-sound
 ---
 
 ## Teoria
@@ -26,33 +26,36 @@ Três formas de onda desenhadas uma ao lado da outra, todas com a mesma frequên
 ## Exercícios
 
 ### MC
-O que é timbre em música?
-- O volume com que um instrumento toca
-- A altura (frequência) de uma nota
-- A qualidade sonora que distingue um instrumento de outro ✓
-- A duração de uma nota na partitura
+Você fecha os olhos no culto e ouve uma flauta e um violão tocando a mesma nota no mesmo volume. Você consegue distinguir um do outro. Por quê?
+- Porque um é mais alto que o outro
+- Porque cada instrumento tem um timbre próprio ✓
+- Porque o violão é mais antigo
+- Porque a flauta toca mais rápido
 
 ### VF
-Dois instrumentos tocando a mesma nota no mesmo volume soam idênticos ao ouvido.
-> Falso
+Sua voz e a voz do seu melhor amigo cantando a mesma nota soam diferentes porque cada voz tem um timbre único.
+> Verdadeiro
 
 ### Fill
-O timbre de um instrumento é determinado pela mistura de ___ que soam junto com a nota principal.
+O timbre de cada instrumento é definido pela mistura de ___ que soam junto com a nota principal.
 - pausas
 - harmônicos ✓
-- dinâmicas
+- pulsos
 
 ### MC
-Qual das opções abaixo é um exemplo prático de escolha de timbre na banda de louvor?
-- Escolher entre tocar no compasso 2/4 ou 4/4
-- Usar um patch de órgão no teclado em vez de piano para mudar o clima ✓
-- Decidir o andamento do louvor em BPM
-- Escolher em qual tom a música será cantada
+O líder de louvor pede para o tecladista "deixar a música mais 'igreja antiga'". Que mudança ele provavelmente quer?
+- Mudar o compasso para 2/4
+- Trocar o patch de piano para órgão ✓
+- Aumentar o BPM
+- Mudar a tonalidade
 
-### VF
-A voz humana é considerada um instrumento musical com timbre próprio.
-> Verdadeiro
+### Match
+Associe cada instrumento à característica típica do seu timbre:
+- Violino → Quente e encorpado (cordas)
+- Trompete → Brilhante e cortante (metais)
+- Flauta → Suave e arejada (madeiras)
+- Voz humana → O mais expressivo de todos
 
 ## Jogo
 
-ADIVINHE O INSTRUMENTO — Um aluno toca ou reproduz (no celular, sem mostrar a tela) uma nota isolada ou um acorde curto de diferentes instrumentos: violão, piano, flauta, violino, trompete, voz. Os outros fecham os olhos e identificam o instrumento apenas pelo timbre. Cada acerto conta um ponto. Depois discutam: quais foram mais fáceis de identificar? Por que alguns timbres são mais reconhecíveis do que outros?
+ADIVINHE O INSTRUMENTO — Em grupos (10 minutos). Um aluno é o DJ: pega o celular e toca samples de instrumentos diferentes (violão, piano, flauta, violino, trompete, órgão, voz) — cada um tocando exatamente a mesma nota (ex: um Lá4). Os outros, de olhos fechados, gritam o nome do instrumento. Cada acerto vale 1 ponto; identificar a família (cordas/sopros/percussão) vale meio ponto. Após 10 rodadas, vence quem tiver mais pontos. Nível ninja: tente identificar dois instrumentos tocando juntos.

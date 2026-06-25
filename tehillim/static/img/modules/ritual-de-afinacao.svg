@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="240" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">RITUAL DE AFINAÇÃO — ORDEM CERTA, BANDA AFINADA</text>
+
+  <!-- 5 steps in sequence -->
+  <!-- Step 1 -->
+  <rect x="30" y="45" width="130" height="65" rx="8" fill="#E3F2FD"/>
+  <text x="95" y="65" text-anchor="middle" font-size="22" font-weight="700" fill="#1565C0">①</text>
+  <text x="95" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#1565C0">Lá 440 Hz</text>
+  <text x="95" y="97" text-anchor="middle" font-size="10" fill="#555">Teclado / afinador</text>
+
+  <!-- Arrow -->
+  <polygon points="164,77 176,72 176,82" fill="#999"/>
+  <line x1="162" y1="77" x2="164" y2="77" stroke="#999" stroke-width="1.5"/>
+
+  <!-- Step 2 -->
+  <rect x="178" y="45" width="130" height="65" rx="8" fill="#E8F5E9"/>
+  <text x="243" y="65" text-anchor="middle" font-size="22" font-weight="700" fill="#2E7D32">②</text>
+  <text x="243" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#2E7D32">Baixo</text>
+  <text x="243" y="97" text-anchor="middle" font-size="10" fill="#555">Ajuste à referência</text>
+
+  <!-- Arrow -->
+  <polygon points="312,77 324,72 324,82" fill="#999"/>
+  <line x1="310" y1="77" x2="312" y2="77" stroke="#999" stroke-width="1.5"/>
+
+  <!-- Step 3 -->
+  <rect x="326" y="45" width="130" height="65" rx="8" fill="#FFF8E1"/>
+  <text x="391" y="65" text-anchor="middle" font-size="22" font-weight="700" fill="#F57F17">③</text>
+  <text x="391" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#F57F17">Violão / teclado</text>
+  <text x="391" y="97" text-anchor="middle" font-size="10" fill="#555">Confiram entre si</text>
+
+  <!-- Arrow -->
+  <polygon points="460,77 472,72 472,82" fill="#999"/>
+  <line x1="458" y1="77" x2="460" y2="77" stroke="#999" stroke-width="1.5"/>
+
+  <!-- Step 4 -->
+  <rect x="474" y="45" width="130" height="65" rx="8" fill="#FCE4EC"/>
+  <text x="539" y="65" text-anchor="middle" font-size="22" font-weight="700" fill="#C62828">④</text>
+  <text x="539" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#C62828">Voz</text>
+  <text x="539" y="97" text-anchor="middle" font-size="10" fill="#555">Checa com o teclado</text>
+
+  <!-- Arrow -->
+  <polygon points="608,77 620,72 620,82" fill="#999"/>
+  <line x1="606" y1="77" x2="608" y2="77" stroke="#999" stroke-width="1.5"/>
+
+  <!-- Step 5 -->
+  <rect x="622" y="45" width="148" height="65" rx="8" fill="#EDE7F6"/>
+  <text x="696" y="65" text-anchor="middle" font-size="22" font-weight="700" fill="#4527A0">⑤</text>
+  <text x="696" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#4527A0">Sopros / outros</text>
+  <text x="696" y="97" text-anchor="middle" font-size="10" fill="#555">Entram por último</text>
+
+  <!-- Bottom section: thermometer + timer -->
+  <rect x="30" y="130" width="360" height="80" rx="8" fill="#F5F5F5"/>
+  <text x="210" y="150" text-anchor="middle" font-size="12" font-weight="700" fill="#333">Aquecimento vocal / instrumental</text>
+  <text x="80" y="175" text-anchor="middle" font-size="28">🌡️</text>
+  <text x="180" y="170" font-size="11" fill="#C62828" font-weight="600">Frio (chegada)</text>
+  <text x="180" y="185" font-size="10" fill="#888">instrumento fora de temperatura</text>
+  <text x="310" y="170" font-size="11" fill="#2E7D32" font-weight="600">Quente (pronto)</text>
+  <text x="310" y="185" font-size="10" fill="#888">afine novamente após aquecer</text>
+
+  <rect x="410" y="130" width="360" height="80" rx="8" fill="#F5F5F5"/>
+  <text x="590" y="150" text-anchor="middle" font-size="12" font-weight="700" fill="#333">Tempo total do ritual</text>
+  <text x="490" y="190" text-anchor="middle" font-size="36">⏱️</text>
+  <text x="580" y="168" font-size="13" font-weight="700" fill="#1565C0">5 minutos</text>
+  <text x="580" y="183" font-size="10" fill="#888">Disciplina: começar sempre</text>
+  <text x="580" y="198" font-size="10" fill="#888">pelo mesmo instrumento</text>
+</svg>

@@ -2,7 +2,7 @@
 number: 46
 slug: 6-8-e-compassos-compostos
 title: 6/8 e Compassos Compostos
-description: Lição focada em 6/8 e Compassos Compostos, separada do antigo módulo “Compassos Compostos” para estudar um conceito por vez.
+description: O 6/8 não é “três vezes dois” — é dois tempos que balançam. Entenda por que isso muda tudo na hora de tocar músicas como “10.000 Reasons”.
 topics: 6/8 e Compassos Compostos
 game_kind: game-listen
 ---

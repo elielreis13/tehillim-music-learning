@@ -2,9 +2,9 @@
 number: 17
 slug: binario-e-ternario
 title: Binário e Ternário
-description: Lição focada em Binário e Ternário, separada do antigo módulo "Ritmo com o Corpo" para estudar um conceito por vez.
+description: Por que o mesmo compasso 4/4 soa diferente num hino e num gospel shuffle? A resposta está na sensação rítmica que pulsa por baixo de tudo.
 topics: Binário e Ternário
-game_kind: game-listen
+game_kind: game-rhythm-tap
 ---
 
 ## Teoria
@@ -17,38 +17,43 @@ Para identificar a sensação rítmica de uma música por ouvido, experimente o 
 
 ## Visual
 
+<img src="/static/img/modules/binario-e-ternario.svg" alt="Comparação entre sensação binária (2 subdivisões por tempo) e ternária (3 subdivisões por tempo)" class="module-img" onerror="this.style.display='none'">
+
 Duas linhas de grade rítmica comparadas: linha superior mostrando 1 tempo dividido em 2 colcheias iguais (binário: 1 — e), linha inferior mostrando 1 tempo dividido em 3 tercinas (ternário: 1 — e — a), com o tamanho dos blocos visualmente diferente para mostrar a proporção.
 
 ## Exercícios
 
 ### MC
-Qual é a diferença fundamental entre sensação binária e ternária?
-- Binária tem mais compassos; ternária tem menos
-- Binária divide o tempo em 2 partes iguais; ternária divide em 3 ✓
-- Binária é usada em músicas lentas; ternária em músicas rápidas
-- Binária usa colcheias; ternária usa semínimas
+Você ouve uma música e tenta contar "1-e, 2-e, 3-e, 4-e" junto, mas a contagem fica torta — sempre sobra algo. O que provavelmente está rolando?
+- A música está acelerando o tempo todo
+- A sensação é ternária e pede "1-e-a" ✓
+- A música está fora do tempo
+- Você não está prestando atenção
 
 ### VF
-Um gospel shuffle tocado em 4/4 pode ter sensação ternária mesmo que o compasso seja binário na escrita.
+Você bate o pé tentando marchar com uma valsa, mas o corpo "trava" e quer balançar de um lado para o outro. Isso acontece porque valsa tem sensação ternária e marcha tem sensação binária.
 > Verdadeiro
 
 ### Fill
-Na sensação ternária, cada tempo é subdividido em ___ partes iguais.
-- duas
-- três ✓
-- quatro
+Quando uma música pede para você contar "um-dois-três, um-dois-três" naturalmente, sua sensação rítmica é ___.
+- binária
+- ternária ✓
+- mista
 
 ### MC
-Qual das músicas a seguir é o exemplo mais clássico de sensação ternária?
-- Marcha militar de desfile
-- Hino nacional em tempo rápido
-- Valsa de salão ✓
-- Samba de escola de samba
+O regente da banda quer que vocês toquem um gospel shuffle. Como deve soar a sua colcheia?
+- Todas as colcheias iguais e quadradas
+- Longa-curta, longa-curta, com balanço ✓
+- Curta-longa-curta-longa, como uma síncope
+- Sem subdivisão, só semínimas
 
-### VF
-Para descobrir se uma música tem sensação binária ou ternária, basta olhar o numerador da fórmula de compasso — se for 4, a sensação é sempre binária.
-> Falso
+### Match
+Associe cada música ao tipo de sensação rítmica que ela transmite ao corpo:
+- Marcha militar → Binária — esquerdo-direito, esquerdo-direito
+- Valsa vienense → Ternária — balanço em três
+- Pop em 4/4 reto → Binária — pulso quadrado
+- Gospel shuffle → Ternária — colcheia com swing
 
 ## Jogo
 
-BINÁRIO OU TERNÁRIO? — O professor (ou um colega) toca ou canta fragmentos de 4 músicas diferentes sem anunciar o título: uma marcha, uma valsa, um gospel shuffle e uma música de louvor em 4/4 reto. Para cada trecho, o aluno levanta a mão direita para binário e a mão esquerda para ternário, e em seguida tenta contar em voz alta a subdivisão correta ("1-e" ou "1-e-a") junto com a gravação. Após identificar, discuta: o que no groove denunciou a sensação — foi o baixo, a bateria, o vocal?
+CAÇA À SENSAÇÃO — Em grupo de 3 a 6. O líder coloca 5 músicas surpresa (mistura de marcha, valsa, shuffle, pop reto e samba). Para cada uma, todos têm 15 segundos para decidir: mão DIREITA pra cima = binária, mão ESQUERDA pra cima = ternária. Em seguida cada um conta em voz alta a subdivisão certa ("1-e" ou "1-e-a") junto com a gravação. Ponto pra quem acertar a mão E a contagem. Vence quem somar mais pontos em 5 rodadas.

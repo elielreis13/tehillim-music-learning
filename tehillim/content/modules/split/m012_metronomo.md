@@ -4,7 +4,7 @@ slug: metronomo
 title: Metrônomo
 description: O metrônomo não é seu inimigo — é o espelho mais honesto que um músico pode ter.
 topics: Metrônomo
-game_kind: game-challenge
+game_kind: game-rhythm-tap
 ---
 
 ## Teoria
@@ -26,33 +26,33 @@ Três metrônomos lado a lado com labels: (1) metrônomo mecânico de pêndulo c
 ## Exercícios
 
 ### MC
-Qual é a forma correta de se relacionar com o clique do metrônomo ao tocar?
-- Esperar ouvir o clique para então tocar a nota
-- Tocar a nota um tempo depois do clique para ter margem de segurança
-- Antecipar o clique, tocando junto ou levemente antes dele ✓
-- Ignorar o clique e manter o próprio senso de tempo interno
+Você liga o metrônomo a 80 BPM e percebe que está sempre tocando logo DEPOIS de cada clique. Qual o problema?
+- Está antecipando demais
+- Está esperando o clique chegar em vez de tocar JUNTO com ele ✓
+- O metrônomo está atrasado
+- O BPM está errado
 
 ### VF
-O metrônomo mecânico de pêndulo funciona colocando o peso mais alto para andamentos mais rápidos.
-> Falso
+Você está tocando com tanta precisão que não escuta mais o clique — ele "some" dentro do som do seu instrumento. Isso é o que os músicos chamam de "engolir o metrônomo".
+> Verdadeiro
 
 ### Fill
-Para aprender uma passagem difícil com metrônomo, o músico deve começar ___ do que acha necessário e aumentar gradualmente.
+Para aprender uma passagem difícil, comece ___ do que você acha necessário e suba o BPM aos poucos.
 - mais rápido
 - mais devagar ✓
 - no mesmo andamento
 
 ### MC
-O que a expressão "engolir o metrônomo" significa entre músicos?
-- Aprender a ignorar o clique durante a performance
-- Tocar com tal precisão que o clique some dentro do som do instrumento ✓
-- Memorizar a música para não precisar mais do metrônomo
-- Usar fones de ouvido para não incomodar outros com o clique
+Você quer dominar um trecho difícil a 120 BPM. Qual é o jeito mais eficiente?
+- Tentar direto a 120 BPM até sair
+- Treinar a 80 BPM até ficar limpo e subir de 4 em 4 BPM ✓
+- Ignorar o metrônomo e usar o feeling
+- Aumentar 20 BPM por dia sem checar precisão
 
 ### VF
-Aumentar a velocidade do metrônomo rapidamente é a forma mais eficiente de aprender músicas em andamentos mais rápidos.
-> Falso
+Você coloca o peso do pêndulo de um metrônomo mecânico mais ALTO — quanto mais alto o peso, mais lento o pêndulo oscila.
+> Verdadeiro
 
 ## Jogo
 
-METRÔNOMO EM DOIS TEMPOS — Ligue o metrônomo a 60 BPM. Na primeira rodada, cada aluno toca ou palma junto com cada clique (tempo 1). Na segunda rodada, o desafio aumenta: o metrônomo passa a representar apenas os tempos 1 e 3, e o aluno deve palmar nos tempos 2 e 4 — no silêncio entre os cliques. Esse é o "backbeat" do louvor e é muito mais difícil do que parece. Na terceira rodada, o metrônomo marca apenas uma vez por compasso e o aluno deve manter os quatro tempos internamente. Conte quantos compassos consecutivos você consegue manter sem escorregar.
+METRÔNOMO EM DOIS TEMPOS — Sozinho ou em grupo (10 minutos). Ligue o metrônomo a 60 BPM. **Fase 1**: palmar JUNTO com cada clique por 8 compassos sem errar. **Fase 2 (backbeat)**: o clique vira apenas tempos 1 e 3 — você palma nos tempos 2 e 4 (no silêncio entre os cliques). Conte quantos compassos seguidos sem escorregar. **Fase 3 (modo ninja)**: o metrônomo bate apenas UMA vez por compasso — você mantém os outros 3 tempos só na cabeça e palma certinho com o próximo clique. Recorde do dia: maior número de compassos consecutivos sem perder o tempo.

@@ -1,193 +1,275 @@
 {% extends "base_app.html" %}
 
-{% block title %}Evolução dos Alunos | Tehillim{% endblock %}
+{% block title %}Alunos | Tehillim{% endblock %}
+
+{% block head %}
+<style>
+/* ── Admin sub-nav ─────────────────────────────────────────────────────────── */
+.admin-tab {
+  font-size: 13px; font-weight: 600; padding: 8px 18px;
+  border-radius: 10px; color: #7A6A4D; cursor: pointer;
+  transition: background 0.15s, color 0.15s; white-space: nowrap;
+  text-decoration: none; display: inline-block;
+}
+.admin-tab:hover { background: rgba(196,148,58,0.08); color: #C4943A; }
+.admin-tab.active { background: #C4943A; color: white; }
+
+/* ── Inner tabs (Alunos / Relatório) ─────────────────────────────────────── */
+.inner-tab {
+  font-size: 13px; font-weight: 600; padding: 7px 16px;
+  border-radius: 8px; color: #9C8460; cursor: pointer;
+  transition: background 0.15s, color 0.15s; border: none; background: none;
+}
+.inner-tab:hover { background: #F4ECD8; color: #7A5C2E; }
+.inner-tab.active { background: #F4ECD8; color: #7A5C2E; }
+
+/* ── Student card grid ────────────────────────────────────────────────────── */
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.student-card {
+  background: white; border: 1.5px solid #F0E8D4; border-radius: 16px;
+  padding: 18px; cursor: pointer;
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.12s;
+}
+.student-card:hover {
+  border-color: #C4943A; box-shadow: 0 4px 18px rgba(196,148,58,0.12);
+  transform: translateY(-2px);
+}
+.student-card.has-unread { border-color: #BFDBFE; background: #EFF6FF; }
+
+/* ── Detail panel ─────────────────────────────────────────────────────────── */
+#detail-panel {
+  flex-shrink: 0; overflow: hidden; background: white;
+  border-left: 1px solid #F0E8D4; box-shadow: -4px 0 24px rgba(0,0,0,0.07);
+  display: flex; flex-direction: column;
+  width: 0; transition: width 0.26s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── Collapsible sections ─────────────────────────────────────────────────── */
+.section-toggle { cursor: pointer; user-select: none; }
+.section-toggle:hover { opacity: 0.8; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+.fade-in { animation: fadeIn 0.2s ease; }
+
+@media (max-width: 640px) {
+  .student-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .admin-subnav { overflow-x: auto; }
+}
+</style>
+{% endblock %}
 
 {% block header %}
-<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
-  <div class="flex items-center justify-between relative z-10">
-    <div>
-      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Professor</p>
-      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Evolução dos Alunos</h1>
-      <p class="text-[13px] text-gray-500 mt-0.5">Acompanhe o progresso de cada aluno</p>
+<header style="background:#F2EAD8;border-bottom:1px solid #ECE3D0;flex-shrink:0;">
+  <div style="padding:18px 24px 0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <p style="font-size:11px;color:#9C8460;text-transform:uppercase;letter-spacing:0.18em;font-weight:600;margin:0;">Professor</p>
+        <h1 style="font-size:20px;font-weight:700;color:#2A2419;margin:3px 0 0;">Administração</h1>
+      </div>
+      <div style="font-size:12px;color:#9C8460;" id="pa-last-update"></div>
     </div>
-    <a href="/admin"
-       class="bg-white text-gray-700 text-[13px] font-semibold px-4 py-2.5 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-      Administração
-    </a>
+
+    <!-- Admin section tabs -->
+    <div class="admin-subnav" style="display:flex;gap:4px;overflow-x:auto;padding-bottom:0;">
+      <a href="/professor/alunos" class="admin-tab active">Alunos</a>
+      <a href="/admin/modulos"    class="admin-tab">Módulos</a>
+      <a href="/admin/jogos"      class="admin-tab">Jogos</a>
+    </div>
   </div>
-  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
 </header>
 {% endblock %}
 
 {% block content %}
-<div class="flex-1 overflow-hidden flex">
+<div class="flex-1 overflow-hidden flex" style="min-height:0;">
 
-  <!-- ── Lista de alunos ── -->
-  <div class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-5" id="alunos-main">
+  <!-- ── Main area ── -->
+  <div class="flex-1 overflow-y-auto flex flex-col" style="min-width:0;">
 
-    <!-- Stats rápidas -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Total de Alunos</p>
-        <p class="text-[28px] font-bold text-gray-800 mt-1" id="pa-stat-total">—</p>
+    <!-- Stats strip -->
+    <div style="display:flex;gap:0;border-bottom:1px solid #F0E8D4;background:white;flex-shrink:0;">
+      <div style="flex:1;padding:14px 20px;border-right:1px solid #F0E8D4;text-align:center;">
+        <p style="font-size:22px;font-weight:700;color:#2A2419;margin:0;" id="pa-stat-total">—</p>
+        <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:0.1em;margin:2px 0 0;">Alunos</p>
       </div>
-      <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Módulos Completos</p>
-        <p class="text-[28px] font-bold text-[#C4943A] mt-1" id="pa-stat-completed">—</p>
+      <div style="flex:1;padding:14px 20px;border-right:1px solid #F0E8D4;text-align:center;">
+        <p style="font-size:22px;font-weight:700;color:#C4943A;margin:0;" id="pa-stat-completed">—</p>
+        <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:0.1em;margin:2px 0 0;">Módulos completos</p>
       </div>
-      <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Total Dias de Estudo</p>
-        <p class="text-[28px] font-bold text-[#4E7A60] mt-1" id="pa-stat-days">—</p>
+      <div style="flex:1;padding:14px 20px;border-right:1px solid #F0E8D4;text-align:center;">
+        <p style="font-size:22px;font-weight:700;color:#4E7A60;margin:0;" id="pa-stat-days">—</p>
+        <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:0.1em;margin:2px 0 0;">Dias de estudo</p>
       </div>
-      <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Ativos (7 dias)</p>
-        <p class="text-[28px] font-bold text-gray-800 mt-1" id="pa-stat-active">—</p>
+      <div style="flex:1;padding:14px 20px;text-align:center;">
+        <p style="font-size:22px;font-weight:700;color:#2A2419;margin:0;" id="pa-stat-active">—</p>
+        <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:0.1em;margin:2px 0 0;">Ativos (7 dias)</p>
       </div>
     </div>
 
-    <!-- Filtro de período -->
-    <div class="bg-white rounded-2xl shadow-sm px-6 py-4">
-      <p class="text-[12px] font-semibold text-gray-500 uppercase tracking-wider mb-3">Relatório por Período</p>
-      <div class="flex flex-wrap gap-3 items-end">
-        <div class="flex flex-col gap-1">
-          <label for="report-start" class="text-[11px] text-gray-400 font-medium">De</label>
-          <input id="report-start" type="date"
-                 class="px-3 py-2 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
-        </div>
-        <div class="flex flex-col gap-1">
-          <label for="report-end" class="text-[11px] text-gray-400 font-medium">Até</label>
-          <input id="report-end" type="date"
-                 class="px-3 py-2 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
-        </div>
-        <button id="report-btn" onclick="generateReport()"
-                class="bg-[#C4943A] hover:bg-[#B3852F] text-white text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors flex items-center gap-2 flex-shrink-0">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    <!-- Inner tabs + search -->
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-bottom:1px solid #F0E8D4;background:#FDFAF6;flex-shrink:0;flex-wrap:wrap;">
+      <div style="display:flex;gap:4px;">
+        <button class="inner-tab active" onclick="showTab('students')" id="tab-students">Todos os Alunos</button>
+        <button class="inner-tab" onclick="showTab('report')" id="tab-report">Relatório</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex:1;max-width:300px;" id="student-search-wrap">
+        <div style="flex:1;display:flex;align-items:center;gap:8px;background:white;border:1.5px solid #E5E7EB;border-radius:10px;padding:7px 12px;">
+          <svg style="width:14px;height:14px;color:#9CA3AF;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
           </svg>
-          Gerar Relatório
-        </button>
-        <button id="report-clear" onclick="clearReport()" style="display:none"
-                class="text-[13px] text-gray-400 hover:text-gray-600 px-3 py-2 transition-colors">
-          Ver todos
-        </button>
+          <input id="student-search" type="text" placeholder="Buscar aluno..."
+                 style="flex:1;font-size:13px;outline:none;border:none;background:none;color:#374151;"
+                 oninput="filterStudents(this.value)">
+        </div>
+        <select id="student-sort" style="font-size:12px;padding:7px 10px;border:1.5px solid #E5E7EB;border-radius:10px;color:#374151;background:white;cursor:pointer;"
+                onchange="sortStudents(this.value)">
+          <option value="name">Nome</option>
+          <option value="activity">Mais recentes</option>
+          <option value="progress">Maior progresso</option>
+        </select>
       </div>
     </div>
 
-    <!-- Relatório do período (aparece após gerar) -->
-    <div id="report-section" style="display:none" class="bg-[#FBF6EE] rounded-2xl shadow-sm overflow-hidden border border-[#EDD9B0]">
-      <div class="px-6 py-4 bg-[#F5EDDA] border-b border-[#EDD9B0] flex items-center justify-between">
-        <div>
-          <h2 class="font-bold text-[15px] text-gray-800">Relatório do Período</h2>
-          <p id="report-period-label" class="text-[12px] text-gray-500 mt-0.5"></p>
-        </div>
-        <div class="flex gap-4 text-center">
-          <div>
-            <p class="text-[20px] font-bold text-[#C4943A]" id="rs-modules">—</p>
-            <p class="text-[10px] text-gray-500">Módulos</p>
-          </div>
-          <div>
-            <p class="text-[20px] font-bold text-[#4E7A60]" id="rs-days">—</p>
-            <p class="text-[10px] text-gray-500">Dias estudo</p>
-          </div>
-          <div>
-            <p class="text-[20px] font-bold text-gray-700" id="rs-accuracy">—</p>
-            <p class="text-[10px] text-gray-500">Taxa acerto</p>
-          </div>
-        </div>
-      </div>
-      <div id="report-list"></div>
+    <!-- TAB: Students -->
+    <div id="panel-students" class="flex-1 p-5" style="overflow-y:auto;">
+      <p id="pa-loading" style="text-align:center;color:#9C8460;font-size:13px;padding:40px 0;">Carregando alunos...</p>
+      <p id="pa-error" style="display:none;color:#ef4444;font-size:13px;padding:20px;"></p>
+      <div class="student-grid" id="pa-student-grid"></div>
+      <p id="pa-no-results" style="display:none;text-align:center;color:#9C8460;font-size:13px;padding:40px 0;">Nenhum aluno encontrado.</p>
     </div>
 
-    <!-- Cards de alunos -->
-    <div class="bg-white rounded-2xl shadow-sm overflow-hidden" id="all-students-section">
-      <div class="px-6 py-4 bg-[#FAF7F2] border-b border-gray-100 flex items-center justify-between">
-        <h2 class="font-bold text-[15px] text-gray-800">Todos os Alunos</h2>
-        <p id="pa-loading" class="text-[12px] text-gray-400">Carregando...</p>
+    <!-- TAB: Report -->
+    <div id="panel-report" style="display:none;flex:1;overflow-y:auto;padding:20px;">
+      <div style="background:white;border:1.5px solid #F0E8D4;border-radius:16px;padding:20px;margin-bottom:16px;">
+        <h3 style="font-size:14px;font-weight:700;color:#2A2419;margin:0 0 14px;">Relatório por período</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+          <div>
+            <label style="font-size:11px;color:#9C8460;font-weight:600;display:block;margin-bottom:4px;">De</label>
+            <input id="report-start" type="date"
+                   style="padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:13px;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:11px;color:#9C8460;font-weight:600;display:block;margin-bottom:4px;">Até</label>
+            <input id="report-end" type="date"
+                   style="padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:13px;outline:none;">
+          </div>
+          <button onclick="generateReport()"
+                  style="background:#C4943A;color:white;font-size:13px;font-weight:600;padding:9px 20px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;"
+                  id="report-btn">
+            <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Gerar Relatório
+          </button>
+        </div>
       </div>
-      <p id="pa-error" class="px-6 py-4 text-[13px] text-red-500" style="display:none"></p>
-      <div id="pa-student-list"></div>
+
+      <!-- Report results -->
+      <div id="report-section" style="display:none;">
+        <div style="background:#FBF6EE;border:1.5px solid #EDD9B0;border-radius:16px;overflow:hidden;">
+          <div style="padding:16px 20px;background:#F5EDDA;border-bottom:1px solid #EDD9B0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div>
+              <p style="font-size:14px;font-weight:700;color:#2A2419;margin:0;">Resultado</p>
+              <p id="report-period-label" style="font-size:12px;color:#9C8460;margin:2px 0 0;"></p>
+            </div>
+            <div style="display:flex;gap:20px;">
+              <div style="text-align:center;">
+                <p style="font-size:22px;font-weight:700;color:#C4943A;margin:0;" id="rs-modules">—</p>
+                <p style="font-size:10px;color:#9C8460;margin:2px 0 0;">Módulos</p>
+              </div>
+              <div style="text-align:center;">
+                <p style="font-size:22px;font-weight:700;color:#4E7A60;margin:0;" id="rs-days">—</p>
+                <p style="font-size:10px;color:#9C8460;margin:2px 0 0;">Dias</p>
+              </div>
+              <div style="text-align:center;">
+                <p style="font-size:22px;font-weight:700;color:#2A2419;margin:0;" id="rs-accuracy">—</p>
+                <p style="font-size:10px;color:#9C8460;margin:2px 0 0;">Acerto</p>
+              </div>
+            </div>
+          </div>
+          <div id="report-list"></div>
+        </div>
+      </div>
     </div>
 
   </div>
 
-  <!-- ── Painel de detalhe do aluno (slide-in) ── -->
-  <div id="detail-panel"
-       class="flex-shrink-0 overflow-hidden bg-white border-l border-gray-100 shadow-xl flex flex-col"
-       style="width:0;transition:width 0.28s cubic-bezier(0.4,0,0.2,1)">
-
-    <!-- Header do painel -->
-    <div class="flex-shrink-0 px-6 py-5 bg-[#FAF7F2] border-b border-gray-100 flex items-center gap-4" id="detail-header">
+  <!-- ── Detail panel ── -->
+  <div id="detail-panel">
+    <div style="flex-shrink:0;padding:16px 20px;background:#FDFAF6;border-bottom:1px solid #F0E8D4;display:flex;align-items:center;gap:12px;" id="detail-header">
       <div id="detail-avatar"
-           style="width:44px;height:44px;border-radius:50%;background:#EDD9B0;color:#C4943A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0">
-        —
+           style="width:42px;height:42px;border-radius:50%;background:#EDD9B0;color:#C4943A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;flex-shrink:0;">—</div>
+      <div style="flex:1;min-width:0;">
+        <p style="font-weight:700;font-size:14px;color:#2A2419;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="detail-name">—</p>
+        <p style="font-size:11px;color:#9C8460;margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="detail-email">—</p>
       </div>
-      <div class="flex-1 min-w-0">
-        <p class="font-bold text-[15px] text-gray-800 truncate" id="detail-name">—</p>
-        <p class="text-[11px] text-gray-400 truncate" id="detail-email">—</p>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <a id="detail-fullpage-link" href="#" title="Ver página completa"
+           style="width:32px;height:32px;border-radius:8px;background:#F4ECD8;display:flex;align-items:center;justify-content:center;text-decoration:none;">
+          <svg style="width:14px;height:14px;color:#C4943A;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+        </a>
+        <button onclick="closeDetail()"
+                style="width:32px;height:32px;border-radius:8px;background:#F4ECD8;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <svg style="width:14px;height:14px;color:#7A6A4D;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
       </div>
-      <button onclick="closeDetail()" class="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
     </div>
 
-    <!-- Conteúdo scrollável -->
-    <div class="flex-1 overflow-y-auto" id="detail-body">
-      <p class="px-6 py-8 text-center text-[13px] text-gray-400">Selecione um aluno</p>
+    <div style="flex:1;overflow-y:auto;" id="detail-body">
+      <p style="text-align:center;color:#9C8460;font-size:13px;padding:40px 20px;">Selecione um aluno</p>
     </div>
 
-    <!-- Campo de comentário -->
-    <div class="flex-shrink-0 border-t border-gray-100 px-5 py-4" id="detail-comment-area">
-      <p class="text-[12px] font-semibold text-gray-600 mb-2">Adicionar anotação</p>
-      <div class="flex gap-2">
+    <div style="flex-shrink:0;border-top:1px solid #F0E8D4;padding:14px 16px;">
+      <p style="font-size:11px;font-weight:600;color:#7A6A4D;margin:0 0 8px;">Anotação</p>
+      <div style="display:flex;gap:8px;">
         <input id="comment-input" type="text" placeholder="Ex: Precisa revisar ritmo..."
-               class="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+               style="flex:1;padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:10px;font-size:13px;outline:none;">
         <button id="comment-btn"
-                class="bg-[#C4943A] hover:bg-[#B3852F] text-white text-[12px] font-semibold px-4 py-2 rounded-xl transition-colors flex-shrink-0">
-          Enviar
+                style="background:#C4943A;color:white;font-size:12px;font-weight:600;padding:8px 14px;border-radius:10px;border:none;cursor:pointer;flex-shrink:0;">
+          Salvar
         </button>
       </div>
     </div>
   </div>
-
 </div>
 
-<!-- Overlay para mobile (fecha o painel) -->
-<div id="detail-overlay"
-     onclick="closeDetail()"
-     style="display:none;position:fixed;inset:0;z-index:20;background:rgba(0,0,0,0.3)"></div>
+<!-- Mobile overlay -->
+<div id="detail-overlay" onclick="closeDetail()"
+     style="display:none;position:fixed;inset:0;z-index:20;background:rgba(0,0,0,0.35);backdrop-filter:blur(2px);"></div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 const GROUPS_DATA = {{ groups | tojson }};
 const TOTAL_MODULES = {{ groups | sum(attribute='module_count') }};
-
-// Mapa slug → info do módulo
 const MODULE_MAP = {};
 GROUPS_DATA.forEach(g => g.modules.forEach(m => { MODULE_MAP[m.slug] = { ...m, group: g.name }; }));
 
+let _students = [];
+let _unreadIds = new Set();
 let currentStudentId = null;
+let currentSort = "name";
 
-// ── Auth helper ────────────────────────────────────────────────────────────────
-
+// ── Auth helper ───────────────────────────────────────────────────────────────
 async function api(path, opts = {}) {
-  const r = await fetch(path, {
-    headers: { "Content-Type": "application/json" },
-    ...opts,
-  });
+  const r = await fetch(path, { headers: { "Content-Type": "application/json" }, ...opts });
   if (r.status === 204) return null;
   const data = await r.json();
   if (!r.ok) throw new Error(data.error || r.statusText);
   return data;
 }
 
-// ── Datas padrão: últimos 30 dias ─────────────────────────────────────────────
-
+// ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
-  const today = new Date();
-  const ago30 = new Date(today);
+  const today = new Date(), ago30 = new Date(today);
   ago30.setDate(today.getDate() - 30);
   const fmt = d => d.toISOString().slice(0, 10);
   document.getElementById("report-start").value = fmt(ago30);
@@ -195,400 +277,317 @@ document.addEventListener("DOMContentLoaded", () => {
   loadStudents();
 });
 
-// ── Carregar lista de alunos ───────────────────────────────────────────────────
+// ── Inner tabs ────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  ["students","report"].forEach(t => {
+    document.getElementById("panel-" + t).style.display = t === tab ? "" : "none";
+    document.getElementById("tab-" + t).classList.toggle("active", t === tab);
+  });
+  document.getElementById("student-search-wrap").style.display = tab === "students" ? "" : "none";
+}
 
-let _unreadStudentIds = new Set();
-
+// ── Load students ─────────────────────────────────────────────────────────────
 async function loadStudents() {
-  const loading = document.getElementById("pa-loading");
-  const errBox  = document.getElementById("pa-error");
-  const listEl  = document.getElementById("pa-student-list");
-  if (loading) loading.style.display = "";
-
   try {
     const [{ students }, unreadData] = await Promise.all([
       api("/api/teacher/students"),
-      api("/api/teacher/messages/unread").catch(() => ({ total: 0, students: [] })),
+      api("/api/teacher/messages/unread").catch(() => ({ students: [] })),
     ]);
-    _unreadStudentIds = new Set((unreadData.students || []).map(s => s.id));
-    if (loading) loading.style.display = "none";
-    renderStats(students);
-    renderList(students, listEl);
+    _unreadIds = new Set((unreadData.students || []).map(s => s.id));
+    _students = students.filter(u => u.role !== "teacher");
+    document.getElementById("pa-loading").style.display = "none";
+    renderStats(_students);
+    renderGrid(_students);
   } catch (err) {
-    if (loading) loading.style.display = "none";
-    if (errBox) { errBox.textContent = "Erro ao carregar: " + err.message; errBox.style.display = ""; }
+    document.getElementById("pa-loading").style.display = "none";
+    const errEl = document.getElementById("pa-error");
+    errEl.textContent = "Erro ao carregar alunos: " + err.message;
+    errEl.style.display = "";
   }
 }
 
-function renderStats(students) {
-  const s = students.filter(u => u.role !== "teacher");
-  const oneWeekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+function renderStats(s) {
+  const week = new Date(Date.now() - 7 * 86400000).toISOString();
   document.getElementById("pa-stat-total").textContent     = s.length;
   document.getElementById("pa-stat-completed").textContent = s.reduce((a, u) => a + u.modules_completed, 0);
   document.getElementById("pa-stat-days").textContent      = s.reduce((a, u) => a + u.study_days, 0);
-  document.getElementById("pa-stat-active").textContent    = s.filter(u => u.last_activity && u.last_activity > oneWeekAgo).length;
+  document.getElementById("pa-stat-active").textContent    = s.filter(u => u.last_activity > week).length;
+  const ts = new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" });
+  document.getElementById("pa-last-update").textContent = `Atualizado às ${ts}`;
 }
 
-function renderList(students, listEl) {
-  const s = students.filter(u => u.role !== "teacher");
-  if (!s.length) {
-    listEl.innerHTML = '<p class="px-6 py-10 text-center text-[13px] text-gray-400">Nenhum aluno cadastrado.</p>';
+// ── Render student grid ───────────────────────────────────────────────────────
+function renderGrid(students) {
+  const grid = document.getElementById("pa-student-grid");
+  const none = document.getElementById("pa-no-results");
+
+  const sorted = [...students].sort(sortFn(currentSort));
+
+  if (!sorted.length) {
+    grid.innerHTML = "";
+    none.style.display = "";
     return;
   }
+  none.style.display = "none";
 
-  listEl.innerHTML = s.map(u => {
+  grid.innerHTML = sorted.map(u => {
     const name    = u.name || u.email.split("@")[0];
     const initial = name[0].toUpperCase();
     const pct     = TOTAL_MODULES > 0 ? Math.round((u.modules_completed / TOTAL_MODULES) * 100) : 0;
-    const last    = u.last_activity
-      ? new Date(u.last_activity).toLocaleDateString("pt-BR", { day: "numeric", month: "short" })
-      : "—";
-    const hasUnread = _unreadStudentIds.has(u.id);
-    return `
-      <div class="flex items-center gap-4 px-6 py-4 border-b border-gray-50 hover:bg-[#FAF7F2] cursor-pointer transition-colors group ${hasUnread ? 'bg-blue-50/40' : ''}"
-           onclick="window.location.href='/professor/alunos/${u.id}'" >
-        <div class="relative flex-shrink-0">
-          <div class="w-10 h-10 rounded-full bg-[#EDD9B0] text-[#C4943A] flex items-center justify-center font-bold text-[15px]">
-            ${initial}
-          </div>
-          ${hasUnread ? '<span class="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white"></span>' : ''}
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2">
-            <p class="font-semibold text-[14px] text-gray-800">${name}</p>
-            ${hasUnread ? '<span class="text-[10px] bg-red-100 text-red-600 font-semibold px-1.5 py-0.5 rounded-full">Nova msg</span>' : ''}
-          </div>
-          <p class="text-[11px] text-gray-400 truncate">${u.email}</p>
-          <div class="flex items-center gap-2 mt-2">
-            <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden max-w-[120px]">
-              <div class="h-full bg-[#C4943A] rounded-full" style="width:${pct}%"></div>
-            </div>
-            <span class="text-[11px] text-gray-500 font-semibold">${u.modules_completed}/${TOTAL_MODULES}</span>
-            <span class="text-[11px] text-gray-300">·</span>
-            <span class="text-[11px] text-gray-400">📅 ${u.study_days} dias</span>
-            <span class="text-[11px] text-gray-300">·</span>
-            <span class="text-[11px] text-gray-400">${last}</span>
-          </div>
-        </div>
-        <svg class="w-4 h-4 text-gray-300 group-hover:text-[#C4943A] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-        </svg>
-      </div>
-    `;
-  }).join("");
-}
+    const hasUnread = _unreadIds.has(u.id);
+    const last = u.last_activity
+      ? new Date(u.last_activity).toLocaleDateString("pt-BR", { day:"numeric", month:"short" })
+      : "Nunca";
 
-// ── Relatório por período ─────────────────────────────────────────────────────
-
-async function generateReport() {
-  const start = document.getElementById("report-start").value;
-  const end   = document.getElementById("report-end").value;
-  if (!start || !end) { alert("Selecione o período."); return; }
-  if (start > end)    { alert("A data de início deve ser anterior à data final."); return; }
-
-  const btn = document.getElementById("report-btn");
-  btn.disabled = true;
-  btn.textContent = "Carregando...";
-
-  try {
-    const { students, period } = await api(`/api/teacher/report?start=${start}&end=${end}`);
-    renderReport(students, period);
-    document.getElementById("report-section").style.display = "";
-    document.getElementById("all-students-section").style.display = "none";
-    document.getElementById("report-clear").style.display = "";
-  } catch (err) {
-    alert("Erro ao gerar relatório: " + err.message);
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Gerar Relatório`;
-  }
-}
-
-function clearReport() {
-  document.getElementById("report-section").style.display = "none";
-  document.getElementById("all-students-section").style.display = "";
-  document.getElementById("report-clear").style.display = "none";
-}
-
-function renderReport(students, period) {
-  const fmtDate = iso => new Date(iso + "T00:00:00").toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" });
-  document.getElementById("report-period-label").textContent =
-    `${fmtDate(period.start)} → ${fmtDate(period.end)}`;
-
-  const totalModules  = students.reduce((a, s) => a + s.modules_completed, 0);
-  const totalDays     = students.reduce((a, s) => a + s.study_days, 0);
-  const totalQ        = students.reduce((a, s) => a + s.quiz_total, 0);
-  const totalCorrect  = students.reduce((a, s) => a + s.quiz_correct, 0);
-  const globalAcc     = totalQ > 0 ? Math.round(totalCorrect / totalQ * 100) + "%" : "—";
-
-  document.getElementById("rs-modules").textContent  = totalModules;
-  document.getElementById("rs-days").textContent     = totalDays;
-  document.getElementById("rs-accuracy").textContent = globalAcc;
-
-  const list = document.getElementById("report-list");
-  if (!students.length) {
-    list.innerHTML = '<p class="px-6 py-10 text-center text-[13px] text-gray-400">Nenhum aluno cadastrado.</p>';
-    return;
-  }
-
-  list.innerHTML = students.map(s => {
-    const name    = s.name || s.email.split("@")[0];
-    const initial = name[0].toUpperCase();
-    const acc     = s.quiz_accuracy !== null ? `${s.quiz_accuracy}%` : "—";
-    const accColor = s.quiz_accuracy === null ? "text-gray-400"
-                   : s.quiz_accuracy >= 70    ? "text-[#4E7A60]"
-                   : s.quiz_accuracy >= 40    ? "text-[#C4943A]"
-                   : "text-red-500";
-
-    const errorsHtml = s.top_errors.length
-      ? s.top_errors.slice(0, 3).map(e => `
-          <span class="inline-flex items-center gap-1 bg-red-50 text-red-600 text-[10px] px-2 py-0.5 rounded-full">
-            <span class="font-bold">${e.count}×</span> ${e.question.length > 40 ? e.question.slice(0, 40) + "…" : e.question}
-          </span>`).join("")
-      : '<span class="text-[11px] text-gray-400">Sem erros registrados</span>';
+    const barColor = pct >= 70 ? "#4E7A60" : pct >= 30 ? "#C4943A" : "#D4B896";
 
     return `
-      <div class="px-6 py-4 border-b border-[#EDD9B0]/60 hover:bg-[#FDF9F3] cursor-pointer transition-colors group"
-           onclick="window.location.href='/professor/alunos/${s.id}'" >
-        <div class="flex items-start gap-4">
-          <div class="w-10 h-10 rounded-full bg-[#EDD9B0] text-[#C4943A] flex items-center justify-center font-bold text-[15px] flex-shrink-0 mt-0.5">
-            ${initial}
-          </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between mb-1">
-              <p class="font-semibold text-[14px] text-gray-800">${name}</p>
-              <div class="flex items-center gap-3 flex-shrink-0 ml-2">
-                <span class="text-[12px] text-gray-500"><span class="font-bold text-gray-700">${s.modules_completed}</span> módulos</span>
-                <span class="text-[12px] text-gray-500"><span class="font-bold text-[#4E7A60]">${s.study_days}</span> dias</span>
-                <span class="text-[12px] font-bold ${accColor}">${acc} acerto</span>
-              </div>
+      <div class="student-card fade-in ${hasUnread ? 'has-unread' : ''}"
+           onclick="openDetail('${u.id}','${name.replace(/'/g,"\\'")}','${u.email}','${u.id}')">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
+          <div style="position:relative;flex-shrink:0;">
+            <div style="width:40px;height:40px;border-radius:50%;background:#EDD9B0;color:#C4943A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;">
+              ${initial}
             </div>
-            <div class="flex flex-wrap gap-1.5 mt-1.5">
-              ${errorsHtml}
-            </div>
+            ${hasUnread ? '<span style="position:absolute;top:-2px;right:-2px;width:10px;height:10px;background:#3B82F6;border-radius:50%;border:2px solid white;"></span>' : ''}
           </div>
+          <div style="flex:1;min-width:0;">
+            <p style="font-size:13px;font-weight:700;color:#2A2419;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</p>
+            <p style="font-size:11px;color:#9C8460;margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.email}</p>
+          </div>
+          ${hasUnread ? '<span style="font-size:10px;background:#DBEAFE;color:#1D4ED8;font-weight:700;padding:2px 7px;border-radius:20px;flex-shrink:0;">NOVA MSG</span>' : ''}
+        </div>
+
+        <div style="margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <span style="font-size:11px;color:#9C8460;">Progresso</span>
+            <span style="font-size:11px;font-weight:700;color:#2A2419;">${u.modules_completed}/${TOTAL_MODULES}</span>
+          </div>
+          <div style="height:5px;background:#F0E8D4;border-radius:3px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${barColor};border-radius:3px;transition:width 0.6s;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:11px;color:#9C8460;">📅 ${u.study_days} dias de estudo</span>
+          <span style="font-size:11px;color:#B0A08A;">${last}</span>
         </div>
       </div>
     `;
   }).join("");
 }
 
-// ── Painel de detalhe ─────────────────────────────────────────────────────────
+function sortFn(key) {
+  if (key === "name")     return (a, b) => (a.name || a.email).localeCompare(b.name || b.email);
+  if (key === "activity") return (a, b) => (b.last_activity || "").localeCompare(a.last_activity || "");
+  if (key === "progress") return (a, b) => b.modules_completed - a.modules_completed;
+  return () => 0;
+}
 
-async function openDetail(userId, name, email) {
+function sortStudents(key) {
+  currentSort = key;
+  const q = document.getElementById("student-search").value;
+  filterStudents(q);
+}
+
+function filterStudents(q) {
+  q = (q || "").toLowerCase().trim();
+  const filtered = q
+    ? _students.filter(u => (u.name || "").toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
+    : _students;
+  renderGrid(filtered);
+}
+
+// ── Detail panel ──────────────────────────────────────────────────────────────
+async function openDetail(userId, name, email, fullId) {
   currentStudentId = userId;
+  document.getElementById("detail-avatar").textContent        = name[0]?.toUpperCase() || "—";
+  document.getElementById("detail-name").textContent          = name;
+  document.getElementById("detail-email").textContent         = email;
+  document.getElementById("detail-fullpage-link").href        = `/professor/alunos/${fullId}`;
 
-  // Avatar e header
-  document.getElementById("detail-avatar").textContent = name[0]?.toUpperCase() || "—";
-  document.getElementById("detail-name").textContent   = name;
-  document.getElementById("detail-email").textContent  = email;
-
-  // Mostra painel
-  const panel   = document.getElementById("detail-panel");
+  const panel = document.getElementById("detail-panel");
   const overlay = document.getElementById("detail-overlay");
-  const isMobile = window.innerWidth < 768;
-
-  if (isMobile) {
-    panel.style.position = "fixed";
-    panel.style.top      = "0";
-    panel.style.right    = "0";
-    panel.style.bottom   = "0";
-    panel.style.zIndex   = "30";
-    panel.style.width    = "min(360px, 100vw)";
+  if (window.innerWidth < 768) {
+    Object.assign(panel.style, { position:"fixed", top:"0", right:"0", bottom:"0", zIndex:"30", width:"min(380px,100vw)" });
     overlay.style.display = "block";
   } else {
     panel.style.position = "";
-    panel.style.width    = "360px";
+    panel.style.width = "340px";
     overlay.style.display = "none";
   }
 
   document.getElementById("detail-body").innerHTML =
-    '<div class="flex justify-center py-12"><div style="width:32px;height:32px;border:3px solid #C4943A;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite"></div></div>';
+    `<div style="display:flex;justify-content:center;padding:40px;">
+       <div style="width:28px;height:28px;border:3px solid #C4943A;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+     </div>`;
 
   try {
     const data = await api(`/api/teacher/student/${userId}`);
     renderDetailBody(data, userId);
   } catch (err) {
     document.getElementById("detail-body").innerHTML =
-      `<p class="px-6 py-8 text-center text-[13px] text-red-500">Erro: ${err.message}</p>`;
+      `<p style="text-align:center;color:#ef4444;font-size:13px;padding:30px 20px;">Erro: ${err.message}</p>`;
   }
 }
 
 function closeDetail() {
-  const panel   = document.getElementById("detail-panel");
-  const overlay = document.getElementById("detail-overlay");
-  panel.style.width    = "0";
+  const panel = document.getElementById("detail-panel");
+  panel.style.width = "0";
   panel.style.position = "";
-  overlay.style.display = "none";
-  currentStudentId     = null;
+  document.getElementById("detail-overlay").style.display = "none";
+  currentStudentId = null;
 }
 
 function renderDetailBody(data, userId) {
   const { progress, study_days, comments, extra_lessons = {}, quiz = {} } = data;
   const doneSet = new Set(progress.filter(p => p.completed > 0).map(p => p.module_slug));
   const streak  = computeStreak(study_days);
+  const acc     = quiz.accuracy != null ? quiz.accuracy : null;
+  const accLabel = acc != null ? acc + "%" : "—";
+  const accColor = acc == null ? "#9CA3AF" : acc >= 70 ? "#4E7A60" : acc >= 40 ? "#C4943A" : "#EF4444";
 
-  const acc      = quiz.accuracy !== null && quiz.accuracy !== undefined ? quiz.accuracy : null;
-  const accLabel = acc !== null ? `${acc}%` : "—";
-  const accColor = acc === null ? "#9ca3af" : acc >= 70 ? "#4E7A60" : acc >= 40 ? "#C4943A" : "#ef4444";
-
-  // Stats mini
-  const statsHtml = `
-    <div class="grid grid-cols-4 gap-2 mb-5">
-      <div class="bg-[#FBF6EE] rounded-xl p-3 text-center">
-        <p class="text-[18px] font-bold text-[#C4943A]">${doneSet.size}</p>
-        <p class="text-[10px] text-gray-500 mt-0.5">Módulos</p>
-      </div>
-      <div class="bg-[#F4FAF7] rounded-xl p-3 text-center">
-        <p class="text-[18px] font-bold text-[#4E7A60]">${streak}</p>
-        <p class="text-[10px] text-gray-500 mt-0.5">Sequência</p>
-      </div>
-      <div class="bg-[#F9F9F9] rounded-xl p-3 text-center">
-        <p class="text-[18px] font-bold text-gray-700">${study_days.length}</p>
-        <p class="text-[10px] text-gray-500 mt-0.5">Dias</p>
-      </div>
-      <div class="bg-[#F9F9F9] rounded-xl p-3 text-center">
-        <p class="text-[18px] font-bold" style="color:${accColor}">${accLabel}</p>
-        <p class="text-[10px] text-gray-500 mt-0.5">Acerto</p>
-      </div>
+  // Mini stats
+  const stats = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+      ${[
+        ["📚", doneSet.size, "Módulos"],
+        ["🔥", streak, "Sequência"],
+        ["📅", study_days.length, "Dias"],
+        ["🎯", accLabel, "Acerto"],
+      ].map(([ic, val, label]) => `
+        <div style="background:#FDFAF6;border:1px solid #F0E8D4;border-radius:10px;padding:10px 6px;text-align:center;">
+          <p style="font-size:10px;margin:0 0 2px;">${ic}</p>
+          <p style="font-size:16px;font-weight:700;color:#2A2419;margin:0;" ${label==="Acerto"?`style="color:${accColor};"`:""}>${val}</p>
+          <p style="font-size:9px;color:#9C8460;margin:2px 0 0;text-transform:uppercase;letter-spacing:.08em;">${label}</p>
+        </div>
+      `).join("")}
     </div>
   `;
 
-  // Erros frequentes
-  const topErrors = quiz.top_errors || [];
-  const errorsHtml = topErrors.length
-    ? topErrors.map(e => `
-        <div class="flex items-center gap-2.5 py-1.5 border-b border-red-50 last:border-0">
-          <span class="w-6 h-6 rounded-full bg-red-100 text-red-600 font-bold text-[11px] flex items-center justify-center flex-shrink-0">${e.count}</span>
-          <span class="text-[12px] text-gray-700 flex-1">${e.question}</span>
-        </div>`).join("")
-    : `<p class="text-[12px] text-gray-400 py-2">${quiz.total > 0 ? "Nenhum erro registrado." : "Sem exercícios respondidos ainda."}</p>`;
-
-  // Progresso por grupo
-  const groupsHtml = GROUPS_DATA.map(g => {
-    const done  = g.modules.filter(m => doneSet.has(m.slug)).length;
+  // Progress by group (collapsible)
+  const groupsHtml = GROUPS_DATA.map((g, gi) => {
+    const done = g.modules.filter(m => doneSet.has(m.slug)).length;
     const total = g.modules.length;
-    const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
-
-    const modsHtml = g.modules.map(m => {
+    const pct = total > 0 ? Math.round(done/total*100) : 0;
+    const mods = g.modules.map(m => {
       const isDone = doneSet.has(m.slug);
-      return `
-        <div class="flex items-center gap-2.5 py-1.5">
-          <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${isDone ? 'bg-[#4E7A60]' : 'bg-gray-100'}">
-            ${isDone
-              ? '<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
-              : '<span style="width:6px;height:6px;border-radius:50%;background:#d1d5db;display:block;margin:auto"></span>'}
-          </div>
-          <span class="text-[12px] font-semibold text-[#C4943A] bg-[#FBF6EE] px-1.5 py-0.5 rounded flex-shrink-0">M${String(m.number).padStart(2,'0')}</span>
-          <span class="text-[12px] text-gray-600 truncate">${m.title}</span>
+      return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #F9F5EE;">
+        <div style="width:18px;height:18px;border-radius:50%;background:${isDone?"#4E7A60":"#F0E8D4"};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          ${isDone
+            ? '<svg width="10" height="10" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
+            : '<span style="width:5px;height:5px;border-radius:50%;background:#D4C4A8;display:block;"></span>'}
         </div>
-      `;
+        <span style="font-size:10px;font-weight:700;color:#C4943A;background:#FBF6EE;padding:1px 5px;border-radius:4px;flex-shrink:0;">M${String(m.number).padStart(2,"0")}</span>
+        <span style="font-size:11px;color:#6B7280;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.title}</span>
+      </div>`;
     }).join("");
 
     return `
-      <div class="mb-4">
-        <div class="flex items-center justify-between mb-2">
-          <div class="flex items-center gap-2">
-            <img src="/static/icons/${g.icon_file}" class="w-4 h-4">
-            <span class="font-semibold text-[12px] text-gray-700">${g.name}</span>
+      <div style="margin-bottom:8px;border:1px solid #F0E8D4;border-radius:12px;overflow:hidden;">
+        <div class="section-toggle" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#FDFAF6;"
+             onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'':'none'">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <img src="/static/icons/${g.icon_file}" style="width:14px;height:14px;">
+            <span style="font-size:12px;font-weight:600;color:#2A2419;">${g.name}</span>
           </div>
-          <span class="text-[11px] font-bold text-gray-500">${done}/${total}</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;font-weight:700;color:#9C8460;">${done}/${total}</span>
+            <div style="width:50px;height:4px;background:#F0E8D4;border-radius:2px;overflow:hidden;">
+              <div style="height:100%;width:${pct}%;background:#C4943A;border-radius:2px;"></div>
+            </div>
+          </div>
         </div>
-        <div class="h-1 bg-gray-100 rounded-full mb-3">
-          <div class="h-full bg-[#C4943A] rounded-full" style="width:${pct}%"></div>
-        </div>
-        ${modsHtml}
+        <div style="padding:8px 14px;display:none;">${mods}</div>
       </div>
     `;
   }).join("");
 
-  // Aulas Extras
+  // Top errors
+  const topErrors = quiz.top_errors || [];
+  const errHtml = topErrors.length
+    ? topErrors.slice(0,5).map(e => `
+        <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #FEE2E2;">
+          <span style="width:20px;height:20px;border-radius:50%;background:#FEE2E2;color:#EF4444;font-weight:700;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${e.count}</span>
+          <span style="font-size:11px;color:#6B7280;flex:1;">${e.question.length>50?e.question.slice(0,50)+"…":e.question}</span>
+        </div>`).join("")
+    : `<p style="font-size:12px;color:#9CA3AF;padding:6px 0;">${quiz.total > 0 ? "Nenhum erro frequente." : "Sem exercícios respondidos."}</p>`;
+
+  // Extra lessons
   const extraSlugs = Object.keys(extra_lessons);
-  const extraTotal = extraSlugs.reduce((s, k) => s + extra_lessons[k].length, 0);
+  const extraHtml = extraSlugs.length
+    ? extraSlugs.flatMap(slug => (extra_lessons[slug]||[]).map(l => {
+        const info = MODULE_MAP[slug];
+        const label = info ? `M${String(info.number).padStart(2,"0")}` : slug;
+        return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #F9F5EE;" class="group">
+          <span style="font-size:10px;font-weight:700;color:#C4943A;background:#FBF6EE;padding:1px 5px;border-radius:4px;flex-shrink:0;">${label}</span>
+          <span style="font-size:11px;color:#374151;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l.title}</span>
+          <button onclick="deleteExtraLesson('${userId}','${l.id}')"
+                  style="font-size:10px;color:#EF4444;background:none;border:none;cursor:pointer;flex-shrink:0;">✕</button>
+        </div>`;
+      })).join("")
+    : `<p style="font-size:12px;color:#9CA3AF;padding:6px 0;">Nenhuma aula extra.</p>`;
 
-  const extraListHtml = extraSlugs.length ? extraSlugs.map(slug => {
-    const info = MODULE_MAP[slug];
-    const lessons = extra_lessons[slug] || [];
-    const label = info ? `M${String(info.number).padStart(2,'0')} · ${info.title}` : slug;
-    return lessons.map(l => `
-      <div class="flex items-center gap-2.5 py-1.5 group">
-        <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#F2EAD8] text-[#C4943A] flex-shrink-0 truncate max-w-[90px]">${label}</span>
-        <span class="text-[12px] text-gray-700 flex-1 truncate">${l.title}</span>
-        <span class="text-[9px] text-gray-400 uppercase flex-shrink-0">${l.type}</span>
-        <button onclick="deleteExtraLesson('${userId}','${l.id}')"
-                class="text-[10px] text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-          Apagar
-        </button>
-      </div>
-    `).join('');
-  }).join('') : '<p class="text-[12px] text-gray-400 py-2">Nenhuma aula extra adicionada.</p>';
-
-  // Form inline para nova aula extra
-  const extraFormHtml = `
-    <div class="mt-3 bg-[#FBF6EE] rounded-xl p-3" id="extra-form-${userId}">
-      <p class="text-[11px] font-semibold text-gray-600 mb-2">+ Nova aula extra</p>
-      <select id="ef-module-${userId}" class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[12px] mb-2 focus:outline-none focus:border-[#C4943A]">
-        <option value="">Selecionar módulo...</option>
-        ${GROUPS_DATA.map(g => `<optgroup label="${g.name}">${
-          g.modules.map(m => `<option value="${m.slug}">M${String(m.number).padStart(2,'0')} · ${m.title}</option>`).join('')
-        }</optgroup>`).join('')}
+  // Extra lesson form
+  const extraForm = `
+    <div style="margin-top:8px;background:#FBF6EE;border-radius:10px;padding:12px;">
+      <p style="font-size:11px;font-weight:600;color:#7A5C2E;margin:0 0 8px;">+ Nova aula extra</p>
+      <select id="ef-module-${userId}" style="width:100%;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;margin-bottom:6px;">
+        <option value="">Módulo...</option>
+        ${GROUPS_DATA.map(g=>`<optgroup label="${g.name}">${g.modules.map(m=>`<option value="${m.slug}">M${String(m.number).padStart(2,"0")} · ${m.title}</option>`).join("")}</optgroup>`).join("")}
       </select>
-      <input id="ef-title-${userId}" type="text" placeholder="Título" maxlength="80"
-             class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[12px] mb-2 focus:outline-none focus:border-[#C4943A]">
-      <div class="flex gap-2 mb-2">
-        <select id="ef-type-${userId}" class="flex-1 px-2.5 py-1.5 rounded-lg border border-gray-200 text-[12px] focus:outline-none focus:border-[#C4943A]">
+      <input id="ef-title-${userId}" type="text" placeholder="Título" style="width:100%;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;margin-bottom:6px;box-sizing:border-box;">
+      <div style="display:flex;gap:6px;margin-bottom:6px;">
+        <select id="ef-type-${userId}" style="flex:1;padding:6px 8px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;">
           <option value="video">📹 Vídeo</option>
           <option value="pdf">📄 PDF</option>
           <option value="link">🔗 Link</option>
         </select>
-        <input id="ef-url-${userId}" type="url" placeholder="https://..."
-               class="flex-1 px-2.5 py-1.5 rounded-lg border border-gray-200 text-[12px] focus:outline-none focus:border-[#C4943A]">
+        <input id="ef-url-${userId}" type="url" placeholder="https://..." style="flex:2;padding:6px 8px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;">
       </div>
-      <textarea id="ef-desc-${userId}" rows="2" placeholder="Descrição (opcional)"
-                class="w-full px-2.5 py-1.5 rounded-lg border border-gray-200 text-[12px] mb-2 resize-none focus:outline-none focus:border-[#C4943A] font-sans"></textarea>
       <button onclick="addExtraLesson('${userId}')"
-              class="w-full bg-[#C4943A] hover:bg-[#B3852F] text-white text-[12px] font-semibold py-2 rounded-lg transition-colors">
+              style="width:100%;background:#C4943A;color:white;font-size:12px;font-weight:600;padding:8px;border-radius:8px;border:none;cursor:pointer;">
         Adicionar
       </button>
     </div>`;
 
-  // Comentários
-  const commentsHtml = comments.length ? comments.map(c => `
-    <div class="bg-[#FAF7F2] rounded-xl px-4 py-3 mb-2 relative group">
-      <p class="text-[12px] text-gray-700">${c.content}</p>
-      <div class="flex items-center justify-between mt-1">
-        <span class="text-[10px] text-gray-400">${new Date(c.created_at).toLocaleDateString("pt-BR")}</span>
-        <button onclick="deleteComment('${c.id}')"
-                class="text-[10px] text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
-          Apagar
-        </button>
-      </div>
-    </div>
-  `).join("") : '<p class="text-[12px] text-gray-400 py-2">Nenhuma anotação ainda.</p>';
+  // Comments
+  const commentsHtml = comments.length
+    ? comments.map(c => `
+        <div style="background:#FDFAF6;border-radius:10px;padding:10px 12px;margin-bottom:8px;position:relative;" class="group">
+          <p style="font-size:12px;color:#374151;margin:0 0 4px;">${c.content}</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:10px;color:#9CA3AF;">${new Date(c.created_at).toLocaleDateString("pt-BR")}</span>
+            <button onclick="deleteComment('${c.id}')" style="font-size:10px;color:#EF4444;background:none;border:none;cursor:pointer;">✕</button>
+          </div>
+        </div>`).join("")
+    : `<p style="font-size:12px;color:#9CA3AF;padding:6px 0;">Nenhuma anotação ainda.</p>`;
 
   document.getElementById("detail-body").innerHTML = `
-    <div class="p-5">
-      ${statsHtml}
+    <div style="padding:16px;">
+      ${stats}
+
+      <div style="margin-bottom:12px;">
+        <p style="font-size:10px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px;">Progresso por grupo</p>
+        ${groupsHtml}
+      </div>
 
       ${topErrors.length ? `
-      <h4 class="font-bold text-[13px] text-red-500 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
-        Erros Frequentes
-      </h4>
-      <div class="bg-red-50/60 rounded-xl px-4 py-2 mb-5">${errorsHtml}</div>
-      ` : ''}
+      <div style="margin-bottom:12px;">
+        <p style="font-size:10px;font-weight:700;color:#EF4444;text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px;">⚠ Erros frequentes</p>
+        <div style="background:#FFF5F5;border-radius:10px;padding:8px 12px;">${errHtml}</div>
+      </div>` : ""}
 
-      <h4 class="font-bold text-[13px] text-gray-700 mb-3 uppercase tracking-wider">Progresso por grupo</h4>
-      ${groupsHtml}
-
-      <div class="flex items-center justify-between mt-5 mb-3">
-        <h4 class="font-bold text-[13px] text-gray-700 uppercase tracking-wider">Aulas Extras <span class="text-[#C4943A]">${extraTotal > 0 ? extraTotal : ''}</span></h4>
+      <div style="margin-bottom:12px;">
+        <p style="font-size:10px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px;">Aulas extras</p>
+        <div id="extra-list-${userId}">${extraHtml}</div>
+        ${extraForm}
       </div>
-      <div id="extra-list-${userId}">${extraListHtml}</div>
-      ${extraFormHtml}
 
-      <h4 class="font-bold text-[13px] text-gray-700 mb-3 mt-5 uppercase tracking-wider">Anotações do professor</h4>
-      <div id="comments-list">${commentsHtml}</div>
+      <div>
+        <p style="font-size:10px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px;">Anotações</p>
+        <div id="comments-list">${commentsHtml}</div>
+      </div>
     </div>
   `;
 }
@@ -596,49 +595,35 @@ function renderDetailBody(data, userId) {
 function computeStreak(days) {
   if (!days.length) return 0;
   const sorted = [...days].sort().reverse();
-  const today  = new Date().toISOString().slice(0, 10);
-  let streak   = 0, cur = today;
+  const today = new Date().toISOString().slice(0,10);
+  let streak = 0, cur = today;
   for (const d of sorted) {
     if (d === cur) {
       streak++;
-      const dt = new Date(cur);
-      dt.setDate(dt.getDate() - 1);
-      cur = dt.toISOString().slice(0, 10);
+      const dt = new Date(cur); dt.setDate(dt.getDate()-1);
+      cur = dt.toISOString().slice(0,10);
     } else if (d < cur) break;
   }
   return streak;
 }
 
-// ── Comentários ───────────────────────────────────────────────────────────────
-
-document.getElementById("comment-btn")?.addEventListener("click", addComment);
-document.getElementById("comment-input")?.addEventListener("keydown", e => {
-  if (e.key === "Enter") addComment();
-});
+// ── Comments ──────────────────────────────────────────────────────────────────
+document.getElementById("comment-btn").addEventListener("click", addComment);
+document.getElementById("comment-input").addEventListener("keydown", e => { if (e.key === "Enter") addComment(); });
 
 async function addComment() {
   const input = document.getElementById("comment-input");
   const content = input.value.trim();
   if (!content || !currentStudentId) return;
-
-  const btn = document.getElementById("comment-btn");
-  btn.disabled = true;
-
+  document.getElementById("comment-btn").disabled = true;
   try {
-    await api("/api/teacher/comments", {
-      method: "POST",
-      body: JSON.stringify({ student_id: currentStudentId, content }),
-    });
+    await api("/api/teacher/comments", { method:"POST", body: JSON.stringify({ student_id: currentStudentId, content }) });
     input.value = "";
-    // Recarrega o detalhe para mostrar o novo comentário
     const name  = document.getElementById("detail-name").textContent;
     const email = document.getElementById("detail-email").textContent;
-    openDetail(currentStudentId, name, email);
-  } catch (err) {
-    alert("Erro ao salvar: " + err.message);
-  } finally {
-    btn.disabled = false;
-  }
+    openDetail(currentStudentId, name, email, currentStudentId);
+  } catch (err) { alert("Erro: " + err.message); }
+  finally { document.getElementById("comment-btn").disabled = false; }
 }
 
 async function addExtraLesson(userId) {
@@ -646,51 +631,83 @@ async function addExtraLesson(userId) {
   const title       = document.getElementById(`ef-title-${userId}`)?.value.trim();
   const type        = document.getElementById(`ef-type-${userId}`)?.value;
   const url         = document.getElementById(`ef-url-${userId}`)?.value.trim();
-  const description = document.getElementById(`ef-desc-${userId}`)?.value.trim();
-
-  if (!module_slug || !title || !url) {
-    alert('Preencha módulo, título e URL.');
-    return;
-  }
-
+  if (!module_slug || !title || !url) { alert("Preencha módulo, título e URL."); return; }
   try {
-    await api(`/api/teacher/student/${userId}/extra-lessons`, {
-      method: 'POST',
-      body: JSON.stringify({ module_slug, title, description, type, url }),
-    });
-    const name  = document.getElementById('detail-name').textContent;
-    const email = document.getElementById('detail-email').textContent;
-    openDetail(userId, name, email);
-  } catch (err) {
-    alert('Erro ao adicionar: ' + err.message);
-  }
+    await api(`/api/teacher/student/${userId}/extra-lessons`, { method:"POST", body: JSON.stringify({ module_slug, title, type, url }) });
+    const name  = document.getElementById("detail-name").textContent;
+    const email = document.getElementById("detail-email").textContent;
+    openDetail(userId, name, email, userId);
+  } catch (err) { alert("Erro: " + err.message); }
 }
 
 async function deleteExtraLesson(userId, lessonId) {
-  if (!confirm('Remover esta aula extra?')) return;
+  if (!confirm("Remover esta aula extra?")) return;
   try {
-    await api(`/api/teacher/student/${userId}/extra-lessons/${lessonId}`, { method: 'DELETE' });
-    const name  = document.getElementById('detail-name').textContent;
-    const email = document.getElementById('detail-email').textContent;
-    openDetail(userId, name, email);
-  } catch (err) {
-    alert('Erro ao remover: ' + err.message);
+    await api(`/api/teacher/student/${userId}/extra-lessons/${lessonId}`, { method:"DELETE" });
+    openDetail(userId, document.getElementById("detail-name").textContent, document.getElementById("detail-email").textContent, userId);
+  } catch (err) { alert("Erro: " + err.message); }
+}
+
+async function deleteComment(id) {
+  if (!confirm("Apagar anotação?")) return;
+  try {
+    await api(`/api/teacher/comments/${id}`, { method:"DELETE" });
+    openDetail(currentStudentId, document.getElementById("detail-name").textContent, document.getElementById("detail-email").textContent, currentStudentId);
+  } catch (err) { alert("Erro: " + err.message); }
+}
+
+// ── Report ────────────────────────────────────────────────────────────────────
+async function generateReport() {
+  const start = document.getElementById("report-start").value;
+  const end   = document.getElementById("report-end").value;
+  if (!start || !end) { alert("Selecione o período."); return; }
+  if (start > end)    { alert("Data início deve ser antes da data final."); return; }
+  const btn = document.getElementById("report-btn");
+  btn.disabled = true; btn.textContent = "Carregando...";
+  try {
+    const { students, period } = await api(`/api/teacher/report?start=${start}&end=${end}`);
+    renderReport(students, period);
+    document.getElementById("report-section").style.display = "";
+  } catch (err) { alert("Erro: " + err.message); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Gerar Relatório`;
   }
 }
 
-async function deleteComment(commentId) {
-  if (!confirm("Apagar esta anotação?")) return;
-  try {
-    await api(`/api/teacher/comments/${commentId}`, { method: "DELETE" });
-    const name  = document.getElementById("detail-name").textContent;
-    const email = document.getElementById("detail-email").textContent;
-    openDetail(currentStudentId, name, email);
-  } catch (err) {
-    alert("Erro: " + err.message);
-  }
+function renderReport(students, period) {
+  const fmt = iso => new Date(iso+"T00:00:00").toLocaleDateString("pt-BR",{day:"numeric",month:"short",year:"numeric"});
+  document.getElementById("report-period-label").textContent = `${fmt(period.start)} → ${fmt(period.end)}`;
+  const tMods = students.reduce((a,s)=>a+s.modules_completed,0);
+  const tDays = students.reduce((a,s)=>a+s.study_days,0);
+  const tQ    = students.reduce((a,s)=>a+s.quiz_total,0);
+  const tC    = students.reduce((a,s)=>a+s.quiz_correct,0);
+  document.getElementById("rs-modules").textContent  = tMods;
+  document.getElementById("rs-days").textContent     = tDays;
+  document.getElementById("rs-accuracy").textContent = tQ>0 ? Math.round(tC/tQ*100)+"%" : "—";
+
+  const list = document.getElementById("report-list");
+  list.innerHTML = students.map(s => {
+    const name = s.name || s.email.split("@")[0];
+    const acc  = s.quiz_accuracy != null ? s.quiz_accuracy+"%" : "—";
+    const accColor = s.quiz_accuracy == null ? "#9CA3AF" : s.quiz_accuracy>=70 ? "#4E7A60" : s.quiz_accuracy>=40 ? "#C4943A" : "#EF4444";
+    return `
+      <div style="padding:12px 20px;border-bottom:1px solid #EDD9B0;display:flex;align-items:center;gap:12px;cursor:pointer;hover:background:#FDF9F3;"
+           onclick="window.location.href='/professor/alunos/${s.id}'">
+        <div style="width:36px;height:36px;border-radius:50%;background:#EDD9B0;color:#C4943A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">
+          ${name[0].toUpperCase()}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:13px;font-weight:600;color:#2A2419;margin:0;">${name}</p>
+          <p style="font-size:11px;color:#9C8460;margin:2px 0 0;">${s.email}</p>
+        </div>
+        <div style="display:flex;gap:16px;flex-shrink:0;text-align:center;">
+          <div><p style="font-size:14px;font-weight:700;color:#C4943A;margin:0;">${s.modules_completed}</p><p style="font-size:9px;color:#9C8460;">módulos</p></div>
+          <div><p style="font-size:14px;font-weight:700;color:#4E7A60;margin:0;">${s.study_days}</p><p style="font-size:9px;color:#9C8460;">dias</p></div>
+          <div><p style="font-size:14px;font-weight:700;margin:0;color:${accColor};">${acc}</p><p style="font-size:9px;color:#9C8460;">acerto</p></div>
+        </div>
+      </div>`;
+  }).join("");
 }
 </script>
-<style>
-  @keyframes spin { to { transform: rotate(360deg); } }
-</style>
 {% endblock %}

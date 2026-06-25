@@ -4,7 +4,7 @@ slug: pulso-musical
 title: Pulso Musical
 description: Coloque a mão no peito. Aquela batida regular e inabalável é exatamente o que o pulso musical faz pela música.
 topics: Pulso musical
-game_kind: game-challenge
+game_kind: game-rhythm-tap
 ---
 
 ## Teoria
@@ -26,33 +26,33 @@ Uma linha do tempo com pontos igualmente espaçados representando o pulso consta
 ## Exercícios
 
 ### MC
-O que é o pulso musical?
-- O padrão de durações longas e curtas que forma uma melodia
-- A batida regular e constante que sustenta toda a música ✓
-- A velocidade em BPM definida pelo regente
-- O volume médio de uma música
+Você está ouvindo uma música no fone e percebe que está batendo o pé sem pensar, sempre no mesmo intervalo. O que você está sentindo?
+- A melodia
+- O pulso ✓
+- O timbre
+- A dinâmica
 
 ### VF
-O pulso e o ritmo são a mesma coisa — ambos variam ao longo da música.
-> Falso
+O pulso é sempre regular como um relógio, mas o ritmo varia com notas longas, curtas e síncopes acontecendo por cima dele.
+> Verdadeiro
 
 ### Fill
-Quando um músico "perde o pulso", ele perde a referência de ___ da música.
+Quando uma banda começa a "arrastar" ou "correr", o problema quase sempre é que os músicos perderam o ___ compartilhado.
 - volume
-- tempo ✓
+- pulso ✓
 - tom
 
 ### MC
-O que acontece na banda de louvor quando os músicos perdem o pulso compartilhado?
-- A música fica mais expressiva e natural
-- A música começa a arrastar ou correr de forma descontrolada ✓
-- O volume aumenta automaticamente
-- A harmonia é afetada, mas o ritmo não
+Você está tocando bateria e percebe que a banda está acelerando aos poucos. O que provavelmente aconteceu?
+- A música ficou mais expressiva
+- A banda perdeu o pulso interno compartilhado ✓
+- A harmonia mudou
+- O volume aumentou
 
 ### VF
-Um regente que marca com a mão está principalmente comunicando o pulso para os músicos.
+Você está sem metrônomo e precisa manter o pulso só na cabeça. Músicos experientes treinam exatamente essa habilidade — carregar o pulso por dentro, como um relógio interno.
 > Verdadeiro
 
 ## Jogo
 
-BATIDA COLETIVA — Todos sentados em círculo. Um líder define um pulso batendo palmas regularmente (sem contar em voz alta). Um a um, cada pessoa entra com suas palmas no mesmo pulso. Quando todos estiverem batendo juntos, o líder vai parando um por um, de forma que ao final reste apenas uma pessoa. Depois, o líder muda o andamento (mais rápido ou mais devagar) sem aviso verbal — apenas muda a velocidade das palmas — e todos devem se ajustar imediatamente. Discutam: foi difícil manter o pulso sem apoio dos outros?
+BATIDA COLETIVA — Todos em círculo (5 minutos por rodada). O líder começa batendo palmas em pulso constante (sem contar em voz alta). Uma a uma, cada pessoa ENTRA no pulso com palmas até todos estarem juntos. Quando alguém atrasar ou adiantar, sai do círculo. Fase 2: o líder muda a velocidade SEM avisar — todos têm que se ajustar em 2 batidas. Fase 3 (modo silêncio): o líder grita "MUDO!" — todos param de palmar e contam o pulso só na cabeça por 8 tempos. Ao grito "VOLTA!", quem voltar no tempo certo ganha 1 ponto. Vence quem tiver mais pontos depois de 3 rodadas.

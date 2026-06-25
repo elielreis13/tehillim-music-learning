@@ -2,9 +2,9 @@
 number: 19
 slug: a-voz-como-instrumento
 title: A voz como instrumento
-description: Lição focada em A voz como instrumento, separada do antigo módulo "Melodia e Canto" para estudar um conceito por vez.
+description: Todo mundo tem um instrumento que já nasce afinado — mas poucos sabem como ele funciona por dentro. Entenda sua voz antes de forçá-la no louvor.
 topics: A voz como instrumento
-game_kind: game-listen
+game_kind: game-identify-sound
 ---
 
 ## Teoria
@@ -22,33 +22,36 @@ Diagrama de perfil da cabeça e pescoço humano mostrando o caminho do ar: diafr
 ## Exercícios
 
 ### MC
-Onde as cordas vocais estão localizadas e o que elas fazem?
-- No diafragma; elas empurram o ar para cima
-- Na laringe; elas vibram com a passagem do ar para produzir som ✓
-- No nariz; elas filtram o ar antes de sair pela boca
-- No peito; elas ressoam as notas graves
+Você canta um louvor agudo no ensaio e no final do dia sua voz está rouca. O que provavelmente faltou na sua rotina?
+- Comer mais antes de cantar
+- Aquecimento vocal e hidratação ✓
+- Cantar com volume maior ainda
+- Esperar a voz ficar rouca naturalmente
 
 ### VF
-O sussurro forçado é inofensivo para a voz porque não produz som alto como o grito.
-> Falso
+Você coloca a mão no peito enquanto canta uma nota grave e sente uma vibração forte. Essa sensação é real — é a chamada "voz de peito" ressoando.
+> Verdadeiro
 
 ### Fill
-A classificação de vozes do mais agudo ao mais grave começa com soprano e termina com ___.
-- tenor
-- barítono
-- baixo ✓
+Quando o líder de louvor sustenta uma nota muito aguda e diz que está usando a "voz de cabeça", a vibração ressoa mais na ___.
+- garganta apenas
+- cabeça e crânio ✓
+- barriga
 
 ### MC
-Qual das práticas abaixo é recomendada para a saúde vocal antes de cantar no louvor?
-- Tomar café gelado para "acordar" as cordas vocais
-- Fazer aquecimento com vocalises suaves e respiração diafragmática ✓
-- Cantar no volume máximo nos primeiros 5 minutos para aquecer rápido
-- Sussurrar as músicas durante o ensaio para economizar a voz
+Sua banda vai ensaiar por 2 horas e você é o vocalista principal. Qual a melhor estratégia para preservar a voz?
+- Sussurrar as partes para economizar
+- Tomar café gelado entre as músicas
+- Aquecer antes, beber água em temperatura ambiente e fazer pausas ✓
+- Cantar com volume máximo desde a primeira música
 
-### VF
-A "voz de cabeça" e a "voz de peito" são apenas metáforas poéticas sem base na física da ressonância vocal.
-> Falso
+### Match
+Associe cada voz humana à sua faixa de altura aproximada:
+- Soprano → Voz feminina mais aguda
+- Contralto → Voz feminina mais grave
+- Tenor → Voz masculina mais aguda
+- Baixo → Voz masculina mais grave
 
 ## Jogo
 
-MAPA DA VOZ — Cada participante canta uma escala de Dó maior em voz média (Dó-Ré-Mi-Fá-Sol-Lá-Si-Dó) e tenta sentir onde a vibração ressoa colocando uma mão no peito e outra no topo da cabeça. Depois sobe mais uma oitava (ou vai ao limite confortável) e percebe a mudança de ressonância. Em grupo, cada um canta a mesma nota de referência (ex: Mi4) e observa quem sente mais vibração no peito (vozes graves) e quem sente mais na cabeça (vozes agudas). Esse exercício revela a tessitura natural de cada voz sem precisar de teoria formal.
+MAPA DA RESSONÂNCIA — Em grupo de 4 a 8 pessoas. Cada um coloca UMA mão no peito e a OUTRA no topo da cabeça. O líder dá uma nota grave (ex: Dó3) — todos cantam juntos e sentem ONDE vibra mais. Depois sobe a nota um pouco a cada rodada (Mi, Sol, Si, Dó agudo). Cada pessoa marca: "nota X foi onde minha voz mudou de peito pra cabeça". No final, comparem: quem tem voz mais aguda muda cedo, quem tem mais grave muda tarde. Tempo: 5 minutos. Revela a tessitura natural sem teoria.

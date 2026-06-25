@@ -7,126 +7,170 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
 <style>
+  .prog-tab {
+    font-size: 13px; font-weight: 600; padding: 8px 18px;
+    border-radius: 10px; color: #7A6A4D; cursor: pointer;
+    transition: background .15s, color .15s; white-space: nowrap;
+    border: none; background: none;
+  }
+  .prog-tab:hover  { background: rgba(196,148,58,.1); color: #C4943A; }
+  .prog-tab.active { background: #C4943A; color: white; }
+
+  .card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #F0E8D4; }
+  .card-title {
+    font-family: 'Fraunces', serif; font-size: 16px; font-weight: 500;
+    color: #2A2419; margin: 0 0 14px;
+  }
+
+  .medal-glow { transition: transform 0.2s; cursor: default; }
+  .medal-glow:hover { transform: translateY(-2px); }
+
+  .mid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
   @media (max-width: 768px) {
-    .perf-main-grid { grid-template-columns: 1fr !important; padding: 12px !important; gap: 12px !important; }
-    #skills-grid    { grid-template-columns: 1fr !important; }
+    .prog-content   { padding: 12px !important; gap: 12px !important; }
+    .mid-grid       { grid-template-columns: 1fr !important; }
     #heatmap-grid   { grid-template-columns: repeat(6, 1fr) !important; }
-    .perf-header-stats { gap: 6px !important; }
-    .perf-header-stats > div { min-width: 64px !important; padding: 6px 10px !important; }
+    #earned-grid    { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+    #inprogress-grid { grid-template-columns: 1fr !important; }
+    .feat-row       { flex-direction: column !important; gap: 14px !important; }
+    #feat-icon      { width: 64px !important; height: 64px !important; font-size: 30px !important; box-shadow: none !important; }
+    .stat-strip     { flex-wrap: wrap; }
   }
 </style>
 {% endblock %}
 
 {% block header %}
-<header style="background:linear-gradient(120deg,#2A2419 0%,#3D3018 60%,#5A4520 100%);padding:22px 32px;position:relative;overflow:hidden;color:white;flex-shrink:0;">
-  <div style="position:absolute;right:-100px;top:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(232,199,122,0.3) 0%,transparent 70%);pointer-events:none;"></div>
-  <div style="position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-    <div>
-      <p style="font-size:11px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.22em;font-weight:700;margin:0;">📊 Estatísticas</p>
-      <h1 style="font-family:'Fraunces',serif;font-size:34px;font-weight:400;line-height:1.05;margin:6px 0 4px;letter-spacing:-0.02em;">Seu desempenho</h1>
-      <p style="font-size:12px;color:#C4B89A;margin:0;" id="perf-subtitle">Nível — · — XP</p>
+<div style="flex-shrink:0;">
+  <!-- Dark gradient header — title only -->
+  <header style="background:linear-gradient(120deg,#2A2419 0%,#3D3018 60%,#5A4520 100%);padding:18px 28px;position:relative;overflow:hidden;color:white;">
+    <div style="position:absolute;right:-60px;top:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(232,199,122,0.2) 0%,transparent 70%);pointer-events:none;"></div>
+    <div style="position:relative;z-index:2;">
+      <p style="font-size:11px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.22em;font-weight:700;margin:0;">📊 Progresso</p>
+      <h1 style="font-family:'Fraunces',serif;font-size:28px;font-weight:400;line-height:1.1;margin:5px 0 0;letter-spacing:-0.02em;">Seu desempenho</h1>
     </div>
-    <div class="perf-header-stats" style="display:flex;gap:10px;flex-wrap:wrap;">
-      <div style="background:rgba(232,199,122,0.10);border:1px solid rgba(232,199,122,0.25);border-radius:12px;padding:8px 14px;min-width:80px;text-align:center;">
-        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#E8C77A;line-height:1;" id="stat-modules">—</div>
-        <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Módulos</div>
-      </div>
-      <div style="background:rgba(232,199,122,0.10);border:1px solid rgba(232,199,122,0.25);border-radius:12px;padding:8px 14px;min-width:80px;text-align:center;">
-        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#FFB78F;line-height:1;" id="stat-streak">—</div>
-        <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Sequência</div>
-      </div>
-      <div style="background:rgba(232,199,122,0.10);border:1px solid rgba(232,199,122,0.25);border-radius:12px;padding:8px 14px;min-width:80px;text-align:center;">
-        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#A8D6B5;line-height:1;" id="stat-days">—</div>
-        <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">Dias estudo</div>
-      </div>
-      <div style="background:rgba(232,199,122,0.10);border:1px solid rgba(232,199,122,0.25);border-radius:12px;padding:8px 14px;min-width:80px;text-align:center;">
-        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#B8B0E8;line-height:1;" id="stat-xp">—</div>
-        <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px;">XP Total</div>
-      </div>
+  </header>
+  <!-- Tab strip -->
+  <div style="background:#F2EAD8;border-bottom:1px solid #ECE3D0;padding:0 24px;">
+    <div style="display:flex;gap:4px;overflow-x:auto;">
+      <button class="prog-tab active" id="tab-btn-desempenho" onclick="switchTab('desempenho')">Desempenho</button>
+      <button class="prog-tab" id="tab-btn-conquistas" onclick="switchTab('conquistas')">Conquistas</button>
     </div>
   </div>
-</header>
+  <!-- Stats strip -->
+  <div style="display:flex;border-bottom:1px solid #F0E8D4;background:white;">
+    <div style="flex:1;padding:12px 16px;border-right:1px solid #F0E8D4;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#2A2419;margin:0;" id="stat-modules">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;">Módulos</p>
+    </div>
+    <div style="flex:1;padding:12px 16px;border-right:1px solid #F0E8D4;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#E8632A;margin:0;" id="stat-streak">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;">Sequência</p>
+    </div>
+    <div style="flex:1;padding:12px 16px;border-right:1px solid #F0E8D4;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#5A8A6A;margin:0;" id="stat-days">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;">Dias de estudo</p>
+    </div>
+    <div style="flex:1;padding:12px 16px;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#C4943A;margin:0;" id="stat-achiev">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;">Conquistas</p>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block content %}
-<div class="perf-main-grid" style="padding:20px 24px;display:grid;grid-template-columns:1.4fr 1fr;gap:16px;">
+<div class="flex-1 overflow-y-auto flex flex-col" style="min-height:0;">
 
-  <!-- ── COLUNA ESQUERDA ── -->
-  <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
+  <!-- ══ TAB: DESEMPENHO ══ -->
+  <div id="panel-desempenho" style="flex:1;overflow-y:auto;">
+    <div class="prog-content" style="padding:16px 20px;display:flex;flex-direction:column;gap:16px;">
 
-    <!-- Weekly study chart (dias da semana) -->
-    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0;color:#2A2419;">⚡ Esta semana</h3>
-        <div style="font-size:11px;color:#9C8460;" id="week-summary">7 dias</div>
+      <!-- Esta semana — full width -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <h3 class="card-title" style="margin:0;">⚡ Esta semana</h3>
+          <span style="font-size:11px;color:#9C8460;" id="week-summary"></span>
+        </div>
+        <div id="week-chart" style="display:flex;gap:8px;align-items:flex-end;height:100px;"></div>
       </div>
-      <div id="week-chart" style="display:flex;gap:10px;align-items:flex-end;height:110px;">
-        <!-- Filled by JS -->
+
+      <!-- Middle row: Frequência + Por grupo -->
+      <div class="mid-grid">
+
+        <!-- Heatmap -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h3 class="card-title" style="margin:0;">🔥 Frequência</h3>
+            <span style="font-size:11px;color:#9C8460;">12 semanas</span>
+          </div>
+          <div id="heatmap-grid" style="display:grid;grid-template-columns:repeat(12,1fr);gap:3px;"></div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:10px;">
+            <div style="width:10px;height:10px;border-radius:2px;background:#F4ECD8;"></div>
+            <span style="font-size:10px;color:#9C8460;">Sem estudo</span>
+            <div style="width:10px;height:10px;border-radius:2px;background:#FFB78F;margin-left:8px;"></div>
+            <span style="font-size:10px;color:#9C8460;">Estudou</span>
+            <div style="width:10px;height:10px;border-radius:2px;background:#E8632A;margin-left:8px;"></div>
+            <span style="font-size:10px;color:#9C8460;">Hoje</span>
+          </div>
+        </div>
+
+        <!-- Por grupo -->
+        <div class="card">
+          <h3 class="card-title">📊 Por grupo</h3>
+          <div style="display:flex;flex-direction:column;gap:14px;" id="groups-dist"></div>
+        </div>
+
       </div>
+
+      <!-- Últimos concluídos — full width -->
+      <div class="card">
+        <h3 class="card-title">🏆 Últimos concluídos</h3>
+        <div id="recent-modules" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+          <p style="font-size:12px;color:#9C8460;margin:0;">Carregando...</p>
+        </div>
+      </div>
+
     </div>
-
-    <!-- Skills / Atributos -->
-    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
-      <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0 0 16px;color:#2A2419;">⚔️ Atributos</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;" id="skills-grid">
-        <!-- Filled by JS -->
-      </div>
-    </div>
-
-    <!-- Heatmap -->
-    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:14px;">
-        <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0;color:#2A2419;">🔥 Frequência</h3>
-        <span style="font-size:11px;color:#9C8460;">Últimas 12 semanas</span>
-      </div>
-      <div id="heatmap-grid" style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;">
-        <!-- Filled by JS -->
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
-        <div style="width:12px;height:12px;border-radius:2px;background:#F4ECD8;"></div>
-        <span style="font-size:10px;color:#9C8460;">Sem estudo</span>
-        <div style="width:12px;height:12px;border-radius:2px;background:#FFB78F;margin-left:8px;"></div>
-        <span style="font-size:10px;color:#9C8460;">Estudou</span>
-        <div style="width:12px;height:12px;border-radius:2px;background:#E8632A;margin-left:8px;"></div>
-        <span style="font-size:10px;color:#9C8460;">Hoje</span>
-      </div>
-    </div>
-
   </div>
 
-  <!-- ── COLUNA DIREITA ── -->
-  <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
+  <!-- ══ TAB: CONQUISTAS ══ -->
+  <div id="panel-conquistas" style="display:none;flex:1;overflow-y:auto;">
+    <div class="prog-content" style="padding:16px 20px;display:flex;flex-direction:column;gap:16px;">
 
-    <!-- Próximo nível — XP card -->
-    <div style="background:linear-gradient(135deg,#2A2419 0%,#3D3018 100%);border-radius:16px;padding:20px;color:white;">
-      <p style="font-size:10px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.18em;font-weight:700;margin:0;">🎯 Progresso de nível</p>
-      <h3 style="font-family:'Fraunces',serif;font-size:20px;font-weight:500;margin:6px 0 14px;" id="level-title">Nível —</h3>
-      <div style="height:10px;background:rgba(255,255,255,0.12);border-radius:5px;overflow:hidden;margin-bottom:8px;">
-        <div id="xp-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#E8C77A,#FFB78F);border-radius:5px;transition:width 0.8s ease;"></div>
+      <!-- Featured -->
+      <div id="featured-achievement" style="display:none;background:linear-gradient(135deg,#2A2419 0%,#3D3018 60%,#5A4520 100%);border-radius:20px;padding:24px 28px;color:white;position:relative;overflow:hidden;">
+        <div style="position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,183,143,0.35) 0%,transparent 70%);pointer-events:none;"></div>
+        <p style="font-size:10px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.22em;font-weight:700;margin:0 0 14px;">★ Conquista mais recente</p>
+        <div class="feat-row" style="display:flex;align-items:center;gap:20px;">
+          <div id="feat-icon" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#E8C77A 0%,#C4943A 100%);display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:0 0 32px rgba(232,199,122,0.55);border:3px solid rgba(255,255,255,0.15);flex-shrink:0;">🏆</div>
+          <div style="flex:1;min-width:0;">
+            <h2 id="feat-name" style="font-family:'Fraunces',serif;font-size:24px;font-weight:500;margin:0 0 4px;">—</h2>
+            <p id="feat-desc" style="font-size:13px;color:#C4B89A;margin:0 0 10px;line-height:1.4;">—</p>
+            <span id="feat-rarity" style="background:rgba(255,255,255,0.12);color:#C4B89A;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:600;letter-spacing:.08em;">—</span>
+          </div>
+        </div>
       </div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:#C4B89A;">
-        <span id="xp-current">0 XP</span>
-        <span id="xp-needed">faltam — XP</span>
-        <span id="xp-next">— XP</span>
+
+      <!-- Conquistadas -->
+      <div class="card">
+        <h3 class="card-title">
+          Conquistadas <span id="earned-count" style="color:#9C8460;font-weight:400;font-size:14px;">· 0</span>
+        </h3>
+        <div id="earned-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+          <p style="font-size:12px;color:#9C8460;grid-column:1/-1;">Carregando...</p>
+        </div>
       </div>
+
+      <!-- Em busca -->
+      <div class="card">
+        <h3 class="card-title">
+          Em busca <span id="inprogress-count" style="color:#9C8460;font-weight:400;font-size:14px;">· 0</span>
+        </h3>
+        <div id="inprogress-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;"></div>
+      </div>
+
     </div>
-
-    <!-- Distribuição por grupo -->
-    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
-      <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0 0 16px;color:#2A2419;">📊 Por grupo</h3>
-      <div style="display:flex;flex-direction:column;gap:12px;" id="groups-dist">
-        <!-- Filled by JS -->
-      </div>
-    </div>
-
-    <!-- Módulos recentes -->
-    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
-      <h3 style="font-family:'Fraunces',serif;font-size:18px;font-weight:500;margin:0 0 14px;color:#2A2419;">🏆 Últimos concluídos</h3>
-      <div style="display:flex;flex-direction:column;gap:8px;" id="recent-modules">
-        <p style="font-size:12px;color:#9C8460;margin:0;">Carregando...</p>
-      </div>
-    </div>
-
   </div>
 
 </div>
@@ -135,22 +179,46 @@
 {% block scripts %}
 <script>
 const GROUPS_DATA = {{ groups | tojson }};
+const GROUP_COLORS = ['#C4943A','#5A8A6A','#7B5EA7','#4A78B0','#E8632A'];
+const WEEK_DAYS    = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
-const XP_PER_MODULE = 50;
-const XP_PER_LEVEL  = 300;
-const LEVEL_TITLES   = ['Iniciante','Aprendiz','Estudioso','Dedicado','Músico','Virtuose','Maestro','Lenda'];
-const GROUP_COLORS   = ['#C4943A','#5A8A6A','#7B5EA7','#4A78B0','#E8632A'];
-const WEEK_DAYS      = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-
-const SKILLS = [
-  { name: 'Percepção', key: 'fundamentos',    color: '#C4943A' },
-  { name: 'Musicalização', key: 'musicalizacao', color: '#5A8A6A' },
-  { name: 'Alfabetização', key: 'alfabetizacao', color: '#7B5EA7' },
-  { name: 'Teoria',    key: 'teoria',         color: '#4A78B0' },
-  { name: 'Ritmo',     key: 'ritmo',          color: '#E8632A' },
-  { name: 'Geral',     key: '__all__',         color: '#9C8460' },
+const ACHIEVEMENTS = [
+  { id:'first_module',   icon:'🎵', name:'Primeiros Passos',   desc:'Concluiu o primeiro módulo',              rarity:'comum',    check:(d,s,g)=>d>=1,                                                          progress:d=>Math.min(d,1),  total:1 },
+  { id:'five_modules',   icon:'🎸', name:'Em Ritmo',           desc:'Completou 5 módulos',                     rarity:'comum',    check:(d,s,g)=>d>=5,                                                          progress:d=>Math.min(d,5),  total:5 },
+  { id:'ten_modules',    icon:'🎹', name:'Instrumentista',     desc:'Completou 10 módulos',                    rarity:'raro',     check:(d,s,g)=>d>=10,                                                         progress:d=>Math.min(d,10), total:10 },
+  { id:'streak_3',       icon:'🔥', name:'Consistente',        desc:'3 dias de sequência',                     rarity:'comum',    check:(d,s,g)=>s>=3,                                                          progress:(d,s)=>Math.min(s,3),  total:3 },
+  { id:'streak_7',       icon:'⚡', name:'Semana Perfeita',    desc:'7 dias de sequência',                     rarity:'raro',     check:(d,s,g)=>s>=7,                                                          progress:(d,s)=>Math.min(s,7),  total:7 },
+  { id:'streak_30',      icon:'💎', name:'Mês de Ouro',        desc:'30 dias de sequência',                    rarity:'épico',    check:(d,s,g)=>s>=30,                                                         progress:(d,s)=>Math.min(s,30), total:30 },
+  { id:'ouvido',         icon:'👂', name:'Ouvido Apurado',     desc:'Complete todos os módulos de Fundamentos',rarity:'raro',     check:(d,s,g)=>(g['fundamentos']||0)===100,                                   progress:(d,s,g)=>g['fundamentos']||0, total:100 },
+  { id:'all_music',      icon:'🔰', name:'Musicalizando',      desc:'Conclua o grupo Musicalização',           rarity:'raro',     check:(d,s,g)=>(g['musicalizacao']||0)===100,                                 progress:(d,s,g)=>g['musicalizacao']||0, total:100 },
+  { id:'polymata',       icon:'🎼', name:'Polímata Musical',   desc:'Conclua 3 grupos diferentes',             rarity:'épico',    check:(d,s,g)=>Object.values(g).filter(v=>v===100).length>=3,                 progress:(d,s,g)=>Object.values(g).filter(v=>v===100).length, total:3 },
+  { id:'madrugador',     icon:'🌅', name:'Madrugador',         desc:'Estude por 5 dias diferentes',            rarity:'comum',    check:(d,s,g)=>(window._studyDays||[]).length>=5,                             progress:d=>Math.min((window._studyDays||[]).length,5), total:5 },
+  { id:'perfeccionista', icon:'💎', name:'Perfeccionista',     desc:'Complete 100 módulos',                    rarity:'épico',    check:(d,s,g)=>d>=100,                                                        progress:d=>Math.min(d,100), total:100 },
+  { id:'lenda',          icon:'👑', name:'Lenda Tehillim',     desc:'Termine todos os módulos',                rarity:'lendário', check:(d,s,g)=>d>=(window._totalModules||999),                                 progress:d=>d, total:window._totalModules||149 },
 ];
 
+const RARITY_COLORS = {
+  comum:    { bg:'#F2EAD8',  border:'#C4943A', text:'#7A5C2E',  glow:'rgba(196,148,58,0.3)' },
+  raro:     { bg:'#DBEAFE',  border:'#4A78B0', text:'#2A4F7A',  glow:'rgba(74,120,176,0.35)' },
+  épico:    { bg:'#E8E0F4',  border:'#7B5EA7', text:'#4A3470',  glow:'rgba(123,94,167,0.4)' },
+  lendário: { bg:'linear-gradient(135deg,#FFE0B8 0%,#FFB78F 100%)', border:'#E8632A', text:'#7A2E0F', glow:'rgba(232,99,42,0.5)' },
+};
+
+// ── Tab switching ──────────────────────────────
+function switchTab(tab) {
+  ['desempenho','conquistas'].forEach(t => {
+    const panel = document.getElementById('panel-' + t);
+    panel.style.display = t === tab ? 'flex' : 'none';
+    panel.style.flexDirection = 'column';
+    document.getElementById('tab-btn-' + t).className = 'prog-tab' + (t === tab ? ' active' : '');
+  });
+  history.replaceState(null, '', tab === 'conquistas' ? '/conquistas' : '/desempenho');
+}
+
+const _initialTab = location.pathname === '/conquistas' ? 'conquistas' : 'desempenho';
+if (_initialTab === 'conquistas') switchTab('conquistas');
+
+// ── Data loading ───────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   await waitForProgress();
   renderAll();
@@ -165,56 +233,47 @@ function waitForProgress() {
 }
 
 function renderAll() {
-  const prog    = window._progress || [];
-  const done    = window._doneModules || 0;
-  const total   = window._totalModules || 1;
-  const streak  = window._streak || 0;
+  const prog      = window._progress || [];
+  const done      = window._doneModules || 0;
+  const total     = window._totalModules || 1;
+  const streak    = window._streak || 0;
   const studyDays = window._studyDays || [];
-  const days    = studyDays.length;
-  const xp      = done * XP_PER_MODULE;
-  const level   = Math.floor(xp / XP_PER_LEVEL) + 1;
-  const levelTitle = LEVEL_TITLES[Math.min(level - 1, LEVEL_TITLES.length - 1)];
-  const xpInLevel  = xp % XP_PER_LEVEL;
-  const xpNextLevel = XP_PER_LEVEL;
 
-  // Header stats
+  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
+  const groupPct = {};
+  GROUPS_DATA.forEach(g => {
+    const gDone = g.modules.filter(m => doneSet.has(m.slug)).length;
+    groupPct[g.slug] = g.module_count > 0 ? Math.round((gDone / g.module_count) * 100) : 0;
+  });
+
+  const evaluated = ACHIEVEMENTS.map(a => {
+    const earned  = a.check(done, streak, groupPct);
+    const progVal = typeof a.progress === 'function' ? a.progress(done, streak, groupPct) : 0;
+    return { ...a, earned, progressVal: Math.min(Math.round(progVal), a.total) };
+  });
+  const earnedList = evaluated.filter(a => a.earned);
+
+  // Stats strip
   set('stat-modules', `${done} / ${total}`);
   set('stat-streak',  streak + ' 🔥');
-  set('stat-days',    days);
-  set('stat-xp',      xp + ' XP');
-  set('perf-subtitle', `Nível ${level} · ${levelTitle} · top dos alunos`);
+  set('stat-days',    studyDays.length);
+  set('stat-achiev',  earnedList.length);
 
-  // XP card
-  set('level-title', `Nível ${level} — ${levelTitle}`);
-  const barPct = Math.round((xpInLevel / xpNextLevel) * 100);
-  const barEl = document.getElementById('xp-bar');
-  if (barEl) setTimeout(() => { barEl.style.width = barPct + '%'; }, 100);
-  set('xp-current', xp + ' XP');
-  set('xp-needed', `faltam ${xpNextLevel - xpInLevel} XP`);
-  set('xp-next', (level * XP_PER_LEVEL) + ' XP');
-
-  // Week chart (last 7 days study activity)
   renderWeekChart(studyDays);
-
-  // Skills from real group progress
-  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
-  renderSkills(doneSet);
-  renderGroupsDist(doneSet);
-
-  // Heatmap (12 weeks = 84 days)
   renderHeatmap(studyDays);
-
-  // Recent modules
+  renderGroupsDist(doneSet);
   renderRecent(prog);
+  renderAchievements(evaluated, earnedList);
 }
 
+// ── Desempenho renderers ───────────────────────
 function renderWeekChart(studyDays) {
   const chart = document.getElementById('week-chart');
   if (!chart) return;
   const studySet = new Set(studyDays.map(d => d.day));
   const today = new Date();
-  const cells = [];
   let studiedCount = 0;
+  const cells = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
@@ -223,54 +282,44 @@ function renderWeekChart(studyDays) {
     const isToday = i === 0;
     const hasStudy = studySet.has(key);
     if (hasStudy) studiedCount++;
-    const barH = hasStudy ? (isToday ? 80 : 65) : 14;
-    const barColor = isToday ? 'linear-gradient(180deg,#E8C77A 0%,#C4943A 100%)' : hasStudy ? '#F2EAD8' : '#F4ECD8';
-    const xpLabel = hasStudy ? `+${XP_PER_MODULE}` : '';
+    const barH = hasStudy ? (isToday ? 78 : 62) : 12;
+    const barBg = isToday
+      ? 'linear-gradient(180deg,#E8C77A 0%,#C4943A 100%)'
+      : hasStudy ? '#F2EAD8' : '#F4ECD8';
+    const labelColor = isToday ? '#C4943A' : hasStudy ? '#7B5EA7' : '#D1C5B0';
     cells.push(`
       <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
-        ${xpLabel ? `<span style="font-size:9px;color:#7B5EA7;font-weight:700;font-family:'Fraunces',serif;">${xpLabel}</span>` : '<span style="font-size:9px;"> </span>'}
-        <div style="width:100%;height:${barH}px;background:${barColor};border-radius:6px 6px 0 0;position:relative;">
-          ${isToday ? '<span style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;">🔥</span>' : ''}
+        <span style="font-size:9px;color:${labelColor};font-weight:700;">${hasStudy ? '✓' : ''}</span>
+        <div style="width:100%;height:${barH}px;background:${barBg};border-radius:6px 6px 0 0;position:relative;">
+          ${isToday ? '<span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:13px;">🔥</span>' : ''}
         </div>
-        <span style="font-size:11px;color:#2A2419;font-weight:700;">${dayLabel}</span>
+        <span style="font-size:11px;color:${isToday ? '#C4943A' : '#2A2419'};font-weight:${isToday ? '700' : '500'};">${dayLabel}</span>
       </div>`);
   }
   chart.innerHTML = cells.join('');
-  set('week-summary', `${studiedCount} dias estudados esta semana`);
+  set('week-summary', `${studiedCount} de 7 dias`);
 }
 
-function renderSkills(doneSet) {
-  const grid = document.getElementById('skills-grid');
+function renderHeatmap(studyDays) {
+  const grid = document.getElementById('heatmap-grid');
   if (!grid) return;
-  const total = window._totalModules || 1;
-  const done  = window._doneModules || 0;
-  const groupProgress = {};
-  GROUPS_DATA.forEach(g => {
-    const gDone = g.modules.filter(m => doneSet.has(m.slug)).length;
-    groupProgress[g.slug] = g.module_count > 0 ? Math.round((gDone / g.module_count) * 100) : 0;
-  });
-  const overallPct = total > 0 ? Math.round((done / total) * 100) : 0;
-  groupProgress['__all__'] = overallPct;
-
-  grid.innerHTML = SKILLS.map(s => {
-    const slugKey = Object.keys(groupProgress).find(k => k.startsWith(s.key)) || s.key;
-    const val = groupProgress[slugKey] || groupProgress[s.key] || 0;
-    const tier = val >= 80 ? 'S' : val >= 65 ? 'A' : val >= 50 ? 'B' : 'C';
-    const tierColor = val >= 80 ? '#7B5EA7' : val >= 65 ? '#5A8A6A' : val >= 50 ? '#C4943A' : '#9C8460';
-    return `
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div style="width:28px;height:28px;border-radius:8px;background:${tierColor};color:white;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:13px;flex-shrink:0;">${tier}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:3px;">
-            <span style="color:#2A2419;font-weight:600;">${s.name}</span>
-            <span style="color:${tierColor};font-weight:700;font-family:'Fraunces',serif;">${val}</span>
-          </div>
-          <div style="height:6px;background:#F4ECD8;border-radius:3px;overflow:hidden;">
-            <div style="height:100%;width:${val}%;background:${tierColor};border-radius:3px;"></div>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
+  const studySet = new Set(studyDays.map(d => d.day));
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0, 10);
+  const cells = [];
+  for (let row = 0; row < 7; row++) {
+    for (let col = 0; col < 12; col++) {
+      const offset = (11 - col) * 7 + (6 - row);
+      const d = new Date(today);
+      d.setDate(d.getDate() - offset);
+      const key = d.toISOString().slice(0, 10);
+      const isToday = key === todayStr;
+      const hasStudy = studySet.has(key);
+      const bg = isToday ? '#E8632A' : hasStudy ? '#FFB78F' : '#F4ECD8';
+      cells.push(`<div style="aspect-ratio:1;background:${bg};border-radius:2px;" title="${key}"></div>`);
+    }
+  }
+  grid.innerHTML = cells.join('');
 }
 
 function renderGroupsDist(doneSet) {
@@ -282,44 +331,21 @@ function renderGroupsDist(doneSet) {
     const pct = g.module_count > 0 ? Math.round((gDone / g.module_count) * 100) : 0;
     return `
       <div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:11px;">
-          <span style="color:#2A2419;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:65%;">${g.name}</span>
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;">
+          <span style="color:#2A2419;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%;">${g.name}</span>
           <span style="color:${color};font-family:'Fraunces',serif;font-weight:700;">${gDone}/${g.module_count}</span>
         </div>
-        <div style="height:8px;background:#F4ECD8;border-radius:4px;overflow:hidden;">
-          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,${color},${color}DD);border-radius:4px;"></div>
+        <div style="height:7px;background:#F4ECD8;border-radius:4px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${color};border-radius:4px;transition:width .6s ease;"></div>
         </div>
       </div>`;
   }).join('');
 }
 
-function renderHeatmap(studyDays) {
-  const grid = document.getElementById('heatmap-grid');
-  if (!grid) return;
-  const studySet = new Set(studyDays.map(d => d.day));
-  const today = new Date();
-  const todayStr = today.toISOString().slice(0, 10);
-  // 84 days = 12 weeks × 7 days, arranged as 12 cols × 7 rows
-  const cells = [];
-  for (let row = 0; row < 7; row++) {
-    for (let col = 0; col < 12; col++) {
-      const offset = (11 - col) * 7 + (6 - row);
-      const d = new Date(today);
-      d.setDate(d.getDate() - offset);
-      const key = d.toISOString().slice(0, 10);
-      const isToday = key === todayStr;
-      const hasStudy = studySet.has(key);
-      const bg = isToday ? '#E8632A' : hasStudy ? '#FFB78F' : '#F4ECD8';
-      cells.push(`<div style="aspect-ratio:1;background:${bg};border-radius:3px;" title="${key}"></div>`);
-    }
-  }
-  grid.innerHTML = cells.join('');
-}
-
 function renderRecent(prog) {
   const el = document.getElementById('recent-modules');
   if (!el) return;
-  const doneProg = prog.filter(p => p.completed > 0).slice(-5).reverse();
+  const doneProg = prog.filter(p => p.completed > 0).slice(-6).reverse();
   if (!doneProg.length) {
     el.innerHTML = '<p style="font-size:12px;color:#9C8460;margin:0;">Nenhum módulo concluído ainda.</p>';
     return;
@@ -328,18 +354,86 @@ function renderRecent(prog) {
   el.innerHTML = doneProg.map(p => {
     const m = allModules.find(x => x.slug === p.module_slug);
     if (!m) return '';
-    const xpEarned = XP_PER_MODULE;
     return `
-      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#FAF5EB;border-radius:10px;">
-        <div style="width:38px;height:38px;border-radius:9px;background:${m.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#FAF5EB;border-radius:12px;border:1px solid #F0E8D4;">
+        <div style="width:36px;height:36px;border-radius:8px;background:${m.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
         </div>
         <div style="flex:1;min-width:0;">
           <p style="font-size:12px;color:#2A2419;margin:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.title}</p>
-          <p style="font-size:10px;color:#9C8460;margin:0;">+${xpEarned} XP</p>
+          <p style="font-size:10px;color:#9C8460;margin:0;">${m.group.name}</p>
         </div>
       </div>`;
   }).join('');
+}
+
+// ── Conquistas renderer ────────────────────────
+function renderAchievements(evaluated, earned) {
+  const inProgress = evaluated.filter(a => !a.earned);
+
+  set('earned-count',     `· ${earned.length}`);
+  set('inprogress-count', `· ${inProgress.length}`);
+
+  // Featured
+  const latest = earned[earned.length - 1];
+  if (latest) {
+    const r = RARITY_COLORS[latest.rarity];
+    document.getElementById('featured-achievement').style.display = 'block';
+    set('feat-name', latest.name);
+    set('feat-desc', latest.desc);
+    document.getElementById('feat-icon').textContent = latest.icon;
+    const rarityEl = document.getElementById('feat-rarity');
+    rarityEl.textContent = latest.rarity.toUpperCase();
+    rarityEl.style.background = r.border + '35';
+    rarityEl.style.color = r.border;
+  }
+
+  // Earned medals (4-col grid)
+  const earnedGrid = document.getElementById('earned-grid');
+  if (earnedGrid) {
+    if (!earned.length) {
+      earnedGrid.innerHTML = '<p style="font-size:12px;color:#9C8460;grid-column:1/-1;margin:0;">Nenhuma conquista ainda — continue estudando!</p>';
+    } else {
+      earnedGrid.innerHTML = earned.map(a => {
+        const r = RARITY_COLORS[a.rarity];
+        return `
+          <div class="medal-glow" style="background:white;border-radius:14px;padding:16px 12px;border:2px solid ${r.border}35;text-align:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:radial-gradient(circle at center,${r.glow} 0%,transparent 65%);opacity:0.5;pointer-events:none;"></div>
+            <div style="width:56px;height:56px;border-radius:50%;background:${r.bg};display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:26px;box-shadow:0 4px 14px ${r.glow};position:relative;z-index:1;">${a.icon}</div>
+            <p style="font-family:'Fraunces',serif;font-size:13px;font-weight:500;margin:0 0 4px;color:#2A2419;line-height:1.25;position:relative;z-index:1;">${a.name}</p>
+            <p style="font-size:9px;color:${r.text};text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin:0;position:relative;z-index:1;">${a.rarity}</p>
+          </div>`;
+      }).join('');
+    }
+  }
+
+  // In-progress (2-col list)
+  const inProgressGrid = document.getElementById('inprogress-grid');
+  if (inProgressGrid) {
+    if (!inProgress.length) {
+      inProgressGrid.innerHTML = '<p style="font-size:13px;color:#5A8A6A;font-weight:600;">🎉 Todas conquistadas!</p>';
+    } else {
+      inProgressGrid.innerHTML = inProgress.map(a => {
+        const r = RARITY_COLORS[a.rarity];
+        const pct = Math.round((a.progressVal / a.total) * 100);
+        return `
+          <div style="background:#FDFAF6;border-radius:14px;padding:14px 16px;border:1px solid #F0E8D4;display:flex;align-items:center;gap:12px;">
+            <div style="width:48px;height:48px;border-radius:50%;background:#F4ECD8;display:flex;align-items:center;justify-content:center;font-size:22px;filter:grayscale(0.4);flex-shrink:0;">${a.icon}</div>
+            <div style="flex:1;min-width:0;">
+              <p style="font-size:9px;color:${r.text};text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin:0;">${a.rarity}</p>
+              <p style="font-family:'Fraunces',serif;font-size:14px;font-weight:500;margin:2px 0 2px;color:#2A2419;">${a.name}</p>
+              <p style="font-size:10px;color:#9C8460;margin:0 0 8px;line-height:1.35;">${a.desc}</p>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="flex:1;height:5px;background:#EDE6D6;border-radius:3px;overflow:hidden;">
+                  <div style="height:100%;width:${pct}%;background:${r.border};border-radius:3px;"></div>
+                </div>
+                <span style="font-size:10px;color:${r.text};font-weight:700;font-family:'Fraunces',serif;white-space:nowrap;">${a.progressVal}/${a.total}</span>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+  }
 }
 
 function set(id, val) {

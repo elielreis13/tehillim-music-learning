@@ -8,14 +8,26 @@ STEP_KINDS = {
     "exercise-tf":    "Verdadeiro ou Falso",
     "exercise-fill":  "Completar",
     "exercise-match": "Associação",
-    "game-memory":    "Jogo de Memória",
-    "game-challenge": "Desafio Final",
-    "game-listen":    "Jogo de Escuta",
-    "game-drag":      "Arrastar e Soltar",
-    "game-sort":      "Ordenar",
-    "game-quiz":      "Quiz Dinâmico",
-    "game-build":     "Construir",
-    "game-match":     "Associar",
+    "game-memory":         "Jogo de Memória",
+    "game-challenge":      "Desafio Final",
+    "game-listen":         "Jogo de Escuta",
+    "game-drag":           "Arrastar e Soltar",
+    "game-sort":           "Ordenar",
+    "game-quiz":           "Quiz Dinâmico",
+    "game-build":          "Construir",
+    "game-arrange":        "Organizar",
+    "game-identify-sound": "Identificar Sons",
+    "game-speedrun":       "Velocidade",
+    "game-rhythm-tap":     "Ritmo em Ação",
+    "game-hot-cold":       "Quente e Frio",
+    "game-sequence":       "Sequência",
+    "game-connect":        "Conectar",
+    "game-story":          "Narrativa",
+    "game-teach":          "Ensinar",
+    "game-vote":           "Votação",
+    "game-compose":        "Compor",
+    "game-karaoke":        "Karaokê",
+    "game-dictation":      "Ditado Musical",
 }
 
 
@@ -44,10 +56,25 @@ def match(prompt: str, pairs: tuple[str, ...]) -> Exercise:
 # ── Construtor de etapas ───────────────────────────────────────────────────────
 
 def _youtube_embed_url(url: str) -> str:
-    """Converte URL do YouTube para formato embed."""
-    if "youtube.com/watch?v=" in url:
-        video_id = url.split("watch?v=")[-1].split("&")[0]
-        return f"https://www.youtube.com/embed/{video_id}"
+    """Converte qualquer URL do YouTube para formato embed."""
+    if not url:
+        return url
+    if "youtube.com/watch" in url:
+        # https://www.youtube.com/watch?v=VIDEO_ID&...
+        from urllib.parse import urlparse, parse_qs
+        qs = parse_qs(urlparse(url).query)
+        vid = (qs.get("v") or [""])[0]
+        if vid:
+            return f"https://www.youtube.com/embed/{vid}"
+    if "youtu.be/" in url:
+        # https://youtu.be/VIDEO_ID?...
+        vid = url.split("youtu.be/")[-1].split("?")[0].split("&")[0]
+        if vid:
+            return f"https://www.youtube.com/embed/{vid}"
+    if "youtube.com/shorts/" in url:
+        vid = url.split("youtube.com/shorts/")[-1].split("?")[0]
+        if vid:
+            return f"https://www.youtube.com/embed/{vid}"
     return url
 
 
@@ -115,19 +142,20 @@ def build_steps(
             )
         )
 
-    steps.append(
-        TrailStep(
-            slug=f"{module_slug}-visualizar",
-            title="Visualizar",
-            kind="visual",
-            summary=f"Veja {subject} acontecendo na prática.",
-            body=visual_body,
-            prompt="Observe o exemplo, encontre o padrão e diga o nome dele.",
-            options=(),
-            answer="",
-            vf_data=vf_data,
-        ),
-    )
+    if visual:
+        steps.append(
+            TrailStep(
+                slug=f"{module_slug}-visualizar",
+                title="Visualizar",
+                kind="visual",
+                summary=f"Veja {subject} acontecendo na prática.",
+                body=visual_body,
+                prompt="Observe o exemplo, encontre o padrão e diga o nome dele.",
+                options=(),
+                answer="",
+                vf_data=vf_data,
+            ),
+        )
 
     exercise_labels = {
         "exercise-mc":    "Múltipla Escolha",

@@ -2,49 +2,55 @@
 number: 144
 slug: mentalidade-de-sight-reading
 title: Mentalidade de sight-reading
-description: Lição focada em Mentalidade de sight-reading, separada do antigo módulo “Leitura à Primeira Vista” para estudar um conceito por vez.
+description: Receber uma partitura nova no ensaio e tocar sem parar — isso se aprende, e começa muito antes de abrir a partitura.
 topics: Mentalidade de sight-reading
 game_kind: game-challenge
 ---
 
 ## Teoria
 
-Esta lição isola o tema Mentalidade de sight-reading dentro do estudo de Leitura à Primeira Vista. O foco é compreender um conceito por vez, reconhecer seus sinais e aplicar em situações musicais reais.
+**Sight-reading** (leitura à primeira vista) é a habilidade de tocar uma partitura que você nunca viu, na hora, sem ensaio prévio. Mas antes de ser uma habilidade técnica, é uma **mentalidade** — uma postura interna que você assume ao abrir o papel. Sem essa postura, o melhor leitor do mundo tropeça; com ela, até iniciantes conseguem se manter de pé numa peça nova.
 
-Leia a ideia principal, procure exemplos no repertório que você já conhece e transforme a explicação em prática: cantar, bater palma, escrever, ouvir ou tocar. Um tópico só está aprendido quando aparece na execução.
+O **primeiro princípio** dessa mentalidade é: **manter o pulso, nunca parar**. Numa execução de leitura, parar é o pior erro possível. Tocar uma nota errada é um deslize; parar é um colapso, porque desmonta o conjunto inteiro. Se a banda está tocando junto e você para para "consertar", todo mundo desencaixa. Errar uma nota e seguir é profissional; parar para corrigir é amador.
 
-Ao estudar de forma separada, o aluno evita misturar conceitos parecidos e cria uma base mais firme para as próximas lições.
+O **segundo princípio** é: **olhar à frente**. O leitor experiente nunca está olhando para a nota que está tocando — ele já está alguns tempos adiante, decifrando o que vem. Seus dedos executam o que os olhos viram dois segundos atrás. Iniciantes olham para a nota que tocam, atrasam a leitura, congelam ao ver algo difícil.
+
+O **terceiro princípio** é: **não corrigir o passado**. Errou? Esquece. Já passou. Voltar mentalmente para "por que eu errei?" tira sua atenção do que vem a seguir, e gera o próximo erro. O **quarto** é: **contar antes de começar** — pelo menos um compasso inteiro de contagem interna, para que o pulso esteja vivo antes da primeira nota sair. Essa mentalidade não é dom natural: é treino. Quem encara muitas partituras novas, e sobrevive a elas sem parar, desenvolve a calma que falta a quem só toca de memória.
 
 ## Visual
 
-Cartão visual central com o título “Mentalidade de sight-reading”, um exemplo musical simples e uma comparação lado a lado entre execução incorreta e execução correta.
+Ilustração com dois leitores lado a lado. À esquerda, um músico congelado, olhando fixo para uma nota com símbolos de pânico ao redor, enquanto a banda já avançou três compassos. À direita, um músico calmo com o olhar visivelmente adiantado na partitura, dedos tocando o compasso atual, e uma seta indicando "olhos aqui, mãos lá", mostrando o lag saudável entre leitura e execução.
 
 ## Exercícios
 
 ### MC
-Qual é o foco principal desta lição?
-- Decorar repertório sem entender o conceito
-- Estudar Mentalidade de sight-reading de forma isolada e aplicável ✓
-- Pular diretamente para assuntos avançados
-- Substituir a escuta pela teoria
+Qual é a regra mais importante da mentalidade de sight-reading?
+- Tocar todas as notas certas, mesmo que precise parar
+- Manter o pulso e nunca parar, mesmo errando notas ✓
+- Memorizar o trecho antes de começar
+- Tocar bem devagar para evitar erros
 
 ### VF
-Um tópico musical bem estudado deve ser reconhecido na escuta, na leitura e na prática.
+Numa leitura à primeira vista em conjunto, parar para corrigir um erro é pior do que tocar uma nota errada e seguir.
 > Verdadeiro
 
 ### Fill
-Nesta lição, o tema central é ___.
-- andamento aleatório
-- Mentalidade de sight-reading ✓
-- troca de instrumento
+O leitor experiente sempre está olhando ___ da nota que está tocando no momento.
+- exatamente em cima
+- à frente ✓
+- atrás
 
-### Match
-Associe cada etapa de estudo à ação correta:
-- Conceito → Entender a ideia principal
-- Escuta → Reconhecer o tema em músicas reais
-- Prática → Aplicar com voz, corpo ou instrumento
-- Revisão → Corrigir e repetir com consciência
+### MC
+O que fazer quando você toca uma nota errada durante uma leitura à primeira vista?
+- Parar e voltar para corrigir
+- Pedir para a banda recomeçar do início
+- Esquecer o erro e seguir focado no que vem a seguir ✓
+- Tocar o trecho de novo mais rápido
+
+### VF
+Sight-reading é um dom de nascimento que não pode ser desenvolvido com prática.
+> Falso
 
 ## Jogo
 
-MISSÃO MENTALIDADE DE SIGHT-READING: escolha uma música simples do repertório de louvor ou de estudo. Ouça uma vez procurando apenas Mentalidade de sight-reading. Depois execute um trecho curto aplicando esse tema de propósito. Grave ou anote o resultado e responda: onde o conceito apareceu com clareza e onde ainda precisa de ajuste?
+MISSÃO NUNCA PARE: pegue uma partitura que você nunca viu (qualquer hinário ou cifra com ritmo escrito serve). Coloque metrônomo num andamento confortável e toque o trecho inteiro do começo ao fim sem parar uma única vez, doa a quem doer. Anote depois quantas vezes seu instinto pediu para você parar — e parabéns por cada vez que resistiu. Repita amanhã com outra partitura.

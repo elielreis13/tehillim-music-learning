@@ -4,6 +4,13 @@
 
 {% block head %}
 <style>
+  /* CSS variables required by games.css */
+  :root {
+    --ink: #24313f; --mint: #dff7ea; --sky: #dcefff; --sun: #ffd66b;
+    --coral: #ff8a7a; --plum: #6d5dfc; --green: #2e9f65;
+    --shadow: 0 18px 48px rgba(31,43,56,.14); --radius: 8px;
+  }
+
   /* ── Layout ─────────────────────────────────────── */
   .study-layout {
     display: flex;
@@ -101,6 +108,7 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+    position: relative;
   }
 
   .eyebrow {
@@ -650,5 +658,7 @@
 <script src="/static/js/vexflow-utils.js"></script>
 <script src="/static/js/audio.js"></script>
 <script src="/static/js/recorder.js"></script>
+<link rel="stylesheet" href="/static/css/games.css">
+<script src="/static/js/games.js" data-module-player="true"></script>
 <script src="/static/js/app.js"></script>
 {% endblock %}

@@ -4,7 +4,7 @@ slug: dinamica
 title: Dinâmica
 description: Por que uma música que toca no máximo o tempo todo cansa o ouvido? Porque sem dinâmica não há emoção.
 topics: Dinâmica
-game_kind: game-listen
+game_kind: game-challenge
 ---
 
 ## Teoria
@@ -26,33 +26,36 @@ Uma régua horizontal de dinâmica, da esquerda para a direita: pp → p → mp 
 ## Exercícios
 
 ### MC
-O que significa o símbolo "p" em uma partitura?
-- Pausa — o músico deve parar de tocar
-- Piano — tocar de forma suave ✓
-- Presto — tocar em andamento rápido
-- Pizzicato — técnica de cordas dedilhadas
+Você abre uma partitura de louvor e vê um "p" pequeno embaixo do primeiro compasso. O que você faz?
+- Para de tocar imediatamente
+- Toca de forma bem suave ✓
+- Acelera o andamento
+- Toca em pizzicato
 
 ### VF
-O símbolo de crescendo indica que o músico deve aumentar gradualmente o volume.
+Você está tocando e o regente desenha um sinal de "<" com a mão se abrindo. Isso quer dizer para ir aumentando o volume aos poucos.
 > Verdadeiro
 
 ### Fill
-O símbolo ___ indica que se deve tocar com intensidade forte.
+O símbolo ___ pede para tocar com intensidade forte.
 - p
 - mp
 - f ✓
 
 ### MC
-Qual sequência de dinâmicas descreve corretamente uma música que começa suave, fica mais forte e depois volta a ficar suave?
-- ff → mf → p
-- p → crescendo → ff → decrescendo → p ✓
-- mp → pp → ff
-- f → ff → p → pp
+Você está arranjando "Oceanos" e quer planejar a dinâmica do começo ao final. Qual sequência cria mais emoção?
+- ff o tempo todo, sem mudar
+- p no verso, crescendo até ff no refrão final, decrescendo para pp no fim ✓
+- ff no início e p no final
+- pp do começo ao fim
 
-### VF
-Uma música de louvor que mantém o mesmo volume do início ao fim é igualmente expressiva do que uma com variações dinâmicas.
-> Falso
+### Match
+Associe cada símbolo à indicação correta:
+- pp → Muito suave (pianissimo)
+- mf → Meio forte (mezzo-forte)
+- ff → Muito forte (fortissimo)
+- < → Crescendo (aumentar gradualmente)
 
 ## Jogo
 
-ARQUITETO DE DINÂMICA — Escolha uma música de louvor conhecida pelo grupo. Antes de tocar, desenhem juntos um gráfico simples em papel: eixo horizontal = tempo (versos, refrão, ponte), eixo vertical = intensidade (de pp a ff). Decidam juntos como a dinâmica deve fluir: "verso 1 em mp, refrão em mf, ponte começa em p e cresce até ff, final em p". Então toquem seguindo esse plano. Comparem como soou em relação à versão "sem planejamento de dinâmica".
+ARQUITETO DE DINÂMICA — Em grupos de 3 a 6 (15 minutos). Peguem papel e caneta. Escolham uma música de louvor conhecida. Desenhem juntos um "mapa de montanha": eixo X = trechos (intro, verso 1, refrão, ponte, refrão final, outro), eixo Y = volume (pp a ff). Cada grupo decide a curva: onde sobe, onde desce, onde explode. Toquem (ou cantem) seguindo o mapa. Outros grupos pontuam de 0 a 10 se a dinâmica emocionou. Vence o grupo com o "arco emocional" mais bem executado.

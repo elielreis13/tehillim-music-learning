@@ -156,18 +156,6 @@ GROUPS: tuple[ModuleGroup, ...] = (
     ),
     # ── Pozzoli ───────────────────────────────────────────────────────────────
     ModuleGroup(
-        name="Método Pozzoli",
-        slug="metodo-pozzoli",
-        icon="🟣",
-        icon_file="pozzoli.svg",
-        level="Pozzoli",
-        description=(
-            "Solfejo e leitura melódica baseados no Método Pozzoli. "
-            "12 trilhas progressivas do solfejo inicial ao avançado (P1–P4)."
-        ),
-        modules=_by_range(201, 212),
-    ),
-    ModuleGroup(
         name="Ditado Rítmico Pozzoli",
         slug="ditado-ritmico-pozzoli",
         icon="🟣",

@@ -26,33 +26,36 @@ Um segmento de teclado de piano mostrando uma oitava completa (de Dó a Dó), co
 ## Exercícios
 
 ### MC
-Quantos semitons há em um tom?
-- Um
-- Três
-- Dois ✓
-- Quatro
+Você está no teclado e seu professor pede: "toque um tom acima do Dó". Quantas teclas você precisa contar (incluindo as pretas)?
+- Uma tecla
+- Duas teclas ✓
+- Três teclas
+- Quatro teclas
 
 ### VF
-Entre as notas Mi e Fá existe uma tecla preta no piano, portanto a distância entre elas é de um tom.
-> Falso
+Você olha pro teclado e percebe que entre Mi e Fá não há tecla preta — elas se tocam direto. Isso significa que a distância entre elas é um semitom.
+> Verdadeiro
 
 ### Fill
-Os dois pares de notas naturais que formam semitons naturais (sem tecla preta entre elas) são Mi-Fá e ___.
+Os dois pares de notas naturais que formam semitons sem tecla preta entre eles são Mi-Fá e ___.
 - Sol-Lá
 - Si-Dó ✓
 - Ré-Mi
 
 ### MC
-Qual é o padrão de tons (T) e semitons (S) da escala maior?
+Você quer montar a escala de Dó maior subindo no teclado. Qual padrão de tons (T) e semitons (S) você segue?
 - T-S-T-T-S-T-T
 - T-T-T-S-T-T-S
 - T-T-S-T-T-T-S ✓
 - S-T-T-T-S-T-T
 
-### VF
-A estrutura de tons e semitons da escala maior é a mesma independentemente de qual nota você começa.
-> Verdadeiro
+### Match
+Associe cada par de notas à distância correta:
+- Mi → Fá → Semitom (sem tecla preta entre)
+- Dó → Ré → Tom (com tecla preta entre)
+- Si → Dó → Semitom (sem tecla preta entre)
+- Sol → Lá → Tom (com tecla preta entre)
 
 ## Jogo
 
-CAÇADOR DE SEMITONS — Cada aluno pega um teclado (físico ou aplicativo no celular). O professor diz uma nota qualquer (ex: "Sol") e o aluno deve tocar imediatamente as duas notas que estão a um semitom de distância — uma acima e uma abaixo (Sol# acima e Fá# abaixo). Após dominar isso, avancem: o professor diz uma nota e pergunta "um tom acima" ou "um semitom abaixo", e o aluno deve tocar a nota correta. Aumentem a velocidade das perguntas progressivamente.
+CAÇADOR DE SEMITONS — Em duplas, cada um com teclado ou app de piano (10 minutos). Um aluno é o "caçador" e o outro é o "alvo". O caçador grita uma nota: "Sol!". O alvo precisa tocar IMEDIATAMENTE as duas notas que estão a um semitom: a de cima (Sol#) e a de baixo (Fá#). 1 ponto por par correto em até 3 segundos. Fase 2: o caçador grita "um tom acima de Lá" — o alvo toca a nota certa. Quem atingir 10 pontos primeiro vira o "Mestre dos Semitons". Trocam de papel.

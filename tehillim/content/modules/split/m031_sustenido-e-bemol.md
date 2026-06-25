@@ -2,7 +2,7 @@
 number: 31
 slug: sustenido-e-bemol
 title: Sustenido e Bemol
-description: Lição focada em Sustenido e Bemol, separada do antigo módulo "Acidentes Musicais" para estudar um conceito por vez.
+description: As teclas pretas do piano existem por causa desses dois sinais — e eles aparecem em toda partitura de louvor. Aprenda o que faz uma nota subir ou descer meio tom.
 topics: Sustenido e Bemol
 game_kind: game-quiz
 ---
@@ -16,6 +16,8 @@ No teclado, os sustenidos e bemóis correspondem quase sempre às teclas pretas 
 Na prática do louvor, você encontrará sustenidos e bemóis tanto na armadura de clave (que indica a tonalidade da música inteira) quanto como acidentes avulsos dentro da partitura. Uma música em Ré maior, por exemplo, tem Fá♯ e Dó♯ na armadura — você já toca essas notas alteradas automaticamente em toda a peça. Acidentes avulsos aparecem para criar tensão, cromatismo ou modular temporariamente para outro acorde, como o famoso Fá♮ em músicas que estão em Sol maior.
 
 ## Visual
+
+<img src="/static/img/modules/sustenido-e-bemol.svg" alt="Teclado de piano mostrando Dó sustenido e Ré bemol apontando para a mesma tecla preta, com símbolos de sustenido e bemol" class="module-img" onerror="this.style.display='none'">
 
 Teclado de piano com as 12 teclas de uma oitava rotuladas, mostrando Dó♯ e Ré♭ apontando para a mesma tecla preta com uma seta dupla e a legenda "mesma tecla — sons enarmônicos".
 

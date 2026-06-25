@@ -4,7 +4,7 @@ slug: banda-de-louvor
 title: Banda de Louvor
 description: Você não toca para se destacar. Você toca para servir a música. Essa mentalidade transforma músicos bons em excelentes.
 topics: Banda de Louvor
-game_kind: game-match
+game_kind: game-identify-sound
 ---
 
 ## Teoria
@@ -26,33 +26,36 @@ Diagrama do palco da banda de louvor visto de cima: bateria ao centro-fundo, bai
 ## Exercícios
 
 ### MC
-Quais instrumentos formam a "seção rítmica" da banda de louvor?
+Você está montando uma banda de louvor do zero. Qual dupla forma a "seção rítmica" — a fundação sobre a qual todos os outros constroem?
 - Guitarra e teclado
 - Vocal e violão
 - Baixo e bateria ✓
 - Guitarra e baixo
 
 ### VF
-Um músico de louvor de excelência deve sempre tocar o máximo de notas possível para enriquecer o arranjo.
+Você é guitarrista novo na banda e quer impressionar. A atitude certa é tocar o máximo de notas possível, encher o arranjo e mostrar serviço.
 > Falso
 
 ### Fill
-A habilidade de ouvir atentamente cada membro da banda enquanto toca é chamada de escuta ___.
+A habilidade de ouvir atentamente cada membro da banda enquanto você está tocando é chamada de escuta ___.
 - passiva
 - ativa ✓
 - harmônica
 
 ### MC
-Qual é a função principal do teclado durante um momento de adoração íntima e suave no louvor?
-- Tocar riffs percussivos no registro agudo
-- Fazer solos longos sobre a melodia vocal
-- Preencher o espaço harmônico com pads suaves e sustentados ✓
-- Dobrar o baixo elétrico nas notas do acorde
+O ministro de louvor pede um momento de adoração íntima e suave. Como o teclado serve melhor nesse momento?
+- Tocando riffs percussivos agudos
+- Fazendo solos longos sobre o vocal
+- Preenchendo com pads suaves e sustentados ✓
+- Dobrando o baixo elétrico
 
-### VF
-A guitarra pode fazer contracantos melódicos que respondem ao vocal, além de tocar acordes.
-> Verdadeiro
+### Match
+Associe cada instrumento à sua função principal na banda de louvor:
+- Bateria → Fundação rítmica (sustenta o pulso)
+- Baixo elétrico → Fundação harmônica grave (ponte entre ritmo e harmonia)
+- Teclado → Pads e texturas harmônicas
+- Vocal principal → Melodia que conduz a congregação
 
 ## Jogo
 
-QUEM ESTÁ TOCANDO? — Com a banda tocando uma música de louvor conhecida, um aluno de cada vez fica de costas para o grupo com os olhos fechados. A qualquer momento, o professor faz um sinal para um músico parar de tocar silenciosamente. O aluno de costas deve identificar: "Quem parou?" Depois de identificar, deve dizer qual era a função daquele instrumento. Isso treina a escuta ativa e a consciência do papel de cada instrumento no conjunto. Rodem até todos terem sido tanto o "detetive" quanto o músico que parou.
+QUEM ESTÁ TOCANDO? — Banda tocando ao vivo (ou playback completo) uma música de louvor conhecida (10 a 15 minutos). Um aluno por vez fica de costas para a banda, olhos fechados. O líder gesticula em silêncio para UM músico parar de tocar (ou abaixar o volume na mixer). O "detetive" tem 10 segundos para identificar: "QUEM PAROU?" e dizer qual era a função desse instrumento. 2 pontos por instrumento certo + função correta; 1 ponto só pelo instrumento. Rodem até todos terem sido detetives e músicos. Vence quem somar mais pontos. Fase ninja: 2 músicos param ao mesmo tempo.

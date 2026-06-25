@@ -99,6 +99,19 @@ function setFeedback(text, type) {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+function _resultHtml(correct, total) {
+  const pct = total > 0 ? correct / total : 0;
+  const stars = pct === 1 ? "⭐⭐⭐" : pct >= 0.7 ? "⭐⭐" : pct >= 0.4 ? "⭐" : "";
+  const msg = pct === 1 ? "Perfeito! Mandou muito bem!" : pct >= 0.7 ? "Muito bom! Quase lá!" : "Continue praticando, você vai conseguir!";
+  const color = pct >= 0.7 ? "var(--green)" : "var(--coral)";
+  return `
+    <div class="tf-result" style="text-align:center;">
+      <div style="font-size:2rem;margin-bottom:4px;">${stars || "🎯"}</div>
+      <strong style="color:${color};font-size:1.6rem;">${correct} de ${total}</strong>
+      <p style="margin-top:6px;color:#5a6a7a;">${msg}</p>
+    </div>`;
+}
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -124,14 +137,8 @@ const RENDERERS = {
   "game-true-false-rapid": renderTrueFalseRapid,
   "game-hot-cold": renderHotCold,
   "game-rhythm-tap": renderRhythmTap,
-  "game-dictation": renderDictation,
-  "game-identify-sound": renderIdentifySound,
-  "game-listen": renderIdentifySound,
-  "game-karaoke": renderKaraoke,
   "game-compose": renderCompose,
-  "game-story": renderStory,
   "game-teach": renderTeach,
-  "game-vote": renderVote,
   "game-memory": renderMemory,
   "game-arrange": renderArrange,
   "game-sort": renderArrange,
@@ -491,16 +498,18 @@ function renderPuzzle(game, el) {
 
 function renderSequence(game, el) {
   const { items, blank_index, options, answer } = game.game_data;
+  const blankAt = blank_index ?? items.findIndex((it) => it === "?");
 
   el.innerHTML = `
     <p class="game-prompt">${game.prompt}</p>
+    <p style="font-size:12px;color:#9CA3AF;margin-bottom:8px">Qual item completa a sequência no lugar do <strong>?</strong>?</p>
     <div class="sequence-strip">
       ${items
         .map((item, i) => {
-          const node =
-            item === "?"
-              ? `<div class="seq-blank" id="seq-blank">?</div>`
-              : `<div class="seq-item">${item}</div>`;
+          const isBlank = i === blankAt;
+          const node = isBlank
+            ? `<div class="seq-blank" id="seq-blank">?</div>`
+            : `<div class="seq-item">${item}</div>`;
           const arrow = i < items.length - 1 ? `<span class="seq-arrow">→</span>` : "";
           return node + arrow;
         })
@@ -592,15 +601,12 @@ function renderSpeedrun(game, el) {
 
   const endSpeedrun = () => {
     clearInterval(timer);
-    const pct = Math.round((score / questions.length) * 100);
     el.innerHTML = `
       <p class="game-prompt">Tempo encerrado!</p>
-      <div class="tf-result">
-        <strong>${score}/${questions.length} corretas</strong>
-        <p>${pct}% de aproveitamento</p>
-      </div>
+      ${_resultHtml(score, questions.length)}
     `;
-    setFeedback(score >= questions.length * 0.7 ? "Ótimo desempenho!" : "Pratique mais e tente novamente.", score >= questions.length * 0.7 ? "ok" : "no");
+    const ok = score >= questions.length * 0.7;
+    setFeedback(ok ? "Ótimo desempenho!" : "Pratique mais e tente novamente.", ok ? "ok" : "no");
     if (score >= questions.length * 0.5) markComplete();
   };
 
@@ -674,13 +680,11 @@ function renderTrueFalseRapid(game, el) {
     const dots = results.map((ok) => `<div class="tf-dot ${ok ? "ok" : "no"}"></div>`).join("");
     el.innerHTML = `
       <div class="tf-progress">${dots}</div>
-      <div class="tf-result">
-        <strong>${correct}/${statements.length}</strong>
-        <p>${correct === statements.length ? "Perfeito!" : `${statements.length - correct} erro(s).`}</p>
-      </div>
+      ${_resultHtml(correct, statements.length)}
     `;
-    setFeedback(correct >= statements.length * 0.7 ? "Bom desempenho!" : "Revise o conteúdo.", correct >= statements.length * 0.7 ? "ok" : "no");
-    if (correct >= statements.length * 0.7) markComplete();
+    const ok = correct >= statements.length * 0.7;
+    setFeedback(ok ? "Bom desempenho!" : "Revise o conteúdo.", ok ? "ok" : "no");
+    if (ok) markComplete();
   };
 
   draw();
@@ -720,9 +724,17 @@ function renderHotCold(game, el) {
     });
 
     el.querySelector("#hc-check").addEventListener("click", () => {
-      const val = el.querySelector("#hc-input").value.trim();
-      const ok = val.toLowerCase() === answer.toLowerCase();
-      setFeedback(ok ? `Correto! A palavra era "${answer}".` : "Não é essa. Tente novamente.", ok ? "ok" : "no");
+      const input = el.querySelector("#hc-input");
+      const btn   = el.querySelector("#hc-check");
+      const val   = input.value.trim();
+      const ok    = val.toLowerCase() === answer.toLowerCase().trim();
+      input.style.borderColor = ok ? "var(--green)" : "var(--coral)";
+      input.style.background  = ok ? "#d4f5e2"      : "#ffe5e1";
+      btn.textContent = ok ? "✓ Correto!" : "✗ Tente novamente";
+      btn.style.background = ok ? "var(--green)" : "var(--coral)";
+      btn.style.color = "white";
+      if (ok) { input.disabled = true; btn.disabled = true; }
+      setFeedback(ok ? `Correto! A resposta era "${answer}".` : "Não é essa. Tente outra vez.", ok ? "ok" : "no");
       if (ok) markComplete();
     });
 
@@ -740,6 +752,20 @@ function renderRhythmTap(game, el) {
   const { pattern } = game.game_data;
   let step = 0;
   let score = 0;
+  let listening = false;
+
+  function _playPatternAudio() {
+    if (listening) return;
+    listening = true;
+    let i = 0;
+    const next = () => {
+      if (i >= pattern.length) { listening = false; return; }
+      window.audio?.tick(pattern[i] === 1);
+      i++;
+      setTimeout(next, 550);
+    };
+    next();
+  }
 
   const draw = () => {
     if (step >= pattern.length) { showRhythmResult(); return; }
@@ -757,14 +783,17 @@ function renderRhythmTap(game, el) {
           )
           .join("")}
       </div>
-      <p style="font-size:0.9rem;color:#5a6a7a;margin-bottom:12px">
+      <p style="font-size:0.9rem;color:#5a6a7a;margin-bottom:4px">
         Passo ${step + 1} de ${pattern.length} — ${isBeat ? "⬤ Tempo forte!" : "○ Silêncio"}
       </p>
+      <button class="secondary-btn" id="btn-listen" style="margin-bottom:12px;font-size:12px;">🔊 Ouvir padrão completo</button>
       <div class="rhythm-controls">
         <button class="tap-btn" id="btn-tap">TAP</button>
         <button class="tap-btn" id="btn-rest" style="background:var(--sky);border-color:#99a">SILÊNCIO</button>
       </div>
     `;
+
+    el.querySelector("#btn-listen").addEventListener("click", _playPatternAudio);
 
     el.querySelector("#btn-tap").addEventListener("click", () => {
       window.audio?.tick(true);
@@ -784,132 +813,14 @@ function renderRhythmTap(game, el) {
     const ok = score === pattern.length;
     el.innerHTML = `
       <p class="game-prompt">Resultado</p>
-      <div class="tf-result">
-        <strong>${score}/${pattern.length}</strong>
-        <p>${ok ? "Ritmo perfeito!" : `${pattern.length - score} erro(s).`}</p>
-      </div>
-      <button class="secondary-btn" id="retry-rhythm">Tentar novamente</button>
+      ${_resultHtml(score, pattern.length)}
+      <button class="secondary-btn" id="retry-rhythm" style="margin-top:14px">Tentar novamente</button>
     `;
     setFeedback(ok ? "Perfeito! Ritmo correto." : "Pratique o padrão com calma.", ok ? "ok" : "no");
     if (ok) markComplete();
     el.querySelector("#retry-rhythm").addEventListener("click", () => {
       step = 0; score = 0; draw();
       setFeedback("", "");
-    });
-  };
-
-  draw();
-}
-
-// ── game-dictation ────────────────────────────────────────────────────────────
-
-function renderDictation(game, el) {
-  const { visual_pattern, options, answer } = game.game_data;
-  const rhythmArr = visual_pattern.map((b) => (b === "●" ? 1 : 0));
-  const staffId = "dictation-staff";
-
-  el.innerHTML = `
-    <p class="game-prompt">${game.prompt}</p>
-    <div id="${staffId}" class="vf-staff-container"></div>
-    <button class="secondary-btn" id="play-dictation" style="margin-bottom:14px">▶ Ouvir padrão</button>
-    <div class="choices">
-      ${options.map((o) => `<button class="choice" data-value="${o}">${o}</button>`).join("")}
-    </div>
-  `;
-
-  if (window.VFUtils?.isReady()) {
-    window.VFUtils.renderRhythm(staffId, rhythmArr);
-  }
-
-  el.querySelector("#play-dictation").addEventListener("click", () => {
-    window.audio?.playRhythm(rhythmArr, 500);
-  });
-
-  el.querySelectorAll(".choice").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      el.querySelectorAll(".choice").forEach((b) => b.classList.remove("correct", "wrong"));
-      const ok = btn.dataset.value === answer;
-      btn.classList.add(ok ? "correct" : "wrong");
-      setFeedback(ok ? "Correto!" : "Não é essa. Conte novamente.", ok ? "ok" : "no");
-      if (ok) markComplete();
-    });
-  });
-}
-
-// ── game-identify-sound / game-listen ─────────────────────────────────────────
-
-function renderIdentifySound(game, el) {
-  const d = game.game_data;
-  const description = d.description;
-  const options = d.options;
-  const answer = d.answer;
-
-  el.innerHTML = `
-    <p class="game-prompt">${game.prompt}</p>
-    <div class="story-scene">${description}</div>
-    <div class="choices">
-      ${options.map((o) => `<button class="choice" data-value="${o}">${o}</button>`).join("")}
-    </div>
-  `;
-
-  el.querySelectorAll(".choice").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      el.querySelectorAll(".choice").forEach((b) => b.classList.remove("correct", "wrong"));
-      const ok = btn.dataset.value === answer;
-      btn.classList.add(ok ? "correct" : "wrong");
-      setFeedback(ok ? "Correto!" : "Releia a descrição e tente novamente.", ok ? "ok" : "no");
-      if (ok) markComplete();
-    });
-  });
-}
-
-// ── game-karaoke ──────────────────────────────────────────────────────────────
-
-function renderKaraoke(game, el) {
-  const { syllables, interval_ms } = game.game_data;
-  let active = -1;
-  let tapped = new Set();
-  let playing = false;
-  let timer = null;
-
-  const draw = () => {
-    el.innerHTML = `
-      <p class="game-prompt">${game.prompt}</p>
-      <div class="karaoke-track">
-        ${syllables
-          .map(
-            (s, i) =>
-              `<div class="karaoke-syl ${i < active ? (tapped.has(i) ? "tapped" : "missed") : i === active ? "active" : ""}" data-idx="${i}">${s}</div>`
-          )
-          .join("")}
-      </div>
-      <div class="rhythm-controls">
-        <button class="start-btn" id="kar-start" ${playing ? "disabled" : ""}>▶ Iniciar</button>
-        <button class="tap-btn" id="kar-tap" ${!playing ? "disabled" : ""}>TAP</button>
-      </div>
-    `;
-
-    el.querySelector("#kar-start").addEventListener("click", () => {
-      active = 0; tapped = new Set(); playing = true;
-      draw();
-      timer = setInterval(() => {
-        active++;
-        if (active >= syllables.length) {
-          clearInterval(timer);
-          playing = false;
-          const ok = tapped.size >= syllables.length * 0.7;
-          draw();
-          setFeedback(ok ? `Ótimo! Você tapou ${tapped.size}/${syllables.length} sílabas.` : `Você tapou ${tapped.size}/${syllables.length}. Tente novamente!`, ok ? "ok" : "no");
-          if (ok) markComplete();
-          return;
-        }
-        if (window.audio?.isNote(syllables[active])) window.audio.playNote(syllables[active], 0.4);
-        draw();
-      }, interval_ms);
-    });
-
-    el.querySelector("#kar-tap").addEventListener("click", () => {
-      if (active >= 0 && active < syllables.length) tapped.add(active);
     });
   };
 
@@ -979,48 +890,6 @@ function renderCompose(game, el) {
   draw();
 }
 
-// ── game-story ────────────────────────────────────────────────────────────────
-
-function renderStory(game, el) {
-  const { scene, options } = game.game_data;
-  let selected = new Set();
-
-  el.innerHTML = `
-    <p class="game-prompt">${game.prompt}</p>
-    <div class="story-scene">${scene}</div>
-    <div class="story-options">
-      ${options.map((o, i) => `<button class="story-option" data-idx="${i}">${o.name}</button>`).join("")}
-    </div>
-    <button class="secondary-btn" id="check-story" style="margin-top:16px">Verificar escolhas</button>
-  `;
-
-  el.querySelectorAll(".story-option").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const idx = Number(btn.dataset.idx);
-      if (selected.has(idx)) selected.delete(idx);
-      else selected.add(idx);
-      btn.classList.toggle("selected", selected.has(idx));
-    });
-  });
-
-  el.querySelector("#check-story").addEventListener("click", () => {
-    const correctCount = options.filter((o) => o.correct).length;
-    let hits = 0;
-    el.querySelectorAll(".story-option").forEach((btn, i) => {
-      btn.classList.remove("selected");
-      if (options[i].correct) {
-        btn.classList.add("revealed-ok");
-        if (selected.has(i)) hits++;
-      } else if (selected.has(i)) {
-        btn.classList.add("revealed-no");
-      }
-    });
-    const ok = hits === correctCount && selected.size === correctCount;
-    setFeedback(ok ? "Escolha perfeita!" : `${hits}/${correctCount} instrumentos corretos.`, ok ? "ok" : "no");
-    if (ok) markComplete();
-  });
-}
-
 // ── game-teach ────────────────────────────────────────────────────────────────
 
 function renderTeach(game, el) {
@@ -1048,36 +917,6 @@ function renderTeach(game, el) {
   submit.addEventListener("click", () => {
     setFeedback("Explicação registrada! Parabéns pelo esforço.", "ok");
     markComplete();
-  });
-}
-
-// ── game-vote ─────────────────────────────────────────────────────────────────
-
-function renderVote(game, el) {
-  const { option_a, option_b, answer } = game.game_data;
-
-  el.innerHTML = `
-    <p class="game-prompt">${game.prompt}</p>
-    <div class="vote-options">
-      <button class="vote-option" data-choice="A">
-        <span class="vote-label">A</span>
-        <span>${option_a}</span>
-      </button>
-      <button class="vote-option" data-choice="B">
-        <span class="vote-label">B</span>
-        <span>${option_b}</span>
-      </button>
-    </div>
-  `;
-
-  el.querySelectorAll(".vote-option").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      el.querySelectorAll(".vote-option").forEach((b) => b.classList.remove("correct", "wrong"));
-      const ok = btn.dataset.choice === answer;
-      btn.classList.add(ok ? "correct" : "wrong");
-      setFeedback(ok ? "Correto! Essa é a definição correta." : "Não é essa. Leia as duas com atenção.", ok ? "ok" : "no");
-      if (ok) markComplete();
-    });
   });
 }
 
@@ -1148,18 +987,20 @@ function renderMemory(game, el) {
 function renderArrange(game, el) {
   const { shuffled, solution } = game.game_data;
   let order = [...shuffled];
+  let selectedIdx = null;
 
   const draw = () => {
     el.innerHTML = `
       <p class="game-prompt">${game.prompt}</p>
+      <p style="font-size:12px;color:#9CA3AF;margin-bottom:10px">Toque em dois itens para trocar de posição</p>
       <div class="arrange-list">
         ${order
           .map(
             (item, i) => `
-          <div class="arrange-item" data-idx="${i}">
+          <div class="arrange-item${selectedIdx === i ? " arrange-selected" : ""}" data-idx="${i}" style="cursor:pointer;">
+            <span style="font-size:18px;color:#aab;margin-right:4px;user-select:none;">☰</span>
             <span class="arrange-label">${item}</span>
-            <button class="arrange-arrow" data-dir="up" data-idx="${i}" ${i === 0 ? "disabled" : ""}>↑</button>
-            <button class="arrange-arrow" data-dir="down" data-idx="${i}" ${i === order.length - 1 ? "disabled" : ""}>↓</button>
+            ${selectedIdx === i ? '<span style="font-size:11px;color:#C4943A;margin-left:auto;font-weight:700;">selecionado →</span>' : ""}
           </div>`
           )
           .join("")}
@@ -1167,17 +1008,24 @@ function renderArrange(game, el) {
       <button class="secondary-btn" id="check-arrange">Verificar ordem</button>
     `;
 
-    el.querySelectorAll(".arrange-arrow").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const i = Number(btn.dataset.idx);
-        if (btn.dataset.dir === "up" && i > 0) [order[i], order[i - 1]] = [order[i - 1], order[i]];
-        else if (btn.dataset.dir === "down" && i < order.length - 1) [order[i], order[i + 1]] = [order[i + 1], order[i]];
+    el.querySelectorAll(".arrange-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        const idx = Number(item.dataset.idx);
+        if (selectedIdx === null) {
+          selectedIdx = idx;
+        } else if (selectedIdx === idx) {
+          selectedIdx = null;
+        } else {
+          [order[selectedIdx], order[idx]] = [order[idx], order[selectedIdx]];
+          selectedIdx = null;
+          setFeedback("", "");
+        }
         draw();
-        setFeedback("", "");
       });
     });
 
     el.querySelector("#check-arrange").addEventListener("click", () => {
+      selectedIdx = null;
       const ok = order.every((item, i) => item === solution[i]);
       el.querySelectorAll(".arrange-item").forEach((row, i) => {
         row.classList.toggle("correct", order[i] === solution[i]);
@@ -1200,12 +1048,7 @@ function renderQuiz(game, el) {
   const draw = () => {
     if (idx >= questions.length) {
       const ok = score >= questions.length * 0.7;
-      el.innerHTML = `
-        <div class="tf-result">
-          <strong>${score}/${questions.length} corretas</strong>
-          <p>${ok ? "Excelente!" : "Revise e tente novamente."}</p>
-        </div>
-      `;
+      el.innerHTML = _resultHtml(score, questions.length);
       setFeedback(ok ? "Quiz concluído!" : "Você pode tentar novamente.", ok ? "ok" : "no");
       if (ok) markComplete();
       return;
@@ -1428,4 +1271,8 @@ function renderChallenge(game, el) {
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 
-init();
+// Only auto-init in the games lab context (not when loaded as a module renderer library)
+const _currentScript = document.currentScript;
+if (!(_currentScript && _currentScript.dataset.modulePlayer === "true")) {
+  init();
+}

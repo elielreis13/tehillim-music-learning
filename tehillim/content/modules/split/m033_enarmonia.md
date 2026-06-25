@@ -2,7 +2,7 @@
 number: 33
 slug: enarmonia
 title: Enarmonia
-description: Lição focada em Enarmonia, separada do antigo módulo "Acidentes Musicais" para estudar um conceito por vez.
+description: Dó♯ e Ré♭ soam igual, mas têm nomes diferentes — e trocar um pelo outro pode confundir (ou salvar) quem está lendo a partitura. Descubra por que dois nomes para o mesmo som importam.
 topics: Enarmonia
 game_kind: game-quiz
 ---

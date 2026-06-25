@@ -2,9 +2,9 @@
 number: 24
 slug: figuras-musicais
 title: Figuras musicais
-description: Lição focada em Figuras musicais, separada do antigo módulo "Introdução à Notação Musical" para estudar um conceito por vez.
+description: Na partitura, a aparência de cada nota já conta quanto tempo ela dura — aprenda a "ler pelo visual" e o ritmo começa a fazer sentido na hora.
 topics: Figuras musicais
-game_kind: game-quiz
+game_kind: game-sequence
 ---
 
 ## Teoria
@@ -17,38 +17,43 @@ O denominador da **fórmula de compasso** (o número de baixo) informa qual figu
 
 ## Visual
 
+<img src="/static/img/modules/figuras-musicais.svg" alt="Tabela com as 5 figuras musicais: semibreve, mínima, semínima, colcheia e semicolcheia, com seus valores em tempos" class="module-img" onerror="this.style.display='none'">
+
 Tabela horizontal com 5 colunas, uma para cada figura: símbolo da nota desenhado em cima, nome em português no meio, e valor em tempos em baixo (com o denominador 4 como referência) — semibreve (4), mínima (2), semínima (1), colcheia (½), semicolcheia (¼) — com setas bidirecionais entre colunas indicando a relação de divisão por 2.
 
 ## Exercícios
 
 ### MC
-Quantas colcheias equivalem a uma semibreve?
-- Dois
-- Quatro
-- Oito ✓
-- Dezesseis
+Você vê na partitura uma nota com cabeça oval ABERTA e sem haste, sozinha num compasso inteiro de 4/4. Qual figura é essa e quanto vale?
+- Mínima, 2 tempos
+- Semibreve, 4 tempos ✓
+- Semínima, 1 tempo
+- Colcheia, meio tempo
 
 ### VF
-Em um compasso de 6/8, a figura que recebe 1 tempo é a semínima, pois a semínima sempre vale 1 tempo.
-> Falso
+Você está tocando em 4/4 e vê uma semibreve sozinha no compasso. Você deve segurar essa nota por 4 tempos contando "1-2-3-4".
+> Verdadeiro
 
 ### Fill
-A semínima tem cabeça ___ e haste, enquanto a mínima tem cabeça aberta e haste.
-- aberta
-- fechada ✓
-- sem haste
+Quando você vê várias colcheias seguidas conectadas por uma barra horizontal no topo das hastes, essa barra se chama ___ e agrupa as notas por tempo.
+- ligadura
+- barra de ligação (beam) ✓
+- ponto de aumento
 
 ### MC
-O que as barras de ligação (beams) fazem quando aparecem conectando hastes de colcheias na partitura?
-- Indicam que as notas devem ser tocadas mais fortes
-- Substituem as bandeirinhas individuais e agrupam notas por tempo ✓
-- Significam que as notas são ligadas (não re-atacadas)
-- Indicam uma mudança de compasso
+O regente pede pra você bater "4 palmas em 1 tempo". Qual figura musical você está executando?
+- Semínima
+- Colcheia
+- Semicolcheia ✓
+- Mínima
 
-### VF
-Uma mínima sempre vale 2 tempos, independentemente da fórmula de compasso usada.
-> Falso
+### Match
+Associe cada figura ao seu valor em tempos (compasso 4/4):
+- Semibreve → 4 tempos
+- Mínima → 2 tempos
+- Semínima → 1 tempo
+- Colcheia → meio tempo
 
 ## Jogo
 
-PIRÂMIDE DE VALORES — Com palmas (ou metrônomo a 60 BPM), o grupo executa este exercício coletivo em 4/4: compasso 1 — todos batem 1 palma (semibreve); compasso 2 — 2 palmas (mínimas); compasso 3 — 4 palmas (semínimas); compasso 4 — 8 palmas (colcheias); compasso 5 — 16 palmas (semicolcheias); depois desce de volta: compasso 6 — 8 palmas, compasso 7 — 4, compasso 8 — 2, compasso 9 — 1. Quem sair do tempo ou errar a contagem de palmas em qualquer degrau da pirâmide recomeça do início — o objetivo é completar a pirâmide de subida e descida sem falhar.
+PIRÂMIDE DE PALMAS — Em grupo, com metrônomo a 60 BPM. Compasso 1: todos batem 1 palma só (semibreve segurada). Compasso 2: 2 palmas (mínimas). Compasso 3: 4 palmas (semínimas). Compasso 4: 8 palmas (colcheias). Compasso 5: 16 palmas (semicolcheias). Depois DESCE de volta — 8, 4, 2, 1. Quem perder o tempo ou errar a quantidade de palmas em qualquer degrau é eliminado. Vence quem subir E descer a pirâmide inteira sem falhar. Tempo: 4 minutos.

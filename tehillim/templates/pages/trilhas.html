@@ -43,20 +43,29 @@
 
 {% block content %}
 
-{% set group_colors = [
-  ('#C4943A', '#F2EAD8', '#FBF6EE'),
-  ('#5A8A6A', '#DFF0E8', '#F4FAF7'),
-  ('#7B5EA7', '#E8E0F4', '#F6F3FC'),
-  ('#4A78B0', '#DBEAFE', '#EEF3FA'),
-  ('#E8632A', '#FFE4D6', '#FFF5EE'),
-] %}
-{% set group_levels = ['Iniciante', 'Iniciante', 'Intermediário', 'Avançado', 'Intermediário'] %}
+{% set level_colors = {
+  'Iniciante':    ('#C4943A', '#F2EAD8', '#FBF6EE'),
+  'Intermediário':('#5A8A6A', '#DFF0E8', '#F4FAF7'),
+  'Avançado':     ('#7B5EA7', '#E8E0F4', '#F6F3FC'),
+  'Bona':         ('#4A78B0', '#DBEAFE', '#EEF3FA'),
+  'Pozzoli':      ('#E8632A', '#FFE4D6', '#FFF5EE'),
+} %}
 
 <div class="trail-outer" style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;">
 
+  {% set ns = namespace(last_level='', group_num=0) %}
   {% for group in groups %}
-  {% set c = group_colors[loop.index0 % 5] %}
-  {% set level = group_levels[loop.index0 % 5] %}
+  {% set level = group.level %}
+  {% set c = level_colors.get(level, ('#C4943A', '#F2EAD8', '#FBF6EE')) %}
+  {% set ns.group_num = ns.group_num + 1 %}
+
+  {% if level != ns.last_level %}
+  {% set ns.last_level = level %}
+  <div style="display:flex;align-items:center;gap:12px;margin-top:{% if loop.index0 == 0 %}0{% else %}8{% endif %}px;margin-bottom:4px;">
+    <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:{{ c[0] }};">{{ level }}</span>
+    <div style="flex:1;height:1px;background:{{ c[1] }};"></div>
+  </div>
+  {% endif %}
 
   <section class="trail-section" style="background:white;border-radius:18px;border:1px solid #F0E8D4;overflow:hidden;">
     <div class="trail-row" style="display:flex;align-items:stretch;">
@@ -65,7 +74,7 @@
       <div class="trail-left" style="width:240px;background:{{ c[2] }};padding:26px;display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;">
         <div class="trail-left-text">
           <p style="font-size:10px;color:{{ c[0] }};text-transform:uppercase;letter-spacing:0.2em;font-weight:700;margin:0;">
-            Grupo {{ '%02d'|format(loop.index) }} · {{ level }}
+            {{ level }}
           </p>
           <h2 style="font-family:'Fraunces',serif;font-size:20px;font-weight:500;line-height:1.15;margin:8px 0 6px;color:#2A2419;">
             {{ group.name }}

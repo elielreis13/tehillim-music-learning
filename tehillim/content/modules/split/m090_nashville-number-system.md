@@ -2,49 +2,55 @@
 number: 90
 slug: nashville-number-system
 title: Nashville Number System
-description: Lição focada em Nashville Number System, separada do antigo módulo “Cifragem e Análise Harmônica” para estudar um conceito por vez.
+description: O Nashville Number System é o código que músicos profissionais usam para tocar qualquer música em qualquer tom sem reler a cifra — simples, rápido e poderoso.
 topics: Nashville Number System
 game_kind: game-challenge
 ---
 
 ## Teoria
 
-Esta lição isola o tema Nashville Number System dentro do estudo de Cifragem e Análise Harmônica. O foco é compreender um conceito por vez, reconhecer seus sinais e aplicar em situações musicais reais.
+O **Nashville Number System (NNS)** é um sistema de cifragem criado nos anos 1950 pelos músicos de estúdio de Nashville, no Tennessee, capital mundial da música country e do gospel americano. Em vez de escrever nomes de acordes (C, F, G) ou algarismos romanos (I, IV, V), o NNS usa **algarismos arábicos** — simplesmente **1, 4, 5**. Parece pequeno, mas essa escolha tem uma razão muito prática: é mais rápido de ler em uma partitura improvisada durante uma sessão de gravação ao vivo.
 
-Leia a ideia principal, procure exemplos no repertório que você já conhece e transforme a explicação em prática: cantar, bater palma, escrever, ouvir ou tocar. Um tópico só está aprendido quando aparece na execução.
+A lógica é a mesma dos algarismos romanos: cada número representa um grau da escala. Em Dó maior, **1 = Dó, 2 = Ré menor, 3 = Mi menor, 4 = Fá, 5 = Sol, 6 = Lá menor, 7 = Si diminuto**. Para indicar acorde menor, escreve-se um traço ou minúsculo (ex.: **6-** ou **6m** para Lá menor). Para indicar inversões e baixos, usa-se uma barra (**1/3** = Dó com Mi no baixo). Andamento, divisão e durações também têm símbolos próprios, mas o coração do sistema é a sequência numérica.
 
-Ao estudar de forma separada, o aluno evita misturar conceitos parecidos e cria uma base mais firme para as próximas lições.
+Uma “folha NNS” típica de um louvor pode parecer algo como: **1 - 5 - 6- - 4** | **1 - 5 - 4 - 1**. Quem é treinado lê e toca imediatamente em qualquer tom. O produtor diz “vamos fazer em Mi” e todos os músicos — guitarrista, baixista, tecladista, baterista — saem tocando sem refazer nada. Por isso o NNS é o **padrão profissional** em Nashville, em igrejas americanas de todos os portes (de Bethel a Lakewood) e em estúdios de gospel internacional.
+
+Para o músico de louvor brasileiro, aprender NNS é uma vantagem competitiva enorme: você passa a entender materiais de Hillsong, Elevation, Bethel diretamente (que muitas vezes circulam em formato NNS), consegue acompanhar cantores que mudam de tom no ensaio sem stress e desenvolve uma forma de pensar harmonia mais ágil, baseada em **função** em vez de **nome de nota**. É o mesmo princípio dos algarismos romanos, mas com a velocidade de leitura de um número.
 
 ## Visual
 
-Cartão visual central com o título “Nashville Number System”, um exemplo musical simples e uma comparação lado a lado entre execução incorreta e execução correta.
+Uma comparação lado a lado em três colunas: à esquerda, cifra tradicional (C - G - Am - F); ao centro, algarismos romanos (I - V - vi - IV); à direita, Nashville Number System (1 - 5 - 6- - 4). Cada acorde com a mesma cor de fundo nas três representações, mostrando a equivalência.
 
 ## Exercícios
 
 ### MC
-Qual é o foco principal desta lição?
-- Decorar repertório sem entender o conceito
-- Estudar Nashville Number System de forma isolada e aplicável ✓
-- Pular diretamente para assuntos avançados
-- Substituir a escuta pela teoria
+Qual a principal característica do Nashville Number System?
+- Usa apenas o nome das notas em inglês
+- Usa algarismos arábicos para representar graus da escala ✓
+- Substitui a partitura por desenhos
+- Funciona apenas em tonalidades menores
 
 ### VF
-Um tópico musical bem estudado deve ser reconhecido na escuta, na leitura e na prática.
+No NNS, o número 6 com um traço ou “m” (6- ou 6m) representa o acorde menor do sexto grau, como Lá menor em Dó maior.
 > Verdadeiro
 
 ### Fill
-Nesta lição, o tema central é ___.
-- andamento aleatório
-- Nashville Number System ✓
-- troca de instrumento
+No Nashville Number System, a sequência 1 - 4 - 5 corresponde, em Dó maior, a ___.
+- Dó - Ré - Mi
+- Dó - Fá - Sol ✓
+- Dó - Sol - Lá
 
-### Match
-Associe cada etapa de estudo à ação correta:
-- Conceito → Entender a ideia principal
-- Escuta → Reconhecer o tema em músicas reais
-- Prática → Aplicar com voz, corpo ou instrumento
-- Revisão → Corrigir e repetir com consciência
+### MC
+Por que o NNS é tão útil para músicos de louvor que acompanham diferentes cantores?
+- Porque elimina a necessidade de ensaiar
+- Porque permite tocar a mesma música em qualquer tom sem reescrever a cifra ✓
+- Porque substitui o uso de instrumentos harmônicos
+- Porque só serve para gravações de estúdio
+
+### VF
+O Nashville Number System foi criado em Nashville, Tennessee, e é amplamente usado em igrejas americanas e estúdios profissionais.
+> Verdadeiro
 
 ## Jogo
 
-MISSÃO NASHVILLE NUMBER SYSTEM: escolha uma música simples do repertório de louvor ou de estudo. Ouça uma vez procurando apenas Nashville Number System. Depois execute um trecho curto aplicando esse tema de propósito. Grave ou anote o resultado e responda: onde o conceito apareceu com clareza e onde ainda precisa de ajuste?
+DESAFIO NNS: pegue uma música de louvor que você conhece bem. Escreva o verso e o refrão inteiros usando apenas NNS (ex.: 1 - 5 - 6- - 4). Depois, sem olhar a cifra original, toque a mesma música em três tons diferentes (Dó, Sol e Ré). Cronometre quanto tempo levou para tocar a primeira vez e a terceira vez. Você ficou mais rápido?

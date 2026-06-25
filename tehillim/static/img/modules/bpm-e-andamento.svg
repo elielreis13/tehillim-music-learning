@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" width="800" height="260" font-family="'Segoe UI', Arial, sans-serif">
+  <!-- Background -->
+  <rect width="800" height="260" fill="#FAFAFA" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">TERMOS DE ANDAMENTO</text>
+
+  <!-- Gradient bar (slow → fast) -->
+  <defs>
+    <linearGradient id="speedGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#7EC8E3"/>
+      <stop offset="40%"  stop-color="#4CAF50"/>
+      <stop offset="75%"  stop-color="#FF9800"/>
+      <stop offset="100%" stop-color="#F44336"/>
+    </linearGradient>
+  </defs>
+  <rect x="60" y="110" width="680" height="12" rx="6" fill="url(#speedGrad)"/>
+
+  <!-- Arrow heads -->
+  <polygon points="740,110 756,116 740,122" fill="#F44336"/>
+
+  <!-- Tick marks and labels -->
+  <!-- Largo: x≈60 -->
+  <line x1="95"  y1="108" x2="95"  y2="125" stroke="#555" stroke-width="1.5"/>
+  <!-- Adagio: x≈175 -->
+  <line x1="195" y1="108" x2="195" y2="125" stroke="#555" stroke-width="1.5"/>
+  <!-- Andante: x≈280 -->
+  <line x1="305" y1="108" x2="305" y2="125" stroke="#555" stroke-width="1.5"/>
+  <!-- Moderato: x≈420 -->
+  <line x1="430" y1="108" x2="430" y2="125" stroke="#555" stroke-width="1.5"/>
+  <!-- Allegro: x≈560 -->
+  <line x1="570" y1="108" x2="570" y2="125" stroke="#555" stroke-width="1.5"/>
+  <!-- Presto: x≈690 -->
+  <line x1="700" y1="108" x2="700" y2="125" stroke="#555" stroke-width="1.5"/>
+
+  <!-- Italian term labels (below bar) -->
+  <text x="95"  y="148" text-anchor="middle" font-size="13" font-weight="700" fill="#2196F3">Largo</text>
+  <text x="195" y="148" text-anchor="middle" font-size="13" font-weight="700" fill="#3F9142">Adagio</text>
+  <text x="305" y="148" text-anchor="middle" font-size="13" font-weight="700" fill="#4CAF50">Andante</text>
+  <text x="430" y="148" text-anchor="middle" font-size="13" font-weight="700" fill="#FF9800">Moderato</text>
+  <text x="570" y="148" text-anchor="middle" font-size="13" font-weight="700" fill="#F57C00">Allegro</text>
+  <text x="700" y="148" text-anchor="middle" font-size="13" font-weight="700" fill="#F44336">Presto</text>
+
+  <!-- BPM values (below terms) -->
+  <text x="95"  y="165" text-anchor="middle" font-size="11" fill="#777">~50 BPM</text>
+  <text x="195" y="165" text-anchor="middle" font-size="11" fill="#777">~66 BPM</text>
+  <text x="305" y="165" text-anchor="middle" font-size="11" fill="#777">~76 BPM</text>
+  <text x="430" y="165" text-anchor="middle" font-size="11" fill="#777">~100 BPM</text>
+  <text x="570" y="165" text-anchor="middle" font-size="11" fill="#777">~132 BPM</text>
+  <text x="700" y="165" text-anchor="middle" font-size="11" fill="#777">~180 BPM</text>
+
+  <!-- Mood descriptions (below BPM) -->
+  <text x="95"  y="183" text-anchor="middle" font-size="10" fill="#999">Muito lento</text>
+  <text x="195" y="183" text-anchor="middle" font-size="10" fill="#999">Lento</text>
+  <text x="305" y="183" text-anchor="middle" font-size="10" fill="#999">Caminhando</text>
+  <text x="430" y="183" text-anchor="middle" font-size="10" fill="#999">Moderado</text>
+  <text x="570" y="183" text-anchor="middle" font-size="10" fill="#999">Rápido</text>
+  <text x="700" y="183" text-anchor="middle" font-size="10" fill="#999">Muito rápido</text>
+
+  <!-- Icons above bar (emoji-like SVG shapes) -->
+  <!-- Tartaruga (Largo) — simplified turtle shape -->
+  <g transform="translate(80,55)">
+    <ellipse cx="15" cy="18" rx="13" ry="10" fill="#7EC8E3" opacity="0.9"/>
+    <circle cx="15" cy="10" r="6" fill="#7EC8E3" opacity="0.9"/>
+    <!-- legs -->
+    <ellipse cx="5"  cy="24" rx="4" ry="2.5" fill="#7EC8E3" opacity="0.8" transform="rotate(-20,5,24)"/>
+    <ellipse cx="25" cy="24" rx="4" ry="2.5" fill="#7EC8E3" opacity="0.8" transform="rotate(20,25,24)"/>
+    <ellipse cx="5"  cy="13" rx="3" ry="2"   fill="#7EC8E3" opacity="0.8" transform="rotate(-30,5,13)"/>
+    <ellipse cx="25" cy="13" rx="3" ry="2"   fill="#7EC8E3" opacity="0.8" transform="rotate(30,25,13)"/>
+    <text x="15" y="23" text-anchor="middle" font-size="8" fill="#FFF">🐢</text>
+  </g>
+  <!-- Andante — walking person (simple stick) -->
+  <g transform="translate(288,48)">
+    <text font-size="30" fill="#4CAF50">🚶</text>
+  </g>
+  <!-- Allegro — running person -->
+  <g transform="translate(553,48)">
+    <text font-size="30" fill="#F57C00">🏃</text>
+  </g>
+  <!-- Presto — lightning bolt -->
+  <g transform="translate(686,48)">
+    <text font-size="30" fill="#F44336">⚡</text>
+  </g>
+
+  <!-- Footer note -->
+  <text x="400" y="230" text-anchor="middle" font-size="11.5" fill="#888">Quanto maior o BPM, mais rápido o pulso — e mais animada a música.</text>
+
+  <!-- Labels at ends of bar -->
+  <text x="60" y="125" text-anchor="middle" font-size="10" fill="#7EC8E3">LENTO</text>
+  <text x="760" y="125" text-anchor="start" font-size="10" fill="#F44336">RÁPIDO</text>
+</svg>

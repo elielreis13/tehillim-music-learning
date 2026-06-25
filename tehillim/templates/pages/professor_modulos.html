@@ -1,0 +1,391 @@
+{% extends "base_app.html" %}
+
+{% block title %}Módulos | Tehillim{% endblock %}
+
+{% block head %}
+<style>
+.admin-tab {
+  font-size: 13px; font-weight: 600; padding: 8px 16px;
+  border-radius: 10px; color: #7A6A4D; cursor: pointer;
+  transition: background .15s, color .15s; white-space: nowrap;
+  text-decoration: none; display: inline-block; border: none; background: none;
+}
+.admin-tab:hover { background: rgba(196,148,58,.1); color: #C4943A; }
+.admin-tab.active { background: #C4943A; color: white; }
+</style>
+{% endblock %}
+
+{% block header %}
+<header style="background:#F2EAD8;border-bottom:1px solid #ECE3D0;flex-shrink:0;position:relative;overflow:hidden;">
+  <div style="padding:16px 24px 0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <p style="font-size:11px;color:#9C8460;text-transform:uppercase;letter-spacing:.18em;font-weight:600;margin:0;">Professor</p>
+        <h1 style="font-size:20px;font-weight:700;color:#2A2419;margin:3px 0 0;">Módulos</h1>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button id="migrate-btn"
+                style="display:flex;align-items:center;gap:6px;background:white;color:#374151;font-size:12px;font-weight:600;padding:8px 14px;border-radius:10px;border:1.5px solid #E5E7EB;cursor:pointer;">
+          Importar .md → DB
+        </button>
+        <a href="/admin/modulos/novo"
+           style="display:flex;align-items:center;gap:6px;background:#C4943A;color:white;font-size:13px;font-weight:600;padding:9px 16px;border-radius:10px;text-decoration:none;">
+          + Novo módulo
+        </a>
+      </div>
+    </div>
+    <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:0;">
+      <a href="/admin"            class="admin-tab">Alunos</a>
+      <span                       class="admin-tab active">Módulos</span>
+      <a href="/admin/jogos"      class="admin-tab">Jogos</a>
+      <a href="/admin/relatorios" class="admin-tab">Relatórios</a>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-4" style="padding-bottom:80px">
+
+  <!-- Migrate feedback -->
+  <div id="migrate-banner" style="display:none"
+       class="bg-green-50 border border-green-200 rounded-2xl px-5 py-3 text-[13px] text-green-800"></div>
+
+  <!-- Search -->
+  <div class="bg-white rounded-2xl shadow-sm px-4 py-3 flex items-center gap-3">
+    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+    </svg>
+    <input id="search" type="text" placeholder="Buscar por número, título ou grupo..."
+           class="flex-1 text-[13px] outline-none text-gray-700 placeholder-gray-400">
+    <span id="count-label" class="text-[12px] text-gray-400"></span>
+  </div>
+
+  <!-- Module list -->
+  <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+    <table class="w-full text-[13px]">
+      <thead>
+        <tr class="border-b border-gray-100 text-[11px] text-gray-400 uppercase tracking-wider">
+          <th class="pl-5 pr-2 py-3 text-left w-8">
+            <input type="checkbox" id="select-all" class="w-4 h-4 rounded accent-[#C4943A] cursor-pointer">
+          </th>
+          <th class="px-3 py-3 text-left font-semibold">#</th>
+          <th class="px-3 py-3 text-left font-semibold">Título</th>
+          <th class="px-3 py-3 text-left font-semibold hidden md:table-cell">Grupo</th>
+          <th class="px-3 py-3 text-left font-semibold hidden lg:table-cell">Etapas</th>
+          <th class="px-3 py-3 text-center font-semibold">Origem</th>
+          <th class="px-3 py-3 pr-5 text-right font-semibold">Ações</th>
+        </tr>
+      </thead>
+      <tbody id="module-tbody">
+        {% for m in static_mods %}
+        {% set in_db = m.slug in db_slugs %}
+        <tr class="module-row border-b border-gray-50 hover:bg-gray-50 transition-colors"
+            data-slug="{{ m.slug }}"
+            data-num="{{ m.number }}"
+            data-title="{{ m.title | lower }}"
+            data-group="{{ group_by_slug.get(m.slug, '') | lower }}"
+            data-in-db="{{ 'true' if in_db else 'false' }}"
+            data-db-only="false">
+          <td class="pl-5 pr-2 py-3">
+            <input type="checkbox" class="row-check w-4 h-4 rounded accent-[#C4943A] cursor-pointer">
+          </td>
+          <td class="px-3 py-3 text-gray-400 font-mono font-semibold">{{ "%03d" % m.number }}</td>
+          <td class="px-3 py-3 font-medium text-gray-800 max-w-[200px]">
+            <span class="block truncate">{{ m.title }}</span>
+            <span class="text-[11px] text-gray-400 block truncate">{{ m.slug }}</span>
+          </td>
+          <td class="px-3 py-3 text-gray-500 hidden md:table-cell">
+            {{ group_by_slug.get(m.slug, '—') | truncate(28, True) }}
+          </td>
+          <td class="px-3 py-3 hidden lg:table-cell">
+            <span class="text-[11px] font-mono text-gray-500">{{ m.step_count }} etapas</span>
+          </td>
+          <td class="px-3 py-3 text-center">
+            {% if in_db %}
+            <span class="inline-flex items-center gap-1 text-[11px] font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">DB</span>
+            {% else %}
+            <span class="inline-flex items-center gap-1 text-[11px] font-semibold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">.md</span>
+            {% endif %}
+          </td>
+          <td class="px-3 pr-5 py-3 text-right">
+            <div class="flex items-center justify-end gap-2">
+              <a href="/admin/modulos/{{ m.slug }}/editar"
+                 class="text-[12px] font-semibold text-[#C4943A] hover:underline">Editar</a>
+              {% if in_db %}
+              <button class="del-db-btn text-[12px] text-red-400 hover:text-red-600 hover:underline"
+                      data-slug="{{ m.slug }}" data-revert="1" title="Remover do DB (reverte para .md)">Reverter</button>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+        {% for m in db_only_mods %}
+        <tr class="module-row border-b border-gray-50 hover:bg-gray-50 transition-colors"
+            data-slug="{{ m.slug }}"
+            data-num="{{ m.number or 0 }}"
+            data-title="{{ m.title | lower }}"
+            data-group="{{ (m.group_slug or '') | lower }}"
+            data-in-db="true"
+            data-db-only="true">
+          <td class="pl-5 pr-2 py-3">
+            <input type="checkbox" class="row-check w-4 h-4 rounded accent-[#C4943A] cursor-pointer">
+          </td>
+          <td class="px-3 py-3 text-gray-400 font-mono font-semibold">{{ "%03d" % (m.number or 0) }}</td>
+          <td class="px-3 py-3 font-medium text-gray-800 max-w-[200px]">
+            <span class="block truncate">{{ m.title }}</span>
+            <span class="text-[11px] text-gray-400 block truncate">{{ m.slug }}</span>
+          </td>
+          <td class="px-3 py-3 text-gray-500 hidden md:table-cell">
+            {{ (m.group_slug or '—') | truncate(28, True) }}
+          </td>
+          <td class="px-3 py-3 hidden lg:table-cell">
+            <span class="text-[11px] font-mono text-gray-500">—</span>
+          </td>
+          <td class="px-3 py-3 text-center">
+            <span class="inline-flex items-center gap-1 text-[11px] font-semibold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">DB ✦</span>
+          </td>
+          <td class="px-3 pr-5 py-3 text-right">
+            <div class="flex items-center justify-end gap-2">
+              <a href="/admin/modulos/{{ m.slug }}/editar"
+                 class="text-[12px] font-semibold text-[#C4943A] hover:underline">Editar</a>
+              <button class="del-db-btn text-[12px] text-red-400 hover:text-red-600 hover:underline"
+                      data-slug="{{ m.slug }}" title="Excluir permanentemente">Excluir</button>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div id="no-results" style="display:none" class="px-5 py-8 text-center text-[13px] text-gray-400">
+      Nenhum módulo encontrado.
+    </div>
+  </div>
+
+</div>
+
+<!-- Floating selection action bar -->
+<div id="selection-bar"
+     style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:50;padding:0 16px 16px;"
+     class="pointer-events-none">
+  <div class="pointer-events-auto bg-gray-900 text-white rounded-2xl shadow-2xl px-5 py-4 flex items-center gap-3 max-w-2xl mx-auto">
+    <span id="sel-count" class="text-[13px] font-semibold flex-shrink-0 text-gray-300"></span>
+    <div class="flex-1 flex items-center gap-2 flex-wrap">
+      <button id="sel-edit"
+              class="text-[13px] font-semibold bg-[#C4943A] hover:bg-[#B3852F] px-4 py-2 rounded-xl transition-colors">
+        Editar
+      </button>
+      <button id="sel-revert"
+              class="text-[13px] font-semibold bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-xl transition-colors">
+        Reverter
+      </button>
+      <button id="sel-delete"
+              class="text-[13px] font-semibold bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl transition-colors">
+        Excluir
+      </button>
+    </div>
+    <button id="sel-cancel" class="text-[12px] text-gray-400 hover:text-white ml-auto flex-shrink-0">
+      Cancelar
+    </button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const dbSlugs = new Set({{ db_slugs | tojson }});
+
+// ── Rows & selection state ────────────────────────────────────────────────────
+const rows = Array.from(document.querySelectorAll(".module-row"));
+const countLabel = document.getElementById("count-label");
+const selectAll = document.getElementById("select-all");
+const selBar = document.getElementById("selection-bar");
+const selCount = document.getElementById("sel-count");
+const selEdit = document.getElementById("sel-edit");
+const selRevert = document.getElementById("sel-revert");
+const selDelete = document.getElementById("sel-delete");
+const selCancel = document.getElementById("sel-cancel");
+
+// ── Count label ───────────────────────────────────────────────────────────────
+function updateCount() {
+  const visible = rows.filter(r => r.style.display !== "none").length;
+  countLabel.textContent = `${visible} de ${rows.length}`;
+}
+updateCount();
+
+// ── Search ────────────────────────────────────────────────────────────────────
+document.getElementById("search").addEventListener("input", function() {
+  const q = this.value.toLowerCase().trim();
+  rows.forEach(row => {
+    const match = !q
+      || row.dataset.title.includes(q)
+      || row.dataset.num.includes(q)
+      || row.dataset.group.includes(q);
+    row.style.display = match ? "" : "none";
+    if (!match) row.querySelector(".row-check").checked = false;
+  });
+  document.getElementById("no-results").style.display =
+    rows.every(r => r.style.display === "none") ? "block" : "none";
+  updateCount();
+  syncSelectAll();
+  updateSelectionBar();
+});
+
+// ── Checkbox logic ────────────────────────────────────────────────────────────
+function visibleRows() {
+  return rows.filter(r => r.style.display !== "none");
+}
+
+function selectedRows() {
+  return rows.filter(r => r.querySelector(".row-check").checked);
+}
+
+function syncSelectAll() {
+  const vis = visibleRows();
+  const checked = vis.filter(r => r.querySelector(".row-check").checked);
+  selectAll.indeterminate = checked.length > 0 && checked.length < vis.length;
+  selectAll.checked = vis.length > 0 && checked.length === vis.length;
+}
+
+selectAll.addEventListener("change", () => {
+  visibleRows().forEach(r => r.querySelector(".row-check").checked = selectAll.checked);
+  updateSelectionBar();
+});
+
+rows.forEach(row => {
+  // Clicking the row toggles the checkbox (except on links/buttons)
+  row.addEventListener("click", e => {
+    if (e.target.closest("a,button,input")) return;
+    const cb = row.querySelector(".row-check");
+    cb.checked = !cb.checked;
+    syncSelectAll();
+    updateSelectionBar();
+  });
+  row.querySelector(".row-check").addEventListener("change", () => {
+    syncSelectAll();
+    updateSelectionBar();
+  });
+});
+
+// ── Selection bar ─────────────────────────────────────────────────────────────
+function updateSelectionBar() {
+  const sel = selectedRows();
+  if (sel.length === 0) {
+    selBar.style.display = "none";
+    return;
+  }
+  selBar.style.display = "block";
+  selCount.textContent = `${sel.length} selecionado${sel.length > 1 ? "s" : ""}`;
+
+  // Editar: only if exactly 1 selected
+  selEdit.style.display = sel.length === 1 ? "" : "none";
+
+  // Reverter: only for DB-duplicate static modules (in_db=true, db-only=false)
+  const canRevert = sel.some(r => r.dataset.inDb === "true" && r.dataset.dbOnly === "false");
+  selRevert.style.display = canRevert ? "" : "none";
+
+  // Excluir: any DB module (in_db=true)
+  const canDelete = sel.some(r => r.dataset.inDb === "true");
+  selDelete.style.display = canDelete ? "" : "none";
+}
+
+selCancel.addEventListener("click", () => {
+  rows.forEach(r => r.querySelector(".row-check").checked = false);
+  selectAll.checked = false;
+  selectAll.indeterminate = false;
+  updateSelectionBar();
+});
+
+// ── Edit (single) ─────────────────────────────────────────────────────────────
+selEdit.addEventListener("click", () => {
+  const sel = selectedRows();
+  if (sel.length === 1) {
+    window.location.href = `/admin/modulos/${sel[0].dataset.slug}/editar`;
+  }
+});
+
+// ── Revert selected ───────────────────────────────────────────────────────────
+selRevert.addEventListener("click", async () => {
+  const targets = selectedRows().filter(r => r.dataset.inDb === "true" && r.dataset.dbOnly === "false");
+  if (!targets.length) return;
+  const names = targets.map(r => r.dataset.slug).join(", ");
+  if (!confirm(`Reverter ${targets.length} módulo(s) para a versão .md?\n\n${names}`)) return;
+  await bulkDelete(targets, "Reverter");
+});
+
+// ── Delete selected ───────────────────────────────────────────────────────────
+selDelete.addEventListener("click", async () => {
+  const targets = selectedRows().filter(r => r.dataset.inDb === "true");
+  if (!targets.length) return;
+  const names = targets.map(r => r.dataset.slug).join(", ");
+  if (!confirm(`Excluir ${targets.length} módulo(s) do banco de dados?\n\n${names}\n\nEsta ação não pode ser desfeita.`)) return;
+  await bulkDelete(targets, "Excluir");
+});
+
+async function bulkDelete(targets, action) {
+  selDelete.disabled = true;
+  selRevert.disabled = true;
+  selCount.textContent = "Processando…";
+  let errors = [];
+  for (const row of targets) {
+    const res = await fetch(`/api/admin/modulos/${row.dataset.slug}`, { method: "DELETE" });
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      errors.push(`${row.dataset.slug}: ${j.error || "erro"}`);
+    }
+  }
+  if (errors.length) {
+    alert(`Erros:\n${errors.join("\n")}`);
+  }
+  location.reload();
+}
+
+// ── Per-row delete/revert buttons ─────────────────────────────────────────────
+document.querySelectorAll(".del-db-btn").forEach(btn => {
+  btn.addEventListener("click", async e => {
+    e.stopPropagation();
+    const slug = btn.dataset.slug;
+    const isRevert = btn.dataset.revert === "1";
+    const msg = isRevert
+      ? `Remover "${slug}" do banco de dados?\nO conteúdo voltará para a versão do arquivo .md.`
+      : `Excluir permanentemente o módulo "${slug}"?\nEsta ação não pode ser desfeita.`;
+    if (!confirm(msg)) return;
+    const label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "…";
+    const res = await fetch(`/api/admin/modulos/${slug}`, { method: "DELETE" });
+    if (res.ok) {
+      location.reload();
+    } else {
+      const j = await res.json().catch(() => ({}));
+      alert(j.error || "Erro ao remover");
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+  });
+});
+
+// ── Migrate all .md → DB ──────────────────────────────────────────────────────
+document.getElementById("migrate-btn").addEventListener("click", async () => {
+  if (!confirm("Importar todos os módulos dos arquivos .md para o banco de dados?\n\nIsso vai sobrescrever versões existentes no DB com os dados do .md.")) return;
+  const btn = document.getElementById("migrate-btn");
+  btn.disabled = true;
+  btn.textContent = "Importando…";
+  const res = await fetch("/api/admin/modulos/migrate", { method: "POST" });
+  const j = await res.json();
+  const banner = document.getElementById("migrate-banner");
+  banner.style.display = "block";
+  if (res.ok) {
+    const errText = j.errors?.length ? ` (${j.errors.length} erros: ${j.errors.map(e=>e.slug).join(", ")})` : "";
+    banner.textContent = `✓ ${j.imported} módulos importados com sucesso.${errText}`;
+    banner.className = "bg-green-50 border border-green-200 rounded-2xl px-5 py-3 text-[13px] text-green-800";
+    setTimeout(() => location.reload(), 1500);
+  } else {
+    banner.textContent = `Erro: ${j.error || "falha na importação"}`;
+    banner.className = "bg-red-50 border border-red-200 rounded-2xl px-5 py-3 text-[13px] text-red-800";
+  }
+  btn.disabled = false;
+  btn.textContent = "Importar .md → DB";
+});
+</script>
+{% endblock %}

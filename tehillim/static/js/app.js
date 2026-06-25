@@ -97,10 +97,12 @@ function renderStage() {
   ui.stageTitle.textContent = step.title;
   ui.stageSummary.textContent = step.summary;
   ui.stageBody.innerHTML = renderTextBlock(step.body);
+  ui.stageBody.style.display = "";   // reset hidden state from DB games
   ui.stageActivity.innerHTML = "";
 
   if (step.kind === "theory") {
     renderReadingActivity(step);
+    renderTTSControls(step.body, step.theory_audio_url || "");
   }
 
   if (step.kind === "video") {
@@ -117,6 +119,40 @@ function renderStage() {
 
   if (step.kind === "exercise-match") {
     renderMatchExercise(step);
+  }
+
+  // DB games with structured game_data → use rich games.js renderers
+  if (step.game_data && typeof step.game_data === "object" && Object.keys(step.game_data).length > 0) {
+    if (typeof RENDERERS !== "undefined" && RENDERERS[step.kind]) {
+      // Hide the stage-body text (not needed — the game is self-contained)
+      ui.stageBody.style.display = "none";
+
+      ui.stageActivity.innerHTML = `
+        <div style="background:#F8F7FF;border:1.5px solid #E5E7EB;border-radius:14px;padding:20px 22px;">
+          <div class="game-body" id="game-body"></div>
+          <div id="game-feedback-inline" style="min-height:18px;margin-top:12px;font-size:13px;font-weight:600;"></div>
+        </div>`;
+
+      const el = ui.stageActivity.querySelector("#game-body");
+
+      // Wire globals before renderer so click handlers work immediately
+      window.markComplete = () => {
+        ui.completeStep.disabled = false;
+        ui.completeStep.focus();
+      };
+      window.setFeedback = (msg, cls) => {
+        const fb = document.getElementById("game-feedback-inline");
+        if (fb) {
+          fb.textContent = msg;
+          fb.style.color = cls === "ok" ? "#2e9f65" : cls === "no" ? "#ff8a7a" : "#6B7280";
+        }
+        ui.stageFeedback.textContent = msg;
+        ui.stageFeedback.className   = cls ? `feedback ${cls}` : "feedback";
+      };
+
+      RENDERERS[step.kind](step, el);
+      return;
+    }
   }
 
   if (step.kind === "game-memory") {
@@ -145,7 +181,15 @@ function renderTextBlock(text) {
   return text
     .split("\n\n")
     .filter(Boolean)
-    .map((paragraph) => `<p>${renderInlineMarkdown(paragraph)}</p>`)
+    .map((paragraph) => {
+      // Image-only paragraph: ![alt](url)
+      const imgMatch = paragraph.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+      if (imgMatch) {
+        const [, alt, src] = imgMatch;
+        return `<img src="${src}" alt="${alt}" style="max-width:380px;width:100%;border-radius:8px;margin:12px auto;display:block;">`;
+      }
+      return `<p>${renderInlineMarkdown(paragraph)}</p>`;
+    })
     .join("");
 }
 
@@ -158,12 +202,29 @@ function renderReadingActivity(step) {
   `;
 }
 
+function toYouTubeEmbed(url) {
+  if (!url) return url;
+  // already embed
+  if (url.includes("youtube.com/embed/")) return url;
+  // watch URL
+  let m = url.match(/[?&]v=([^&]+)/);
+  if (m) return `https://www.youtube.com/embed/${m[1]}`;
+  // youtu.be short link
+  m = url.match(/youtu\.be\/([^?&]+)/);
+  if (m) return `https://www.youtube.com/embed/${m[1]}`;
+  // shorts
+  m = url.match(/youtube\.com\/shorts\/([^?&]+)/);
+  if (m) return `https://www.youtube.com/embed/${m[1]}`;
+  return url;
+}
+
 function renderVideoStep(step) {
   ui.stageBody.innerHTML = "";
+  const embedSrc = toYouTubeEmbed(step.body);
   ui.stageActivity.innerHTML = `
     <div class="video-wrapper">
       <iframe
-        src="${step.body}"
+        src="${embedSrc}"
         title="${step.title}"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -589,3 +650,212 @@ async function start() {
 }
 
 start();
+
+// ── Text-to-Speech ────────────────────────────────────────────────────────────
+
+let _ttsVoices = [];
+let _ttsSelectedVoice = null;
+let _ttsSpeaking = false;
+
+function _loadVoices() {
+  _ttsVoices = speechSynthesis.getVoices();
+  // prefer pt-BR, then pt, then en
+  const pt = _ttsVoices.filter(v => v.lang.startsWith("pt"));
+  if (pt.length > 0 && !_ttsSelectedVoice) {
+    _ttsSelectedVoice = pt[0].name;
+  }
+}
+
+if (typeof speechSynthesis !== "undefined") {
+  _loadVoices();
+  speechSynthesis.onvoiceschanged = _loadVoices;
+}
+
+function _stripMarkdown(text) {
+  return text
+    .replace(/!\[.*?\]\(.*?\)/g, "")     // images
+    .replace(/\[([^\]]+)\]\(.*?\)/g, "$1") // links
+    .replace(/#{1,6}\s/g, "")
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1")
+    .replace(/_(.+?)_/g, "$1")
+    .replace(/`(.+?)`/g, "$1")
+    .trim();
+}
+
+function renderTTSControls(bodyText, audioUrl) {
+  document.getElementById("tts-panel")?.remove();
+
+  const panel = document.createElement("div");
+  panel.id = "tts-panel";
+  panel.style.cssText = "position:absolute;top:20px;right:24px;z-index:10;";
+
+  const btn = document.createElement("button");
+  btn.id = "tts-btn";
+  btn.style.cssText = [
+    "display:flex;align-items:center;gap:7px;",
+    "padding:9px 18px;border-radius:12px;",
+    "background:#C4943A;color:white;",
+    "font-size:13px;font-weight:700;",
+    "border:none;cursor:pointer;",
+    "box-shadow:0 2px 10px rgba(196,148,58,.35);",
+    "transition:background .15s,box-shadow .15s;",
+  ].join("");
+  btn.onmouseenter = () => { btn.style.background = "#B3852F"; };
+  btn.onmouseleave = () => { if (!_ttsSpeaking) btn.style.background = "#C4943A"; };
+  btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 6a7 7 0 010 12M8.464 8.464a5 5 0 000 7.072"/></svg> Ouvir`;
+  btn.onclick = () => _ttsSpeaking ? _ttsStop() : (audioUrl ? _ttsPlayUrl(audioUrl) : _ttsSpeak(bodyText));
+
+  panel.appendChild(btn);
+
+  const stage = document.getElementById("study-stage");
+  if (stage) stage.prepend(panel);
+}
+
+let _ttsAudioEl = null;
+let _ttsAzureVoice = localStorage.getItem("tts_azure_voice") || "pt-BR-FranciscaNeural";
+
+function _ttsSetBtn(state) {
+  const btn = document.getElementById("tts-btn");
+  if (!btn) return;
+  if (state === "loading") {
+    btn.innerHTML = `<svg class="spin" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M4 12a8 8 0 018-8"/></svg> Gerando...`;
+    btn.style.background = "#B3852F";
+    btn.disabled = true;
+  } else if (state === "playing") {
+    btn.innerHTML = `<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Parar`;
+    btn.style.background = "#8B6020";
+    btn.disabled = false;
+  } else {
+    btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 6a7 7 0 010 12M8.464 8.464a5 5 0 000 7.072"/></svg> Ouvir`;
+    btn.style.background = "#C4943A";
+    btn.disabled = false;
+  }
+}
+
+async function _ttsSpeak(text) {
+  const clean = _stripMarkdown(text);
+
+  // Try Azure Neural TTS first
+  try {
+    _ttsSetBtn("loading");
+    const res = await fetch("/api/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: clean, voice: _ttsAzureVoice }),
+    });
+    if (!res.ok) throw new Error("no_azure");
+    const blob = await res.blob();
+
+    if (!_ttsAudioEl) {
+      _ttsAudioEl = document.createElement("audio");
+      document.body.appendChild(_ttsAudioEl);
+    }
+    _ttsAudioEl.src = URL.createObjectURL(blob);
+    _ttsAudioEl.play();
+    _ttsSpeaking = true;
+    _ttsSetBtn("playing");
+    _ttsAudioEl.onended = () => { _ttsSpeaking = false; _ttsSetBtn("idle"); };
+    return;
+  } catch(_) {
+    // fallback to browser TTS
+  }
+
+  // Browser TTS fallback
+  if (!("speechSynthesis" in window)) { _ttsSetBtn("idle"); return; }
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(clean);
+  utter.lang = "pt-BR";
+  if (_ttsSelectedVoice) {
+    const voice = _ttsVoices.find(v => v.name === _ttsSelectedVoice);
+    if (voice) utter.voice = voice;
+  }
+  utter.rate = 0.95;
+  utter.onstart  = () => { _ttsSpeaking = true;  _ttsSetBtn("playing"); };
+  utter.onend    = () => { _ttsSpeaking = false;  _ttsSetBtn("idle"); };
+  utter.onerror  = () => { _ttsSpeaking = false;  _ttsSetBtn("idle"); };
+  speechSynthesis.speak(utter);
+}
+
+function _ttsStop() {
+  if (_ttsAudioEl) { _ttsAudioEl.pause(); _ttsAudioEl.src = ""; }
+  speechSynthesis.cancel();
+  _ttsSpeaking = false;
+  _ttsSetBtn("idle");
+}
+
+function _ttsPlayUrl(url) {
+  if (!_ttsAudioEl) {
+    _ttsAudioEl = document.createElement("audio");
+    document.body.appendChild(_ttsAudioEl);
+  }
+  _ttsAudioEl.src = url;
+  _ttsAudioEl.play();
+  _ttsSpeaking = true;
+  _ttsSetBtn("playing");
+  _ttsAudioEl.onended = () => { _ttsSpeaking = false; _ttsSetBtn("idle"); };
+}
+
+function _toggleVoicePanel() {
+  const existing = document.getElementById("tts-voice-panel");
+  if (existing) { existing.remove(); return; }
+
+  const panel = document.createElement("div");
+  panel.id = "tts-voice-panel";
+  panel.style.cssText = "position:absolute;background:white;border:1px solid #E5E7EB;border-radius:14px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;max-height:340px;overflow-y:auto;min-width:260px;";
+
+  const voices = speechSynthesis.getVoices();
+  if (voices.length === 0) {
+    panel.innerHTML = `<p style="font-size:12px;color:#9CA3AF;padding:8px;">Nenhuma voz disponível no seu navegador.</p>`;
+  } else {
+    const ptVoices = voices.filter(v => v.lang.startsWith("pt"));
+    const otherVoices = voices.filter(v => !v.lang.startsWith("pt"));
+
+    let html = "";
+    if (ptVoices.length) {
+      html += `<p style="font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px;">Português</p>`;
+      ptVoices.forEach(v => {
+        const active = v.name === _ttsSelectedVoice ? "background:#FBF6EE;color:#C4943A;font-weight:600;" : "";
+        html += `<button onclick="window._ttsSelectVoice('${v.name.replace(/'/g,"\\'")}',this)" style="display:block;width:100%;text-align:left;padding:7px 10px;border-radius:8px;border:none;font-size:12px;cursor:pointer;${active}">${v.name} <span style="font-size:10px;color:#9CA3AF;">(${v.lang})</span></button>`;
+      });
+    }
+    if (otherVoices.length) {
+      html += `<p style="font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.08em;margin:10px 0 6px;">Outras línguas</p>`;
+      otherVoices.forEach(v => {
+        const active = v.name === _ttsSelectedVoice ? "background:#FBF6EE;color:#C4943A;font-weight:600;" : "";
+        html += `<button onclick="window._ttsSelectVoice('${v.name.replace(/'/g,"\\'")}',this)" style="display:block;width:100%;text-align:left;padding:7px 10px;border-radius:8px;border:none;font-size:12px;cursor:pointer;${active}">${v.name} <span style="font-size:10px;color:#9CA3AF;">(${v.lang})</span></button>`;
+      });
+    }
+    panel.innerHTML = html;
+  }
+
+  const voiceBtn = document.getElementById("tts-voice-btn");
+  if (voiceBtn) {
+    voiceBtn.style.position = "relative";
+    voiceBtn.appendChild(panel);
+  }
+
+  // close on outside click
+  setTimeout(() => {
+    document.addEventListener("click", function _close() {
+      document.getElementById("tts-voice-panel")?.remove();
+      document.removeEventListener("click", _close);
+    });
+  }, 0);
+}
+
+window._ttsSelectVoice = function(name, btn) {
+  _ttsSelectedVoice = name;
+  if (name.startsWith("pt-BR-")) {
+    _ttsAzureVoice = name;
+    localStorage.setItem("tts_azure_voice", name);
+    const shortName = name.replace("pt-BR-","").replace("Neural","");
+    const vBtn = document.getElementById("tts-voice-btn");
+    if (vBtn) vBtn.innerHTML = `🎙 ${shortName}`;
+  }
+  btn.closest("#tts-voice-panel")?.querySelectorAll("button").forEach(b => {
+    b.style.background = ""; b.style.color = ""; b.style.fontWeight = "";
+  });
+  btn.style.background = "#FBF6EE"; btn.style.color = "#C4943A"; btn.style.fontWeight = "600";
+  document.getElementById("tts-voice-panel")?.remove();
+};

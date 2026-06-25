@@ -33,6 +33,7 @@ def do_login():
         session["email"]        = "dev@tehillim.dev"
         session["name"]         = "Dev"
         session["is_teacher"]   = True
+        session["is_owner"]     = True
         session["module_slugs"] = []
         session["access_token"] = "__dev__"
         session["expires_at"]   = int(time.time()) + 3600 * 24 * 7
@@ -63,7 +64,8 @@ def do_login():
     sb   = r.json()
     user = sb["user"]
     meta = user.get("user_metadata") or {}
-    is_teacher = meta.get("role") == "teacher"
+    is_owner   = meta.get("role") == "owner"
+    is_teacher = meta.get("role") in ("teacher", "owner")
 
     module_slugs = []
     if not is_teacher:
@@ -78,6 +80,7 @@ def do_login():
     session["email"]        = user["email"]
     session["name"]         = meta.get("name") or user["email"].split("@")[0]
     session["is_teacher"]   = is_teacher
+    session["is_owner"]     = is_owner
     session["module_slugs"] = module_slugs
     session["access_token"] = sb["access_token"]
     session["refresh_token"]= sb.get("refresh_token", "")

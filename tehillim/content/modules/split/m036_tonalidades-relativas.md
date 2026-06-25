@@ -2,7 +2,7 @@
 number: 36
 slug: tonalidades-relativas
 title: Tonalidades relativas
-description: Lição focada em Tonalidades relativas, separada do antigo módulo "Armaduras de Clave e Tonalidades" para estudar um conceito por vez.
+description: Duas músicas, mesmas notas, emoções completamente opostas — uma soa alegre e a outra sombria. Descubra o segredo das tonalidades relativas que divide maior e menor.
 topics: Tonalidades relativas
 game_kind: game-quiz
 ---

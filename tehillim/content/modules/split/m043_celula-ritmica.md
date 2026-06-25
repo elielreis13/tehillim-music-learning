@@ -2,7 +2,7 @@
 number: 43
 slug: celula-ritmica
 title: Célula Rítmica
-description: Lição focada em Célula Rítmica, separada do antigo módulo “Célula Rítmica e Leitura em Compasso Simples” para estudar um conceito por vez.
+description: Toda música tem um padrão rítmico central que se repete como um DNA — quando você o encontra, memoriza a música inteira de uma vez. Aprenda a caçar a célula rítmica.
 topics: Célula Rítmica
 game_kind: game-listen
 ---
@@ -16,6 +16,8 @@ No louvor contemporâneo brasileiro, identificar a célula rítmica é uma ferra
 Para identificar a célula rítmica de uma música: (1) Ouça os primeiros 8 compassos e bata o pulso com o pé; (2) Encontre o padrão rítmico que se repete mais frequentemente — geralmente aparece nas primeiras duas batidas; (3) Verifique se esse padrão retorna depois de cada frase ou cadência. Em músicas afro-brasileiras como o baião, a célula está na relação entre o zabumba e o triângulo — um ostinato de dois tempos que nunca muda mesmo que a melodia varie completamente em cima. Internalizar a célula é mais eficiente do que memorizar o ritmo compasso por compasso.
 
 ## Visual
+
+<img src="/static/img/modules/celula-ritmica.svg" alt="Linha do tempo de 4/4 mostrando células rítmicas com blocos coloridos: TUM (semínima), TA TA (colcheias) e pausas" class="module-img" onerror="this.style.display='none'">
 
 Um loop de dois compassos de pauta, com a célula rítmica destacada em cor diferente nos primeiros dois tempos e setas indicando como ela se repete (idêntica ou levemente variada) nos compassos seguintes da mesma música.
 

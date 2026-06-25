@@ -1,0 +1,315 @@
+{% extends "base_app.html" %}
+
+{% block title %}Mensagens | Tehillim{% endblock %}
+
+{% block head %}
+<style>
+  /* Esta página precisa de layout fixo, sem scroll no container pai */
+  .app-content { overflow: hidden !important; }
+
+  .student-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 12px; cursor: pointer;
+    transition: background .15s; border: 1.5px solid transparent;
+  }
+  .student-row:hover { background: #F9F4EC; }
+  .student-row.active { background: #F2EAD8; border-color: #D9C9A8; }
+
+  .bubble-teacher {
+    background: white; border: 1px solid #F0E8D4;
+    border-radius: 18px 18px 18px 4px; color: #1F2937;
+  }
+  .bubble-student {
+    background: #C4943A; color: white;
+    border-radius: 18px 18px 4px 18px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { width:28px;height:28px;border:3px solid #C4943A;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite; }
+
+  @media (max-width: 640px) {
+    #panel-list  { display: none; }
+    #panel-list.mobile-show { display: flex !important; }
+    #panel-conv  { display: flex !important; }
+    #back-btn    { display: flex !important; }
+  }
+</style>
+{% endblock %}
+
+{% block header %}
+<header style="background:#F2EAD8;border-bottom:1px solid #ECE3D0;flex-shrink:0;">
+  <div style="padding:16px 24px;">
+    <p style="font-size:11px;color:#9C8460;text-transform:uppercase;letter-spacing:.18em;font-weight:600;margin:0;">Professor</p>
+    <h1 style="font-size:20px;font-weight:700;color:#2A2419;margin:3px 0 0;">Mensagens dos alunos</h1>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div style="height:100%;display:flex;overflow:hidden;">
+
+  <!-- ── Coluna esquerda: lista de alunos ── -->
+  <div id="panel-list" style="width:280px;flex-shrink:0;border-right:1px solid #F0E8D4;display:flex;flex-direction:column;background:#FDFAF6;overflow:hidden;">
+    <div style="padding:12px 14px;border-bottom:1px solid #F0E8D4;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:8px;background:white;border:1.5px solid #E5E7EB;border-radius:10px;padding:6px 10px;">
+        <svg style="width:13px;height:13px;color:#9CA3AF;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+        </svg>
+        <input id="student-search" type="text" placeholder="Buscar aluno..."
+               style="flex:1;font-size:12px;outline:none;border:none;background:none;color:#374151;"
+               oninput="filterStudents(this.value)">
+      </div>
+    </div>
+    <div id="student-list" style="flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:4px;">
+      <div style="display:flex;justify-content:center;padding:24px 0;">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Coluna direita: conversa ── -->
+  <div id="panel-conv" style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;">
+
+    <!-- Estado vazio -->
+    <div id="conv-empty" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#9C8460;">
+      <div style="width:56px;height:56px;border-radius:50%;background:#F2EAD8;display:flex;align-items:center;justify-content:center;">
+        <svg style="width:28px;height:28px;" fill="none" stroke="#C4943A" viewBox="0 0 24 24" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+        </svg>
+      </div>
+      <p style="font-size:13px;font-weight:600;color:#2A2419;">Selecione um aluno</p>
+      <p style="font-size:12px;color:#9C8460;text-align:center;max-width:220px;">Escolha um aluno na lista para ver e responder as mensagens.</p>
+    </div>
+
+    <!-- Conversa ativa -->
+    <div id="conv-active" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
+      <!-- Header da conversa -->
+      <div style="padding:12px 20px;border-bottom:1px solid #F0E8D4;background:white;display:flex;align-items:center;gap:12px;flex-shrink:0;">
+        <button id="back-btn" onclick="backToList()" style="display:none;background:none;border:none;cursor:pointer;color:#9C8460;padding:4px;">
+          <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <div id="conv-avatar" style="width:36px;height:36px;border-radius:50%;background:#C4943A;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;flex-shrink:0;">A</div>
+        <div>
+          <p id="conv-name" style="font-size:14px;font-weight:700;color:#2A2419;margin:0;">—</p>
+          <p id="conv-email" style="font-size:11px;color:#9C8460;margin:0;">—</p>
+        </div>
+      </div>
+
+      <!-- Thread -->
+      <div id="conv-thread" style="flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px;background:#FAF5EB;">
+        <div style="display:flex;justify-content:center;padding:24px 0;">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div style="padding:12px 20px;border-top:1px solid #F0E8D4;background:white;flex-shrink:0;">
+        <div style="display:flex;gap:10px;align-items:flex-end;">
+          <textarea id="reply-input" rows="2" placeholder="Escreva uma resposta..."
+                    style="flex:1;padding:10px 14px;border:1.5px solid #E5E7EB;border-radius:12px;font-size:13px;resize:none;outline:none;font-family:inherit;transition:border-color .15s;"
+                    onfocus="this.style.borderColor='#C4943A'" onblur="this.style.borderColor='#E5E7EB'"
+                    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendReply();}"></textarea>
+          <button onclick="sendReply()"
+                  style="background:#C4943A;color:white;font-size:13px;font-weight:600;padding:10px 18px;border-radius:12px;border:none;cursor:pointer;flex-shrink:0;transition:opacity .15s;"
+                  onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+            Enviar
+          </button>
+        </div>
+        <p style="font-size:10px;color:#C4B89A;margin:5px 0 0;">Enter para enviar · Shift+Enter para nova linha</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const MODULE_MAP = {};
+({{ groups | tojson }}).forEach(g => g.modules.forEach(m => { MODULE_MAP[m.slug] = { ...m, group: g.name }; }));
+
+let _allStudents   = [];
+let _unreadByStudent = {};
+let _activeStudent = null;
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (r.status === 204) return null;
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || r.statusText);
+  return data;
+}
+
+// ── Load students ──────────────────────────────
+async function loadStudents() {
+  try {
+    const [usersRes, unreadRes] = await Promise.all([
+      api('/api/teacher/students'),
+      api('/api/teacher/messages/unread').catch(() => ({ total: 0, students: [] })),
+    ]);
+
+    _unreadByStudent = {};
+    (unreadRes.students || []).forEach(s => { _unreadByStudent[s.id] = s.count; });
+
+    _allStudents = (usersRes.students || []).filter(u => u.role !== 'teacher' && u.role !== 'owner');
+    // Sort: unread first, then alphabetically
+    _allStudents.sort((a, b) => {
+      const ua = _unreadByStudent[a.id] || 0;
+      const ub = _unreadByStudent[b.id] || 0;
+      if (ub !== ua) return ub - ua;
+      return (a.name || a.email).localeCompare(b.name || b.email);
+    });
+
+    renderStudentList(_allStudents);
+  } catch (err) {
+    document.getElementById('student-list').innerHTML =
+      `<p style="font-size:12px;color:#ef4444;padding:12px;">Erro ao carregar alunos.</p>`;
+  }
+}
+
+function renderStudentList(students) {
+  const el = document.getElementById('student-list');
+  if (!students.length) {
+    el.innerHTML = `<p style="font-size:12px;color:#9C8460;text-align:center;padding:24px 0;">Nenhum aluno encontrado.</p>`;
+    return;
+  }
+  el.innerHTML = students.map(s => {
+    const name    = s.name || s.email.split('@')[0];
+    const initials = name.slice(0,2).toUpperCase();
+    const unread  = _unreadByStudent[s.id] || 0;
+    const isActive = _activeStudent && _activeStudent.id === s.id;
+    return `
+      <div class="student-row${isActive ? ' active' : ''}" id="srow-${s.id}" onclick="openConversation(${JSON.stringify(s).replace(/"/g,'&quot;')})">
+        <div style="width:36px;height:36px;border-radius:50%;background:#C4943A;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;">${initials}</div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:13px;font-weight:600;color:#2A2419;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</p>
+          <p style="font-size:10px;color:#9C8460;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.email}</p>
+        </div>
+        ${unread > 0 ? `<span style="background:#EF4444;color:white;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;flex-shrink:0;">${unread}</span>` : ''}
+      </div>`;
+  }).join('');
+}
+
+function filterStudents(q) {
+  const filtered = _allStudents.filter(s =>
+    (s.name || '').toLowerCase().includes(q.toLowerCase()) ||
+    s.email.toLowerCase().includes(q.toLowerCase())
+  );
+  renderStudentList(filtered);
+}
+
+// ── Open conversation ──────────────────────────
+async function openConversation(student) {
+  _activeStudent = student;
+
+  // Update sidebar highlight
+  document.querySelectorAll('.student-row').forEach(el => el.classList.remove('active'));
+  const row = document.getElementById('srow-' + student.id);
+  if (row) row.classList.add('active');
+
+  // Show conv panel
+  document.getElementById('conv-empty').style.display  = 'none';
+  document.getElementById('conv-active').style.display = 'flex';
+
+  // Update header
+  const name = student.name || student.email.split('@')[0];
+  const initials = name.slice(0,2).toUpperCase();
+  document.getElementById('conv-name').textContent  = name;
+  document.getElementById('conv-email').textContent = student.email;
+  document.getElementById('conv-avatar').textContent = initials;
+
+  // Reset thread
+  document.getElementById('conv-thread').innerHTML =
+    '<div style="display:flex;justify-content:center;padding:24px 0;"><div class="spinner"></div></div>';
+
+  // Load messages
+  try {
+    const { messages } = await api(`/api/teacher/student/${student.id}/messages`);
+    renderThread(messages);
+    // Mark as read
+    if ((messages || []).some(m => m.sender_type === 'student' && !m.read_at)) {
+      api(`/api/teacher/student/${student.id}/messages/read-all`, { method: 'PATCH' }).catch(() => {});
+      _unreadByStudent[student.id] = 0;
+      renderStudentList(_allStudents);
+      // Update global badge
+      const total = Object.values(_unreadByStudent).reduce((a,b) => a+b, 0);
+      const badge = document.getElementById('teacher-msg-badge');
+      if (badge) { badge.style.display = total > 0 ? '' : 'none'; if (total > 0) badge.textContent = total; }
+    }
+  } catch (err) {
+    document.getElementById('conv-thread').innerHTML =
+      `<p style="font-size:12px;color:#ef4444;text-align:center;">Erro ao carregar mensagens.</p>`;
+  }
+}
+
+function renderThread(messages) {
+  const thread = document.getElementById('conv-thread');
+  if (!messages || !messages.length) {
+    thread.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:40px 0;color:#9C8460;">
+        <p style="font-size:13px;font-weight:600;color:#2A2419;">Nenhuma mensagem ainda</p>
+        <p style="font-size:12px;text-align:center;max-width:240px;">Este aluno ainda não enviou mensagens. Você pode iniciar a conversa.</p>
+      </div>`;
+    return;
+  }
+
+  thread.innerHTML = messages.map(m => {
+    const isTeacher = m.sender_type === 'teacher';
+    const date = new Date(m.created_at).toLocaleString('pt-BR', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+    const mod  = m.module_slug ? MODULE_MAP[m.module_slug] : null;
+    const modLabel = mod ? `M${String(mod.number||'').padStart(2,'0')} · ${mod.title}` : m.module_slug;
+
+    const ctxBlock = (!isTeacher && modLabel) ? `
+      <div style="margin-bottom:8px;background:rgba(255,255,255,0.18);border-radius:8px;padding:6px 10px;">
+        <p style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.8);margin:0 0 2px;text-transform:uppercase;letter-spacing:.08em;">${modLabel}</p>
+        ${m.question_preview ? `<p style="font-size:11px;color:rgba(255,255,255,0.75);margin:0;font-style:italic;">"${m.question_preview}"</p>` : ''}
+      </div>` : '';
+
+    return `
+      <div style="display:flex;${isTeacher ? 'justify-content:flex-end' : 'justify-content:flex-start'};align-items:flex-end;gap:8px;">
+        ${!isTeacher ? `<div style="width:30px;height:30px;border-radius:50%;background:#F2EAD8;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#C4943A;flex-shrink:0;margin-bottom:2px;">${(document.getElementById('conv-name').textContent||'A').slice(0,1).toUpperCase()}</div>` : ''}
+        <div style="max-width:72%;">
+          ${!isTeacher ? `<p style="font-size:10px;color:#9C8460;margin:0 0 4px 2px;">${document.getElementById('conv-name').textContent}</p>` : ''}
+          <div class="${isTeacher ? 'bubble-teacher' : 'bubble-student'}" style="padding:10px 14px;position:relative;">
+            ${ctxBlock}
+            <p style="font-size:13px;line-height:1.5;margin:0;white-space:pre-wrap;">${m.content}</p>
+            <p style="font-size:10px;margin:6px 0 0;${isTeacher ? 'color:#9C8460;' : 'color:rgba(255,255,255,0.65);'}">${date}</p>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  thread.scrollTop = thread.scrollHeight;
+}
+
+// ── Send reply ─────────────────────────────────
+async function sendReply() {
+  if (!_activeStudent) return;
+  const input   = document.getElementById('reply-input');
+  const content = input.value.trim();
+  if (!content) return;
+
+  const btn = document.querySelector('#panel-conv button');
+  btn.disabled = true;
+  try {
+    await api(`/api/teacher/student/${_activeStudent.id}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    });
+    input.value = '';
+    const { messages } = await api(`/api/teacher/student/${_activeStudent.id}/messages`);
+    renderThread(messages);
+  } catch (err) {
+    alert('Erro ao enviar: ' + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function backToList() {}
+
+document.addEventListener('DOMContentLoaded', loadStudents);
+</script>
+{% endblock %}

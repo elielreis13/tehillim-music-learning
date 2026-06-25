@@ -94,6 +94,14 @@
     }
     .toggle-label input { accent-color: #C4943A; width: 14px; height: 14px; cursor: pointer; }
 
+    .bpm-btn {
+      padding: 4px 10px; border-radius: 6px; border: 1.5px solid #d1d5db;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      background: #fff; color: #374151; transition: all .12s;
+    }
+    .bpm-btn:hover  { border-color: #C4943A; color: #C4943A; }
+    .bpm-btn.active { background: #C4943A; border-color: #C4943A; color: #fff; }
+
     #status { font-size: 0.72rem; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     /* ── Partitura ── */
@@ -144,8 +152,11 @@
     </button>
     <div class="ctrl-group">
       <label>BPM</label>
-      <input id="bpm-slider" type="range" min="40" max="160" value="80">
-      <span id="bpm-value">80</span>
+      <div id="bpm-btns" style="display:flex;gap:4px;">
+        <button type="button" class="bpm-btn active" data-bpm="60" onclick="setBpm(60)">60</button>
+        <button type="button" class="bpm-btn" data-bpm="80" onclick="setBpm(80)">80</button>
+        <button type="button" class="bpm-btn" data-bpm="90" onclick="setBpm(90)">90</button>
+      </div>
     </div>
     <div class="ctrl-spacer"></div>
     <span id="status"></span>
@@ -189,8 +200,6 @@ let loadedInstrument = null;
 
 const btnPlay        = document.getElementById('btn-play');
 const btnReset       = document.getElementById('btn-reset');
-const bpmSlider      = document.getElementById('bpm-slider');
-const bpmValue       = document.getElementById('bpm-value');
 const scoreContainer = document.getElementById('score-container');
 const statusEl       = document.getElementById('status');
 
@@ -368,7 +377,13 @@ function playCurrentNotes() {
 }
 
 // ── Playback ──────────────────────────────────────────────────────────────────
-function getBpm() { return parseInt(bpmSlider.value, 10); }
+let _bpm = 60;
+function getBpm() { return _bpm; }
+function setBpm(bpm) {
+  _bpm = bpm;
+  document.querySelectorAll(".bpm-btn").forEach(b => b.classList.toggle("active", parseInt(b.dataset.bpm) === bpm));
+  if (isPlaying) { pausePlayback(); }
+}
 
 function getCurrentNoteDuration() {
   try {
@@ -470,8 +485,6 @@ btnPlay.addEventListener('click', () => {
 });
 
 btnReset.addEventListener('click', resetPlayback);
-bpmSlider.addEventListener('input', () => { bpmValue.textContent = bpmSlider.value; });
-
 document.getElementById('instrument-select').addEventListener('change', () => {
   if (isPlaying) pausePlayback();
   synth?.dispose();
@@ -498,12 +511,17 @@ document.addEventListener('keydown', e => {
     const cb = document.getElementById('toggle-note-names');
     cb.checked = !cb.checked;
     cb.dispatchEvent(new Event('change'));
-  } else if (e.key === 'ArrowRight') {
-    bpmSlider.value = Math.min(160, parseInt(bpmSlider.value) + 5);
-    bpmValue.textContent = bpmSlider.value;
-  } else if (e.key === 'ArrowLeft') {
-    bpmSlider.value = Math.max(40, parseInt(bpmSlider.value) - 5);
-    bpmValue.textContent = bpmSlider.value;
+  }
+});
+
+// ── Mensagens do parent (ex: esconder notas durante gravação) ─────────────────
+window.addEventListener('message', e => {
+  if (e.data?.type === 'set-notes') {
+    const cb = document.getElementById('toggle-note-names');
+    if (cb && cb.checked !== e.data.show) {
+      cb.checked = e.data.show;
+      cb.dispatchEvent(new Event('change'));
+    }
   }
 });
 

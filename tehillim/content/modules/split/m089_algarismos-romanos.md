@@ -2,49 +2,55 @@
 number: 89
 slug: algarismos-romanos
 title: Algarismos romanos
-description: Lição focada em Algarismos romanos, separada do antigo módulo “Cifragem e Análise Harmônica” para estudar um conceito por vez.
+description: I, IV, V — os algarismos romanos mostram a função de cada acorde independente da tonalidade, e isso é o que permite entender uma música em qualquer tom de imediato.
 topics: Algarismos romanos
 game_kind: game-challenge
 ---
 
 ## Teoria
 
-Esta lição isola o tema Algarismos romanos dentro do estudo de Cifragem e Análise Harmônica. O foco é compreender um conceito por vez, reconhecer seus sinais e aplicar em situações musicais reais.
+A **cifragem em algarismos romanos** é a forma mais usada na teoria musical para indicar acordes pela sua **função dentro da tonalidade**, e não pelo nome absoluto. Em vez de escrever “Dó - Fá - Sol - Dó”, escrevemos **I - IV - V - I**. A mesma sequência, em Ré maior, seria Ré - Sol - Lá - Ré, mas continua sendo I - IV - V - I. O algarismo aponta para o **grau da escala** onde o acorde foi construído.
 
-Leia a ideia principal, procure exemplos no repertório que você já conhece e transforme a explicação em prática: cantar, bater palma, escrever, ouvir ou tocar. Um tópico só está aprendido quando aparece na execução.
+A convenção é simples e poderosa: **algarismos maiúsculos indicam acordes maiores** (I, IV, V em uma tonalidade maior) e **algarismos minúsculos indicam acordes menores** (ii, iii, vi). O sinal de **°** (graus) ao lado indica acorde diminuto (vii°), e o sinal **+** indica aumentado. Em Dó maior o campo harmônico completo fica: **I (Dó), ii (Ré menor), iii (Mi menor), IV (Fá), V (Sol), vi (Lá menor), vii° (Si diminuto)**.
 
-Ao estudar de forma separada, o aluno evita misturar conceitos parecidos e cria uma base mais firme para as próximas lições.
+A grande vantagem desse sistema é a **transposição instantânea**. Se você sabe que um louvor é I-V-vi-IV em Dó (Dó-Sol-Lám-Fá), basta lembrar a fórmula e tocar em Sol (Sol-Ré-Mim-Dó) ou em Ré (Ré-Lá-Sim-Sol) — sem precisar “refazer” a música. Isso é fundamental para o músico de louvor, porque cantores frequentemente pedem mudanças de tonalidade na hora (“pode subir meio tom?”), e quem pensa em algarismos romanos resolve isso em segundos.
+
+Algarismos romanos também são a base da **análise harmônica**: ao reduzir uma música inteira a uma sequência de I, IV, V, vi etc., você enxerga padrões, identifica progressões clássicas (como I-V-vi-IV), reconhece empréstimos modais (bVII fora do campo) e percebe a estrutura por trás de músicas aparentemente diferentes. É a linguagem que professores, arranjadores e produtores usam para conversar sobre harmonia em qualquer estilo — do barroco ao gospel moderno.
 
 ## Visual
 
-Cartão visual central com o título “Algarismos romanos”, um exemplo musical simples e uma comparação lado a lado entre execução incorreta e execução correta.
+Uma régua horizontal mostrando a escala de Dó maior em sete colunas. Em cada coluna: o número arábico do grau (1 a 7), o nome da nota (Dó, Ré, Mi...), o acorde formado (Dó, Rém, Mim...) e, em destaque, o algarismo romano correspondente (I, ii, iii, IV, V, vi, vii°). Letras maiúsculas em dourado, minúsculas em azul, vii° em vermelho.
 
 ## Exercícios
 
 ### MC
-Qual é o foco principal desta lição?
-- Decorar repertório sem entender o conceito
-- Estudar Algarismos romanos de forma isolada e aplicável ✓
-- Pular diretamente para assuntos avançados
-- Substituir a escuta pela teoria
+O que indica um algarismo romano minúsculo (como ii ou vi)?
+- Um acorde maior
+- Um acorde menor ✓
+- Um acorde aumentado
+- Um acorde suspenso
 
 ### VF
-Um tópico musical bem estudado deve ser reconhecido na escuta, na leitura e na prática.
+A progressão I-V-vi-IV em Sol maior corresponde a Sol-Ré-Mi menor-Dó.
 > Verdadeiro
 
 ### Fill
-Nesta lição, o tema central é ___.
-- andamento aleatório
-- Algarismos romanos ✓
-- troca de instrumento
+Em uma tonalidade maior, o acorde do sétimo grau é representado por ___.
+- VII maior
+- vii° (diminuto) ✓
+- vii+ (aumentado)
 
-### Match
-Associe cada etapa de estudo à ação correta:
-- Conceito → Entender a ideia principal
-- Escuta → Reconhecer o tema em músicas reais
-- Prática → Aplicar com voz, corpo ou instrumento
-- Revisão → Corrigir e repetir com consciência
+### MC
+Qual é a maior vantagem prática de pensar em algarismos romanos?
+- Permite transpor uma música para qualquer tom mantendo a mesma fórmula ✓
+- Substitui a necessidade de conhecer escalas
+- Funciona apenas em música clássica
+- Elimina a função dominante
+
+### VF
+O sistema de algarismos romanos foi criado para a música pop e não pode ser aplicado em hinos tradicionais.
+> Falso
 
 ## Jogo
 
-MISSÃO ALGARISMOS ROMANOS: escolha uma música simples do repertório de louvor ou de estudo. Ouça uma vez procurando apenas Algarismos romanos. Depois execute um trecho curto aplicando esse tema de propósito. Grave ou anote o resultado e responda: onde o conceito apareceu com clareza e onde ainda precisa de ajuste?
+TRADUTOR DE TOM: escolha um louvor que você sabe em Dó maior. Reescreva todo o refrão em algarismos romanos (ex.: I - V - vi - IV). Depois, sem olhar a cifra original, traduza essa mesma sequência para Sol maior, Ré maior e Lá maior. Toque ou cante em cada um desses tons. Em qual ficou mais fácil? Qual soou melhor para a sua voz?

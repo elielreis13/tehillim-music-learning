@@ -2,7 +2,7 @@
 number: 62
 slug: solfejando-com-acidentes
 title: Solfejando com acidentes
-description: Lição focada em Solfejando com acidentes, separada do antigo módulo “Solfejo: Cantando as Notas” para estudar um conceito por vez.
+description: Sustenidos e bemóis não mudam o nome da nota no solfejo — mas mudam completamente a altura. Aprenda a “programar” o ouvido antes de cantar cada melodia.
 topics: Solfejando com acidentes
 game_kind: game-listen
 ---

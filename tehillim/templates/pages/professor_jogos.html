@@ -1,0 +1,1006 @@
+{% extends "base_app.html" %}
+
+{% block title %}Jogos dos Módulos | Tehillim{% endblock %}
+
+{% block head %}
+<style>
+.admin-tab {
+  font-size: 13px; font-weight: 600; padding: 8px 16px;
+  border-radius: 10px; color: #7A6A4D; cursor: pointer;
+  transition: background .15s, color .15s; white-space: nowrap;
+  text-decoration: none; display: inline-block; border: none; background: none;
+}
+.admin-tab:hover { background: rgba(196,148,58,.1); color: #C4943A; }
+.admin-tab.active { background: #C4943A; color: white; }
+</style>
+{% endblock %}
+
+{% block header %}
+<header style="background:#F2EAD8;border-bottom:1px solid #ECE3D0;flex-shrink:0;position:relative;overflow:hidden;">
+  <div style="padding:16px 24px 0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <p style="font-size:11px;color:#9C8460;text-transform:uppercase;letter-spacing:.18em;font-weight:600;margin:0;">Professor</p>
+        <h1 style="font-size:20px;font-weight:700;color:#2A2419;margin:3px 0 0;">Jogos</h1>
+      </div>
+      <a href="/admin/jogos/lista"
+         style="display:flex;align-items:center;gap:6px;background:white;color:#374151;font-size:13px;font-weight:600;padding:9px 16px;border-radius:10px;text-decoration:none;border:1.5px solid #E5E7EB;">
+        Ver jogos criados
+      </a>
+    </div>
+    <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:0;">
+      <a href="/admin"            class="admin-tab">Alunos</a>
+      <a href="/admin/modulos"    class="admin-tab">Módulos</a>
+      <span                       class="admin-tab active">Jogos</span>
+      <a href="/admin/relatorios" class="admin-tab">Relatórios</a>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-5">
+
+  <!-- SQL banner -->
+  <div id="sql-banner" style="display:none"
+       class="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+    <p class="text-[13px] font-semibold text-amber-800">⚠️ Tabela não encontrada — execute este SQL no Supabase antes de continuar:</p>
+    <pre id="sql-code" class="mt-2 text-[11px] bg-amber-100 rounded-lg p-3 overflow-x-auto text-amber-900 leading-relaxed cursor-pointer select-all">CREATE TABLE IF NOT EXISTS module_games (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  module_slug text NOT NULL,
+  title text NOT NULL,
+  description text NOT NULL DEFAULT '',
+  game_kind text NOT NULL,
+  body text NOT NULL DEFAULT '',
+  game_data jsonb NOT NULL DEFAULT '{}'::jsonb,
+  order_index integer NOT NULL DEFAULT 0,
+  created_by uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS module_games_slug_idx ON module_games (module_slug, order_index);
+ALTER TABLE module_games ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "service_all" ON module_games USING (true) WITH CHECK (true);</pre>
+    <button onclick="navigator.clipboard.writeText(document.getElementById('sql-code').textContent).then(()=>alert('SQL copiado!'))"
+            class="mt-2 text-[12px] text-amber-700 underline">Copiar SQL</button>
+  </div>
+
+  <!-- Layout principal: seletor de tipo + editor + preview -->
+  <div class="flex flex-col gap-5">
+
+    <!-- Linha 1: módulo + título + descrição -->
+    <div class="bg-white rounded-2xl shadow-sm p-5">
+      <h2 class="text-[14px] font-bold text-gray-700 mb-4">1. Escolha o módulo e dê um nome</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="text-[12px] font-semibold text-gray-600 block mb-1.5">Módulo destino</label>
+          <select id="f-module" required
+                  class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] bg-white focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20">
+            <option value="">Selecione um módulo...</option>
+            {% for m in modules %}
+            <option value="{{ m.slug }}">{{ m.number }}. {{ m.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="text-[12px] font-semibold text-gray-600 block mb-1.5">Título do jogo</label>
+          <input id="f-title" type="text" placeholder="Ex: Batalha de Ritmos"
+                 class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20">
+        </div>
+        <div>
+          <label class="text-[12px] font-semibold text-gray-600 block mb-1.5">Instrução para o aluno <span class="text-gray-300 font-normal">(opcional)</span></label>
+          <input id="f-description" type="text" placeholder="O que o aluno deve fazer"
+                 class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20">
+        </div>
+      </div>
+    </div>
+
+    <!-- Linha 2: escolha o tipo de jogo -->
+    <div class="bg-white rounded-2xl shadow-sm p-5">
+      <h2 class="text-[14px] font-bold text-gray-700 mb-4">2. Escolha o tipo de jogo</h2>
+      <div class="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-8 gap-3" id="type-grid">
+        <!-- preenchido pelo JS -->
+      </div>
+    </div>
+
+    <!-- Linha 3: editor de conteúdo + preview lado a lado -->
+    <div id="editor-row" style="display:none" class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+      <!-- Editor dinâmico -->
+      <div class="bg-white rounded-2xl shadow-sm p-5 flex flex-col gap-4">
+        <h2 class="text-[14px] font-bold text-gray-700">3. Configure o conteúdo</h2>
+        <div id="dynamic-editor">
+          <!-- preenchido pelo JS conforme o tipo selecionado -->
+        </div>
+        <div class="flex items-center gap-3 pt-2 border-t border-gray-100">
+          <button id="save-btn"
+                  class="px-6 py-2.5 rounded-xl bg-[#C4943A] text-white text-[13px] font-semibold hover:bg-[#B3852F] transition-colors">
+            Salvar Jogo
+          </button>
+          <p id="form-feedback" class="text-[13px] min-h-[18px]"></p>
+        </div>
+      </div>
+
+      <!-- Preview ao vivo -->
+      <div class="bg-[#FAF9F7] rounded-2xl shadow-sm overflow-hidden flex flex-col">
+        <!-- Header do preview -->
+        <div class="px-5 py-3 bg-[#1F2937] flex items-center gap-2.5 flex-shrink-0">
+          <div class="flex gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-400 opacity-70"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-yellow-400 opacity-70"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-green-400 opacity-70"></span>
+          </div>
+          <span id="preview-kind-label" class="text-[11px] text-gray-400 ml-1">Selecione um tipo de jogo</span>
+        </div>
+        <!-- Corpo simulando a tela do módulo -->
+        <div class="p-5 bg-white flex-1" style="min-height:280px;">
+          <div id="live-preview">
+            <p style="font-size:13px;color:#9CA3AF;text-align:center;margin-top:40px;">
+              Selecione um tipo e preencha o conteúdo para ver o preview.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="/static/css/games.css">
+<script src="https://cdn.jsdelivr.net/npm/vexflow@3.0.9/releases/vexflow-min.js"></script>
+<script src="/static/js/vexflow-utils.js"></script>
+<script src="/static/js/audio.js"></script>
+<script src="/static/js/games.js" data-module-player="true"></script>
+
+<style>
+  /* CSS variables that games.css depends on */
+  :root {
+    --ink: #24313f; --mint: #dff7ea; --sky: #dcefff; --sun: #ffd66b;
+    --coral: #ff8a7a; --plum: #6d5dfc; --green: #2e9f65;
+    --shadow: 0 18px 48px rgba(31,43,56,.14); --radius: 8px;
+  }
+  /* Preview container reset so games.css styles render correctly */
+  #live-preview { font-family: 'Segoe UI', system-ui, sans-serif; color: #24313f; }
+  #live-preview .game-body { margin: 0; }
+  #live-preview .game-prompt { font-size: 1rem; font-weight: 700; margin-bottom: 14px; }
+</style>
+
+<style>
+  .type-card { cursor:pointer; border:2px solid #E5E7EB; border-radius:14px; padding:12px 8px; text-align:center; transition:all .15s; user-select:none; }
+  .type-card:hover { border-color:#C4943A; background:#FFFBF2; }
+  .type-card.active { border-color:#C4943A; background:#FDF6EC; }
+  .type-card .tc-icon { font-size:24px; margin-bottom:4px; }
+  .type-card .tc-label { font-size:11px; font-weight:600; color:#374151; }
+
+  .field-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+  .field-row input, .field-row textarea, .field-row select {
+    flex:1; padding:8px 12px; border:1px solid #E5E7EB; border-radius:10px;
+    font-size:13px; outline:none; transition:border-color .15s;
+  }
+  .field-row input:focus, .field-row textarea:focus { border-color:#C4943A; }
+  .field-row .del-btn {
+    flex-shrink:0; width:28px; height:28px; border-radius:8px; border:none;
+    background:#FEE2E2; color:#EF4444; cursor:pointer; font-size:14px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .add-row-btn {
+    display:inline-flex; align-items:center; gap:6px; padding:7px 14px;
+    border:1.5px dashed #D1D5DB; border-radius:10px; background:transparent;
+    color:#6B7280; font-size:12px; cursor:pointer; transition:all .15s;
+  }
+  .add-row-btn:hover { border-color:#C4943A; color:#C4943A; }
+  .field-label { font-size:12px; font-weight:600; color:#4B5563; margin-bottom:6px; }
+  .quiz-question-block { border:1px solid #E5E7EB; border-radius:12px; padding:12px; margin-bottom:10px; }
+  .quiz-question-block .q-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .quiz-question-block .q-num { font-size:11px; font-weight:700; color:#9CA3AF; }
+  .option-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .option-row input[type=radio] { flex-shrink:0; accent-color:#C4943A; }
+  .option-row input[type=text] { flex:1; padding:6px 10px; border:1px solid #E5E7EB; border-radius:8px; font-size:12px; }
+  .option-row input[type=text]:focus { border-color:#C4943A; outline:none; }
+  .correct-badge { font-size:10px; background:#D1FAE5; color:#065F46; padding:2px 6px; border-radius:6px; font-weight:600; }
+  .tf-toggle { display:flex; gap:0; }
+  .tf-toggle button { padding:5px 12px; font-size:12px; border:1px solid #E5E7EB; cursor:pointer; }
+  .tf-toggle button:first-child { border-radius:8px 0 0 8px; }
+  .tf-toggle button:last-child { border-radius:0 8px 8px 0; border-left:none; }
+  .tf-toggle button.active-v { background:#D1FAE5; color:#065F46; border-color:#6EE7B7; }
+  .tf-toggle button.active-f { background:#FEE2E2; color:#991B1B; border-color:#FCA5A5; }
+  .pattern-grid { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .beat-cell { width:38px; height:38px; border-radius:8px; border:2px solid #E5E7EB; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; transition:all .1s; }
+  .beat-cell.on { background:#C4943A; border-color:#C4943A; }
+  .beat-cell.off { background:#F9FAFB; }
+</style>
+
+<script>
+// ── Game type schemas ─────────────────────────────────────────────────────────
+const GAME_TYPES = [
+  { kind: "game-memory",           icon: "🃏", label: "Memória" },
+  { kind: "game-quiz",             icon: "❓", label: "Quiz" },
+  { kind: "game-challenge",        icon: "🎯", label: "Desafio" },
+  { kind: "game-true-false-rapid", icon: "⚡", label: "V ou F" },
+  { kind: "game-hot-cold",         icon: "🌡️", label: "Quente/Frio" },
+  { kind: "game-sort",             icon: "↕️", label: "Ordenar" },
+  { kind: "game-speedrun",         icon: "⏱️", label: "Velocidade" },
+  { kind: "game-fill-sentence",    icon: "📝", label: "Completar" },
+  { kind: "game-word-select",      icon: "👆", label: "Clicar Palavra" },
+  { kind: "game-find-error",       icon: "🔍", label: "Achar Erro" },
+  { kind: "game-unscramble",       icon: "🔀", label: "Desembaralhar" },
+  { kind: "game-connect",          icon: "🔗", label: "Conectar" },
+  { kind: "game-crossword",        icon: "✏️", label: "Cruzadinha" },
+  { kind: "game-sequence",         icon: "🔢", label: "Sequência" },
+  { kind: "game-rhythm-tap",       icon: "🥁", label: "Ritmo Tap" },
+  { kind: "game-build",            icon: "🎵", label: "Monte o Compasso" },
+  { kind: "game-teach",            icon: "✍️", label: "Explicar" },
+  { kind: "game-drag",             icon: "🖱️", label: "Arrastar" },
+];
+
+// Current state
+let selectedKind = null;
+let gameData = {};
+
+// ── Build the type grid ───────────────────────────────────────────────────────
+function buildTypeGrid() {
+  const grid = document.getElementById("type-grid");
+  grid.innerHTML = GAME_TYPES.map(t => `
+    <div class="type-card" data-kind="${t.kind}">
+      <div class="tc-icon">${t.icon}</div>
+      <div class="tc-label">${t.label}</div>
+    </div>
+  `).join("");
+
+  grid.querySelectorAll(".type-card").forEach(card => {
+    card.addEventListener("click", () => {
+      grid.querySelectorAll(".type-card").forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+      selectedKind = card.dataset.kind;
+      gameData = defaultData(selectedKind);
+      document.getElementById("editor-row").style.display = "grid";
+      buildEditor(selectedKind);
+      updatePreview();
+    });
+  });
+}
+
+// ── Default data per type ─────────────────────────────────────────────────────
+function defaultData(kind) {
+  switch (kind) {
+    case "game-memory":
+      return { pairs: [["", ""], ["", ""], ["", ""]] };
+    case "game-quiz":
+      return { questions: [{ prompt: "", options: ["", "", "", ""], answer: "" }] };
+    case "game-challenge":
+      return { mission: "", checklist: ["", ""] };
+    case "game-true-false-rapid":
+      return { statements: [{ text: "", answer: "Verdadeiro" }, { text: "", answer: "Verdadeiro" }] };
+    case "game-hot-cold":
+      return { answer: "", hints: ["", ""] };
+    case "game-sort":
+      return { solution: ["", "", ""] };
+    case "game-speedrun":
+      return { time_limit: 30, questions: [{ prompt: "", options: ["", "", ""], answer: "" }] };
+    case "game-fill-sentence":
+      return { before: "", after: "", options: ["", "", ""], answer: "" };
+    case "game-word-select":
+      return { parts: [{ text: "", clickable: false, correct: false }, { text: "", clickable: true, correct: true }, { text: "", clickable: false, correct: false }] };
+    case "game-find-error":
+      return { parts: [{ text: "", error: false }, { text: "", error: false }, { text: "", error: true }] };
+    case "game-unscramble":
+      return { solution: ["", "", "", ""] };
+    case "game-connect":
+      return { pairs: [["", ""], ["", ""], ["", ""]] };
+    case "game-crossword":
+      return { clues: [{ direction: "H", clue: "", answer: "" }, { direction: "V", clue: "", answer: "" }] };
+    case "game-sequence":
+      return { items: ["", "", "", "", ""], blank_index: 2, options: ["", "", ""], answer: "" };
+    case "game-rhythm-tap":
+      return { pattern: [1, 0, 1, 0, 1, 1, 0, 1] };
+    case "game-build":
+      return { time_signature: "4/4", target_beats: 4, available: [
+        { id: "semibreve", label: "Semibreve", beats: 4, symbol: "𝅝" },
+        { id: "minima", label: "Mínima", beats: 2, symbol: "𝅗𝅥" },
+        { id: "seminima", label: "Semínima", beats: 1, symbol: "♩" },
+        { id: "colcheia", label: "Colcheia", beats: 0.5, symbol: "♪" },
+      ]};
+    case "game-teach":
+      return { min_chars: 50, placeholder: "Explique com suas palavras..." };
+    case "game-drag":
+      return { pairs: [["", ""], ["", ""], ["", ""]] };
+    default:
+      return {};
+  }
+}
+
+// ── Build dynamic editor ──────────────────────────────────────────────────────
+function buildEditor(kind) {
+  const el = document.getElementById("dynamic-editor");
+  switch (kind) {
+    case "game-memory":          return buildMemoryEditor(el);
+    case "game-quiz":            return buildQuizEditor(el);
+    case "game-challenge":       return buildChallengeEditor(el);
+    case "game-true-false-rapid":return buildTFEditor(el);
+    case "game-hot-cold":        return buildHotColdEditor(el);
+    case "game-sort":            return buildSortEditor(el);
+    case "game-speedrun":        return buildSpeedrunEditor(el);
+    case "game-fill-sentence":   return buildFillSentenceEditor(el);
+    case "game-word-select":     return buildWordSelectEditor(el);
+    case "game-find-error":      return buildFindErrorEditor(el);
+    case "game-unscramble":      return buildUnscrambleEditor(el);
+    case "game-connect":         return buildConnectEditor(el);
+    case "game-crossword":       return buildCrosswordEditor(el);
+    case "game-sequence":        return buildSequenceEditor(el);
+    case "game-rhythm-tap":      return buildRhythmTapEditor(el);
+    case "game-build":           return buildBuildEditor(el);
+    case "game-teach":           return buildTeachEditor(el);
+    case "game-drag":            return buildDragEditor(el);
+    default: el.innerHTML = "<p style='color:#9CA3AF;font-size:13px'>Editor em desenvolvimento para este tipo.</p>";
+  }
+}
+
+// ── Memory editor ─────────────────────────────────────────────────────────────
+function buildMemoryEditor(el) {
+  const render = () => {
+    el.innerHTML = `
+      <p class="field-label">Pares de cartas <span style="font-weight:400;color:#9CA3AF">(frente → verso)</span></p>
+      ${gameData.pairs.map((pair, i) => `
+        <div class="field-row">
+          <input type="text" placeholder="Frente (ex: Semínima)" value="${esc(pair[0])}"
+                 oninput="gameData.pairs[${i}][0]=this.value;updatePreview()">
+          <span style="color:#9CA3AF;font-size:16px;">↔</span>
+          <input type="text" placeholder="Verso (ex: 1 tempo)" value="${esc(pair[1])}"
+                 oninput="gameData.pairs[${i}][1]=this.value;updatePreview()">
+          <button class="del-btn" onclick="gameData.pairs.splice(${i},1);buildEditor('game-memory');updatePreview()">×</button>
+        </div>
+      `).join("")}
+      <button class="add-row-btn" onclick="gameData.pairs.push(['','']);buildEditor('game-memory');updatePreview()">+ Adicionar par</button>
+    `;
+  };
+  render();
+}
+
+// ── Quiz editor ───────────────────────────────────────────────────────────────
+function buildQuizEditor(el) {
+  el.innerHTML = `
+    <div id="quiz-qs"></div>
+    <button class="add-row-btn" onclick="gameData.questions.push({prompt:'',options:['','','',''],answer:''});buildEditor('game-quiz');updatePreview()">+ Adicionar pergunta</button>
+  `;
+  const container = el.querySelector("#quiz-qs");
+  gameData.questions.forEach((q, qi) => {
+    const block = document.createElement("div");
+    block.className = "quiz-question-block";
+    block.innerHTML = `
+      <div class="q-header">
+        <span class="q-num">P${qi + 1}</span>
+        <input type="text" placeholder="Pergunta" value="${esc(q.prompt)}" style="flex:1;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"
+               oninput="gameData.questions[${qi}].prompt=this.value;updatePreview()">
+        <button class="del-btn" onclick="gameData.questions.splice(${qi},1);buildEditor('game-quiz');updatePreview()">×</button>
+      </div>
+      <p style="font-size:11px;color:#9CA3AF;margin-bottom:6px;">Marque (●) a opção correta:</p>
+      ${q.options.map((opt, oi) => `
+        <div class="option-row">
+          <input type="radio" name="correct-${qi}" value="${oi}" ${q.answer === opt && opt ? "checked" : ""}
+                 onchange="gameData.questions[${qi}].answer=gameData.questions[${qi}].options[${oi}];updatePreview()">
+          <input type="text" placeholder="Opção ${oi + 1}" value="${esc(opt)}"
+                 oninput="gameData.questions[${qi}].options[${oi}]=this.value;if(this.closest('.option-row').querySelector('input[type=radio]').checked){gameData.questions[${qi}].answer=this.value;}updatePreview()">
+        </div>
+      `).join("")}
+    `;
+    container.appendChild(block);
+  });
+}
+
+// ── Challenge editor ──────────────────────────────────────────────────────────
+function buildChallengeEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Missão (texto principal)</p>
+    <textarea rows="3" placeholder="Descreva o desafio que o aluno deve completar..."
+              style="width:100%;padding:10px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;resize:vertical;margin-bottom:12px;"
+              oninput="gameData.mission=this.value;updatePreview()">${esc(gameData.mission)}</textarea>
+    <p class="field-label">Checklist de confirmação</p>
+    <div id="cl-items">
+      ${gameData.checklist.map((item, i) => `
+        <div class="field-row">
+          <input type="text" placeholder="Passo ${i + 1}" value="${esc(item)}"
+                 oninput="gameData.checklist[${i}]=this.value;updatePreview()">
+          <button class="del-btn" onclick="gameData.checklist.splice(${i},1);buildEditor('game-challenge');updatePreview()">×</button>
+        </div>
+      `).join("")}
+    </div>
+    <button class="add-row-btn" onclick="gameData.checklist.push('');buildEditor('game-challenge');updatePreview()">+ Adicionar passo</button>
+  `;
+}
+
+// ── True/False editor ─────────────────────────────────────────────────────────
+function buildTFEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Afirmações</p>
+    ${gameData.statements.map((s, i) => `
+      <div style="border:1px solid #E5E7EB;border-radius:10px;padding:10px;margin-bottom:8px;">
+        <div class="field-row" style="margin-bottom:6px;">
+          <input type="text" placeholder="Afirmação ${i + 1}" value="${esc(s.text)}"
+                 oninput="gameData.statements[${i}].text=this.value;updatePreview()">
+          <button class="del-btn" onclick="gameData.statements.splice(${i},1);buildEditor('game-true-false-rapid');updatePreview()">×</button>
+        </div>
+        <div class="tf-toggle">
+          <button class="${s.answer === 'Verdadeiro' ? 'active-v' : ''}"
+                  onclick="gameData.statements[${i}].answer='Verdadeiro';buildEditor('game-true-false-rapid');updatePreview()">✓ Verdadeiro</button>
+          <button class="${s.answer === 'Falso' ? 'active-f' : ''}"
+                  onclick="gameData.statements[${i}].answer='Falso';buildEditor('game-true-false-rapid');updatePreview()">✗ Falso</button>
+        </div>
+      </div>
+    `).join("")}
+    <button class="add-row-btn" onclick="gameData.statements.push({text:'',answer:'Verdadeiro'});buildEditor('game-true-false-rapid');updatePreview()">+ Adicionar afirmação</button>
+  `;
+}
+
+// ── Hot-cold editor ───────────────────────────────────────────────────────────
+function buildHotColdEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Resposta (palavra a ser descoberta)</p>
+    <input type="text" placeholder="Ex: Semínima" value="${esc(gameData.answer)}"
+           style="width:100%;padding:10px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:12px;"
+           oninput="gameData.answer=this.value;updatePreview()">
+    <p class="field-label">Dicas <span style="font-weight:400;color:#9CA3AF">(reveladas uma por vez)</span></p>
+    ${gameData.hints.map((h, i) => `
+      <div class="field-row">
+        <span style="font-size:11px;color:#9CA3AF;min-width:20px;">${i + 1}.</span>
+        <input type="text" placeholder="Dica ${i + 1}" value="${esc(h)}"
+               oninput="gameData.hints[${i}]=this.value;updatePreview()">
+        <button class="del-btn" onclick="gameData.hints.splice(${i},1);buildEditor('game-hot-cold');updatePreview()">×</button>
+      </div>
+    `).join("")}
+    <button class="add-row-btn" onclick="gameData.hints.push('');buildEditor('game-hot-cold');updatePreview()">+ Adicionar dica</button>
+  `;
+}
+
+// ── Sort editor ───────────────────────────────────────────────────────────────
+function buildSortEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Itens na ordem correta <span style="font-weight:400;color:#9CA3AF">(o aluno vai embaralhar e tentar ordenar)</span></p>
+    ${gameData.solution.map((item, i) => `
+      <div class="field-row">
+        <span style="font-size:11px;color:#9CA3AF;min-width:22px;font-weight:700;">${i + 1}.</span>
+        <input type="text" placeholder="Item ${i + 1}" value="${esc(item)}"
+               oninput="gameData.solution[${i}]=this.value;updatePreview()">
+        <button class="del-btn" onclick="gameData.solution.splice(${i},1);buildEditor('game-sort');updatePreview()">×</button>
+      </div>
+    `).join("")}
+    <button class="add-row-btn" onclick="gameData.solution.push('');buildEditor('game-sort');updatePreview()">+ Adicionar item</button>
+  `;
+}
+
+// ── Speedrun editor ───────────────────────────────────────────────────────────
+function buildSpeedrunEditor(el) {
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <p class="field-label" style="margin:0">Tempo limite:</p>
+      <input type="number" min="10" max="120" value="${gameData.time_limit}"
+             style="width:70px;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"
+             oninput="gameData.time_limit=parseInt(this.value)||30;updatePreview()">
+      <span style="font-size:12px;color:#6B7280;">segundos</span>
+    </div>
+    <div id="sp-qs"></div>
+    <button class="add-row-btn" onclick="gameData.questions.push({prompt:'',options:['','',''],answer:''});buildEditor('game-speedrun');updatePreview()">+ Adicionar pergunta</button>
+  `;
+  const container = el.querySelector("#sp-qs");
+  gameData.questions.forEach((q, qi) => {
+    const block = document.createElement("div");
+    block.className = "quiz-question-block";
+    block.innerHTML = `
+      <div class="q-header">
+        <span class="q-num">P${qi + 1}</span>
+        <input type="text" placeholder="Pergunta" value="${esc(q.prompt)}" style="flex:1;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"
+               oninput="gameData.questions[${qi}].prompt=this.value;updatePreview()">
+        <button class="del-btn" onclick="gameData.questions.splice(${qi},1);buildEditor('game-speedrun');updatePreview()">×</button>
+      </div>
+      ${q.options.map((opt, oi) => `
+        <div class="option-row">
+          <input type="radio" name="sp-correct-${qi}" ${q.answer === opt && opt ? "checked" : ""}
+                 onchange="gameData.questions[${qi}].answer=gameData.questions[${qi}].options[${oi}];updatePreview()">
+          <input type="text" placeholder="Opção ${oi + 1}" value="${esc(opt)}"
+                 oninput="gameData.questions[${qi}].options[${oi}]=this.value;if(this.closest('.option-row').querySelector('input[type=radio]').checked){gameData.questions[${qi}].answer=this.value;}updatePreview()">
+        </div>
+      `).join("")}
+    `;
+    container.appendChild(block);
+  });
+}
+
+// ── Fill-sentence editor ──────────────────────────────────────────────────────
+function buildFillSentenceEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Início da frase</p>
+    <input type="text" placeholder="Ex: A semínima vale" value="${esc(gameData.before)}"
+           style="width:100%;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:10px;"
+           oninput="gameData.before=this.value;updatePreview()">
+    <p class="field-label">Fim da frase (após a lacuna)</p>
+    <input type="text" placeholder="Ex: tempos no compasso." value="${esc(gameData.after)}"
+           style="width:100%;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:10px;"
+           oninput="gameData.after=this.value;updatePreview()">
+    <p class="field-label">Opções de resposta</p>
+    <div id="ffs-options">
+      ${gameData.options.map((opt, i) => `
+        <div class="field-row">
+          <input type="radio" name="ffs-correct" ${gameData.answer===opt&&opt?"checked":""} style="flex-shrink:0;accent-color:#C4943A;"
+                 onchange="gameData.answer=gameData.options[${i}];updatePreview()">
+          <input type="text" placeholder="Opção ${i+1}" value="${esc(opt)}"
+                 oninput="gameData.options[${i}]=this.value;if(this.closest('.field-row').querySelector('input[type=radio]').checked){gameData.answer=this.value;}updatePreview()">
+          <button class="del-btn" onclick="if(gameData.options.length>2){gameData.options.splice(${i},1);buildEditor('game-fill-sentence');updatePreview();}">×</button>
+        </div>
+      `).join("")}
+    </div>
+    <button class="add-row-btn" onclick="gameData.options.push('');buildEditor('game-fill-sentence');updatePreview()">+ Adicionar opção</button>
+    <p style="font-size:11px;color:#9CA3AF;margin-top:6px;">Marque (●) a opção correta.</p>
+  `;
+}
+
+// ── Word-select editor ────────────────────────────────────────────────────────
+function buildWordSelectEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Partes da frase <span style="font-weight:400;color:#9CA3AF">(adicione palavras clicáveis e marque a correta)</span></p>
+    <div id="ws-parts">
+      ${gameData.parts.map((p, i) => `
+        <div style="border:1px solid #E5E7EB;border-radius:10px;padding:8px 10px;margin-bottom:6px;">
+          <div class="field-row" style="margin-bottom:4px;">
+            <input type="text" placeholder="Texto ${i+1}" value="${esc(p.text)}"
+                   oninput="gameData.parts[${i}].text=this.value;updatePreview()">
+            <button class="del-btn" onclick="gameData.parts.splice(${i},1);buildEditor('game-word-select');updatePreview()">×</button>
+          </div>
+          <div style="display:flex;gap:12px;font-size:12px;">
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;">
+              <input type="checkbox" ${p.clickable?"checked":""} onchange="gameData.parts[${i}].clickable=this.checked;if(!this.checked)gameData.parts[${i}].correct=false;buildEditor('game-word-select');updatePreview()">
+              Clicável
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;${p.clickable?'':'opacity:.4;pointer-events:none;'}">
+              <input type="checkbox" ${p.correct?"checked":""} onchange="gameData.parts[${i}].correct=this.checked;updatePreview()">
+              Correto
+            </label>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+    <button class="add-row-btn" onclick="gameData.parts.push({text:'',clickable:false,correct:false});buildEditor('game-word-select');updatePreview()">+ Adicionar parte</button>
+  `;
+}
+
+// ── Find-error editor ─────────────────────────────────────────────────────────
+function buildFindErrorEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Termos da sequência <span style="font-weight:400;color:#9CA3AF">(marque qual contém o erro)</span></p>
+    <div id="fe-parts">
+      ${gameData.parts.map((p, i) => `
+        <div class="field-row">
+          <input type="radio" name="fe-error" ${p.error?"checked":""} style="flex-shrink:0;accent-color:#EF4444;"
+                 onchange="gameData.parts.forEach((x,j)=>x.error=j===${i});updatePreview()">
+          <input type="text" placeholder="Termo ${i+1}" value="${esc(p.text)}"
+                 oninput="gameData.parts[${i}].text=this.value;updatePreview()">
+          <button class="del-btn" onclick="gameData.parts.splice(${i},1);buildEditor('game-find-error');updatePreview()">×</button>
+        </div>
+      `).join("")}
+    </div>
+    <button class="add-row-btn" onclick="gameData.parts.push({text:'',error:false});buildEditor('game-find-error');updatePreview()">+ Adicionar termo</button>
+    <p style="font-size:11px;color:#9CA3AF;margin-top:6px;">Marque (●) o termo incorreto.</p>
+  `;
+}
+
+// ── Unscramble editor ─────────────────────────────────────────────────────────
+function buildUnscrambleEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Palavras na ordem correta <span style="font-weight:400;color:#9CA3AF">(o aluno vai embaralhar e reorganizar)</span></p>
+    ${gameData.solution.map((item, i) => `
+      <div class="field-row">
+        <span style="font-size:11px;color:#9CA3AF;min-width:22px;font-weight:700;">${i+1}.</span>
+        <input type="text" placeholder="Palavra ${i+1}" value="${esc(item)}"
+               oninput="gameData.solution[${i}]=this.value;updatePreview()">
+        <button class="del-btn" onclick="gameData.solution.splice(${i},1);buildEditor('game-unscramble');updatePreview()">×</button>
+      </div>
+    `).join("")}
+    <button class="add-row-btn" onclick="gameData.solution.push('');buildEditor('game-unscramble');updatePreview()">+ Adicionar palavra</button>
+  `;
+}
+
+// ── Connect editor ────────────────────────────────────────────────────────────
+function buildConnectEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Pares para conectar <span style="font-weight:400;color:#9CA3AF">(esquerda → direita)</span></p>
+    ${gameData.pairs.map((pair, i) => `
+      <div class="field-row">
+        <input type="text" placeholder="Esquerda ${i+1}" value="${esc(pair[0])}"
+               oninput="gameData.pairs[${i}][0]=this.value;updatePreview()">
+        <span style="color:#9CA3AF;font-size:16px;flex-shrink:0;">→</span>
+        <input type="text" placeholder="Direita ${i+1}" value="${esc(pair[1])}"
+               oninput="gameData.pairs[${i}][1]=this.value;updatePreview()">
+        <button class="del-btn" onclick="gameData.pairs.splice(${i},1);buildEditor('game-connect');updatePreview()">×</button>
+      </div>
+    `).join("")}
+    <button class="add-row-btn" onclick="gameData.pairs.push(['','']);buildEditor('game-connect');updatePreview()">+ Adicionar par</button>
+  `;
+}
+
+// ── Crossword editor ──────────────────────────────────────────────────────────
+function buildCrosswordEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Dicas e respostas</p>
+    ${gameData.clues.map((c, i) => `
+      <div style="border:1px solid #E5E7EB;border-radius:10px;padding:8px 10px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:700;color:#9CA3AF;">#${i+1}</span>
+          <select style="padding:4px 8px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;"
+                  onchange="gameData.clues[${i}].direction=this.value;updatePreview()">
+            <option value="H" ${c.direction==="H"?"selected":""}>→ Horizontal</option>
+            <option value="V" ${c.direction==="V"?"selected":""}>↓ Vertical</option>
+          </select>
+          <button class="del-btn" onclick="gameData.clues.splice(${i},1);buildEditor('game-crossword');updatePreview()">×</button>
+        </div>
+        <input type="text" placeholder="Dica da palavra" value="${esc(c.clue)}"
+               style="width:100%;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;margin-bottom:4px;"
+               oninput="gameData.clues[${i}].clue=this.value;updatePreview()">
+        <input type="text" placeholder="RESPOSTA (maiúsculas)" value="${esc(c.answer)}"
+               style="width:100%;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;font-family:monospace;"
+               oninput="gameData.clues[${i}].answer=this.value.toUpperCase();this.value=this.value.toUpperCase();updatePreview()">
+      </div>
+    `).join("")}
+    <button class="add-row-btn" onclick="gameData.clues.push({direction:'H',clue:'',answer:''});buildEditor('game-crossword');updatePreview()">+ Adicionar dica</button>
+  `;
+}
+
+// ── Sequence editor ───────────────────────────────────────────────────────────
+function buildSequenceEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Itens da sequência <span style="font-weight:400;color:#9CA3AF">(clique em ☐ para marcar como lacuna)</span></p>
+    <div id="seq-items">
+      ${gameData.items.map((item, i) => `
+        <div class="field-row">
+          <button onclick="gameData.blank_index=${i};buildEditor('game-sequence');updatePreview()"
+                  style="flex-shrink:0;width:28px;height:28px;border-radius:6px;border:1.5px solid ${gameData.blank_index===i?'#C4943A':'#E5E7EB'};background:${gameData.blank_index===i?'#FDF6EC':'#F9FAFB'};cursor:pointer;font-size:14px;">
+            ${gameData.blank_index===i?"_":"·"}
+          </button>
+          <input type="text" placeholder="Item ${i+1}" value="${esc(item)}"
+                 oninput="gameData.items[${i}]=this.value;updatePreview()">
+          <button class="del-btn" onclick="gameData.items.splice(${i},1);if(gameData.blank_index>=gameData.items.length)gameData.blank_index=0;buildEditor('game-sequence');updatePreview()">×</button>
+        </div>
+      `).join("")}
+    </div>
+    <button class="add-row-btn" onclick="gameData.items.push('');buildEditor('game-sequence');updatePreview()" style="margin-bottom:10px;">+ Adicionar item</button>
+    <p class="field-label" style="margin-top:8px;">Opções de resposta para a lacuna</p>
+    ${gameData.options.map((opt, i) => `
+      <div class="field-row">
+        <input type="radio" name="seq-correct" ${gameData.answer===opt&&opt?"checked":""} style="flex-shrink:0;accent-color:#C4943A;"
+               onchange="gameData.answer=gameData.options[${i}];updatePreview()">
+        <input type="text" placeholder="Opção ${i+1}" value="${esc(opt)}"
+               oninput="gameData.options[${i}]=this.value;if(this.closest('.field-row').querySelector('input[type=radio]').checked){gameData.answer=this.value;}updatePreview()">
+        <button class="del-btn" onclick="if(gameData.options.length>2){gameData.options.splice(${i},1);buildEditor('game-sequence');updatePreview();}">×</button>
+      </div>
+    `).join("")}
+    <button class="add-row-btn" onclick="gameData.options.push('');buildEditor('game-sequence');updatePreview()">+ Adicionar opção</button>
+  `;
+}
+
+// ── Rhythm-tap editor ─────────────────────────────────────────────────────────
+function buildRhythmTapEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Padrão de ritmo <span style="font-weight:400;color:#9CA3AF">(clique para ligar/desligar cada batida)</span></p>
+    <div class="pattern-grid" id="rt-grid">
+      ${gameData.pattern.map((beat, i) => `
+        <div class="beat-cell ${beat?"on":"off"}" data-i="${i}">${beat?"●":"○"}</div>
+      `).join("")}
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="add-row-btn" onclick="gameData.pattern.push(0);buildEditor('game-rhythm-tap');updatePreview()">+ Beat</button>
+      <button class="add-row-btn" onclick="if(gameData.pattern.length>2){gameData.pattern.pop();buildEditor('game-rhythm-tap');updatePreview();}">- Beat</button>
+    </div>
+  `;
+  el.querySelectorAll(".beat-cell").forEach(cell => {
+    cell.addEventListener("click", () => {
+      const i = +cell.dataset.i;
+      gameData.pattern[i] = gameData.pattern[i] ? 0 : 1;
+      buildEditor("game-rhythm-tap");
+      updatePreview();
+    });
+  });
+}
+
+// ── Build-measure editor ──────────────────────────────────────────────────────
+function buildBuildEditor(el) {
+  const tsOptions = ["2/4", "3/4", "4/4"].map(ts =>
+    `<option value="${ts}" ${gameData.time_signature===ts?"selected":""}>${ts}</option>`
+  ).join("");
+  const DEFAULT_FIGURES = [
+    { id: "semibreve", label: "Semibreve", beats: 4, symbol: "𝅝" },
+    { id: "minima",    label: "Mínima",    beats: 2, symbol: "𝅗𝅥" },
+    { id: "seminima",  label: "Semínima",  beats: 1, symbol: "♩" },
+    { id: "colcheia",  label: "Colcheia",  beats: 0.5, symbol: "♪" },
+  ];
+  const avail = gameData.available || DEFAULT_FIGURES;
+  el.innerHTML = `
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
+      <div>
+        <p class="field-label" style="margin-bottom:4px">Fórmula de compasso</p>
+        <select style="padding:7px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;"
+                onchange="gameData.time_signature=this.value;gameData.target_beats=parseInt(this.value)||4;updatePreview()">
+          ${tsOptions}
+        </select>
+      </div>
+      <div>
+        <p class="field-label" style="margin-bottom:4px">Beats alvo</p>
+        <input type="number" min="1" max="16" step="0.5" value="${gameData.target_beats||4}"
+               style="width:70px;padding:7px 10px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;"
+               oninput="gameData.target_beats=parseFloat(this.value)||4;updatePreview()">
+      </div>
+    </div>
+    <p class="field-label">Figuras disponíveis para o aluno</p>
+    ${avail.map((fig, i) => `
+      <div class="field-row" style="align-items:center;">
+        <span style="font-size:20px;width:28px;text-align:center;">${fig.symbol}</span>
+        <input type="text" placeholder="Nome" value="${esc(fig.label)}"
+               style="flex:1;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"
+               oninput="gameData.available[${i}].label=this.value;updatePreview()">
+        <input type="number" min="0.25" max="16" step="0.25" value="${fig.beats}" title="Beats"
+               style="width:64px;padding:6px 8px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"
+               oninput="gameData.available[${i}].beats=parseFloat(this.value)||1;updatePreview()">
+        <button class="del-btn" onclick="gameData.available.splice(${i},1);buildEditor('game-build');updatePreview()">×</button>
+      </div>
+    `).join("")}
+    <button class="add-row-btn" onclick="gameData.available.push({id:'fig'+Date.now(),label:'',beats:1,symbol:'♩'});buildEditor('game-build');updatePreview()">+ Figura</button>
+  `;
+}
+
+// ── Teach editor ──────────────────────────────────────────────────────────────
+function buildTeachEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Mínimo de caracteres para completar</p>
+    <input type="number" min="10" max="500" value="${gameData.min_chars||50}"
+           style="width:100px;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:12px;"
+           oninput="gameData.min_chars=parseInt(this.value)||50;updatePreview()">
+    <p class="field-label">Placeholder do campo de texto</p>
+    <input type="text" placeholder="Explique com suas palavras..." value="${esc(gameData.placeholder)}"
+           style="width:100%;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;"
+           oninput="gameData.placeholder=this.value;updatePreview()">
+    <p style="font-size:11px;color:#9CA3AF;margin-top:8px;">O aluno precisa escrever pelo menos ${gameData.min_chars||50} caracteres para avançar.</p>
+  `;
+}
+
+// ── Drag editor ───────────────────────────────────────────────────────────────
+function buildDragEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Pares alvo → item <span style="font-weight:400;color:#9CA3AF">(o aluno arrasta o item ao alvo correto)</span></p>
+    ${gameData.pairs.map((pair, i) => `
+      <div class="field-row">
+        <input type="text" placeholder="Alvo ${i+1}" value="${esc(pair[0])}"
+               oninput="gameData.pairs[${i}][0]=this.value;updatePreview()">
+        <span style="color:#9CA3AF;font-size:16px;flex-shrink:0;">←</span>
+        <input type="text" placeholder="Item ${i+1}" value="${esc(pair[1])}"
+               oninput="gameData.pairs[${i}][1]=this.value;updatePreview()">
+        <button class="del-btn" onclick="gameData.pairs.splice(${i},1);buildEditor('game-drag');updatePreview()">×</button>
+      </div>
+    `).join("")}
+    <button class="add-row-btn" onclick="gameData.pairs.push(['','']);buildEditor('game-drag');updatePreview()">+ Adicionar par</button>
+  `;
+}
+
+// ── Live preview ──────────────────────────────────────────────────────────────
+function updatePreview() {
+  const el = document.getElementById("live-preview");
+  if (!selectedKind || !gameData) return;
+
+  // Update header label
+  const typeInfo = GAME_TYPES.find(t => t.kind === selectedKind);
+  const labelEl  = document.getElementById("preview-kind-label");
+  if (labelEl && typeInfo) labelEl.textContent = `${typeInfo.icon} ${typeInfo.label} — preview interativo`;
+
+  // Wire stub globals before renderer runs (they stay wired — that's fine for preview)
+  window.markComplete = window.markComplete || (() => {});
+  window.setFeedback  = window.setFeedback  || (() => {});
+
+  if (typeof RENDERERS !== "undefined" && RENDERERS[selectedKind]) {
+    const mockStep = buildMockStep(selectedKind);
+    if (mockStep) {
+      try {
+        el.innerHTML = '<div class="game-body" id="preview-game-body"></div>';
+        RENDERERS[selectedKind](mockStep, el.querySelector("#preview-game-body"));
+        return;
+      } catch(e) {
+        console.warn("Preview render error:", e);
+      }
+    } else {
+      el.innerHTML = `<p style="font-size:13px;color:#9CA3AF;margin-top:20px;text-align:center;">Preencha pelo menos um item para ver o preview.</p>`;
+      return;
+    }
+  }
+
+  // Fallback: JSON summary
+  el.innerHTML = `<pre style="font-size:11px;color:#6B7280;white-space:pre-wrap;background:#F9FAFB;padding:12px;border-radius:8px;">${JSON.stringify(gameData, null, 2)}</pre>`;
+}
+
+function buildMockStep(kind) {
+  const data = structuredClone ? structuredClone(gameData) : JSON.parse(JSON.stringify(gameData));
+  const prompt = document.getElementById("f-description")?.value || "Preview do jogo";
+
+  switch (kind) {
+    case "game-memory": {
+      const pairs = data.pairs.filter(p => p[0] || p[1]);
+      if (!pairs.length) return null;
+      return { kind, prompt, game_data: { pairs } };
+    }
+    case "game-quiz": {
+      const questions = data.questions.filter(q => q.prompt);
+      if (!questions.length) return null;
+      return { kind, prompt, game_data: { questions } };
+    }
+    case "game-challenge":
+      if (!data.mission && !data.checklist.length) return null;
+      return { kind, prompt, game_data: { mission: data.mission || "(missão)", checklist: data.checklist.filter(Boolean) } };
+    case "game-true-false-rapid": {
+      const statements = data.statements.filter(s => s.text);
+      if (!statements.length) return null;
+      return { kind, prompt, game_data: { statements } };
+    }
+    case "game-hot-cold":
+      if (!data.answer) return null;
+      return { kind, prompt, game_data: { answer: data.answer, hints: data.hints.filter(Boolean) } };
+    case "game-sort": {
+      const solution = data.solution.filter(Boolean);
+      if (solution.length < 2) return null;
+      const shuffled = [...solution].sort(() => Math.random() - 0.5);
+      return { kind, prompt, game_data: { shuffled, solution } };
+    }
+    case "game-speedrun": {
+      const questions = data.questions.filter(q => q.prompt);
+      if (!questions.length) return null;
+      return { kind, prompt, game_data: { time_limit: data.time_limit, questions } };
+    }
+    case "game-fill-sentence":
+      if (!data.before && !data.after) return null;
+      return { kind, prompt, game_data: { before: data.before, after: data.after, options: data.options.filter(Boolean), answer: data.answer } };
+    case "game-word-select": {
+      const parts = data.parts.filter(p => p.text);
+      if (!parts.length) return null;
+      return { kind, prompt, game_data: { parts } };
+    }
+    case "game-find-error": {
+      const parts = data.parts.filter(p => p.text);
+      if (!parts.length) return null;
+      return { kind, prompt, game_data: { parts } };
+    }
+    case "game-unscramble": {
+      const solution = data.solution.filter(Boolean);
+      if (solution.length < 2) return null;
+      const shuffled = [...solution].sort(() => Math.random() - 0.5);
+      return { kind, prompt, game_data: { shuffled, solution } };
+    }
+    case "game-connect": {
+      const pairs = data.pairs.filter(p => p[0] && p[1]);
+      if (!pairs.length) return null;
+      const left = pairs.map(p => p[0]);
+      const right_shuffled = [...pairs.map(p => p[1])].sort(() => Math.random() - 0.5);
+      return { kind, prompt, game_data: { left, right_shuffled, pairs } };
+    }
+    case "game-crossword": {
+      const clues = data.clues.filter(c => c.clue && c.answer);
+      if (!clues.length) return null;
+      return { kind, prompt, game_data: { clues } };
+    }
+    case "game-sequence": {
+      const items = data.items.filter(Boolean);
+      if (!items.length) return null;
+      return { kind, prompt, game_data: { items, blank_index: data.blank_index, options: data.options.filter(Boolean), answer: data.answer } };
+    }
+    case "game-rhythm-tap":
+      return { kind, prompt, game_data: { pattern: data.pattern } };
+    case "game-build": {
+      const avail = (data.available || []).filter(f => f.label);
+      if (!avail.length) return null;
+      return { kind, prompt, game_data: { time_signature: data.time_signature || "4/4", target_beats: data.target_beats || 4, available: avail } };
+    }
+    case "game-teach":
+      return { kind, prompt, game_data: { min_chars: data.min_chars || 50, placeholder: data.placeholder || "Explique com suas palavras..." } };
+    case "game-drag": {
+      const pairs = data.pairs.filter(p => p[0] && p[1]);
+      if (!pairs.length) return null;
+      const targets = pairs.map(p => p[0]);
+      const items_shuffled = [...pairs.map(p => p[1])].sort(() => Math.random() - 0.5);
+      const solution = pairs.map(p => p[1]);
+      return { kind, prompt, game_data: { targets, items_shuffled, solution } };
+    }
+    default: return null;
+  }
+}
+
+// ── Helper: escape HTML ───────────────────────────────────────────────────────
+function esc(s) {
+  return (s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ── Save game ─────────────────────────────────────────────────────────────────
+document.getElementById("save-btn").addEventListener("click", async () => {
+  const module_slug = document.getElementById("f-module").value.trim();
+  const title       = document.getElementById("f-title").value.trim();
+  const description = document.getElementById("f-description").value.trim();
+
+  if (!module_slug) { showFeedback("Selecione um módulo.", "error"); return; }
+  if (!selectedKind) { showFeedback("Selecione o tipo de jogo.", "error"); return; }
+  if (!title) { showFeedback("Dê um título ao jogo.", "error"); return; }
+  if (!isDataValid()) { showFeedback("Preencha pelo menos um item de conteúdo.", "error"); return; }
+
+  const btn = document.getElementById("save-btn");
+  btn.disabled = true;
+  btn.textContent = "Salvando…";
+
+  try {
+    const res = await fetch("/api/admin/jogos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ module_slug, title, description, game_kind: selectedKind, body: "", game_data: gameData }),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      if (json.error && (json.error.includes("does not exist") || json.error.includes("42P01"))) {
+        document.getElementById("sql-banner").style.display = "block";
+      }
+      throw new Error(json.error || "Erro ao salvar");
+    }
+    showFeedback("Jogo salvo com sucesso!", "ok");
+    // Reset form
+    document.getElementById("f-module").value = "";
+    document.getElementById("f-title").value = "";
+    document.getElementById("f-description").value = "";
+    document.querySelectorAll(".type-card").forEach(c => c.classList.remove("active"));
+    selectedKind = null;
+    document.getElementById("editor-row").style.display = "none";
+  } catch (err) {
+    showFeedback(err.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Salvar Jogo";
+  }
+});
+
+function showFeedback(msg, type) {
+  const el = document.getElementById("form-feedback");
+  el.textContent = msg;
+  el.className = type === "ok" ? "text-[13px] text-green-600" : "text-[13px] text-red-500";
+  if (type === "ok") setTimeout(() => { el.textContent = ""; }, 3000);
+}
+
+function isDataValid() {
+  if (!gameData) return false;
+  switch (selectedKind) {
+    case "game-memory":
+      return gameData.pairs && gameData.pairs.some(p => p[0] || p[1]);
+    case "game-quiz":
+    case "game-speedrun":
+      return gameData.questions && gameData.questions.some(q => q.prompt);
+    case "game-challenge":
+      return gameData.mission || (gameData.checklist && gameData.checklist.some(Boolean));
+    case "game-true-false-rapid":
+      return gameData.statements && gameData.statements.some(s => s.text);
+    case "game-hot-cold":
+      return !!gameData.answer;
+    case "game-sort":
+    case "game-unscramble":
+      return gameData.solution && gameData.solution.filter(Boolean).length >= 2;
+    case "game-fill-sentence":
+      return !!(gameData.before || gameData.after);
+    case "game-word-select":
+    case "game-find-error":
+      return gameData.parts && gameData.parts.some(p => p.text);
+    case "game-connect":
+    case "game-drag":
+      return gameData.pairs && gameData.pairs.some(p => p[0] && p[1]);
+    case "game-crossword":
+      return gameData.clues && gameData.clues.some(c => c.clue && c.answer);
+    case "game-sequence":
+      return gameData.items && gameData.items.filter(Boolean).length >= 2;
+    case "game-rhythm-tap":
+      return gameData.pattern && gameData.pattern.length > 0;
+    case "game-build":
+      return gameData.available && gameData.available.some(f => f.label);
+    case "game-teach":
+      return true;
+    default: return true;
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+buildTypeGrid();
+</script>
+{% endblock %}

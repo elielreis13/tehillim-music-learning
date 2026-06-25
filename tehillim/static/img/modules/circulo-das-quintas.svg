@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="600" height="600" fill="#FAFAFA" rx="12"/>
+  <text x="300" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#333">CÍRCULO DAS QUINTAS</text>
+
+  <!-- Outer ring: Major keys -->
+  <!-- Center -->
+  <circle cx="300" cy="310" r="240" fill="none" stroke="#DDD" stroke-width="1"/>
+  <circle cx="300" cy="310" r="185" fill="none" stroke="#DDD" stroke-width="1"/>
+  <circle cx="300" cy="310" r="130" fill="none" stroke="#EEE" stroke-width="1"/>
+
+  <!-- Major key wedges + labels (12 positions) -->
+  <!-- Using pre-computed angles: 0=top=C, then clockwise every 30° -->
+  <!-- C (top, 270°) -->
+  <text x="300" y="82" text-anchor="middle" font-size="22" font-weight="700" fill="#1565C0">Dó</text>
+  <text x="300" y="102" text-anchor="middle" font-size="11" fill="#666">C</text>
+
+  <!-- G (30° clockwise from top = 300°) -->
+  <text x="420" y="115" text-anchor="middle" font-size="20" font-weight="700" fill="#1565C0">Sol</text>
+  <text x="420" y="133" text-anchor="middle" font-size="11" fill="#666">G · 1♯</text>
+
+  <!-- D (60° = 330°) -->
+  <text x="505" y="215" text-anchor="middle" font-size="20" font-weight="700" fill="#2196F3">Ré</text>
+  <text x="505" y="233" text-anchor="middle" font-size="11" fill="#666">D · 2♯</text>
+
+  <!-- A (90° = 0°) -->
+  <text x="520" y="320" text-anchor="middle" font-size="20" font-weight="700" fill="#2196F3">Lá</text>
+  <text x="520" y="338" text-anchor="middle" font-size="11" fill="#666">A · 3♯</text>
+
+  <!-- E (120° = 30°) -->
+  <text x="505" y="415" text-anchor="middle" font-size="20" font-weight="700" fill="#4CAF50">Mi</text>
+  <text x="505" y="433" text-anchor="middle" font-size="11" fill="#666">E · 4♯</text>
+
+  <!-- B/Cb (150° = 60°) -->
+  <text x="420" y="510" text-anchor="middle" font-size="20" font-weight="700" fill="#4CAF50">Si</text>
+  <text x="420" y="527" text-anchor="middle" font-size="11" fill="#666">B · 5♯</text>
+
+  <!-- F#/Gb (180° = 90°, bottom) -->
+  <text x="300" y="548" text-anchor="middle" font-size="20" font-weight="700" fill="#FF9800">Fá♯/Sol♭</text>
+  <text x="300" y="565" text-anchor="middle" font-size="11" fill="#666">F♯/G♭ · 6♯/6♭</text>
+
+  <!-- Db (210°) -->
+  <text x="182" y="510" text-anchor="middle" font-size="20" font-weight="700" fill="#FF9800">Ré♭</text>
+  <text x="182" y="527" text-anchor="middle" font-size="11" fill="#666">D♭ · 5♭</text>
+
+  <!-- Ab (240°) -->
+  <text x="97" y="415" text-anchor="middle" font-size="20" font-weight="700" fill="#F44336">Lá♭</text>
+  <text x="97" y="433" text-anchor="middle" font-size="11" fill="#666">A♭ · 4♭</text>
+
+  <!-- Eb (270°) -->
+  <text x="82" y="320" text-anchor="middle" font-size="20" font-weight="700" fill="#F44336">Mi♭</text>
+  <text x="82" y="338" text-anchor="middle" font-size="11" fill="#666">E♭ · 3♭</text>
+
+  <!-- Bb (300°) -->
+  <text x="97" y="215" text-anchor="middle" font-size="20" font-weight="700" fill="#9C27B0">Si♭</text>
+  <text x="97" y="233" text-anchor="middle" font-size="11" fill="#666">B♭ · 2♭</text>
+
+  <!-- F (330°) -->
+  <text x="182" y="115" text-anchor="middle" font-size="20" font-weight="700" fill="#9C27B0">Fá</text>
+  <text x="182" y="133" text-anchor="middle" font-size="11" fill="#666">F · 1♭</text>
+
+  <!-- Inner ring: Relative minors (same angles but inner) -->
+  <text x="300" y="175" text-anchor="middle" font-size="13" fill="#888">lam</text>
+  <text x="380" y="198" text-anchor="middle" font-size="13" fill="#888">mim</text>
+  <text x="430" y="260" text-anchor="middle" font-size="13" fill="#888">sim</text>
+  <text x="440" y="322" text-anchor="middle" font-size="13" fill="#888">f♯m</text>
+  <text x="430" y="385" text-anchor="middle" font-size="13" fill="#888">c♯m</text>
+  <text x="376" y="435" text-anchor="middle" font-size="13" fill="#888">g♯m</text>
+  <text x="300" y="460" text-anchor="middle" font-size="13" fill="#888">d♯m</text>
+  <text x="224" y="435" text-anchor="middle" font-size="13" fill="#888">bbm</text>
+  <text x="170" y="385" text-anchor="middle" font-size="13" fill="#888">fm</text>
+  <text x="160" y="322" text-anchor="middle" font-size="13" fill="#888">cm</text>
+  <text x="170" y="260" text-anchor="middle" font-size="13" fill="#888">gm</text>
+  <text x="222" y="198" text-anchor="middle" font-size="13" fill="#888">dm</text>
+
+  <!-- Center label -->
+  <text x="300" y="305" text-anchor="middle" font-size="12" font-weight="700" fill="#555">Tonalidades</text>
+  <text x="300" y="323" text-anchor="middle" font-size="11" fill="#777">Maiúsculas = maior</text>
+  <text x="300" y="339" text-anchor="middle" font-size="11" fill="#777">minúsculas = menor</text>
+
+  <!-- ♯ crescentes (clockwise) label -->
+  <path d="M 500,80 A 220,220 0 0,1 500,540" fill="none" stroke="#2196F3" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
+  <text x="558" y="95" font-size="10" fill="#2196F3">+ sustenidos →</text>
+
+  <!-- ♭ crescentes (counter-clockwise) -->
+  <text x="18" y="95" font-size="10" fill="#9C27B0">← + bemóis</text>
+</svg>

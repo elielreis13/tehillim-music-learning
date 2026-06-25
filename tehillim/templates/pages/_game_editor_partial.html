@@ -1,0 +1,516 @@
+{#
+  Game Editor Partial
+  Include this in professor pages that need the game picker + editor.
+  Exposes globals: geKind, geData, initGameEditor(), getGameEditorState(), resetGameEditor()
+  Requires games.js to be loaded (for preview RENDERERS).
+  Requires a <div id="ge-prompt-input"> on the host page for preview text.
+#}
+
+<style>
+.ge-type-card {
+  border: 1.5px solid #E5E7EB; border-radius: 12px; padding: 10px 6px;
+  cursor: pointer; text-align: center; transition: all .12s; background: #FAFAF9;
+}
+.ge-type-card:hover  { border-color: #C4943A; background: #FFFBF2; }
+.ge-type-card.active { border-color: #C4943A; background: #FDF6EC; }
+.ge-type-card .tc-icon  { font-size: 20px; margin-bottom: 3px; }
+.ge-type-card .tc-label { font-size: 10px; font-weight: 600; color: #374151; line-height: 1.2; }
+
+.ge-field-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.ge-field-row input, .ge-field-row textarea, .ge-field-row select {
+  flex: 1; padding: 6px 10px; border: 1px solid #E5E7EB; border-radius: 8px;
+  font-size: 13px; outline: none;
+}
+.ge-field-row input:focus { border-color: #C4943A; }
+.ge-del-btn {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 6px; border: 1px solid #FCA5A5;
+  background: #FEF2F2; color: #EF4444; cursor: pointer; font-size: 14px; line-height: 1;
+}
+.ge-add-btn {
+  margin-top: 4px; padding: 5px 12px; border-radius: 8px;
+  border: 1.5px dashed #D1D5DB; background: none; font-size: 12px;
+  color: #6B7280; cursor: pointer;
+}
+.ge-add-btn:hover { border-color: #C4943A; color: #C4943A; }
+.ge-field-label { font-size: 12px; font-weight: 600; color: #4B5563; margin-bottom: 6px; margin-top: 10px; }
+.ge-quiz-block { border: 1px solid #E5E7EB; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.ge-quiz-block .q-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.ge-quiz-block .q-num { font-size: 11px; font-weight: 700; color: #9CA3AF; }
+.ge-opt-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.ge-opt-row input[type=radio] { flex-shrink: 0; accent-color: #C4943A; }
+.ge-opt-row input[type=text] { flex: 1; padding: 6px 10px; border: 1px solid #E5E7EB; border-radius: 8px; font-size: 12px; }
+.ge-opt-row input[type=text]:focus { border-color: #C4943A; outline: none; }
+.ge-tf-toggle { display: flex; margin-bottom: 4px; }
+.ge-tf-toggle button { padding: 5px 12px; font-size: 12px; border: 1px solid #E5E7EB; cursor: pointer; background: #F9FAFB; }
+.ge-tf-toggle button:first-child { border-radius: 8px 0 0 8px; }
+.ge-tf-toggle button:last-child  { border-radius: 0 8px 8px 0; border-left: none; }
+.ge-tf-toggle button.active-v { background: #D1FAE5; color: #065F46; border-color: #6EE7B7; }
+.ge-tf-toggle button.active-f { background: #FEE2E2; color: #991B1B; border-color: #FCA5A5; }
+.ge-pattern-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.ge-beat { width: 36px; height: 36px; border-radius: 8px; border: 2px solid #E5E7EB; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all .1s; }
+.ge-beat.on  { background: #C4943A; border-color: #C4943A; color: white; }
+.ge-beat.off { background: #F9FAFB; }
+</style>
+
+<!-- Game type selection grid -->
+<div class="grid grid-cols-4 sm:grid-cols-6 gap-2 mb-4" id="ge-type-grid"></div>
+
+<!-- Editor + live preview (hidden until type selected) -->
+<div id="ge-editor-row" style="display:none;" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-2">
+  <div style="border:1px solid #E5E7EB;border-radius:12px;padding:14px;overflow-y:auto;max-height:360px;">
+    <div id="ge-dynamic-editor"></div>
+  </div>
+  <div style="background:#FAF9F7;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">
+    <div style="padding:8px 14px;background:#1F2937;display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <div style="display:flex;gap:5px;">
+        <span style="width:9px;height:9px;border-radius:50%;background:#EF4444;opacity:.7;"></span>
+        <span style="width:9px;height:9px;border-radius:50%;background:#F59E0B;opacity:.7;"></span>
+        <span style="width:9px;height:9px;border-radius:50%;background:#10B981;opacity:.7;"></span>
+      </div>
+      <span id="ge-preview-label" style="font-size:11px;color:#9CA3AF;margin-left:4px;">preview interativo</span>
+    </div>
+    <div style="padding:14px;flex:1;background:white;min-height:180px;overflow-y:auto;">
+      <div id="ge-live-preview">
+        <p style="font-size:13px;color:#9CA3AF;text-align:center;margin-top:30px;">Preencha os campos para ver o preview.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Game Editor State ─────────────────────────────────────────────────────────
+let geKind = null;
+let geData = {};
+let _D, _upd, _rebld;
+
+const GE_TYPES = [
+  { kind: "game-quiz",             icon: "❓", label: "Quiz" },
+  { kind: "game-memory",           icon: "🃏", label: "Memória" },
+  { kind: "game-challenge",        icon: "🎯", label: "Desafio" },
+  { kind: "game-true-false-rapid", icon: "⚡", label: "V ou F" },
+  { kind: "game-fill-sentence",    icon: "📝", label: "Completar" },
+  { kind: "game-sort",             icon: "↕️", label: "Ordenar" },
+  { kind: "game-unscramble",       icon: "🔀", label: "Embaralhar" },
+  { kind: "game-connect",          icon: "🔗", label: "Conectar" },
+  { kind: "game-sequence",         icon: "🔢", label: "Sequência" },
+  { kind: "game-hot-cold",         icon: "🌡️", label: "Quente/Frio" },
+  { kind: "game-find-error",       icon: "🔍", label: "Achar Erro" },
+  { kind: "game-speedrun",         icon: "⏱️", label: "Velocidade" },
+  { kind: "game-word-select",      icon: "👆", label: "Clicar Palavra" },
+  { kind: "game-rhythm-tap",       icon: "🥁", label: "Ritmo Tap" },
+  { kind: "game-crossword",        icon: "✏️", label: "Cruzadinha" },
+  { kind: "game-build",            icon: "🎵", label: "Monte Compasso" },
+  { kind: "game-teach",            icon: "✍️", label: "Explicar" },
+  { kind: "game-drag",             icon: "🖱️", label: "Arrastar" },
+];
+
+function initGameEditor(selectedKind, existingData) {
+  const grid = document.getElementById("ge-type-grid");
+  grid.innerHTML = GE_TYPES.map(t => `
+    <div class="ge-type-card" data-kind="${t.kind}">
+      <div class="tc-icon">${t.icon}</div>
+      <div class="tc-label">${t.label}</div>
+    </div>`).join("");
+  grid.querySelectorAll(".ge-type-card").forEach(card => {
+    card.addEventListener("click", () => {
+      grid.querySelectorAll(".ge-type-card").forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+      geKind = card.dataset.kind;
+      if (!geData._kind || geData._kind !== geKind) {
+        geData = existingData && existingData._kind === geKind
+          ? existingData
+          : geDefaultData(geKind);
+        geData._kind = geKind;
+      }
+      document.getElementById("ge-editor-row").style.display = "grid";
+      const t = GE_TYPES.find(t => t.kind === geKind);
+      document.getElementById("ge-preview-label").textContent = `${t?.icon||""} ${t?.label||""} — preview`;
+      geBuildEditor(geKind);
+      geUpdatePreview();
+    });
+  });
+
+  if (selectedKind) {
+    geData = existingData || geDefaultData(selectedKind);
+    geData._kind = selectedKind;
+    geKind = selectedKind;
+    const card = grid.querySelector(`[data-kind="${selectedKind}"]`);
+    if (card) {
+      card.classList.add("active");
+      document.getElementById("ge-editor-row").style.display = "grid";
+      const t = GE_TYPES.find(t => t.kind === selectedKind);
+      document.getElementById("ge-preview-label").textContent = `${t?.icon||""} ${t?.label||""} — preview`;
+      geBuildEditor(selectedKind);
+      geUpdatePreview();
+    }
+  }
+}
+
+function resetGameEditor() {
+  geKind = null; geData = {};
+  document.querySelectorAll(".ge-type-card").forEach(c => c.classList.remove("active"));
+  document.getElementById("ge-editor-row").style.display = "none";
+  document.getElementById("ge-live-preview").innerHTML =
+    '<p style="font-size:13px;color:#9CA3AF;text-align:center;margin-top:30px;">Selecione um tipo para ver o preview.</p>';
+}
+
+function getGameEditorState() {
+  if (!geKind) return null;
+  return { game_kind: geKind, game_data: { ...geData } };
+}
+
+function geEsc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+
+// ── Build editor for selected kind ────────────────────────────────────────────
+function geBuildEditor(kind) {
+  _D = geData; _upd = geUpdatePreview; _rebld = geBuildEditor;
+  const el = document.getElementById("ge-dynamic-editor");
+  switch (kind) {
+    case "game-memory":           return _geMemory(el);
+    case "game-quiz":             return _geQuiz(el);
+    case "game-challenge":        return _geChallenge(el);
+    case "game-true-false-rapid": return _geTF(el);
+    case "game-hot-cold":         return _geHotCold(el);
+    case "game-sort":             return _geSort(el);
+    case "game-speedrun":         return _geSpeedrun(el);
+    case "game-fill-sentence":    return _geFill(el);
+    case "game-word-select":      return _geWordSelect(el);
+    case "game-find-error":       return _geFindError(el);
+    case "game-unscramble":       return _geUnscramble(el);
+    case "game-connect":          return _geConnect(el);
+    case "game-crossword":        return _geCrossword(el);
+    case "game-sequence":         return _geSequence(el);
+    case "game-rhythm-tap":       return _geRhythm(el);
+    case "game-build":            return _geBuild(el);
+    case "game-teach":            return _geTeach(el);
+    case "game-drag":             return _geDrag(el);
+    default: el.innerHTML = "<p style='color:#9CA3AF;font-size:13px;'>Configure este tipo.</p>";
+  }
+}
+
+function geDefaultData(kind) {
+  switch (kind) {
+    case "game-memory":           return { pairs:[["",""],["",""],["",""]] };
+    case "game-quiz":             return { questions:[{prompt:"",options:["","","",""],answer:""}] };
+    case "game-challenge":        return { mission:"", checklist:["",""] };
+    case "game-true-false-rapid": return { statements:[{text:"",answer:"Verdadeiro"},{text:"",answer:"Verdadeiro"}] };
+    case "game-hot-cold":         return { answer:"", hints:["",""] };
+    case "game-sort":             return { solution:["","",""] };
+    case "game-speedrun":         return { time_limit:30, questions:[{prompt:"",options:["","",""],answer:""}] };
+    case "game-fill-sentence":    return { before:"", after:"", options:["","",""], answer:"" };
+    case "game-word-select":      return { parts:[{text:"",clickable:false,correct:false},{text:"",clickable:true,correct:true},{text:"",clickable:false,correct:false}] };
+    case "game-find-error":       return { parts:[{text:"",error:false},{text:"",error:false},{text:"",error:true}] };
+    case "game-unscramble":       return { solution:["","","",""] };
+    case "game-connect":          return { pairs:[["",""],["",""],["",""]] };
+    case "game-crossword":        return { clues:[{direction:"H",clue:"",answer:""},{direction:"V",clue:"",answer:""}] };
+    case "game-sequence":         return { items:["","","","",""],blank_index:2,options:["","",""],answer:"" };
+    case "game-rhythm-tap":       return { pattern:[1,0,1,0,1,1,0,1] };
+    case "game-build":            return { time_signature:"4/4",target_beats:4 };
+    case "game-teach":            return { min_chars:50,placeholder:"Explique com suas palavras..." };
+    case "game-drag":             return { pairs:[["",""],["",""],["",""]] };
+    default:                      return {};
+  }
+}
+
+// ── Individual editors ────────────────────────────────────────────────────────
+function _geMemory(el) {
+  el.innerHTML = `<p class="ge-field-label">Pares (frente → verso)</p>
+    ${_D.pairs.map((p,i)=>`
+    <div class="ge-field-row">
+      <input type="text" placeholder="Frente" value="${geEsc(p[0])}" oninput="_D.pairs[${i}][0]=this.value;_upd()">
+      <span style="color:#9CA3AF;">↔</span>
+      <input type="text" placeholder="Verso"  value="${geEsc(p[1])}" oninput="_D.pairs[${i}][1]=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.pairs.splice(${i},1);_rebld('game-memory');_upd()">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.pairs.push(['','']);_rebld('game-memory');_upd()">+ par</button>`;
+}
+
+function _geQuiz(el) {
+  el.innerHTML = `<div id="gqz"></div>
+    <button class="ge-add-btn" onclick="_D.questions.push({prompt:'',options:['','','',''],answer:''});_rebld('game-quiz');_upd()">+ pergunta</button>`;
+  const c = el.querySelector("#gqz");
+  _D.questions.forEach((q,qi) => {
+    const b = document.createElement("div"); b.className = "ge-quiz-block";
+    b.innerHTML = `<div class="q-header">
+      <span class="q-num">P${qi+1}</span>
+      <input type="text" placeholder="Pergunta" value="${geEsc(q.prompt)}" style="flex:1;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;" oninput="_D.questions[${qi}].prompt=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.questions.splice(${qi},1);_rebld('game-quiz');_upd()">×</button>
+    </div>
+    ${q.options.map((opt,oi)=>`
+    <div class="ge-opt-row">
+      <input type="radio" name="gq-${qi}" ${q.answer===opt&&opt?"checked":""} onchange="_D.questions[${qi}].answer=_D.questions[${qi}].options[${oi}];_upd()">
+      <input type="text" placeholder="Opção ${oi+1}" value="${geEsc(opt)}" oninput="_D.questions[${qi}].options[${oi}]=this.value;if(this.closest('.ge-opt-row').querySelector('input[type=radio]').checked){_D.questions[${qi}].answer=this.value;}_upd()">
+    </div>`).join("")}`;
+    c.appendChild(b);
+  });
+}
+
+function _geChallenge(el) {
+  el.innerHTML = `<p class="ge-field-label">Missão</p>
+    <textarea rows="3" style="width:100%;padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;resize:vertical;margin-bottom:8px;" oninput="_D.mission=this.value;_upd()">${geEsc(_D.mission)}</textarea>
+    <p class="ge-field-label">Checklist</p>
+    ${_D.checklist.map((item,i)=>`
+    <div class="ge-field-row">
+      <input type="text" placeholder="Passo ${i+1}" value="${geEsc(item)}" oninput="_D.checklist[${i}]=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.checklist.splice(${i},1);_rebld('game-challenge');_upd()">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.checklist.push('');_rebld('game-challenge');_upd()">+ passo</button>`;
+}
+
+function _geTF(el) {
+  el.innerHTML = `<p class="ge-field-label">Afirmações</p>
+    ${_D.statements.map((s,i)=>`
+    <div style="border:1px solid #E5E7EB;border-radius:10px;padding:10px;margin-bottom:8px;">
+      <div class="ge-field-row" style="margin-bottom:6px;">
+        <input type="text" placeholder="Afirmação ${i+1}" value="${geEsc(s.text)}" oninput="_D.statements[${i}].text=this.value;_upd()">
+        <button class="ge-del-btn" onclick="_D.statements.splice(${i},1);_rebld('game-true-false-rapid');_upd()">×</button>
+      </div>
+      <div class="ge-tf-toggle">
+        <button class="${s.answer==='Verdadeiro'?'active-v':''}" onclick="_D.statements[${i}].answer='Verdadeiro';_rebld('game-true-false-rapid');_upd()">✓ Verdadeiro</button>
+        <button class="${s.answer==='Falso'?'active-f':''}" onclick="_D.statements[${i}].answer='Falso';_rebld('game-true-false-rapid');_upd()">✗ Falso</button>
+      </div>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.statements.push({text:'',answer:'Verdadeiro'});_rebld('game-true-false-rapid');_upd()">+ afirmação</button>`;
+}
+
+function _geHotCold(el) {
+  el.innerHTML = `<p class="ge-field-label">Resposta</p>
+    <input type="text" placeholder="Ex: Semínima" value="${geEsc(_D.answer)}" style="width:100%;padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;margin-bottom:10px;" oninput="_D.answer=this.value;_upd()">
+    <p class="ge-field-label">Dicas</p>
+    ${_D.hints.map((h,i)=>`
+    <div class="ge-field-row">
+      <span style="font-size:11px;color:#9CA3AF;min-width:18px;">${i+1}.</span>
+      <input type="text" placeholder="Dica ${i+1}" value="${geEsc(h)}" oninput="_D.hints[${i}]=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.hints.splice(${i},1);_rebld('game-hot-cold');_upd()">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.hints.push('');_rebld('game-hot-cold');_upd()">+ dica</button>`;
+}
+
+function _geSort(el) {
+  el.innerHTML = `<p class="ge-field-label">Itens na ordem correta</p>
+    ${_D.solution.map((item,i)=>`
+    <div class="ge-field-row">
+      <span style="font-size:11px;color:#9CA3AF;min-width:20px;font-weight:700;">${i+1}.</span>
+      <input type="text" placeholder="Item ${i+1}" value="${geEsc(item)}" oninput="_D.solution[${i}]=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.solution.splice(${i},1);_rebld('game-sort');_upd()">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.solution.push('');_rebld('game-sort');_upd()">+ item</button>`;
+}
+
+function _geSpeedrun(el) {
+  el.innerHTML = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+    <p class="ge-field-label" style="margin:0">Tempo:</p>
+    <input type="number" min="10" max="120" value="${_D.time_limit}" style="width:70px;padding:6px 8px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;" oninput="_D.time_limit=parseInt(this.value)||30;_upd()">
+    <span style="font-size:12px;color:#6B7280;">seg</span>
+  </div>
+  <div id="gsp"></div>
+  <button class="ge-add-btn" onclick="_D.questions.push({prompt:'',options:['','',''],answer:''});_rebld('game-speedrun');_upd()">+ pergunta</button>`;
+  const c = el.querySelector("#gsp");
+  _D.questions.forEach((q,qi) => {
+    const b = document.createElement("div"); b.className = "ge-quiz-block";
+    b.innerHTML = `<div class="q-header">
+      <span class="q-num">P${qi+1}</span>
+      <input type="text" placeholder="Pergunta" value="${geEsc(q.prompt)}" style="flex:1;padding:6px 8px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;" oninput="_D.questions[${qi}].prompt=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.questions.splice(${qi},1);_rebld('game-speedrun');_upd()">×</button>
+    </div>
+    ${q.options.map((opt,oi)=>`
+    <div class="ge-opt-row">
+      <input type="radio" name="gsp-${qi}" ${q.answer===opt&&opt?"checked":""} onchange="_D.questions[${qi}].answer=_D.questions[${qi}].options[${oi}];_upd()">
+      <input type="text" placeholder="Opção ${oi+1}" value="${geEsc(opt)}" oninput="_D.questions[${qi}].options[${oi}]=this.value;if(this.closest('.ge-opt-row').querySelector('input[type=radio]').checked){_D.questions[${qi}].answer=this.value;}_upd()">
+    </div>`).join("")}`;
+    c.appendChild(b);
+  });
+}
+
+function _geFill(el) {
+  el.innerHTML = `<p class="ge-field-label">Início da frase</p>
+    <input type="text" placeholder="Ex: A semínima vale" value="${geEsc(_D.before)}" style="width:100%;padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;margin-bottom:8px;" oninput="_D.before=this.value;_upd()">
+    <p class="ge-field-label">Fim da frase</p>
+    <input type="text" placeholder="Ex: tempos." value="${geEsc(_D.after)}" style="width:100%;padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;margin-bottom:10px;" oninput="_D.after=this.value;_upd()">
+    <p class="ge-field-label">Opções (● = correta)</p>
+    ${_D.options.map((opt,i)=>`
+    <div class="ge-opt-row">
+      <input type="radio" name="gfs-c" ${_D.answer===opt&&opt?"checked":""} style="accent-color:#C4943A;" onchange="_D.answer=_D.options[${i}];_upd()">
+      <input type="text" placeholder="Opção ${i+1}" value="${geEsc(opt)}" oninput="_D.options[${i}]=this.value;if(this.closest('.ge-opt-row').querySelector('input[type=radio]').checked){_D.answer=this.value;}_upd()">
+      <button class="ge-del-btn" onclick="if(_D.options.length>2){_D.options.splice(${i},1);_rebld('game-fill-sentence');_upd();}">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.options.push('');_rebld('game-fill-sentence');_upd()">+ opção</button>`;
+}
+
+function _geWordSelect(el) {
+  el.innerHTML = `<p class="ge-field-label">Partes da frase</p>
+    ${_D.parts.map((p,i)=>`
+    <div style="border:1px solid #E5E7EB;border-radius:10px;padding:8px;margin-bottom:6px;">
+      <div class="ge-field-row" style="margin-bottom:4px;">
+        <input type="text" placeholder="Texto" value="${geEsc(p.text)}" oninput="_D.parts[${i}].text=this.value;_upd()">
+        <button class="ge-del-btn" onclick="_D.parts.splice(${i},1);_rebld('game-word-select');_upd()">×</button>
+      </div>
+      <div style="display:flex;gap:12px;font-size:12px;">
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;">
+          <input type="checkbox" ${p.clickable?"checked":""} onchange="_D.parts[${i}].clickable=this.checked;if(!this.checked)_D.parts[${i}].correct=false;_rebld('game-word-select');_upd()">Clicável
+        </label>
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;${p.clickable?'':'opacity:.4;pointer-events:none;'}">
+          <input type="checkbox" ${p.correct?"checked":""} onchange="_D.parts[${i}].correct=this.checked;_upd()">Correto
+        </label>
+      </div>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.parts.push({text:'',clickable:false,correct:false});_rebld('game-word-select');_upd()">+ parte</button>`;
+}
+
+function _geFindError(el) {
+  el.innerHTML = `<p class="ge-field-label">Termos (● = o incorreto)</p>
+    ${_D.parts.map((p,i)=>`
+    <div class="ge-opt-row">
+      <input type="radio" name="gfe-e" ${p.error?"checked":""} style="accent-color:#EF4444;" onchange="_D.parts.forEach((x,j)=>x.error=j===${i});_upd()">
+      <input type="text" placeholder="Termo ${i+1}" value="${geEsc(p.text)}" oninput="_D.parts[${i}].text=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.parts.splice(${i},1);_rebld('game-find-error');_upd()">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.parts.push({text:'',error:false});_rebld('game-find-error');_upd()">+ termo</button>`;
+}
+
+function _geUnscramble(el) {
+  el.innerHTML = `<p class="ge-field-label">Palavras na ordem correta</p>
+    ${_D.solution.map((item,i)=>`
+    <div class="ge-field-row">
+      <span style="font-size:11px;color:#9CA3AF;min-width:20px;font-weight:700;">${i+1}.</span>
+      <input type="text" placeholder="Palavra ${i+1}" value="${geEsc(item)}" oninput="_D.solution[${i}]=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.solution.splice(${i},1);_rebld('game-unscramble');_upd()">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.solution.push('');_rebld('game-unscramble');_upd()">+ palavra</button>`;
+}
+
+function _geConnect(el) {
+  el.innerHTML = `<p class="ge-field-label">Pares para conectar</p>
+    ${_D.pairs.map((p,i)=>`
+    <div class="ge-field-row">
+      <input type="text" placeholder="Esquerda" value="${geEsc(p[0])}" oninput="_D.pairs[${i}][0]=this.value;_upd()">
+      <span style="color:#9CA3AF;font-size:14px;flex-shrink:0;">→</span>
+      <input type="text" placeholder="Direita"   value="${geEsc(p[1])}" oninput="_D.pairs[${i}][1]=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.pairs.splice(${i},1);_rebld('game-connect');_upd()">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.pairs.push(['','']);_rebld('game-connect');_upd()">+ par</button>`;
+}
+
+function _geCrossword(el) {
+  el.innerHTML = `<p class="ge-field-label">Dicas e respostas</p>
+    ${_D.clues.map((c,i)=>`
+    <div style="border:1px solid #E5E7EB;border-radius:10px;padding:8px;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:11px;font-weight:700;color:#9CA3AF;">#${i+1}</span>
+        <select style="padding:4px 8px;border:1px solid #E5E7EB;border-radius:6px;font-size:12px;" onchange="_D.clues[${i}].direction=this.value;_upd()">
+          <option value="H" ${c.direction==="H"?"selected":""}>→ Horizontal</option>
+          <option value="V" ${c.direction==="V"?"selected":""}>↓ Vertical</option>
+        </select>
+        <button class="ge-del-btn" onclick="_D.clues.splice(${i},1);_rebld('game-crossword');_upd()">×</button>
+      </div>
+      <input type="text" placeholder="Dica" value="${geEsc(c.clue)}" style="width:100%;padding:6px 8px;border:1px solid #E5E7EB;border-radius:6px;font-size:12px;margin-bottom:4px;" oninput="_D.clues[${i}].clue=this.value;_upd()">
+      <input type="text" placeholder="RESPOSTA" value="${geEsc(c.answer)}" style="width:100%;padding:6px 8px;border:1px solid #E5E7EB;border-radius:6px;font-size:12px;font-family:monospace;" oninput="_D.clues[${i}].answer=this.value.toUpperCase();this.value=this.value.toUpperCase();_upd()">
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.clues.push({direction:'H',clue:'',answer:''});_rebld('game-crossword');_upd()">+ dica</button>`;
+}
+
+function _geSequence(el) {
+  el.innerHTML = `<p class="ge-field-label">Itens (clique · para marcar lacuna)</p>
+    ${_D.items.map((item,i)=>`
+    <div class="ge-field-row">
+      <button onclick="_D.blank_index=${i};_rebld('game-sequence');_upd()" style="flex-shrink:0;width:26px;height:26px;border-radius:6px;border:1.5px solid ${_D.blank_index===i?'#C4943A':'#E5E7EB'};background:${_D.blank_index===i?'#FDF6EC':'#F9FAFB'};cursor:pointer;font-size:13px;">${_D.blank_index===i?"_":"·"}</button>
+      <input type="text" placeholder="Item ${i+1}" value="${geEsc(item)}" oninput="_D.items[${i}]=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.items.splice(${i},1);if(_D.blank_index>=_D.items.length)_D.blank_index=0;_rebld('game-sequence');_upd()">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.items.push('');_rebld('game-sequence');_upd()" style="margin-bottom:10px;">+ item</button>
+    <p class="ge-field-label">Opções para a lacuna (● = correta)</p>
+    ${_D.options.map((opt,i)=>`
+    <div class="ge-opt-row">
+      <input type="radio" name="gseq-c" ${_D.answer===opt&&opt?"checked":""} style="accent-color:#C4943A;" onchange="_D.answer=_D.options[${i}];_upd()">
+      <input type="text" placeholder="Opção ${i+1}" value="${geEsc(opt)}" oninput="_D.options[${i}]=this.value;if(this.closest('.ge-opt-row').querySelector('input[type=radio]').checked){_D.answer=this.value;}_upd()">
+      <button class="ge-del-btn" onclick="if(_D.options.length>2){_D.options.splice(${i},1);_rebld('game-sequence');_upd();}">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.options.push('');_rebld('game-sequence');_upd()">+ opção</button>`;
+}
+
+function _geRhythm(el) {
+  el.innerHTML = `<p class="ge-field-label">Padrão (clique para ligar/desligar)</p>
+    <div class="ge-pattern-grid">
+      ${_D.pattern.map((beat,i)=>`<div class="ge-beat ${beat?'on':'off'}" onclick="_D.pattern[${i}]=_D.pattern[${i}]?0:1;_rebld('game-rhythm-tap');_upd()">${beat?"●":"○"}</div>`).join("")}
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="ge-add-btn" onclick="_D.pattern.push(0);_rebld('game-rhythm-tap');_upd()">+ beat</button>
+      <button class="ge-add-btn" onclick="if(_D.pattern.length>2){_D.pattern.pop();_rebld('game-rhythm-tap');_upd();}">- beat</button>
+    </div>`;
+}
+
+function _geBuild(el) {
+  el.innerHTML = `<p class="ge-field-label">Fórmula de compasso</p>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      ${["2/4","3/4","4/4"].map(ts=>`
+      <button onclick="_D.time_signature='${ts}';_upd()" style="padding:6px 12px;border-radius:8px;border:1.5px solid ${(_D.time_signature||'4/4')===ts?'#C4943A':'#E5E7EB'};background:${(_D.time_signature||'4/4')===ts?'#FDF6EC':'#F9FAFB'};cursor:pointer;font-size:13px;font-weight:700;">${ts}</button>`).join("")}
+    </div>
+    <p class="ge-field-label">Tempos por compasso</p>
+    <input type="number" min="1" max="8" step="0.5" value="${_D.target_beats||4}" style="width:80px;padding:6px 8px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;" oninput="_D.target_beats=parseFloat(this.value)||4;_upd()">`;
+}
+
+function _geTeach(el) {
+  el.innerHTML = `<p class="ge-field-label">Mínimo de caracteres</p>
+    <input type="number" min="10" max="500" value="${_D.min_chars||50}" style="width:100px;padding:6px 8px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;margin-bottom:10px;" oninput="_D.min_chars=parseInt(this.value)||50;_upd()">
+    <p class="ge-field-label">Placeholder</p>
+    <input type="text" placeholder="Explique com suas palavras..." value="${geEsc(_D.placeholder)}" style="width:100%;padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;" oninput="_D.placeholder=this.value;_upd()">`;
+}
+
+function _geDrag(el) {
+  el.innerHTML = `<p class="ge-field-label">Pares alvo → item</p>
+    ${_D.pairs.map((p,i)=>`
+    <div class="ge-field-row">
+      <input type="text" placeholder="Alvo ${i+1}"  value="${geEsc(p[0])}" oninput="_D.pairs[${i}][0]=this.value;_upd()">
+      <span style="color:#9CA3AF;flex-shrink:0;">←</span>
+      <input type="text" placeholder="Item ${i+1}"  value="${geEsc(p[1])}" oninput="_D.pairs[${i}][1]=this.value;_upd()">
+      <button class="ge-del-btn" onclick="_D.pairs.splice(${i},1);_rebld('game-drag');_upd()">×</button>
+    </div>`).join("")}
+    <button class="ge-add-btn" onclick="_D.pairs.push(['','']);_rebld('game-drag');_upd()">+ par</button>`;
+}
+
+// ── Preview ────────────────────────────────────────────────────────────────────
+function geUpdatePreview() {
+  const el = document.getElementById("ge-live-preview");
+  if (!geKind) return;
+  window.markComplete = window.markComplete || (() => {});
+  window.setFeedback  = window.setFeedback  || (() => {});
+  const promptEl = document.getElementById("ge-prompt-input");
+  const promptText = promptEl ? (promptEl.value || promptEl.textContent || "Preview") : "Preview";
+  const mock = geBuildMock(geKind, geData, promptText);
+  if (mock && typeof RENDERERS !== "undefined" && RENDERERS[geKind]) {
+    try {
+      el.innerHTML = '<div id="gprev-body"></div>';
+      RENDERERS[geKind](mock, el.querySelector("#gprev-body"));
+      return;
+    } catch(e) { console.warn("preview err", e); }
+  }
+  el.innerHTML = `<div style="text-align:center;padding:20px 14px;color:#9CA3AF;font-size:12px;">Preencha os campos para ver o preview.</div>`;
+}
+
+function geBuildMock(kind, d, prompt) {
+  d = (typeof structuredClone === "function") ? structuredClone(d) : JSON.parse(JSON.stringify(d));
+  prompt = prompt || "Preview";
+  switch (kind) {
+    case "game-memory":           { const p=d.pairs.filter(p=>p[0]||p[1]); return p.length?{kind,prompt,game_data:{pairs:p}}:null; }
+    case "game-quiz":             { const q=d.questions.filter(q=>q.prompt); return q.length?{kind,prompt,game_data:{questions:q}}:null; }
+    case "game-challenge":        return (d.mission||d.checklist?.length)?{kind,prompt,game_data:{mission:d.mission||"(missão)",checklist:(d.checklist||[]).filter(Boolean)}}:null;
+    case "game-true-false-rapid": { const s=d.statements.filter(s=>s.text); return s.length?{kind,prompt,game_data:{statements:s}}:null; }
+    case "game-hot-cold":         return d.answer?{kind,prompt,game_data:{answer:d.answer,hints:(d.hints||[]).filter(Boolean)}}:null;
+    case "game-sort":             { const s=(d.solution||[]).filter(Boolean); return s.length>=2?{kind,prompt,game_data:{shuffled:[...s].sort(()=>Math.random()-.5),solution:s}}:null; }
+    case "game-speedrun":         { const q=d.questions.filter(q=>q.prompt); return q.length?{kind,prompt,game_data:{time_limit:d.time_limit,questions:q}}:null; }
+    case "game-fill-sentence":    return (d.before||d.after)?{kind,prompt,game_data:{before:d.before,after:d.after,options:(d.options||[]).filter(Boolean),answer:d.answer}}:null;
+    case "game-word-select":      { const p=(d.parts||[]).filter(p=>p.text); return p.length?{kind,prompt,game_data:{parts:p}}:null; }
+    case "game-find-error":       { const p=(d.parts||[]).filter(p=>p.text); return p.length?{kind,prompt,game_data:{parts:p}}:null; }
+    case "game-unscramble":       { const s=(d.solution||[]).filter(Boolean); return s.length>=2?{kind,prompt,game_data:{shuffled:[...s].sort(()=>Math.random()-.5),solution:s}}:null; }
+    case "game-connect":          { const p=(d.pairs||[]).filter(p=>p[0]&&p[1]); return p.length?{kind,prompt,game_data:{left:p.map(x=>x[0]),right_shuffled:[...p.map(x=>x[1])].sort(()=>Math.random()-.5),pairs:p}}:null; }
+    case "game-crossword":        { const c=(d.clues||[]).filter(c=>c.clue&&c.answer); return c.length?{kind,prompt,game_data:{clues:c}}:null; }
+    case "game-sequence":         { const it=(d.items||[]).filter(Boolean); return it.length?{kind,prompt,game_data:{items:it,blank_index:d.blank_index,options:(d.options||[]).filter(Boolean),answer:d.answer}}:null; }
+    case "game-rhythm-tap":       return {kind,prompt,game_data:{pattern:d.pattern||[]}};
+    case "game-build":            return {kind,prompt,game_data:{time_signature:d.time_signature||"4/4",target_beats:d.target_beats||4,available:[{name:"Semibreve",symbol:"𝅝",beats:4},{name:"Mínima",symbol:"𝅗𝅥",beats:2},{name:"Semínima",symbol:"♩",beats:1},{name:"Colcheia",symbol:"♪",beats:0.5}]}};
+    case "game-teach":            return {kind,prompt,game_data:{min_chars:d.min_chars||50,placeholder:d.placeholder||"…"}};
+    case "game-drag":             { const p=(d.pairs||[]).filter(p=>p[0]&&p[1]); return p.length?{kind,prompt,game_data:{targets:p.map(x=>x[0]),items_shuffled:[...p.map(x=>x[1])].sort(()=>Math.random()-.5),solution:p.map(x=>x[1])}}:null; }
+    default: return null;
+  }
+}
+</script>

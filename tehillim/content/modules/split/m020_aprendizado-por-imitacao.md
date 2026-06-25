@@ -2,7 +2,7 @@
 number: 20
 slug: aprendizado-por-imitacao
 title: Aprendizado por imitação
-description: Lição focada em Aprendizado por imitação, separada do antigo módulo "Melodia e Canto" para estudar um conceito por vez.
+description: Você aprendeu a falar sem nunca estudar gramática — aprender música funciona do mesmo jeito. Descubra por que imitar é a forma mais poderosa de aprender qualquer coisa.
 topics: Aprendizado por imitação
 game_kind: game-listen
 ---
@@ -22,33 +22,36 @@ Diagrama em duas colunas com setas alternadas: coluna esquerda ("CALL") com íco
 ## Exercícios
 
 ### MC
-Qual é a ordem correta de aprendizado segundo a Music Learning Theory de Edwin Gordon?
-- Ler a partitura → ouvir → imitar → tocar
-- Ouvir → imitar → executar → variar → ler ✓
-- Tocar → ler → imitar → memorizar
-- Decorar a teoria → praticar → ouvir depois
+O professor canta uma frase curta e pede para você repetir imediatamente, sem ler partitura. Esse jeito de aprender se chama:
+- Solfejo silábico
+- Call-and-response (imitação) ✓
+- Leitura à primeira vista
+- Improviso livre
 
 ### VF
-Músicos populares que nunca estudaram notação musical não conseguem audiar padrões com fluência porque não aprenderam a teoria formal.
-> Falso
+Você aprendeu a falar português ouvindo seus pais antes de aprender a ler — em música funciona do mesmo jeito: ouvir e imitar vem antes de ler partitura.
+> Verdadeiro
 
 ### Fill
-A estrutura do Salmo 136, onde a congregação repete "porque o seu amor dura para sempre" após cada verso, é um exemplo de louvor em formato de ___.
-- improviso livre
+Quando o cantor diz "o amor de Deus" e a congregação responde "é grande pra mim", isso é um exemplo de ___.
+- improviso solo
 - responsório ✓
-- coral polifônico
+- coral em quatro vozes
 
 ### MC
-Por que a imitação (call-and-response) é considerada mais eficaz do que ler a partitura como primeiro passo no aprendizado?
-- Porque a partitura é difícil de imprimir e distribuir
-- Porque ela ativa o ouvido interno antes da notação, como falar antes de escrever ✓
-- Porque evita que o aluno aprenda teoria desnecessária
-- Porque é o único método aprovado por escolas de música
+Você está numa célula e quer ensinar um louvor novo ao grupo, mas ninguém sabe ler partitura. Qual a melhor estratégia?
+- Esperar todo mundo aprender notação musical primeiro
+- Cantar uma frase e pedir para repetirem, frase por frase ✓
+- Distribuir a cifra e mandar estudar em casa
+- Tocar a música inteira sem parar até decorarem
 
-### VF
-No responsório litúrgico, a congregação precisa saber ler partitura para participar corretamente.
-> Falso
+### Match
+Associe cada etapa da Music Learning Theory de Edwin Gordon à sua ordem:
+- 1º passo → Ouvir o padrão
+- 2º passo → Imitar com a voz
+- 3º passo → Executar no instrumento
+- 4º passo → Variar e improvisar antes de ler
 
 ## Jogo
 
-ECO MELÓDICO — O professor (ou um aluno voluntário) toca ou canta frases curtas de 2 a 4 notas, uma de cada vez; o grupo imita imediatamente em uníssono. Comece com padrões de 2 notas (Ex: Sol-Mi), avance para 3 (Sol-Mi-Dó), depois 4 com ritmo variado. Depois do eco, peça a um voluntário que invente uma variação da frase original — mantendo o ritmo mas mudando 1 ou 2 notas. Isso treina audiation, escuta rápida e o instinto de responsório que todo músico de louvor usará na prática ministerial.
+ECO QUE CRESCE — Em roda de 4 a 10 pessoas. O líder canta uma frase de 2 notas (ex: Sol-Mi) e o grupo repete em uníssono. Rodada 2: 3 notas. Rodada 3: 4 notas com ritmo variado. Rodada 4: o líder canta e o próximo da roda inventa UMA variação (muda 1 nota OU o ritmo). A roda continua — cada pessoa imita E adiciona uma pequena variação. Quem travar ou errar a imitação sai. Vence quem sobreviver mais tempo. Tempo: 5 minutos.

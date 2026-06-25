@@ -4,7 +4,7 @@ slug: som-e-ruido
 title: Som e Ruído
 description: Entenda por que alguns sons viram música e outros ficam só no barulho — e como isso muda a forma de tocar.
 topics: Som e Ruído
-game_kind: game-listen
+game_kind: game-identify-sound
 ---
 
 ## Teoria
@@ -26,33 +26,36 @@ Dois gráficos de onda lado a lado com fundo branco limpo: à esquerda, uma onda
 ## Exercícios
 
 ### MC
-O que diferencia fisicamente um som musical de um ruído?
-- A intensidade (volume) das vibrações
-- A regularidade ou irregularidade das vibrações ✓
-- A velocidade com que o som viaja pelo ar
-- O tamanho do instrumento que o produz
+Você está no culto e o músico de percussão toca um prato de bateria. O som que você ouve tem altura definida?
+- Sim, porque é um instrumento musical
+- Não, porque pratos produzem vibração irregular sem altura definida ✓
+- Sim, se o músico tocar forte o suficiente
+- Depende do tipo de prato usado
 
 ### VF
-Instrumentos de percussão que não têm altura definida, como o prato da bateria, produzem tecnicamente ruído e por isso não são considerados musicais.
-> Falso
+Um bumbo de bateria produz som musical mesmo sem uma altura de nota clara, porque o que define "musical" é a intenção e o contexto, não a presença de frequência regular.
+> Verdadeiro
 
 ### Fill
-Vibrações ___ e periódicas produzem sons com altura definida, como as notas de um piano.
-- aleatórias
-- regulares ✓
-- lentas
+A diferença entre um som e um ruído está na ___ das vibrações.
+- velocidade
+- regularidade ✓
+- intensidade
 
 ### MC
-Qual dos exemplos abaixo representa o uso intencional do ruído na música?
-- Um microfone com chiado indesejado durante o culto
-- O bumbo da bateria marcando o tempo no louvor ✓
-- O barulho do trânsito entrando pela janela
-- O ruído de estática em uma gravação antiga
+Seu amigo diz que "ruído não é música". Você quer dar um contra-exemplo. Qual você usaria?
+- O barulho do trânsito na rua
+- O som de chuva numa gravação ambiente de adoração ✓
+- O microfone apitando no culto
+- A conversa durante o sermão
 
-### VF
-O silêncio é considerado um elemento ativo na música, não apenas uma ausência de som.
-> Verdadeiro
+### Match
+Associe cada som ao seu tipo:
+- Nota de piano → Som com altura definida (vibração regular)
+- Prato de bateria → Ruído musical (vibração irregular)
+- Apito de árbitro → Som com altura definida (vibração regular)
+- Barulho de vento → Ruído natural (sem intenção musical)
 
 ## Jogo
 
-CAÇA AO SOM E RUÍDO — Fique em silêncio por 60 segundos e anote todos os sons que ouvir ao redor. Depois, classifique cada um: é um som com altura definida (alguma nota reconhecível) ou é ruído (sem altura definida)? Exemplos: o zumbido de um ventilador, uma notificação de celular, vozes ao longe, o ronco de um carro. Compartilhe sua lista com um colega e discutam: algum desses ruídos poderia ser usado de forma musical?
+CAÇA AO SOM E RUÍDO — Em silêncio, todos fecham os olhos por 60 segundos e ouvem o ambiente. Cada pessoa anota (ou memoriza) 5 sons que escutou. Ao sinal, cada um diz um som da lista e todos votam: **SOM** (altura definida) ou **RUÍDO** (irregular). A cada rodada o desafio aumenta: "esse ruído poderia virar música? Como?" Quem tiver a ideia mais criativa de transformar um ruído em música vence a rodada de improvisação.

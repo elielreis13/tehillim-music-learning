@@ -4,7 +4,7 @@ slug: do-re-mi-fa-sol-la-si
 title: Dó Ré Mi Fá Sol Lá Si
 description: Sete nomes. O alfabeto completo da música ocidental — em dois sistemas que você precisa dominar.
 topics: Dó Ré Mi Fá Sol Lá Si
-game_kind: game-quiz
+game_kind: game-speedrun
 ---
 
 ## Teoria
@@ -26,33 +26,36 @@ Um pentagrama em clave de Sol com as sete notas escritas em sequência ascendent
 ## Exercícios
 
 ### MC
-Qual é a equivalência correta entre o sistema brasileiro e o sistema americano?
-- Sol = A, Lá = G
-- Dó = C, Ré = D, Mi = E ✓
-- Si = A, Lá = B
-- Fá = E, Mi = F
+Você baixou uma cifra na internet que está em "C, D, E". O líder pede pra você tocar começando em Dó. Qual é a equivalência correta?
+- C=Dó, D=Ré, E=Mi ✓
+- C=Sol, D=Lá, E=Si
+- C=Fá, D=Sol, E=Lá
+- C=Si, D=Dó, E=Ré
 
 ### VF
-Após o Si, a próxima nota da sequência é o Dó, iniciando uma nova oitava.
+Você toca um Dó, depois sobe nota por nota até chegar no Si. Se continuar subindo, a próxima nota é Dó de novo, uma oitava acima.
 > Verdadeiro
 
 ### Fill
-No teclado, o Dó é sempre a tecla branca imediatamente à ___ de um grupo de duas teclas pretas.
+Para achar o Dó no teclado, procure a tecla branca imediatamente à ___ de um grupo de duas teclas pretas.
 - direita
 - esquerda ✓
-- entre
+- atrás
 
 ### MC
-Quais são as notas das linhas do pentagrama em clave de Sol, da mais baixa para a mais alta?
-- Dó, Mi, Sol, Si, Ré
-- Mi, Sol, Si, Ré, Fá ✓
-- Fá, Lá, Dó, Mi, Sol
-- Ré, Fá, Lá, Dó, Mi
+Você está lendo uma partitura em clave de Sol e vê uma nota na linha de baixo. Que nota é essa?
+- Dó
+- Mi ✓
+- Fá
+- Sol
 
-### VF
-A nota chamada "Sol" no Brasil é chamada de "G" no sistema americano.
-> Verdadeiro
+### Match
+Associe cada nota brasileira à letra americana:
+- Dó → C
+- Ré → D
+- Sol → G
+- Si → B
 
 ## Jogo
 
-SEQUÊNCIA SEM PARAR — Em círculo, cada pessoa fala uma nota em sequência (Dó → Ré → Mi → Fá → Sol → Lá → Si → Dó → Ré...) sem parar e sem errar. Quem errar a nota ou demorar mais de 2 segundos sai da rodada. Aumentem a velocidade a cada volta. Na segunda fase, façam o mesmo mas em ordem decrescente: Si → Lá → Sol → Fá → Mi → Ré → Dó. Na terceira fase, um líder aponta aleatoriamente para alguém e essa pessoa deve dizer a nota seguinte à que o líder falar.
+SEQUÊNCIA SEM PARAR — Em círculo (5 a 15 jogadores). Líder começa: "Dó!". O próximo fala "Ré!", depois "Mi!"... seguindo a sequência sem repetir, sem parar e sem demorar mais de 2 segundos. Quem errar ou travar SAI e fica de fora torcendo. Fase 1: subindo (Dó→Si→Dó). Fase 2: descendo (Si→Lá→Sol→...). Fase 3 (modo louco): o líder aponta SEM ordem para alguém e diz uma nota — essa pessoa precisa dizer a nota SEGUINTE em 1 segundo. Vence o último jogador que sobreviver às 3 fases.

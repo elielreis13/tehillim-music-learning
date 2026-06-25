@@ -4,7 +4,7 @@ slug: familias-de-instrumentos
 title: Famílias de Instrumentos
 description: Por que o saxofone é parente da flauta, e não do trompete? Porque o que define a família é como o som nasce, não do que é feito.
 topics: Famílias de instrumentos
-game_kind: game-match
+game_kind: game-sort
 ---
 
 ## Teoria
@@ -26,14 +26,14 @@ Quatro quadrantes coloridos em layout 2x2, cada um com o nome da família em des
 ## Exercícios
 
 ### MC
-O que define a família de um instrumento musical?
-- O material com que é fabricado (madeira, metal, plástico)
-- A forma como o instrumento produz o som ✓
-- O país de origem do instrumento
+Seu amigo diz: "o saxofone é de metal, então é da família dos metais". Você sabe que isso está errado. Qual é o critério REAL que define a família?
+- O material com que o instrumento é feito
+- COMO o som é produzido fisicamente ✓
+- O país de origem
 - O tamanho do instrumento
 
 ### VF
-O piano pertence à família das cordas, pois produz som por meio da vibração de cordas percutidas por martelos internos.
+Você olha por dentro de um piano e vê martelinhos batendo em cordas. Por causa disso, o piano é classificado como instrumento de cordas.
 > Verdadeiro
 
 ### Fill
@@ -43,16 +43,19 @@ A guitarra elétrica, o baixo e o violino pertencem à família das ___.
 - madeiras
 
 ### MC
-Qual é a diferença entre instrumentos de sopro-madeira e sopro-metal?
-- As madeiras são feitas de madeira e os metais de metal, sem outra diferença
-- A diferença está no mecanismo: madeiras usam palheta ou embocadura; metais usam vibração dos lábios ✓
-- Os metais são sempre mais graves do que as madeiras
-- Apenas os metais têm valvulas para mudar a afinação
+Você ouve um trompete e uma flauta. Ambos são sopros, mas pertencem a famílias diferentes. Por quê?
+- O trompete é mais alto que a flauta
+- O trompete usa vibração dos lábios; a flauta usa coluna de ar com embocadura ✓
+- O trompete é mais antigo
+- Apenas a flauta tem afinação correta
 
-### VF
-O saxofone pertence à família dos sopros-metais, pois é feito de metal.
-> Falso
+### Match
+Associe cada instrumento à sua família:
+- Saxofone → Sopro-madeira (mesmo sendo feito de metal)
+- Trombone → Sopro-metal (lábios vibrando no bocal)
+- Violoncelo → Cordas (arco friccionando)
+- Pandeiro → Percussão (sacudido e batido)
 
 ## Jogo
 
-FAMILIA CERTA, FAMÍLIA ERRADA — O professor diz o nome de um instrumento e os alunos devem imediatamente levantar a placa (ou gritar) com o nome da família correta: CORDAS, SOPRO ou PERCUSSÃO. Exemplos: trompete (sopro-metal), pandeiro (percussão), violoncelo (cordas), flauta (sopro-madeira), contrabaixo (cordas), tímpano (percussão). A cada rodada, aumentem a velocidade. Para a fase avançada, deem uma categoria e os alunos devem citar instrumentos daquela família dentro de 10 segundos.
+FAMÍLIA CERTA, FAMÍLIA ERRADA — Em grupos (10 minutos, todas as idades). Líder grita o nome de um instrumento bem rápido: "TROMPETE!". Os alunos têm 2 segundos para gritar a família: **CORDAS**, **SOPRO-MADEIRA**, **SOPRO-METAL** ou **PERCUSSÃO**. 1 ponto por acerto, -1 ponto por erro. Lista do líder (vá embaralhando): pandeiro, violoncelo, flauta, contrabaixo, tímpano, trombone, saxofone, piano, oboé, xilofone. Fase ninja: o líder dá uma família e o aluno tem 10 segundos para citar 3 instrumentos dela sem repetir os já ditos. Vence quem tiver mais pontos no final.

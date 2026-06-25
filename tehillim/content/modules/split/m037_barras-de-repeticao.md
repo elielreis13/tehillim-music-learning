@@ -2,7 +2,7 @@
 number: 37
 slug: barras-de-repeticao
 title: Barras de repetição
-description: Lição focada em Barras de repetição, separada do antigo módulo "Sinais de Repetição e Estrutura da Partitura" para estudar um conceito por vez.
+description: Sem as barras de repetição, o hinário teria o dobro das páginas — e você ainda poderia se perder. Aprenda a navegar numa partitura como quem lê um mapa, não uma lista.
 topics: Barras de repetição
 game_kind: game-quiz
 ---

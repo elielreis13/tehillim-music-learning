@@ -2,49 +2,57 @@
 number: 67
 slug: movimento-conjunto
 title: Movimento conjunto
-description: Lição focada em Movimento conjunto, separada do antigo módulo “Leitura Melódica Progressiva” para estudar um conceito por vez.
+description: As melodias mais naturais e cantáveis do mundo caminham passo a passo — o movimento conjunto é o segredo por trás das frases que o ouvido segue sem esforço.
 topics: Movimento conjunto
 game_kind: game-listen
 ---
 
 ## Teoria
 
-Movimento conjunto desenvolve a ligação entre ouvido, voz e leitura. O aluno aprende a imaginar o som antes de produzi-lo, o que melhora canto, instrumento e leitura à primeira vista.
+**Movimento conjunto** é quando a melodia caminha de uma nota para a **vizinha imediata** na escala, sem pular. Por exemplo: Dó-Ré-Mi-Fá é movimento conjunto puro. Cada passo é o menor possível dentro da escala — uma **segunda**. Esse é o tipo de movimento mais fácil de **cantar e entoar**, porque o ouvido humano já espera a próxima nota como a continuação natural da anterior.
 
-Pratique devagar: identifique a tonalidade, cante a escala de referência, leia o ritmo separadamente e então junte altura e duração. Corrija sem interromper a musicalidade.
+A maioria absoluta dos hinos congregacionais usa movimento conjunto justamente por esse motivo. "Vencendo Vem Jesus", "Saudosa Lembrança", "Doce Comunhão" — todos têm trechos longos onde a melodia sobe ou desce um grau por vez. Isso garante que **qualquer pessoa**, mesmo sem treino musical, consiga acompanhar cantando junto. Compositores de música cristã sabem disso há séculos.
 
-A meta é formar ouvido interno. Quando o músico consegue prever a próxima nota, a partitura deixa de ser um enigma e passa a ser uma guia.
+Nem todas as segundas são iguais. Entre **Dó e Ré** há uma **segunda maior** (1 tom inteiro). Entre **Mi e Fá**, há uma **segunda menor** (meio tom, ou semitom). Essa diferença é o que dá "sabor" à escala maior — quando cantamos "Dó-Ré-Mi-Fá", percebemos uma pequena "frenada" no Mi-Fá, porque a distância é menor. Esse semitom é uma das marcas registradas da escala maior.
+
+O oposto do movimento conjunto é o **movimento disjunto**, quando a melodia **pula** intervalos maiores que uma segunda (como Dó-Sol, um salto de quinta). Saltos chamam mais atenção, criam tensão expressiva, mas são mais difíceis de entoar com precisão. Boas melodias geralmente **alternam** os dois: longos trechos de movimento conjunto interrompidos por saltos pontuais que criam contraste e emoção.
 
 ## Visual
 
-Cartão visual central com o título “Movimento conjunto”, um exemplo musical simples e uma comparação lado a lado entre execução incorreta e execução correta.
+<img src="/static/img/modules/movimento-conjunto.svg" alt="Escada de notas mostrando movimento conjunto (passo a passo) versus movimento disjunto (salto)" class="module-img" onerror="this.style.display='none'">
+
+Imagem educacional mostrando uma escada com degraus iguais, onde cada degrau é uma nota da escala de Dó Maior (Dó, Ré, Mi, Fá, Sol, Lá, Si, Dó). Uma figura subindo passo a passo representa o movimento conjunto. Ao lado, outra figura pulando vários degraus de uma vez representa o movimento disjunto. Setas destacam que entre Mi-Fá e Si-Dó os degraus são "menores" (semitons).
 
 ## Exercícios
 
 ### MC
-Qual é o foco principal desta lição?
-- Decorar repertório sem entender o conceito
-- Estudar Movimento conjunto de forma isolada e aplicável ✓
-- Pular diretamente para assuntos avançados
-- Substituir a escuta pela teoria
+O que caracteriza o movimento conjunto na melodia?
+- A melodia pula intervalos maiores que uma segunda
+- A melodia caminha de uma nota para a nota vizinha na escala ✓
+- A melodia repete sempre a mesma nota
+- A melodia toca acordes em vez de notas individuais
 
 ### VF
-Um tópico musical bem estudado deve ser reconhecido na escuta, na leitura e na prática.
+Entre Mi e Fá na escala de Dó Maior há um intervalo de semitom (segunda menor).
 > Verdadeiro
 
 ### Fill
-Nesta lição, o tema central é ___.
-- andamento aleatório
-- Movimento conjunto ✓
-- troca de instrumento
+O oposto de movimento conjunto é o movimento ___.
+- repetido
+- disjunto ✓
+- harmônico
 
-### Match
-Associe cada etapa de estudo à ação correta:
-- Conceito → Entender a ideia principal
-- Escuta → Reconhecer o tema em músicas reais
-- Prática → Aplicar com voz, corpo ou instrumento
-- Revisão → Corrigir e repetir com consciência
+### MC
+Por que hinos congregacionais costumam usar muito movimento conjunto?
+- Porque é o tipo de movimento mais difícil de cantar
+- Porque facilita o canto coletivo de qualquer pessoa, mesmo sem treino ✓
+- Porque os compositores são preguiçosos
+- Porque exige menos notas escritas
+
+### VF
+Em uma escala maior, todas as segundas têm exatamente a mesma distância.
+> Falso
 
 ## Jogo
 
-MISSÃO MOVIMENTO CONJUNTO: escolha uma música simples do repertório de louvor ou de estudo. Ouça uma vez procurando apenas Movimento conjunto. Depois execute um trecho curto aplicando esse tema de propósito. Grave ou anote o resultado e responda: onde o conceito apareceu com clareza e onde ainda precisa de ajuste?
+MISSÃO PASSO A PASSO: escolha um hino conhecido como "Eu Navegarei" ou "Castelo Forte". Cante a melodia prestando atenção em **cada nota**: quando ela sobe para a vizinha (movimento conjunto), levante um dedo; quando pula (movimento disjunto), faça um movimento maior com a mão. Conte: em uma frase de 8 notas, quantas foram conjuntas e quantas foram saltos?

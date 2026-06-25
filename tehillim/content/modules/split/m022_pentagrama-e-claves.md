@@ -2,9 +2,9 @@
 number: 22
 slug: pentagrama-e-claves
 title: Pentagrama e Claves
-description: Lição focada em Pentagrama e Claves, separada do antigo módulo "Introdução à Notação Musical" para estudar um conceito por vez.
+description: Cinco linhas numa folha não dizem nada — é a clave que transforma rabiscos em música. Entenda a "chave" que abre toda partitura.
 topics: Pentagrama e Claves
-game_kind: game-quiz
+game_kind: game-sequence
 ---
 
 ## Teoria
@@ -17,38 +17,43 @@ As duas claves mais usadas na música ocidental são a **clave de Sol** (clave d
 
 ## Visual
 
+<img src="/static/img/modules/pentagrama-e-claves.svg" alt="Dois pentagramas lado a lado: clave de Sol à esquerda e clave de Fá à direita, com linhas numeradas e notas de exemplo" class="module-img" onerror="this.style.display='none'">
+
 Dois pentagramas desenhados lado a lado: o da esquerda com clave de Sol e as linhas numeradas de 1 a 5 (de baixo para cima) com setas indicando os 4 espaços; o da direita com clave de Fá com as mesmas marcações — ambos com uma nota de exemplo circulada para mostrar que a mesma posição tem nomes diferentes conforme a clave.
 
 ## Exercícios
 
 ### MC
-Por que um pentagrama sem clave não pode ser lido musicalmente?
-- Porque as linhas ficam tortas sem a clave para alinhá-las
-- Porque a clave "trava" um nome de nota a uma linha, tornando todas as posições identificáveis ✓
-- Porque a clave fornece a informação de andamento e dinâmica
-- Porque sem a clave não se sabe quantas linhas o pentagrama tem
+Você abre uma partitura e vê 5 linhas, mas NÃO tem nenhum símbolo de clave no começo. Por que você não consegue ler as notas?
+- Porque a partitura está incompleta visualmente
+- Porque sem clave, as posições das linhas não têm nome de nota ✓
+- Porque a clave indica o andamento da música
+- Porque faltam as barras de compasso
 
 ### VF
-As linhas do pentagrama são numeradas de cima para baixo: a linha de cima é a linha 1.
-> Falso
+Você está contando as linhas do pentagrama e começa de baixo pra cima: linha 1, 2, 3, 4, 5. Esse é o jeito correto.
+> Verdadeiro
 
 ### Fill
-O pentagrama tem 5 linhas e ___ espaços entre elas.
+Entre as 5 linhas do pentagrama existem ___ espaços, onde notas também podem ser escritas.
 - três
 - quatro ✓
 - cinco
 
 ### MC
-Para qual dos seguintes instrumentos a clave de Fá é normalmente utilizada?
-- Violino
-- Flauta transversal
-- Contrabaixo ✓
-- Soprano
+Você é contrabaixista e abre sua partitura. Qual clave provavelmente está no começo dela?
+- Clave de Sol (treble)
+- Clave de Dó
+- Clave de Fá (bass) ✓
+- Sem clave nenhuma
 
-### VF
-Uma nota escrita na linha 2 do pentagrama tem o mesmo nome independentemente da clave usada.
-> Falso
+### Match
+Associe cada instrumento/voz à clave que ele normalmente lê:
+- Violino → Clave de Sol
+- Contrabaixo → Clave de Fá
+- Mão direita do piano → Clave de Sol
+- Mão esquerda do piano → Clave de Fá
 
 ## Jogo
 
-CAÇA À CLAVE — Distribua partituras de hinos ou músicas de louvor conhecidas (qualquer partitura impressa serve). Os alunos têm 2 minutos para: (1) identificar e circular todas as claves presentes, (2) escrever à lápis ao lado de cada pentagrama se é clave de Sol ou de Fá, e (3) numerar as linhas do pentagrama de 1 a 5 de baixo para cima em pelo menos um sistema. Quem tiver mais acertos corretos depois da verificação coletiva vence — e deve explicar em voz alta como identificou cada clave.
+CAÇA À CLAVE — Em duplas, com partituras de louvor impressas (ou no celular). Tempo: 3 minutos. Cada dupla deve: (1) circular TODAS as claves da partitura, (2) escrever "SOL" ou "FÁ" ao lado de cada uma, (3) numerar as linhas de 1 a 5 (de baixo pra cima) em pelo menos um pentagrama. No final, conferem juntos. Ponto pra cada clave identificada certa, ponto extra pra dupla que terminou primeiro sem errar. Vence a dupla com mais pontos.

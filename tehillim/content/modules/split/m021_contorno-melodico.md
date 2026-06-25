@@ -2,9 +2,9 @@
 number: 21
 slug: contorno-melodico
 title: Contorno melódico
-description: Lição focada em Contorno melódico, separada do antigo módulo "Melodia e Canto" para estudar um conceito por vez.
+description: Antes de ler uma única nota na partitura, você pode ver a forma da melodia — e isso já te diz muito sobre como tocá-la ou cantá-la.
 topics: Contorno melódico
-game_kind: game-listen
+game_kind: game-connect
 ---
 
 ## Teoria
@@ -17,38 +17,43 @@ No **aprendizado da leitura musical**, o contorno é o primeiro elemento a ser i
 
 ## Visual
 
+<img src="/static/img/modules/contorno-melodico.svg" alt="Melodia desenhada em pentagrama com linha vermelha destacando o contorno em arco ascendente-platô-descendente" class="module-img" onerror="this.style.display='none'">
+
 Linha de melodia desenhada como um gráfico de altura ao longo do tempo: eixo vertical (grave embaixo, agudo em cima), eixo horizontal (tempo), com a curva melódica de "Quão Grande És Tu" (refrão) traçada em cima — mostrando o arco ascendente até a nota climática "Tu" e a descida para a resolução.
 
 ## Exercícios
 
 ### MC
-Quais são os três movimentos básicos que formam qualquer contorno melódico?
-- Forte, médio e fraco
-- Ascendente, descendente e repetição ✓
-- Conjuntos, saltos e pausas
-- Grave, médio e agudo
+Você ouve uma melodia que sobe-sobe-sobe até um ponto alto e depois desce devagar até resolver. Qual é o formato do contorno?
+- Linha reta horizontal
+- Arco ascendente-descendente ✓
+- Zigue-zague constante
+- Só descidas
 
 ### VF
-Aprender o contorno melódico antes das alturas exatas das notas é uma estratégia válida de pré-leitura musical usada em métodos como Kodály e Gordon.
+Você desenha no ar com a mão a melodia de "Parabéns pra você" enquanto canta, subindo e descendo conforme a voz. Esse gesto ajuda a memorizar a melodia mesmo sem ler partitura.
 > Verdadeiro
 
 ### Fill
-Em músicas de louvor, o padrão mais comum de contorno é o arco ascendente até um ponto de clímax e depois uma ___ para a resolução.
-- pausa longa
-- descida ✓
-- repetição
+Quando duas notas seguidas têm o mesmo nome e altura, o contorno melódico naquele ponto é uma ___.
+- subida
+- repetição ✓
+- descida
 
 ### MC
-Para que serve identificar o contorno melódico na partitura antes de nomear as notas individuais?
-- Para ignorar as alturas exatas e tocar de ouvido
-- Para acelerar a leitura à primeira vista mapeando a direção geral da frase ✓
-- Para substituir a necessidade de aprender solfejo
-- Para memorizar a peça sem precisar praticar
+Você abre uma partitura nova e bate o olho na frase. Por que vale a pena identificar o contorno antes de nomear cada nota?
+- Para não precisar ler nada
+- Para já saber se a melodia sobe, desce ou repete, e preparar a voz/mão ✓
+- Para inventar a melodia do zero
+- Para tocar mais rápido sem cuidado
 
-### VF
-O contorno melódico de "Parabéns pra você" é uma linha reta, pois começa e termina no mesmo nível de altura.
-> Falso
+### Match
+Associe cada música/frase ao formato do contorno melódico:
+- "Parabéns pra você" → Perfil ondulado com várias subidas e descidas
+- "Quão Grande És Tu" (refrão) → Arco ascendente até o clímax
+- "Dó-Ré-Mi-Fá-Sol" cantado → Linha reta ascendente por graus
+- Mesma nota repetida 4 vezes → Linha horizontal plana
 
 ## Jogo
 
-DESENHISTA DE MELODIAS — O professor canta (sem revelar o título) uma frase de uma música de louvor conhecida. Cada aluno desenha o contorno em um papel: linha para cima quando a melodia sobe, linha para baixo quando desce, linha plana quando repete. Depois, comparem os desenhos entre si — os que divergirem indicam onde a percepção de direção melódica precisa ser treinada. Como variação, um aluno desenha o contorno de uma música que escolheu, e os outros tentam adivinhar qual música é apenas pelo formato do desenho.
+DESENHE O LOUVOR — Em grupo de 3 a 6. O líder canta (SEM dizer o nome) uma frase de um louvor conhecido. Cada um desenha o contorno num papel: sobe = linha pra cima, desce = pra baixo, repete = horizontal. Mostram os desenhos AO MESMO TEMPO. Quem acertou o formato pontua. Rodada 2: alguém escolhe uma música secreta e desenha o contorno SEM cantar — os outros tentam adivinhar pelo desenho. Quem acertar vira o próximo desenhista. Tempo: 6 minutos.

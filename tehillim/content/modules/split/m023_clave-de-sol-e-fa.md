@@ -2,9 +2,9 @@
 number: 23
 slug: clave-de-sol-e-fa
 title: Clave de Sol e Fá
-description: Lição focada em Clave de Sol e Fá, separada do antigo módulo "Introdução à Notação Musical" para estudar um conceito por vez.
+description: O violonista e o contrabaixista olham para a mesma nota na mesma linha e leem nomes diferentes — descubra por que e pare de confundir as duas claves de uma vez.
 topics: Clave de Sol e Fá
-game_kind: game-quiz
+game_kind: game-sort
 ---
 
 ## Teoria
@@ -17,38 +17,43 @@ O **Dó central** (Dó4, ou Middle C) é a nota que une as duas claves. Na clave
 
 ## Visual
 
+<img src="/static/img/modules/clave-de-sol-e-fa.svg" alt="Clave de Sol e Clave de Fá com notas das linhas e espaços rotuladas, mostrando instrumentos que usam cada uma" class="module-img" onerror="this.style.display='none'">
+
 Dois pentagramas alinhados verticalmente com uma brace os conectando (estilo grande pentagrama de piano): o superior com clave de Sol e as notas das linhas e espaços rotuladas (Mi-Sol-Si-Ré-Fá e Fá-Lá-Dó-Mi); o inferior com clave de Fá com suas notas rotuladas (Sol-Si-Ré-Fá-Lá e Lá-Dó-Mi-Sol) — e o Dó central marcado com uma linha suplementar em ambos, mostrando que é a mesma nota.
 
 ## Exercícios
 
 ### MC
-Qual linha do pentagrama a clave de Sol fixa como referência para nomear todas as demais notas?
-- 1ª linha (a mais baixa)
-- 2ª linha ✓
-- 3ª linha (a do meio)
-- 4ª linha
+Você vê uma nota desenhada exatamente na 2ª linha de um pentagrama com clave de Sol. Que nota é essa?
+- Mi
+- Sol ✓
+- Si
+- Ré
 
 ### VF
-O Dó central (Dó4) aparece em posições diferentes nas duas claves porque é uma nota diferente em cada uma delas.
-> Falso
+Você toca o Dó central no piano e percebe: na partitura ele aparece numa linha extra ABAIXO da clave de Sol e ACIMA da clave de Fá — é a mesma nota, mas escrita em dois lugares diferentes.
+> Verdadeiro
 
 ### Fill
-Na clave de Fá, os dois pontos do símbolo ficam ao redor da ___ linha, que representa a nota Fá.
-- 2ª
-- 3ª
-- 4ª ✓
+Para lembrar as notas dos espaços da clave de Sol, em inglês forma-se a palavra "FACE": Fá, Lá, Dó, ___.
+- Sol
+- Mi ✓
+- Si
 
 ### MC
-Qual das sequências representa corretamente as notas das 5 linhas da clave de Sol, da linha 1 (baixo) para a linha 5 (cima)?
-- Fá – Lá – Dó – Mi – Sol
-- Sol – Si – Ré – Fá – Lá
-- Mi – Sol – Si – Ré – Fá ✓
-- Dó – Mi – Sol – Si – Ré
+Você é trombonista e abre sua partitura — está em clave de Fá. Na 4ª linha (onde os dois pontinhos da clave abraçam) está uma nota. Que nota é?
+- Sol
+- Lá
+- Fá ✓
+- Dó
 
-### VF
-A guitarra elétrica, embora seja um instrumento de registro médio-agudo, usa a clave de Fá em suas partituras padrão.
-> Falso
+### Match
+Associe cada posição à nota correta na clave indicada:
+- Clave de Sol, 2ª linha → Sol
+- Clave de Sol, 1º espaço (de baixo) → Fá
+- Clave de Fá, 4ª linha → Fá
+- Clave de Fá, 1º espaço (de baixo) → Lá
 
 ## Jogo
 
-DUELO DE CLAVES — Divida o grupo em dois times: "Time Sol" e "Time Fá". O professor escreve (ou projeta) uma nota aleatória em uma das duas claves e faz a pergunta: "Que nota é essa?" Cada time tem 10 segundos para responder — mas só o time da clave correspondente pode pontuar; o outro time marca ponto se o "time da casa" errar. Ao final, troque as claves entre os times. Isso força cada aluno a dominar ambas as claves sem saber de antemão qual será cobrada.
+DUELO DE CLAVES — Dois times: "Sol" e "Fá". O líder mostra (ou desenha) uma nota numa clave aleatória. Os times têm 10 SEGUNDOS pra dizer o nome da nota em coro. Se o time da clave correspondente acertar, ganha 1 ponto. Se errar, o outro time pode "roubar" respondendo em 5 segundos (vale 2 pontos!). A cada 3 rodadas, troca-se a clave de cada time. Vence quem somar 10 pontos primeiro. Tempo total: 8 minutos.

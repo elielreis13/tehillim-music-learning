@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="800" height="280" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="280" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">ACORDES DE SÉTIMA — TRÍADE + 7ª</text>
+
+  <!-- 4 seventh chord types -->
+
+  <!-- DOM7: G7 -->
+  <rect x="30" y="45" width="180" height="200" rx="10" fill="#FFEBEE"/>
+  <text x="120" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#C62828">Dominante 7</text>
+  <text x="120" y="88" text-anchor="middle" font-size="13" fill="#C62828">Sol7 / G7</text>
+  <!-- Notes stacked -->
+  <ellipse cx="120" cy="185" rx="22" ry="13" fill="#C62828"/>
+  <ellipse cx="120" cy="155" rx="22" ry="13" fill="#C62828" opacity="0.8"/>
+  <ellipse cx="120" cy="125" rx="22" ry="13" fill="#C62828" opacity="0.6"/>
+  <ellipse cx="120" cy="100" rx="22" ry="13" fill="#C62828" opacity="0.4"/>
+  <g font-size="11" fill="white" text-anchor="middle">
+    <text x="120" y="189">Sol</text>
+    <text x="120" y="159">Si</text>
+    <text x="120" y="129">Ré</text>
+    <text x="120" y="104">Fá</text>
+  </g>
+  <text x="120" y="218" text-anchor="middle" font-size="10" fill="#C62828" font-weight="600">M + m + m + M</text>
+  <text x="120" y="232" text-anchor="middle" font-size="10" fill="#888">tensão máxima</text>
+  <text x="120" y="244" text-anchor="middle" font-size="10" fill="#888">resolve para I</text>
+
+  <!-- MAJ7: Cmaj7 -->
+  <rect x="220" y="45" width="180" height="200" rx="10" fill="#E3F2FD"/>
+  <text x="310" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#1565C0">Maior 7</text>
+  <text x="310" y="88" text-anchor="middle" font-size="13" fill="#1565C0">Dó maj7 / Cmaj7</text>
+  <ellipse cx="310" cy="185" rx="22" ry="13" fill="#1565C0"/>
+  <ellipse cx="310" cy="155" rx="22" ry="13" fill="#1565C0" opacity="0.8"/>
+  <ellipse cx="310" cy="125" rx="22" ry="13" fill="#1565C0" opacity="0.6"/>
+  <ellipse cx="310" cy="100" rx="22" ry="13" fill="#1565C0" opacity="0.4"/>
+  <g font-size="11" fill="white" text-anchor="middle">
+    <text x="310" y="189">Dó</text>
+    <text x="310" y="159">Mi</text>
+    <text x="310" y="129">Sol</text>
+    <text x="310" y="104">Si</text>
+  </g>
+  <text x="310" y="218" text-anchor="middle" font-size="10" fill="#1565C0" font-weight="600">M + m + M + m</text>
+  <text x="310" y="232" text-anchor="middle" font-size="10" fill="#888">jazz, sofisticado</text>
+  <text x="310" y="244" text-anchor="middle" font-size="10" fill="#888">cor harmônica suave</text>
+
+  <!-- MIN7: Am7 -->
+  <rect x="410" y="45" width="180" height="200" rx="10" fill="#E8F5E9"/>
+  <text x="500" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#2E7D32">Menor 7</text>
+  <text x="500" y="88" text-anchor="middle" font-size="13" fill="#2E7D32">Lám7 / Am7</text>
+  <ellipse cx="500" cy="185" rx="22" ry="13" fill="#2E7D32"/>
+  <ellipse cx="500" cy="155" rx="22" ry="13" fill="#2E7D32" opacity="0.8"/>
+  <ellipse cx="500" cy="125" rx="22" ry="13" fill="#2E7D32" opacity="0.6"/>
+  <ellipse cx="500" cy="100" rx="22" ry="13" fill="#2E7D32" opacity="0.4"/>
+  <g font-size="11" fill="white" text-anchor="middle">
+    <text x="500" y="189">Lá</text>
+    <text x="500" y="159">Dó</text>
+    <text x="500" y="129">Mi</text>
+    <text x="500" y="104">Sol</text>
+  </g>
+  <text x="500" y="218" text-anchor="middle" font-size="10" fill="#2E7D32" font-weight="600">m + M + m + M</text>
+  <text x="500" y="232" text-anchor="middle" font-size="10" fill="#888">suave, soul</text>
+  <text x="500" y="244" text-anchor="middle" font-size="10" fill="#888">ii e vi do campo</text>
+
+  <!-- DIM7: B°7 -->
+  <rect x="600" y="45" width="170" height="200" rx="10" fill="#FFF3E0"/>
+  <text x="685" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="#E65100">Diminuto 7</text>
+  <text x="685" y="88" text-anchor="middle" font-size="13" fill="#E65100">Si°7 / Bdim7</text>
+  <ellipse cx="685" cy="185" rx="22" ry="13" fill="#E65100"/>
+  <ellipse cx="685" cy="155" rx="22" ry="13" fill="#E65100" opacity="0.8"/>
+  <ellipse cx="685" cy="125" rx="22" ry="13" fill="#E65100" opacity="0.6"/>
+  <ellipse cx="685" cy="100" rx="22" ry="13" fill="#E65100" opacity="0.4"/>
+  <g font-size="11" fill="white" text-anchor="middle">
+    <text x="685" y="189">Si</text>
+    <text x="685" y="159">Ré</text>
+    <text x="685" y="129">Fá</text>
+    <text x="685" y="104">Lá♭</text>
+  </g>
+  <text x="685" y="218" text-anchor="middle" font-size="10" fill="#E65100" font-weight="600">m + m + m + m</text>
+  <text x="685" y="232" text-anchor="middle" font-size="10" fill="#888">máxima tensão</text>
+  <text x="685" y="244" text-anchor="middle" font-size="10" fill="#888">simétrico (3 semitons)</text>
+</svg>

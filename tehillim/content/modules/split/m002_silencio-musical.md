@@ -4,7 +4,7 @@ slug: silencio-musical
 title: Silêncio Musical
 description: O silêncio não é ausência de música — é o seu elemento mais poderoso quando usado com intenção.
 topics: Silêncio musical
-game_kind: game-listen
+game_kind: game-rhythm-tap
 ---
 
 ## Teoria
@@ -26,33 +26,33 @@ Linha do tempo musical mostrando uma frase de quatro tempos: os três primeiros 
 ## Exercícios
 
 ### MC
-Como o silêncio é representado formalmente em uma partitura?
-- Por um espaço em branco sem símbolo algum
-- Por símbolos específicos chamados pausas, cada um com duração exata ✓
-- Por uma linha tracejada entre as notas
-- Pelo símbolo de fermata sempre que há silêncio
+Você está liderando o louvor e a banda toda para de repente por 2 segundos antes do refrão final. O que esse silêncio faz?
+- Mostra que alguém errou e parou sem querer
+- Cria tensão e dá peso ao que vem depois ✓
+- Indica que a música acabou
+- Diminui a atenção da congregação
 
 ### VF
-O silêncio em uma música significa que o músico parou de contar os tempos e pode descansar.
-> Falso
+Quando a partitura mostra uma pausa, o músico continua contando os tempos por dentro mesmo sem tocar.
+> Verdadeiro
 
 ### Fill
-Na partitura, o símbolo que representa o silêncio com duração definida é chamado de ___.
+O símbolo que marca um silêncio com duração exata na partitura se chama ___.
 - barra de compasso
 - pausa ✓
 - ligadura
 
 ### MC
-Qual é o efeito do uso intencional do silêncio logo após uma frase forte no louvor?
-- Indica que a música terminou
-- Cria tensão e dá peso ao que foi tocado ✓
-- Mostra que o músico errou a entrada
-- Diminui o envolvimento da congregação
+Você ouve as quatro notas famosas da 5ª Sinfonia de Beethoven seguidas de um silêncio abrupto. Por que esse silêncio é importante?
+- É um erro de gravação
+- É o que dá impacto e suspende o ouvinte ✓
+- É só para o maestro respirar
+- É um espaço para a plateia aplaudir
 
 ### VF
-Beethoven usava o silêncio como elemento expressivo em suas composições, tornando-o tão importante quanto as notas.
+Se um músico continua tocando por insegurança durante um "corte geral", o efeito do silêncio desaparece.
 > Verdadeiro
 
 ## Jogo
 
-CONTAGEM NO ESCURO — Escolha uma música de louvor que você conheça bem. Toque ou cante normalmente, mas quando chegar a qualquer pausa ou trecho instrumental, pare completamente e conte os tempos em silêncio — sem mover a boca, sem fazer som, apenas no pensamento. A meta é retomar exatamente no tempo certo. Faça isso com um colega: um toca, o outro sinaliza com a mão se a entrada depois do silêncio foi certa ou adiantada/atrasada.
+CONTAGEM NO ESCURO — Em duplas, escolham uma música de louvor conhecida (3 a 5 minutos por rodada). Um toca ou canta, o outro fica de olhos fechados marcando o pulso com o dedo. Em qualquer pausa, o que toca PARA tudo por 4 tempos contados mentalmente e retoma. O parceiro sinaliza: **CERTO** (mão para cima), **ADIANTADO** (mão para frente) ou **ATRASADO** (mão para trás). Vence quem conseguir 3 retomadas perfeitas seguidas. Para subir de nível: aumente o silêncio para 8 tempos.

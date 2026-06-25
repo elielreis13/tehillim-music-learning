@@ -64,6 +64,7 @@ class ModuleGroup:
     description: str
     modules: tuple[StudyModule, ...]
     icon_file: str = ""
+    level: str = ""
 
     def to_summary(self) -> dict[str, object]:
         return {
@@ -72,6 +73,7 @@ class ModuleGroup:
             "icon": self.icon,
             "icon_file": self.icon_file,
             "description": self.description,
+            "level": self.level,
             "module_count": len(self.modules),
             "modules": [m.to_summary() for m in self.modules],
         }

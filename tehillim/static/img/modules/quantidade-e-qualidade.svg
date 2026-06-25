@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="240" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">QUANTIDADE E QUALIDADE DOS INTERVALOS</text>
+
+  <!-- Piano keyboard: C to C (13 keys) -->
+  <!-- White keys -->
+  <g fill="white" stroke="#BBB" stroke-width="1">
+    <rect x="40"  y="65" width="46" height="90" rx="3"/><!-- C -->
+    <rect x="88"  y="65" width="46" height="90" rx="3"/><!-- D -->
+    <rect x="136" y="65" width="46" height="90" rx="3"/><!-- E -->
+    <rect x="184" y="65" width="46" height="90" rx="3"/><!-- F -->
+    <rect x="232" y="65" width="46" height="90" rx="3"/><!-- G -->
+    <rect x="280" y="65" width="46" height="90" rx="3"/><!-- A -->
+    <rect x="328" y="65" width="46" height="90" rx="3"/><!-- B -->
+    <rect x="376" y="65" width="46" height="90" rx="3"/><!-- C8 -->
+  </g>
+  <!-- Black keys -->
+  <g fill="#333" stroke="#111" stroke-width="0.5">
+    <rect x="70"  y="65" width="30" height="56" rx="2"/><!-- C# -->
+    <rect x="118" y="65" width="30" height="56" rx="2"/><!-- D# -->
+    <rect x="214" y="65" width="30" height="56" rx="2"/><!-- F# -->
+    <rect x="262" y="65" width="30" height="56" rx="2"/><!-- G# -->
+    <rect x="310" y="65" width="30" height="56" rx="2"/><!-- A# -->
+  </g>
+  <!-- Note labels on white keys -->
+  <g font-size="10" text-anchor="middle" fill="#555" font-weight="600">
+    <text x="63"  y="165">C</text>
+    <text x="111" y="165">D</text>
+    <text x="159" y="165">E</text>
+    <text x="207" y="165">F</text>
+    <text x="255" y="165">G</text>
+    <text x="303" y="165">A</text>
+    <text x="351" y="165">B</text>
+    <text x="399" y="165">C</text>
+  </g>
+
+  <!-- Interval arrows from C -->
+  <!-- 3ª maior (C-E): 4 semitones, green -->
+  <path d="M 63 178 Q 111 205 159 178" fill="none" stroke="#4CAF50" stroke-width="2.5"/>
+  <text x="111" y="215" text-anchor="middle" font-size="10" font-weight="700" fill="#4CAF50">3ª Maior</text>
+  <text x="111" y="226" text-anchor="middle" font-size="9" fill="#888">4 semitons</text>
+
+  <!-- 3ª menor (C-Eb): 3 semitones, blue -->
+  <path d="M 63 175 Q 87 200 85 178" fill="none" stroke="#2196F3" stroke-width="2"/>
+  <text x="75" y="200" font-size="9" fill="#2196F3" font-weight="600">3m</text>
+  <text x="75" y="210" font-size="8" fill="#2196F3">3 sem</text>
+
+  <!-- 5ª justa (C-G): 7 semitones, orange -->
+  <path d="M 63 180 Q 159 218 255 180" fill="none" stroke="#FF9800" stroke-width="2.5"/>
+  <text x="159" y="216" text-anchor="middle" font-size="10" font-weight="700" fill="#FF9800">5ª Justa</text>
+  <text x="159" y="228" text-anchor="middle" font-size="9" fill="#888">7 semitons</text>
+
+  <!-- Trítono (C-F#): 6 semitones, red -->
+  <path d="M 63 182 Q 145 222 229 182" fill="none" stroke="#F44336" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="200" y="202" font-size="9" fill="#F44336" font-weight="600">Trítono</text>
+  <text x="200" y="212" font-size="8" fill="#F44336">6 sem ⚠</text>
+
+  <!-- Right reference panel -->
+  <rect x="450" y="55" width="320" height="150" rx="8" fill="#F5F5F5"/>
+  <text x="610" y="75" text-anchor="middle" font-size="12" font-weight="700" fill="#333">Intervalos comuns</text>
+  <g font-size="10" fill="#555">
+    <text x="465" y="97">2ª m (1 sem)  ·  2ª M (2 sem)</text>
+    <text x="465" y="115">3ª m (3 sem)  ·  3ª M (4 sem)</text>
+    <text x="465" y="133">4ª j (5 sem)  ·  4ª aum/Trítono (6)</text>
+    <text x="465" y="151">5ª j (7 sem)  ·  6ª M (9 sem)</text>
+    <text x="465" y="169">7ª M (11 sem) ·  8ª (12 sem)</text>
+  </g>
+  <text x="610" y="193" text-anchor="middle" font-size="10" fill="#888">Quantidade = número de notas</text>
+  <text x="610" y="208" text-anchor="middle" font-size="10" fill="#888">Qualidade = maior / menor / justa</text>
+</svg>

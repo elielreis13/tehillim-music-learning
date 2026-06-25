@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="800" height="300" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="300" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">ESCALA MAIOR — PADRÃO DE TONS E SEMITONS</text>
+
+  <!-- Scale degrees: C D E F G A B C -->
+  <!-- Piano keyboard section -->
+  <!-- White keys -->
+  <g stroke="#BBB" stroke-width="1" fill="white">
+    <rect x="60"  y="80" width="80" height="110" rx="3"/>
+    <rect x="145" y="80" width="80" height="110" rx="3"/>
+    <rect x="230" y="80" width="80" height="110" rx="3"/>
+    <rect x="315" y="80" width="80" height="110" rx="3"/>
+    <rect x="400" y="80" width="80" height="110" rx="3"/>
+    <rect x="485" y="80" width="80" height="110" rx="3"/>
+    <rect x="570" y="80" width="80" height="110" rx="3"/>
+    <rect x="655" y="80" width="80" height="110" rx="3"/>
+  </g>
+  <!-- Black keys between C-D, D-E, F-G, G-A, A-B -->
+  <g fill="#333">
+    <rect x="120" y="80" width="50" height="70" rx="3"/>
+    <rect x="205" y="80" width="50" height="70" rx="3"/>
+    <!-- no black between E-F -->
+    <rect x="375" y="80" width="50" height="70" rx="3"/>
+    <rect x="460" y="80" width="50" height="70" rx="3"/>
+    <rect x="545" y="80" width="50" height="70" rx="3"/>
+    <!-- no black between B-C -->
+  </g>
+
+  <!-- Note names on white keys -->
+  <g font-size="16" font-weight="700" text-anchor="middle">
+    <text x="100"  y="170" fill="#1565C0">Dó</text>
+    <text x="185"  y="170" fill="#1565C0">Ré</text>
+    <text x="270"  y="170" fill="#1565C0">Mi</text>
+    <text x="355"  y="170" fill="#1565C0">Fá</text>
+    <text x="440"  y="170" fill="#1565C0">Sol</text>
+    <text x="525"  y="170" fill="#1565C0">Lá</text>
+    <text x="610"  y="170" fill="#1565C0">Si</text>
+    <text x="695"  y="170" fill="#1565C0">Dó</text>
+  </g>
+
+  <!-- Degree numbers below -->
+  <g font-size="13" text-anchor="middle" fill="#666">
+    <text x="100"  y="186">I</text>
+    <text x="185"  y="186">II</text>
+    <text x="270"  y="186">III</text>
+    <text x="355"  y="186">IV</text>
+    <text x="440"  y="186">V</text>
+    <text x="525"  y="186">VI</text>
+    <text x="610"  y="186">VII</text>
+    <text x="695"  y="186">VIII</text>
+  </g>
+
+  <!-- Interval labels between notes -->
+  <!-- T = Tom (whole step), S = Semitom (half step) -->
+  <!-- C→D: Tom -->
+  <rect x="118" y="205" width="52" height="22" rx="5" fill="#4CAF50"/>
+  <text x="144" y="220" text-anchor="middle" font-size="12" font-weight="700" fill="white">T</text>
+  <!-- D→E: Tom -->
+  <rect x="203" y="205" width="52" height="22" rx="5" fill="#4CAF50"/>
+  <text x="229" y="220" text-anchor="middle" font-size="12" font-weight="700" fill="white">T</text>
+  <!-- E→F: Semitom -->
+  <rect x="288" y="205" width="52" height="22" rx="5" fill="#F44336"/>
+  <text x="314" y="220" text-anchor="middle" font-size="12" font-weight="700" fill="white">S</text>
+  <!-- F→G: Tom -->
+  <rect x="373" y="205" width="52" height="22" rx="5" fill="#4CAF50"/>
+  <text x="399" y="220" text-anchor="middle" font-size="12" font-weight="700" fill="white">T</text>
+  <!-- G→A: Tom -->
+  <rect x="458" y="205" width="52" height="22" rx="5" fill="#4CAF50"/>
+  <text x="484" y="220" text-anchor="middle" font-size="12" font-weight="700" fill="white">T</text>
+  <!-- A→B: Tom -->
+  <rect x="543" y="205" width="52" height="22" rx="5" fill="#4CAF50"/>
+  <text x="569" y="220" text-anchor="middle" font-size="12" font-weight="700" fill="white">T</text>
+  <!-- B→C: Semitom -->
+  <rect x="628" y="205" width="52" height="22" rx="5" fill="#F44336"/>
+  <text x="654" y="220" text-anchor="middle" font-size="12" font-weight="700" fill="white">S</text>
+
+  <!-- Pattern label -->
+  <text x="400" y="252" text-anchor="middle" font-size="13" font-weight="700" fill="#333">Padrão: T – T – S – T – T – T – S</text>
+  <text x="400" y="272" text-anchor="middle" font-size="11" fill="#777">(qualquer escala maior segue esse mesmo padrão de intervalos)</text>
+
+  <!-- Color legend -->
+  <rect x="60" y="282" width="14" height="14" rx="2" fill="#4CAF50"/>
+  <text x="80" y="293" font-size="11" fill="#555">T = Tom (2 semitons)</text>
+  <rect x="230" y="282" width="14" height="14" rx="2" fill="#F44336"/>
+  <text x="250" y="293" font-size="11" fill="#555">S = Semitom (1 semitom)</text>
+</svg>

@@ -1,153 +1,262 @@
 {% extends "base_app.html" %}
 
-{% block title %}Perfil | Tehillim{% endblock %}
+{% block title %}Minha Conta | Tehillim{% endblock %}
+
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet"/>
+<style>
+  .fraunces { font-family: 'Fraunces', serif; }
+
+  .avatar-opt {
+    width: 60px; height: 60px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+    border: 3px solid transparent; transition: border-color .15s, transform .15s;
+  }
+  .avatar-opt:hover  { transform: scale(1.08); }
+  .avatar-opt.chosen { border-color: white; box-shadow: 0 0 0 3px #C4943A; }
+
+  .modal-tab { font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 8px;
+    border: none; background: none; cursor: pointer; color: #9C8460; transition: all .15s; }
+  .modal-tab.active { background: #C4943A; color: white; }
+
+  .field-input {
+    width: 100%; padding: 10px 14px; border-radius: 10px;
+    border: 1.5px solid #E5E7EB; background: #FAF7F2;
+    font-size: 13px; color: #374151; outline: none;
+    transition: border-color .15s, box-shadow .15s; box-sizing: border-box;
+  }
+  .field-input:focus { border-color: #C4943A; box-shadow: 0 0 0 3px rgba(196,148,58,.12); }
+  .field-input:disabled { background: #F3F4F6; color: #9CA3AF; cursor: not-allowed; }
+
+  .pw-bar { flex: 1; height: 4px; border-radius: 2px; background: #E5E7EB; transition: background .2s; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+  .fade-in { animation: fadeIn .18s ease; }
+</style>
+{% endblock %}
 
 {% block header %}
-<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
-  <div class="flex items-center justify-between relative z-10">
-    <div>
-      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Conta</p>
-      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Meu Perfil</h1>
-      <p class="text-[13px] text-gray-500 mt-0.5" id="header-email">—</p>
-    </div>
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2">
-        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
-        <div class="leading-tight">
-          <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
-          <p class="text-[10px] text-gray-500">dias de sequência</p>
-        </div>
+<header style="background:linear-gradient(120deg,#2A2419 0%,#3D3018 60%,#5A4520 100%);padding:22px 28px;position:relative;overflow:hidden;color:white;flex-shrink:0;">
+  <div style="position:absolute;right:-80px;top:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(232,199,122,0.18) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="position:relative;z-index:2;display:flex;align-items:center;gap:18px;">
+
+    <!-- Avatar -->
+    <div style="position:relative;flex-shrink:0;">
+      <div id="profile-avatar-wrap"
+           style="width:70px;height:70px;border-radius:50%;overflow:hidden;border:3px solid rgba(255,255,255,0.25);flex-shrink:0;">
+        <svg viewBox="0 0 72 72" width="72" height="72" fill="none">
+          <rect width="72" height="72" fill="#D4A574"/>
+          <circle cx="36" cy="28" r="14" fill="#C49060"/>
+          <ellipse cx="36" cy="64" rx="22" ry="16" fill="#C49060"/>
+        </svg>
       </div>
+      <button onclick="openAvatarModal()"
+              style="position:absolute;bottom:-1px;right:-1px;width:24px;height:24px;border-radius:50%;background:#C4943A;border:2px solid #2A2419;cursor:pointer;display:flex;align-items:center;justify-content:center;"
+              title="Alterar avatar">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </button>
     </div>
+
+    <!-- Info -->
+    <div style="flex:1;min-width:0;">
+      <p style="font-size:10px;color:#E8C77A;text-transform:uppercase;letter-spacing:.2em;font-weight:700;margin:0 0 4px;">Minha Conta</p>
+      <h1 class="fraunces" style="font-size:26px;font-weight:400;color:white;margin:0 0 2px;line-height:1.1;letter-spacing:-.02em;" id="header-name">—</h1>
+      <p style="font-size:12px;color:#C4B89A;margin:0;" id="header-email">—</p>
+    </div>
+
+    <!-- Streak -->
+    <div style="text-align:center;flex-shrink:0;">
+      <p style="font-size:30px;font-weight:700;color:#FFB78F;margin:0;line-height:1;" data-streak>—</p>
+      <p style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:.12em;margin:3px 0 0;">dias 🔥</p>
+    </div>
+
   </div>
-  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
 </header>
 {% endblock %}
 
 {% block content %}
-<div class="p-4 md:p-6 flex flex-col xl:flex-row gap-5">
+<div style="padding:16px 20px;display:flex;flex-direction:column;gap:14px;max-width:640px;margin:0 auto;width:100%;box-sizing:border-box;">
 
-  <!-- ── COLUNA PRINCIPAL ── -->
-  <div class="flex-1 flex flex-col gap-5 min-w-0">
-
-    <!-- Card de perfil -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm">
-      <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-        <!-- Avatar -->
-        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-[#D4A574] to-[#C4943A] flex items-center justify-center flex-shrink-0 shadow-md">
-          <svg viewBox="0 0 36 36" class="w-full h-full rounded-full" fill="none">
-            <rect width="36" height="36" fill="#D4A574"/>
-            <circle cx="18" cy="14" r="7" fill="#C49060"/>
-            <ellipse cx="18" cy="32" rx="11" ry="8" fill="#C49060"/>
-          </svg>
-        </div>
-        <!-- Info -->
-        <div class="flex-1 min-w-0">
-          <h2 class="font-bold text-[20px] text-gray-800" id="profile-name">Carregando...</h2>
-          <p class="text-[13px] text-gray-400 mt-0.5" id="profile-email">—</p>
-          <div class="flex flex-wrap items-center gap-2 mt-2">
-            <span class="text-[11px] bg-[#F2EAD8] text-[#7A5C2E] font-semibold px-2.5 py-1 rounded-full" id="profile-role">Aluno</span>
-            <span class="text-[11px] text-gray-400">Membro desde <span id="profile-since">—</span></span>
-          </div>
-        </div>
-        <!-- XP badge -->
-        <div class="w-full sm:w-auto flex flex-col items-center bg-[#F2EAD8] rounded-2xl px-6 py-4">
-          <span class="text-2xl mb-1">⭐</span>
-          <p class="font-bold text-[22px] text-[#C4943A]" id="profile-xp">0</p>
-          <p class="text-[11px] text-gray-500">XP Total</p>
-        </div>
-      </div>
+  <!-- Stats -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+    <div style="background:white;border-radius:14px;padding:14px;border:1px solid #F0E8D4;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#C4943A;margin:0;" id="stat-modules">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.08em;margin:4px 0 0;">Módulos</p>
     </div>
-
-    <!-- Estatísticas -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm">
-      <h3 class="font-bold text-[15px] text-gray-800 mb-4">Estatísticas</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {% set stat_items = [
-          ('📚', 'Módulos Concluídos', 'ps-modules', 'bg-[#F2EAD8]'),
-          ('🔥', 'Maior Sequência', 'ps-streak',  'bg-[#DFF0E8]'),
-          ('📅', 'Total de Dias',    'ps-days',   'bg-[#EDE9FE]'),
-        ] %}
-        {% for icon, label, id, bg in stat_items %}
-        <div class="{{ bg }} rounded-2xl p-4 text-center">
-          <div class="text-2xl mb-2">{{ icon }}</div>
-          <p class="font-bold text-[20px] text-gray-800" id="{{ id }}">—</p>
-          <p class="text-[11px] text-gray-500 mt-0.5">{{ label }}</p>
-        </div>
-        {% endfor %}
-      </div>
+    <div style="background:white;border-radius:14px;padding:14px;border:1px solid #F0E8D4;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#5A8A6A;margin:0;" id="stat-days">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.08em;margin:4px 0 0;">Dias estudo</p>
     </div>
-
-    <!-- Progresso por grupo -->
-    <div class="bg-white rounded-2xl p-6 shadow-sm">
-      <h3 class="font-bold text-[15px] text-gray-800 mb-4">Meu Progresso</h3>
-      {% set gc = [('#C4943A', 'bg-[#F2EAD8]'), ('#5A8A6A', 'bg-[#DFF0E8]'), ('#7B5EA7', 'bg-[#E8E0F4]')] %}
-      {% for group in groups %}
-      {% set c = gc[loop.index0 % 3] %}
-      <div class="flex items-center gap-4 mb-4 last:mb-0">
-        <div class="w-10 h-10 rounded-xl {{ c[1] }} flex items-center justify-center flex-shrink-0">
-          <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-7 h-7 object-contain">
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between mb-1.5">
-            <p class="font-semibold text-[13px] text-gray-700">{{ group.name }}</p>
-            <p class="text-[12px] font-bold" style="color:{{ c[0] }}" data-prof-pct="{{ group.slug }}">—</p>
-          </div>
-          <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div class="h-full rounded-full transition-all duration-700" style="background-color:{{ c[0] }};width:0%"
-                 data-prof-bar="{{ group.slug }}"></div>
-          </div>
-          <p class="text-[10px] text-gray-400 mt-1" data-prof-count="{{ group.slug }}"></p>
-        </div>
-      </div>
-      {% endfor %}
+    <div style="background:white;border-radius:14px;padding:14px;border:1px solid #F0E8D4;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#7B5EA7;margin:0;" id="stat-achiev">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.08em;margin:4px 0 0;">Conquistas</p>
     </div>
-
   </div>
 
-  <!-- ── PAINEL DIREITO ── -->
-  <div class="w-full xl:w-[260px] flex-shrink-0 flex flex-col gap-4">
-
-    <!-- Ações da conta -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <h3 class="font-bold text-[14px] text-gray-800 mb-4">Conta</h3>
-      <div class="flex flex-col gap-2">
-        <a href="/configuracoes"
-           class="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-700 text-[13px] font-medium transition-colors">
-          <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-          Configurações
-        </a>
-        <a href="/desempenho"
-           class="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-700 text-[13px] font-medium transition-colors">
-          <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75z"/>
-          </svg>
-          Ver Desempenho
-        </a>
-        <button onclick="doSignOut()"
-           class="flex items-center gap-2.5 px-4 py-3 rounded-xl hover:bg-red-50 text-red-500 text-[13px] font-medium transition-colors w-full text-left">
-          <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/>
-          </svg>
-          Sair da conta
+  <!-- Informações da conta -->
+  <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
+    <h2 class="fraunces" style="font-size:16px;font-weight:500;color:#2A2419;margin:0 0 16px;">Informações</h2>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Nome</label>
+        <input id="cfg-name" type="text" placeholder="Seu nome" class="field-input"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">E-mail</label>
+        <input id="cfg-email" type="email" disabled class="field-input"/>
+        <p style="font-size:11px;color:#9C8460;margin:5px 0 0;">O e-mail não pode ser alterado.</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding-top:4px;">
+        <p style="font-size:12px;color:#5A8A6A;font-weight:600;margin:0;display:none;" id="cfg-name-ok">✓ Nome atualizado!</p>
+        <p style="font-size:12px;color:#EF4444;font-weight:600;margin:0;display:none;" id="cfg-name-err"></p>
+        <button onclick="saveName()"
+                style="margin-left:auto;padding:9px 20px;background:#C4943A;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">
+          Salvar nome
         </button>
       </div>
     </div>
+  </div>
 
-    <!-- Conquistas resumidas -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="font-bold text-[14px] text-gray-800">Conquistas</h3>
-        <a href="/conquistas" class="text-[11px] text-gray-400 hover:text-gray-600">Ver todas</a>
+  <!-- Alterar senha -->
+  <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
+    <h2 class="fraunces" style="font-size:16px;font-weight:500;color:#2A2419;margin:0 0 16px;">Alterar senha</h2>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Nova senha</label>
+        <div style="position:relative;">
+          <input id="cfg-pw1" type="password" placeholder="••••••••" class="field-input" style="padding-right:40px;"/>
+          <button type="button" onclick="togglePw('cfg-pw1')"
+                  style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9C8460;padding:0;display:flex;">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </button>
+        </div>
+        <div style="display:flex;gap:4px;margin-top:8px;">
+          <div class="pw-bar" id="pw-s1"></div>
+          <div class="pw-bar" id="pw-s2"></div>
+          <div class="pw-bar" id="pw-s3"></div>
+          <div class="pw-bar" id="pw-s4"></div>
+        </div>
+        <p style="font-size:11px;color:#9C8460;margin:5px 0 0;min-height:16px;" id="pw-strength-label"></p>
       </div>
-      <div id="profile-achievements" class="flex flex-col gap-2.5">
-        <p class="text-[12px] text-gray-400">Carregando...</p>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Confirmar senha</label>
+        <input id="cfg-pw2" type="password" placeholder="••••••••" class="field-input"/>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding-top:4px;">
+        <p style="font-size:12px;font-weight:600;margin:0;display:none;" id="cfg-pw-msg"></p>
+        <button onclick="savePassword()"
+                style="margin-left:auto;padding:9px 20px;background:#C4943A;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">
+          Alterar senha
+        </button>
       </div>
     </div>
+  </div>
 
+  <!-- Progresso por grupo -->
+  <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
+    <h2 class="fraunces" style="font-size:16px;font-weight:500;color:#2A2419;margin:0 0 16px;">Progresso</h2>
+    {% set gc = ['#C4943A','#5A8A6A','#7B5EA7','#4A78B0','#E8632A'] %}
+    {% set bg = ['#F2EAD8','#DFF0E8','#E8E0F4','#E6EFF8','#FEF0EB'] %}
+    {% for group in groups %}
+    {% set ci = loop.index0 % 5 %}
+    <div style="display:flex;align-items:center;gap:12px;{% if not loop.last %}margin-bottom:14px;{% endif %}">
+      <div style="width:36px;height:36px;border-radius:10px;background:{{ bg[ci] }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" style="width:18px;height:18px;object-fit:contain;"/>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-size:12px;font-weight:600;color:#2A2419;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%;">{{ group.name }}</span>
+          <span style="font-size:12px;color:{{ gc[ci] }};font-weight:700;" data-prof-pct="{{ group.slug }}">—</span>
+        </div>
+        <div style="height:5px;background:#F4ECD8;border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:0%;background:{{ gc[ci] }};border-radius:3px;transition:width .7s ease;" data-prof-bar="{{ group.slug }}"></div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Sair -->
+  <div style="background:white;border-radius:16px;padding:6px;border:1px solid #F0E8D4;">
+    <button onclick="doSignOut()"
+            style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;color:#EF4444;font-size:13px;font-weight:600;background:none;border:none;cursor:pointer;width:100%;transition:background .15s;"
+            onmouseover="this.style.background='#FEF2F2'" onmouseout="this.style.background='none'">
+      <svg style="width:16px;height:16px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/>
+      </svg>
+      Sair da conta
+    </button>
+  </div>
+
+</div>
+
+<!-- ══ Modal: Alterar Avatar ══ -->
+<div id="avatar-modal-backdrop"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:flex-end;justify-content:center;"
+     onclick="if(event.target===this) closeAvatarModal()">
+  <div style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:480px;max-height:82vh;display:flex;flex-direction:column;overflow:hidden;" onclick="event.stopPropagation()">
+
+    <div style="padding:16px 20px;border-bottom:1px solid #F0E8D4;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <h3 style="font-size:16px;font-weight:700;color:#2A2419;margin:0;">Alterar avatar</h3>
+      <button onclick="closeAvatarModal()" style="background:none;border:none;cursor:pointer;color:#9C8460;font-size:24px;line-height:1;padding:0;">×</button>
+    </div>
+
+    <div style="padding:12px 20px 0;display:flex;gap:6px;border-bottom:1px solid #F0E8D4;flex-shrink:0;">
+      <button class="modal-tab active" id="tab-foto"   onclick="switchModalTab('foto')">📷 Foto</button>
+      <button class="modal-tab"        id="tab-avatar" onclick="switchModalTab('avatar')">🎨 Avatar</button>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:20px;">
+
+      <div id="panel-foto" class="fade-in">
+        <div id="drop-zone"
+             style="border:2px dashed #D9C9A8;border-radius:14px;padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;"
+             onclick="document.getElementById('file-input').click()"
+             ondragover="event.preventDefault();this.style.borderColor='#C4943A';this.style.background='#FDF8F0';"
+             ondragleave="this.style.borderColor='#D9C9A8';this.style.background='';"
+             ondrop="handleFileDrop(event)">
+          <div id="drop-preview" style="display:none;margin-bottom:14px;">
+            <img id="drop-img" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #C4943A;margin:0 auto;display:block;"/>
+          </div>
+          <div id="drop-placeholder">
+            <div style="width:48px;height:48px;border-radius:50%;background:#F2EAD8;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+              <svg style="width:22px;height:22px;color:#C4943A;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+              </svg>
+            </div>
+            <p style="font-size:14px;font-weight:600;color:#2A2419;margin:0 0 3px;">Arraste uma foto aqui</p>
+            <p style="font-size:12px;color:#9C8460;margin:0;">ou clique para selecionar · JPG, PNG, WebP</p>
+          </div>
+          <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileSelect(this)"/>
+        </div>
+        <p id="upload-status" style="font-size:12px;text-align:center;margin:8px 0 0;min-height:16px;"></p>
+      </div>
+
+      <div id="panel-avatar" style="display:none;" class="fade-in">
+        <p style="font-size:12px;color:#9C8460;margin:0 0 12px;">Escolha um avatar musical:</p>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;" id="avatar-grid"></div>
+      </div>
+
+    </div>
+
+    <div style="padding:14px 20px;border-top:1px solid #F0E8D4;flex-shrink:0;display:flex;gap:10px;">
+      <button onclick="closeAvatarModal()"
+              style="flex:1;padding:11px;border-radius:10px;border:1.5px solid #E5E7EB;background:none;font-size:13px;font-weight:600;color:#374151;cursor:pointer;">
+        Cancelar
+      </button>
+      <button id="save-avatar-btn" onclick="saveAvatar()"
+              style="flex:2;padding:11px;border-radius:10px;background:#C4943A;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;">
+        Salvar avatar
+      </button>
+    </div>
   </div>
 </div>
 {% endblock %}
@@ -156,12 +265,98 @@
 <script>
 const GROUPS_DATA = {{ groups | tojson }};
 
+const AVATARS = [
+  { id:'av1',  emoji:'🎵', bg:'linear-gradient(135deg,#C4943A,#8B6920)' },
+  { id:'av2',  emoji:'🎸', bg:'linear-gradient(135deg,#7B5EA7,#4A3470)' },
+  { id:'av3',  emoji:'🎹', bg:'linear-gradient(135deg,#4A78B0,#2A4F7A)' },
+  { id:'av4',  emoji:'🎺', bg:'linear-gradient(135deg,#E8632A,#B04020)' },
+  { id:'av5',  emoji:'🎻', bg:'linear-gradient(135deg,#5A8A6A,#3A6A4A)' },
+  { id:'av6',  emoji:'🎼', bg:'linear-gradient(135deg,#3D3018,#1A1008)' },
+  { id:'av7',  emoji:'🥁', bg:'linear-gradient(135deg,#E84A6A,#A02040)' },
+  { id:'av8',  emoji:'🎤', bg:'linear-gradient(135deg,#C44A9A,#8A2070)' },
+  { id:'av9',  emoji:'🎧', bg:'linear-gradient(135deg,#3A8A9A,#1A6070)' },
+  { id:'av10', emoji:'🎶', bg:'linear-gradient(135deg,#8A8A2A,#5A5A10)' },
+  { id:'av11', emoji:'🔔', bg:'linear-gradient(135deg,#D4943A,#9A6010)' },
+  { id:'av12', emoji:'♪',  bg:'linear-gradient(135deg,#4A5A7A,#2A3A5A)' },
+];
+
+let _pendingFile     = null;
+let _chosenAvatarId  = null;
+let _currentAvatarId = null;
+let _currentPhotoUrl = null;
+
 document.addEventListener('DOMContentLoaded', async () => {
-  await waitForProfile();
-  renderProfile();
+  buildAvatarGrid();
+
+  // Password strength listener
+  const pw1El = document.getElementById('cfg-pw1');
+  if (pw1El) pw1El.addEventListener('input', function() {
+    const pw = this.value;
+    const checks = [pw.length >= 8, /[A-Z]/.test(pw), /[0-9]/.test(pw), /[^A-Za-z0-9]/.test(pw)];
+    const score = checks.filter(Boolean).length;
+    const colors = ['#F87171','#FB923C','#FBBF24','#4ADE80'];
+    for (let i = 1; i <= 4; i++) {
+      const el = document.getElementById('pw-s' + i);
+      if (el) el.style.background = i <= score ? colors[score - 1] : '#E5E7EB';
+    }
+    const labels = ['','Fraca','Média','Boa','Forte'];
+    const lbl = document.getElementById('pw-strength-label');
+    if (lbl) lbl.textContent = score > 0 ? `Senha ${labels[score]}` : '';
+  });
+
+  if (window._sb) {
+    const { data: { user } } = await window._sb.auth.getUser();
+    if (user) {
+      const meta  = user.user_metadata || {};
+      const name  = meta.name || user.email?.split('@')[0] || 'Aluno';
+      const email = user.email || '';
+      set('header-name',  name);
+      set('header-email', email);
+      const nameEl  = document.getElementById('cfg-name');
+      const emailEl = document.getElementById('cfg-email');
+      if (nameEl)  nameEl.value  = name;
+      if (emailEl) emailEl.value = email;
+      _currentAvatarId = meta.avatar || null;
+      _currentPhotoUrl = meta.avatar_url || null;
+      applyAvatar(_currentPhotoUrl, _currentAvatarId);
+    }
+  }
+
+  await waitForProgress();
+
+  const prog    = window._progress || [];
+  const done    = window._doneModules  || 0;
+  const total   = window._totalModules || 1;
+  const streak  = window._streak || 0;
+  const days    = (window._studyDays  || []).length;
+  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
+
+  document.querySelectorAll('[data-streak]').forEach(el => el.textContent = streak);
+  set('stat-modules', `${done}/${total}`);
+  set('stat-days',    days);
+
+  const groupPct = {};
+  GROUPS_DATA.forEach(g => {
+    const gDone = (g.modules||[]).filter(m => doneSet.has(m.slug)).length;
+    groupPct[g.slug] = g.module_count > 0 ? Math.round((gDone / g.module_count) * 100) : 0;
+  });
+  const achieved = [
+    done >= 1, done >= 5, done >= 10, streak >= 3, streak >= 7, streak >= 30,
+    Object.values(groupPct).some(v => v === 100), days >= 5,
+  ].filter(Boolean).length;
+  set('stat-achiev', `${achieved}/12`);
+
+  GROUPS_DATA.forEach(g => {
+    const gDone = (g.modules||[]).filter(m => doneSet.has(m.slug)).length;
+    const pct   = g.module_count > 0 ? Math.round((gDone / g.module_count) * 100) : 0;
+    const bar   = document.querySelector(`[data-prof-bar="${g.slug}"]`);
+    const lbl   = document.querySelector(`[data-prof-pct="${g.slug}"]`);
+    if (bar) setTimeout(() => { bar.style.width = pct + '%'; }, 200);
+    if (lbl) lbl.textContent = `${gDone}/${g.module_count}`;
+  });
 });
 
-function waitForProfile() {
+function waitForProgress() {
   return new Promise(resolve => {
     if (window._progress !== undefined) return resolve();
     const t = setInterval(() => { if (window._progress !== undefined) { clearInterval(t); resolve(); } }, 100);
@@ -169,68 +364,181 @@ function waitForProfile() {
   });
 }
 
-function renderProfile() {
-  const done   = window._doneModules || 0;
-  const total  = window._totalModules || 1;
-  const streak = window._streak || 0;
-  const days   = (window._studyDays || []).length;
-  const xp     = done * 50 + days * 10;
-  const doneSet = new Set((window._progress || []).filter(p => p.completed > 0).map(p => p.module_slug));
-
-  // Tenta buscar dados do usuário via Supabase
-  if (window._sb) {
-    window._sb.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return;
-      const name = user.user_metadata?.name || user.email?.split('@')[0] || 'Aluno';
-      const email = user.email || '';
-      const since = new Date(user.created_at).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-      const role  = user.user_metadata?.role === 'teacher' ? 'Professor' : 'Aluno';
-
-      set('profile-name',  name);
-      set('profile-email', email);
-      set('header-email',  email);
-      set('profile-since', since);
-      set('profile-role',  role);
-    });
-  }
-
-  set('profile-xp', xp);
-  set('ps-modules', done + ' / ' + total);
-  set('ps-streak',  streak + ' dias');
-  set('ps-days',    days);
-
-  // Progresso por grupo
-  GROUPS_DATA.forEach(group => {
-    const slugs = group.modules.map(m => m.slug);
-    const gDone = slugs.filter(s => doneSet.has(s)).length;
-    const pct   = group.module_count > 0 ? Math.round((gDone / group.module_count) * 100) : 0;
-    const bar   = document.querySelector(`[data-prof-bar="${group.slug}"]`);
-    const pctEl = document.querySelector(`[data-prof-pct="${group.slug}"]`);
-    const cnt   = document.querySelector(`[data-prof-count="${group.slug}"]`);
-    if (bar)   bar.style.width = pct + '%';
-    if (pctEl) pctEl.textContent = pct + '%';
-    if (cnt)   cnt.textContent = `${gDone} de ${group.module_count} módulos`;
+function applyAvatar(photoUrl, avatarId) {
+  [{ id:'profile-avatar-wrap', size:'34px' }, { id:'sidebar-avatar', size:'18px' }].forEach(({ id, size }) => {
+    const wrap = document.getElementById(id);
+    if (!wrap) return;
+    if (photoUrl) {
+      wrap.innerHTML = `<img src="${photoUrl}" style="width:100%;height:100%;object-fit:cover;" alt="avatar"/>`;
+    } else if (avatarId) {
+      const av = AVATARS.find(a => a.id === avatarId);
+      if (av) wrap.innerHTML = `<div style="width:100%;height:100%;background:${av.bg};display:flex;align-items:center;justify-content:center;font-size:${size};">${av.emoji}</div>`;
+    } else {
+      if (id === 'sidebar-avatar') {
+        wrap.innerHTML = `<svg viewBox="0 0 36 36" style="width:100%;height:100%;" fill="none"><rect width="36" height="36" fill="#D4A574"/><circle cx="18" cy="14" r="7" fill="#C49060"/><ellipse cx="18" cy="32" rx="11" ry="8" fill="#C49060"/></svg>`;
+      } else {
+        wrap.innerHTML = `<svg viewBox="0 0 72 72" width="72" height="72" fill="none"><rect width="72" height="72" fill="#D4A574"/><circle cx="36" cy="28" r="14" fill="#C49060"/><ellipse cx="36" cy="64" rx="22" ry="16" fill="#C49060"/></svg>`;
+      }
+    }
   });
+}
 
-  // Conquistas resumidas
-  const achEl = document.getElementById('profile-achievements');
-  if (achEl) {
-    const items = [
-      { icon:'🎵', bg:'bg-[#C4D9CE]', name:'Primeiros Passos', earned: done >= 1 },
-      { icon:'⭐', bg:'bg-[#F0E4B8]', name:'Semana Perfeita',  earned: streak >= 7 },
-      { icon:'🏆', bg:'bg-[#DBEAFE]', name:'Instrumentista',   earned: done >= 10 },
-    ];
-    achEl.innerHTML = items.map(a => `
-      <div class="flex items-center gap-2.5 ${!a.earned ? 'opacity-40' : ''}">
-        <div class="w-8 h-8 rounded-lg ${a.bg} flex items-center justify-center text-base flex-shrink-0">${a.earned ? a.icon : '🔒'}</div>
-        <p class="text-[12px] font-semibold text-gray-700">${a.name}</p>
-      </div>`).join('');
+function buildAvatarGrid() {
+  const grid = document.getElementById('avatar-grid');
+  if (!grid) return;
+  grid.innerHTML = AVATARS.map(av => `
+    <div class="avatar-opt ${_currentAvatarId === av.id ? 'chosen' : ''}"
+         id="avopt-${av.id}" style="background:${av.bg};"
+         onclick="selectAvatar('${av.id}')">
+      ${av.emoji}
+    </div>`).join('');
+}
+
+function selectAvatar(id) {
+  _chosenAvatarId = id;
+  _pendingFile    = null;
+  document.querySelectorAll('.avatar-opt').forEach(el => el.classList.remove('chosen'));
+  document.getElementById('avopt-' + id)?.classList.add('chosen');
+}
+
+function openAvatarModal() {
+  const modal = document.getElementById('avatar-modal-backdrop');
+  modal.style.display = 'flex';
+  _chosenAvatarId = _currentAvatarId;
+  _pendingFile    = null;
+  document.getElementById('drop-preview').style.display     = 'none';
+  document.getElementById('drop-placeholder').style.display = '';
+  setStatus('');
+  buildAvatarGrid();
+  switchModalTab('foto');
+}
+
+function closeAvatarModal() {
+  document.getElementById('avatar-modal-backdrop').style.display = 'none';
+}
+
+function switchModalTab(tab) {
+  ['foto','avatar'].forEach(t => {
+    document.getElementById('panel-' + t).style.display = t === tab ? '' : 'none';
+    document.getElementById('tab-' + t).className = 'modal-tab' + (t === tab ? ' active' : '');
+  });
+}
+
+function handleFileDrop(e) {
+  e.preventDefault();
+  e.currentTarget.style.borderColor = '#D9C9A8';
+  e.currentTarget.style.background  = '';
+  if (e.dataTransfer.files[0]) previewFile(e.dataTransfer.files[0]);
+}
+function handleFileSelect(input) {
+  if (input.files[0]) previewFile(input.files[0]);
+}
+function previewFile(file) {
+  if (!file.type.startsWith('image/')) { setStatus('Arquivo inválido. Use JPG, PNG ou WebP.', 'red'); return; }
+  if (file.size > 5 * 1024 * 1024)    { setStatus('Arquivo muito grande. Máx 5 MB.', 'red'); return; }
+  _pendingFile    = file;
+  _chosenAvatarId = null;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('drop-img').src = e.target.result;
+    document.getElementById('drop-preview').style.display     = '';
+    document.getElementById('drop-placeholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+  setStatus('');
+}
+
+async function saveAvatar() {
+  if (!window._sb) { setStatus('Erro: Supabase não disponível.', 'red'); return; }
+  const btn = document.getElementById('save-avatar-btn');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  try {
+    if (_pendingFile) {
+      const { data: { user } } = await window._sb.auth.getUser();
+      const ext  = _pendingFile.name.split('.').pop() || 'jpg';
+      const path = `${user.id}.${ext}`;
+      const { error: upErr } = await window._sb.storage
+        .from('avatars').upload(path, _pendingFile, { upsert: true, contentType: _pendingFile.type });
+      if (upErr) throw new Error(upErr.message);
+      const { data: { publicUrl } } = window._sb.storage.from('avatars').getPublicUrl(path);
+      await window._sb.auth.updateUser({ data: { avatar_url: publicUrl, avatar: null } });
+      _currentPhotoUrl = publicUrl + '?t=' + Date.now();
+      _currentAvatarId = null;
+      applyAvatar(_currentPhotoUrl, null);
+    } else if (_chosenAvatarId) {
+      await window._sb.auth.updateUser({ data: { avatar: _chosenAvatarId, avatar_url: null } });
+      _currentAvatarId = _chosenAvatarId;
+      _currentPhotoUrl = null;
+      applyAvatar(null, _currentAvatarId);
+    }
+    closeAvatarModal();
+  } catch (err) {
+    setStatus('Erro ao salvar: ' + err.message, 'red');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Salvar avatar';
   }
 }
 
-async function doSignOut() {
+function setStatus(msg, color) {
+  const el = document.getElementById('upload-status');
+  if (el) { el.textContent = msg; el.style.color = color === 'red' ? '#EF4444' : '#5A8A6A'; }
+}
+
+async function saveName() {
   if (!window._sb) return;
-  await window._sb.auth.signOut();
+  const name = document.getElementById('cfg-name').value.trim();
+  if (!name) return;
+  const { error } = await window._sb.auth.updateUser({ data: { name } });
+  const okEl  = document.getElementById('cfg-name-ok');
+  const errEl = document.getElementById('cfg-name-err');
+  if (error) {
+    if (errEl) { errEl.textContent = error.message; errEl.style.display = ''; }
+    if (okEl)  okEl.style.display = 'none';
+  } else {
+    if (okEl)  { okEl.style.display = ''; }
+    if (errEl) errEl.style.display = 'none';
+    set('header-name', name);
+    document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = name);
+    setTimeout(() => { if (okEl) okEl.style.display = 'none'; }, 3000);
+  }
+}
+
+async function savePassword() {
+  if (!window._sb) return;
+  const pw1 = document.getElementById('cfg-pw1').value;
+  const pw2 = document.getElementById('cfg-pw2').value;
+  const msg = document.getElementById('cfg-pw-msg');
+  const show = (text, ok) => {
+    msg.textContent = text;
+    msg.style.color = ok ? '#5A8A6A' : '#EF4444';
+    msg.style.display = '';
+    if (ok) setTimeout(() => { msg.style.display = 'none'; }, 4000);
+  };
+  if (pw1.length < 8) { show('A senha deve ter ao menos 8 caracteres.', false); return; }
+  if (pw1 !== pw2)    { show('As senhas não coincidem.', false); return; }
+  const { error } = await window._sb.auth.updateUser({ password: pw1 });
+  if (error) {
+    show(error.message, false);
+  } else {
+    show('✓ Senha alterada com sucesso!', true);
+    document.getElementById('cfg-pw1').value = '';
+    document.getElementById('cfg-pw2').value = '';
+    for (let i = 1; i <= 4; i++) {
+      const el = document.getElementById('pw-s' + i);
+      if (el) el.style.background = '#E5E7EB';
+    }
+    set('pw-strength-label', '');
+  }
+}
+
+function togglePw(id) {
+  const el = document.getElementById(id);
+  if (el) el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+async function doSignOut() {
+  if (window._sb) await window._sb.auth.signOut();
+  else if (window.auth) await window.auth.signOut();
   window.location.href = '/login';
 }
 

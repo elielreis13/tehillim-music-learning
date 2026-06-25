@@ -26,33 +26,36 @@ Um teclado de duas oitavas (de Dó3 a Dó5) com os três Dós destacados em core
 ## Exercícios
 
 ### MC
-Quantos semitons há em uma oitava?
+Você toca um Dó e depois conta as teclas até o próximo Dó acima (incluindo brancas e pretas). Quantos semitons você atravessa?
 - 7
 - 8
 - 12 ✓
 - 15
 
 ### VF
-A nota Lá4 (440 Hz) tem sua oitava acima em Lá5, com frequência de 880 Hz.
+Você ouve o Lá4 (440 Hz) e depois toca uma nota que vibra exatamente o dobro (880 Hz). Essa segunda nota também é um Lá, uma oitava acima.
 > Verdadeiro
 
 ### Fill
-O sistema de numeração de oitavas chama o Dó do meio do piano de ___.
+No piano, o Dó do meio — referência usada por todos os músicos — é chamado de ___.
 - Dó0
 - Dó4 ✓
 - Dó8
 
 ### MC
-Por que soprano e tenor podem cantar a mesma melodia sem conflito mesmo estando em alturas diferentes?
-- Porque um deles está cantando errado
-- Porque estão cantando em oitavas diferentes, que têm o mesmo caráter musical ✓
-- Porque suas vozes têm o mesmo timbre
-- Porque a diferença de volume compensa a diferença de altura
+No coral, soprano e tenor cantam a mesma melodia ao mesmo tempo e soa lindo, sem conflito. Por quê?
+- Porque um deles canta errado e o outro corrige
+- Porque cantam em oitavas diferentes, mantendo o mesmo caráter musical ✓
+- Porque suas vozes têm timbre idêntico
+- Porque o volume é diferente
 
-### VF
-Um piano padrão de 88 teclas abrange aproximadamente 7 oitavas completas.
-> Verdadeiro
+### Match
+Associe cada Dó à sua frequência aproximada:
+- Dó3 → 262 Hz (uma oitava abaixo do Dó central)
+- Dó4 → 523 Hz (Dó do meio do piano)
+- Dó5 → 1046 Hz (uma oitava acima do central)
+- Dó6 → 2093 Hz (duas oitavas acima do central)
 
 ## Jogo
 
-ESPELHO DE OITAVAS — Em duplas ao piano ou teclado: um aluno toca uma melodia simples de 4 notas com a mão direita (ex: Dó4–Mi4–Sol4–Mi4). O segundo aluno deve imediatamente repetir a mesma melodia, mas uma oitava abaixo (Dó3–Mi3–Sol3–Mi3). Depois trocam: o segundo cria e o primeiro responde. Na fase 2, um canta e o outro toca a oitava correspondente. Treinem identificar de ouvido quando dois sons estão exatamente a uma oitava de distância.
+ESPELHO DE OITAVAS — Em duplas ao piano (10 minutos). Aluno A toca uma melodia simples de 4 notas com a mão direita na oitava 4 (ex: Dó4–Mi4–Sol4–Mi4). Aluno B precisa repetir IMEDIATAMENTE a mesma melodia uma oitava abaixo (Dó3–Mi3–Sol3–Mi3). 1 ponto por acerto. Trocam. Fase 2 (modo desafio): A canta uma nota, B precisa tocar a MESMA nota uma oitava acima OU abaixo (B escolhe). Fase 3 (modo ninja): A toca duas notas ao mesmo tempo e B precisa dizer "É OITAVA!" ou "NÃO É!". Vence quem chegar a 15 pontos.

@@ -2,49 +2,55 @@
 number: 85
 slug: campo-harmonico-menor
 title: Campo harmônico menor
-description: Lição focada em Campo harmônico menor, separada do antigo módulo “Campo Harmônico Menor e Funções Harmônicas” para estudar um conceito por vez.
+description: O campo harmônico menor é mais complexo que o maior — e é justamente essa complexidade que dá às músicas em tom menor aquela profundidade emocional inconfundível.
 topics: Campo harmônico menor
 game_kind: game-challenge
 ---
 
 ## Teoria
 
-Campo harmônico menor organiza os sons simultâneos e suas funções. A harmonia mostra de onde a música sai, para onde ela quer ir e onde encontra repouso.
+O **campo harmônico menor** é o conjunto de acordes formados a partir das notas de uma escala menor. Diferente do maior, ele existe em **três versões** — natural, harmônica e melódica — porque a escala menor tem essas três formas, e cada uma gera um conjunto ligeiramente diferente de acordes. Em **Lá menor natural** (a relativa de Dó maior), os graus são: **i = Am, ii° = B°, III = C, iv = Dm, v = Em, VI = F, VII = G**. Note que o i e iv são menores (letras minúsculas), o ii é diminuto, e o v é menor — sem sensível, sem força de dominante.
 
-Estude primeiro a construção: quais notas formam o acorde, qual grau da escala ele ocupa e que sensação produz. Depois aplique em músicas reais, ouvindo tensão, preparação e resolução.
+A grande limitação do menor natural está no **v menor**: Mi menor (Em) não puxa o ouvido de volta para Lá menor com força. Para resolver isso, usa-se a **escala menor harmônica**, que eleva o sétimo grau em meio tom — em Lá menor, o Sol vira **Sol#**. Com essa alteração, o acorde do v se transforma em **V maior (E ou E7)**, criando a **dominante com sensível** que toda música menor precisa para soar conclusiva. O VII grau diminuto (G#°) também surge dessa escala e é frequentemente usado como acorde de passagem.
 
-Para ministério de louvor, esse tema ajuda a ler cifras, acompanhar cantores, transpor repertório e tocar com mais consciência em vez de depender apenas da memória muscular.
+A **escala menor melódica** sobe com sexta e sétima elevadas (em Lá menor: Fá# e Sol# subindo) e desce como menor natural. No campo harmônico, isso permite combinar acordes do natural e do harmônico, produzindo um vocabulário rico e flexível. Na prática, músicos misturam livremente os acordes das três escalas: em uma mesma progressão em **Lá menor**, é comum ver Am - F - C - E (mistura de natural e harmônica), porque o E (V) dá a chegada que o Em (v) não daria.
+
+No louvor, o tom menor aparece em músicas mais contemplativas, intimistas ou de adoração profunda. Conhecer o campo harmônico menor permite ao músico entender por que progressões como **i - VI - III - VII** (Am - F - C - G) soam tão emocionais — e por que o V maior aparece quase sempre antes do i no fim das frases. Toda vez que você toca um Mi maior antes de cair em Lá menor, está usando a sensível da harmônica, mesmo sem perceber.
 
 ## Visual
 
-Cartão visual central com o título “Campo harmônico menor”, um exemplo musical simples e uma comparação lado a lado entre execução incorreta e execução correta.
+Tabela tripla em Lá menor mostrando os três campos harmônicos lado a lado: coluna “Natural” (Am, B°, C, Dm, Em, F, G), coluna “Harmônica” com o Sol# destacado em vermelho (Am, B°, C+, Dm, E, F, G#°) e coluna “Melódica”. Abaixo, uma seta apontando do Em (natural) para o E (harmônica), com o texto “sensível Sol# transforma v em V — eis a dominante”.
 
 ## Exercícios
 
 ### MC
-Qual é o foco principal desta lição?
-- Decorar repertório sem entender o conceito
-- Estudar Campo harmônico menor de forma isolada e aplicável ✓
-- Pular diretamente para assuntos avançados
-- Substituir a escuta pela teoria
+Em Lá menor harmônica, qual é o acorde do quinto grau (V)?
+- Mi menor (Em), porque Lá menor é menor
+- Mi maior (E ou E7), por causa do Sol# (sensível) ✓
+- Sol maior (G), o sétimo grau natural
+- Ré menor (Dm), o quarto grau
 
 ### VF
-Um tópico musical bem estudado deve ser reconhecido na escuta, na leitura e na prática.
+A escala menor harmônica eleva o sétimo grau em um semitom para criar uma sensível, transformando o v menor em V maior.
 > Verdadeiro
 
 ### Fill
-Nesta lição, o tema central é ___.
-- andamento aleatório
-- Campo harmônico menor ✓
-- troca de instrumento
+No campo harmônico de Lá menor natural, o acorde do terceiro grau (III) é ___.
+- Lá menor
+- Dó maior (C) ✓
+- Mi maior (E)
 
-### Match
-Associe cada etapa de estudo à ação correta:
-- Conceito → Entender a ideia principal
-- Escuta → Reconhecer o tema em músicas reais
-- Prática → Aplicar com voz, corpo ou instrumento
-- Revisão → Corrigir e repetir com consciência
+### MC
+Por que músicas em tom menor frequentemente usam acordes vindos de mais de uma escala (natural e harmônica)?
+- Porque o tom menor não tem campo harmônico próprio
+- Porque o v menor (natural) não cria sensação forte de chegada, então usa-se o V maior (harmônica) ✓
+- Porque é proibido usar só uma escala
+- Porque o tom menor é igual ao maior
+
+### VF
+Em Lá menor natural, o segundo grau (ii) forma um acorde menor (Bm).
+> Falso
 
 ## Jogo
 
-MISSÃO CAMPO HARMÔNICO MENOR: escolha uma música simples do repertório de louvor ou de estudo. Ouça uma vez procurando apenas Campo harmônico menor. Depois execute um trecho curto aplicando esse tema de propósito. Grave ou anote o resultado e responda: onde o conceito apareceu com clareza e onde ainda precisa de ajuste?
+LABORATÓRIO MENOR: escolha uma música conhecida em tom menor (pode ser de louvor, hino ou popular). Identifique cada acorde como pertencente ao menor natural, harmônico ou melódico. Marque com cores diferentes na cifra: azul para natural, vermelho para harmônico, verde para melódico. Ao final, conte: qual escala dominou? Onde apareceu o V maior (sinal claro do uso da harmônica)? Quem identificar corretamente a origem de pelo menos cinco acordes vence.

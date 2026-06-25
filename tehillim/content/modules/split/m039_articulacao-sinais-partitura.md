@@ -2,7 +2,7 @@
 number: 39
 slug: articulacao-sinais-partitura
 title: Articulação
-description: Lição focada em Articulação, separada do antigo módulo "Sinais de Repetição e Estrutura da Partitura" para estudar um conceito por vez.
+description: Tocar as notas certas não é suficiente — a articulação define se a música soa dançante, solene ou poderosa. É o que separa uma execução técnica de uma execução musical.
 topics: Articulação
 game_kind: game-quiz
 ---

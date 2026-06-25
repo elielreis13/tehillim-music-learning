@@ -2,7 +2,7 @@
 number: 44
 slug: colcheias-e-semicolcheias
 title: Colcheias e Semicolcheias
-description: Lição focada em Colcheias e Semicolcheias, separada do antigo módulo “Célula Rítmica e Leitura em Compasso Simples” para estudar um conceito por vez.
+description: Todo groove de louvor contemporâneo — de Fernandinho a Gabriela Rocha — é construído sobre colcheias e semicolcheias. Domine esses dois valores e você lê qualquer ritmo em compasso simples.
 topics: Colcheias e Semicolcheias
 game_kind: game-listen
 ---

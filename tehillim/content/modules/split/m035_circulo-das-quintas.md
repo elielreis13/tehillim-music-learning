@@ -2,7 +2,7 @@
 number: 35
 slug: circulo-das-quintas
 title: Círculo das quintas
-description: Lição focada em Círculo das quintas, separada do antigo módulo "Armaduras de Clave e Tonalidades" para estudar um conceito por vez.
+description: Um único diagrama circular organiza todas as 12 tonalidades e explica por que certas músicas modulam tão naturalmente — e outras soam como um susto. Este é o mapa do tesouro da harmonia.
 topics: Círculo das quintas
 game_kind: game-quiz
 ---
@@ -16,6 +16,8 @@ O círculo revela quais tonalidades são "vizinhas" — ou seja, compartilham qu
 Para o músico de louvor, o círculo é uma ferramenta prática de dois usos principais. Primeiro, transposição: ao subir um tom de Fá maior para Sol maior, você passa pelo lado dos bemóis ao lado dos sustenidos — o círculo mostra exatamente quantos e quais acidentes mudam. Segundo, progressões de acorde: a progressão IV–I–V tão comum no gospel e no louvor contemporâneo nada mais é do que três tonalidades consecutivas no círculo. Conhecer o círculo de cor agiliza tanto a leitura quanto a improvisação.
 
 ## Visual
+
+<img src="/static/img/modules/circulo-das-quintas.svg" alt="Círculo das quintas com 12 tonalidades maiores no anel externo e relativas menores no anel interno" class="module-img" onerror="this.style.display='none'">
 
 Círculo das quintas completo com os 12 nomes de tonalidade maiores no anel externo, os relativos menores no anel interno, e o número de sustenidos/bemóis de cada tonalidade no centro de cada fatia — com setas indicando "horário = +♯" e "anti-horário = +♭".
 

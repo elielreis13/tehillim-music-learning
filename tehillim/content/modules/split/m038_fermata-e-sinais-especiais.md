@@ -2,7 +2,7 @@
 number: 38
 slug: fermata-e-sinais-especiais
 title: Fermata e sinais especiais
-description: Lição focada em Fermata e sinais especiais, separada do antigo módulo "Sinais de Repetição e Estrutura da Partitura" para estudar um conceito por vez.
+description: A fermata é o único sinal da partitura que diz "você decide quanto tempo" — entenda ela e os outros sinais que transferem o controle do papel para o músico.
 topics: Fermata e sinais especiais
 game_kind: game-quiz
 ---

@@ -2,7 +2,7 @@
 number: 34
 slug: armadura-de-clave
 title: Armadura de clave
-description: Lição focada em Armadura de clave, separada do antigo módulo "Armaduras de Clave e Tonalidades" para estudar um conceito por vez.
+description: Aqueles sustenidos ou bemóis no começo da pauta não são decoração — eles te dizem de uma vez quais notas serão alteradas em toda a música. Aprenda a ler a armadura e poupe muito trabalho.
 topics: Armadura de clave
 game_kind: game-quiz
 ---

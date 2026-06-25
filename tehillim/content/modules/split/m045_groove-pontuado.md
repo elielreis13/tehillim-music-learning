@@ -2,7 +2,7 @@
 number: 45
 slug: groove-pontuado
 title: Groove Pontuado
-description: Lição focada em Groove Pontuado, separada do antigo módulo “Célula Rítmica e Leitura em Compasso Simples” para estudar um conceito por vez.
+description: “Maravilhosa Graça” não soa certo com notas retas — é o LONGO-curto pontuado que dá o balanço. Descubra o ritmo que faz hinos e forro nordestino usarem o mesmo “galope”.
 topics: Groove Pontuado
 game_kind: game-listen
 ---

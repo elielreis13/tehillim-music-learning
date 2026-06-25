@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="800" height="280" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="280" fill="#FAFAFA" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">FIGURAS MUSICAIS — DURAÇÕES DAS NOTAS</text>
+
+  <!-- Column positions -->
+  <!-- 5 figures: x = 90, 210, 330, 490, 650 -->
+  <!-- spacing to fit nicely -->
+
+  <!-- === SEMIBREVE (x=90) === -->
+  <text x="90" y="60" text-anchor="middle" font-size="48" fill="#3F51B5" font-family="serif">𝅝</text>
+  <text x="90" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#3F51B5">Semibreve</text>
+  <text x="90" y="148" text-anchor="middle" font-size="11" fill="#777">4 tempos</text>
+  <!-- 4 beat dots -->
+  <circle cx="66" cy="165" r="5" fill="#3F51B5"/>
+  <circle cx="80" cy="165" r="5" fill="#3F51B5"/>
+  <circle cx="94" cy="165" r="5" fill="#3F51B5"/>
+  <circle cx="108" cy="165" r="5" fill="#3F51B5"/>
+
+  <!-- === MÍNIMA (x=210) === -->
+  <text x="210" y="60" text-anchor="middle" font-size="48" fill="#2196F3" font-family="serif">𝅗𝅥</text>
+  <text x="210" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#2196F3">Mínima</text>
+  <text x="210" y="148" text-anchor="middle" font-size="11" fill="#777">2 tempos</text>
+  <circle cx="203" cy="165" r="5" fill="#2196F3"/>
+  <circle cx="217" cy="165" r="5" fill="#2196F3"/>
+
+  <!-- === SEMÍNIMA (x=350) === -->
+  <text x="350" y="60" text-anchor="middle" font-size="48" fill="#4CAF50" font-family="serif">𝅘𝅥</text>
+  <text x="350" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#4CAF50">Semínima</text>
+  <text x="350" y="148" text-anchor="middle" font-size="11" fill="#777">1 tempo</text>
+  <circle cx="350" cy="165" r="5" fill="#4CAF50"/>
+
+  <!-- === COLCHEIA (x=510) === -->
+  <text x="510" y="60" text-anchor="middle" font-size="48" fill="#FF9800" font-family="serif">𝅘𝅥𝅮</text>
+  <text x="510" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#FF9800">Colcheia</text>
+  <text x="510" y="148" text-anchor="middle" font-size="11" fill="#777">½ tempo</text>
+  <circle cx="507" cy="165" r="3.5" fill="#FF9800"/>
+  <circle cx="514" cy="165" r="3.5" fill="#FF9800" opacity="0.4"/>
+
+  <!-- === SEMICOLCHEIA (x=670) === -->
+  <text x="670" y="60" text-anchor="middle" font-size="48" fill="#F44336" font-family="serif">𝅘𝅥𝅯</text>
+  <text x="670" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#F44336">Semicolcheia</text>
+  <text x="670" y="148" text-anchor="middle" font-size="11" fill="#777">¼ tempo</text>
+  <circle cx="668" cy="165" r="2.5" fill="#F44336"/>
+  <circle cx="674" cy="165" r="2.5" fill="#F44336" opacity="0.4"/>
+
+  <!-- Division arrows between figures -->
+  <text x="155" y="95" text-anchor="middle" font-size="18" fill="#999">÷2</text>
+  <line x1="120" y1="88" x2="186" y2="88" stroke="#DDD" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <text x="282" y="95" text-anchor="middle" font-size="18" fill="#999">÷2</text>
+  <line x1="248" y1="88" x2="316" y2="88" stroke="#DDD" stroke-width="1.5"/>
+
+  <text x="435" y="95" text-anchor="middle" font-size="18" fill="#999">÷2</text>
+  <line x1="390" y1="88" x2="468" y2="88" stroke="#DDD" stroke-width="1.5"/>
+
+  <text x="592" y="95" text-anchor="middle" font-size="18" fill="#999">÷2</text>
+  <line x1="550" y1="88" x2="632" y2="88" stroke="#DDD" stroke-width="1.5"/>
+
+  <!-- Bottom equivalence bar -->
+  <rect x="40" y="190" width="720" height="40" fill="#F5F5F5" rx="8"/>
+  <text x="400" y="207" text-anchor="middle" font-size="11" fill="#666">1 Semibreve  =  2 Mínimas  =  4 Semínimas  =  8 Colcheias  =  16 Semicolcheias</text>
+  <text x="400" y="222" text-anchor="middle" font-size="10.5" fill="#999">Cada figura vale a metade da anterior — sistema binário.</text>
+
+  <!-- Footer -->
+  <text x="400" y="262" text-anchor="middle" font-size="11" fill="#888">O denominador da fórmula de compasso indica qual figura recebe 1 tempo.</text>
+</svg>

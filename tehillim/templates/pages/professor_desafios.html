@@ -1,0 +1,279 @@
+{% extends "base_app.html" %}
+
+{% block title %}Engajamento | Tehillim{% endblock %}
+
+{% block head %}
+<style>
+.admin-tab {
+  font-size: 13px; font-weight: 600; padding: 8px 16px;
+  border-radius: 10px; color: #7A6A4D; cursor: pointer;
+  transition: background .15s, color .15s; white-space: nowrap;
+  text-decoration: none; display: inline-block; border: none; background: none;
+}
+.admin-tab:hover { background: rgba(196,148,58,.1); color: #C4943A; }
+.admin-tab.active { background: #C4943A; color: white; }
+
+.sub-tab { font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 8px;
+  border: none; background: none; cursor: pointer; color: #9C8460; transition: all .15s; }
+.sub-tab.active { background: #2A2419; color: white; }
+.sub-tab:not(.active):hover { background: rgba(0,0,0,.06); }
+
+.field-input {
+  width: 100%; padding: 9px 13px; border-radius: 9px;
+  border: 1.5px solid #E5E7EB; background: #FAF7F2;
+  font-size: 13px; color: #374151; outline: none;
+  transition: border-color .15s; box-sizing: border-box;
+}
+.field-input:focus { border-color: #C4943A; }
+</style>
+{% endblock %}
+
+{% block header %}
+<header style="background:#F2EAD8;border-bottom:1px solid #ECE3D0;flex-shrink:0;">
+  <div style="padding:16px 24px 0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <p style="font-size:11px;color:#9C8460;text-transform:uppercase;letter-spacing:.18em;font-weight:600;margin:0;">Professor</p>
+        <h1 style="font-size:20px;font-weight:700;color:#2A2419;margin:3px 0 0;" id="page-title">Engajamento</h1>
+      </div>
+      <button id="header-new-btn" onclick="openCreate()"
+              style="display:flex;align-items:center;gap:6px;background:#C4943A;color:white;font-size:13px;font-weight:600;padding:9px 16px;border-radius:10px;border:none;cursor:pointer;">
+        <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+        <span id="header-new-label">Novo</span>
+      </button>
+    </div>
+    <!-- Admin nav -->
+    <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:0;">
+      <a href="/admin"            class="admin-tab">Alunos</a>
+      <a href="/admin/modulos"    class="admin-tab">Módulos</a>
+      <a href="/admin/jogos"      class="admin-tab">Jogos</a>
+      <span class="admin-tab active">Engajamento</span>
+      <a href="/admin/relatorios" class="admin-tab">Relatórios</a>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div style="display:flex;flex-direction:column;height:100%;">
+
+  <!-- Sub-tabs -->
+  <div style="padding:12px 20px;border-bottom:1px solid #F0E8D4;background:white;display:flex;gap:4px;flex-shrink:0;">
+    <button class="sub-tab active" id="stab-desafios" onclick="switchTab('desafios')">⭐ Desafios semanais</button>
+    <button class="sub-tab"        id="stab-config"   onclick="switchTab('config')">⚙️ Configurações</button>
+  </div>
+
+  <!-- ══ Painel: Desafios ══ -->
+  <div id="panel-desafios" style="flex:1;overflow-y:auto;padding:20px;max-width:700px;display:flex;flex-direction:column;gap:14px;">
+    <div id="ch-loading" style="text-align:center;padding:32px;color:#9C8460;font-size:13px;">Carregando...</div>
+    <div id="ch-list"    style="display:none;flex-direction:column;gap:12px;"></div>
+    <div id="ch-empty"   style="display:none;text-align:center;padding:40px;">
+      <div style="font-size:40px;margin-bottom:10px;">⭐</div>
+      <p style="font-size:15px;font-weight:600;color:#2A2419;margin:0 0 6px;">Nenhum desafio ainda</p>
+      <p style="font-size:13px;color:#9C8460;margin:0 0 16px;">Crie o primeiro desafio da semana</p>
+      <button onclick="openCreate()" style="padding:10px 24px;background:#C4943A;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Criar desafio</button>
+    </div>
+  </div>
+
+  <!-- ══ Painel: Configurações ══ -->
+  <div id="panel-config" style="flex:1;overflow-y:auto;padding:20px;max-width:500px;display:none;flex-direction:column;gap:16px;">
+    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #F0E8D4;">
+      <h2 style="font-size:15px;font-weight:700;color:#2A2419;margin:0 0 4px;">Travamento de módulos</h2>
+      <p style="font-size:12px;color:#9C8460;margin:0 0 16px;">Quantos dias um aluno deve esperar antes de acessar o próximo módulo após concluir o anterior.</p>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <input id="lock-days-input" type="number" min="0" max="30" value="3" class="field-input" style="width:80px;text-align:center;font-size:18px;font-weight:700;"/>
+        <div>
+          <p style="font-size:13px;font-weight:600;color:#2A2419;margin:0;">dias de espera</p>
+          <p style="font-size:11px;color:#9C8460;margin:2px 0 0;">0 = sem travamento</p>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:14px;">
+        <p id="lock-save-msg" style="font-size:12px;margin:0;min-height:16px;flex:1;"></p>
+        <button onclick="saveLockDays()" style="padding:9px 20px;background:#C4943A;color:white;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ Modal criar desafio ══ -->
+<div id="ch-create-modal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-end;justify-content:center;"
+     onclick="if(event.target===this)closeCreate()">
+  <div style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:520px;display:flex;flex-direction:column;overflow:hidden;" onclick="event.stopPropagation()">
+    <div style="padding:16px 20px;border-bottom:1px solid #F0E8D4;display:flex;align-items:center;justify-content:space-between;">
+      <h3 style="font-size:15px;font-weight:700;color:#2A2419;margin:0;">Novo Desafio da Semana</h3>
+      <button onclick="closeCreate()" style="background:none;border:none;cursor:pointer;color:#9C8460;font-size:24px;line-height:1;padding:0;">×</button>
+    </div>
+    <div style="padding:20px;display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;">Título</label>
+        <input id="ch-title" type="text" placeholder="Ex: Identifique os compassos binários" class="field-input"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;">Descrição / Instruções</label>
+        <textarea id="ch-desc" rows="4" placeholder="Descreva o desafio..." class="field-input" style="resize:vertical;font-family:inherit;"></textarea>
+      </div>
+      <p id="ch-create-msg" style="font-size:12px;margin:0;min-height:14px;"></p>
+    </div>
+    <div style="padding:14px 20px;border-top:1px solid #F0E8D4;display:flex;gap:10px;">
+      <button onclick="closeCreate()" style="flex:1;padding:11px;border-radius:10px;border:1.5px solid #E5E7EB;background:none;font-size:13px;font-weight:600;color:#374151;cursor:pointer;">Cancelar</button>
+      <button id="ch-create-btn" onclick="createChallenge()" style="flex:2;padding:11px;border-radius:10px;background:#C4943A;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;">Publicar desafio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal respostas de desafio ══ -->
+<div id="responses-modal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-end;justify-content:center;"
+     onclick="if(event.target===this)closeResponsesModal()">
+  <div style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;" onclick="event.stopPropagation()">
+    <div style="padding:16px 20px;border-bottom:1px solid #F0E8D4;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <h3 style="font-size:15px;font-weight:700;color:#2A2419;margin:0;" id="resp-title">Respostas</h3>
+      <button onclick="closeResponsesModal()" style="background:none;border:none;cursor:pointer;color:#9C8460;font-size:24px;line-height:1;padding:0;">×</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px;" id="resp-body">
+      <p style="text-align:center;color:#9C8460;font-size:13px;">Carregando...</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let _currentTab = 'desafios';
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadSettings();
+  loadChallenges();
+});
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  _currentTab = tab;
+  ['desafios','config'].forEach(t => {
+    document.getElementById(`panel-${t}`).style.display = t === tab ? 'flex' : 'none';
+    document.getElementById(`stab-${t}`).className = 'sub-tab' + (t === tab ? ' active' : '');
+  });
+  document.getElementById('page-title').textContent = tab === 'desafios' ? 'Desafios semanais' : 'Configurações';
+  document.getElementById('header-new-label').textContent = tab === 'desafios' ? 'Novo desafio' : '';
+  document.getElementById('header-new-btn').style.display = tab === 'config' ? 'none' : '';
+}
+
+function openCreate() { openCreateChallenge(); }
+
+// ── Desafios ──────────────────────────────────────────────────────────────────
+async function loadChallenges() {
+  try {
+    const res  = await fetch('/api/teacher/weekly-challenges');
+    const data = await res.json();
+    renderChallenges(data.challenges || []);
+  } catch {
+    document.getElementById('ch-loading').textContent = 'Erro ao carregar.';
+  }
+}
+
+function renderChallenges(list) {
+  document.getElementById('ch-loading').style.display = 'none';
+  if (!list.length) { document.getElementById('ch-empty').style.display = ''; return; }
+  const el = document.getElementById('ch-list');
+  el.style.display = 'flex';
+  el.innerHTML = list.map(ch => {
+    const d = new Date(ch.week_of + 'T00:00:00');
+    const label = `Semana de ${d.toLocaleDateString('pt-BR', { day:'numeric', month:'long' })}`;
+    const isNow = ch.week_of === thisWeekMonday();
+    return `
+    <div style="background:white;border-radius:14px;border:1.5px solid ${isNow ? '#FDD9A8' : '#F0E8D4'};padding:16px 18px;">
+      <div style="margin-bottom:10px;">
+        <span style="font-size:10px;font-weight:700;color:${isNow ? '#E8632A' : '#9C8460'};text-transform:uppercase;letter-spacing:.1em;">${isNow ? '⭐ Semana atual' : label}</span>
+        <h3 style="font-size:14px;font-weight:700;color:#2A2419;margin:4px 0 4px;">${ch.title}</h3>
+        <p style="font-size:12px;color:#7A6A4D;margin:0;line-height:1.5;">${ch.description}</p>
+      </div>
+      <button onclick="loadResponses('${ch.id}','${ch.title.replace(/'/g,"\\'")}')"
+              style="padding:6px 12px;background:#F2EAD8;color:#7A5C2E;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">
+        Ver respostas →
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function thisWeekMonday() {
+  const d = new Date(), day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  return new Date(d.setDate(diff)).toISOString().split('T')[0];
+}
+
+function openCreateChallenge() {
+  document.getElementById('ch-title').value = '';
+  document.getElementById('ch-desc').value  = '';
+  document.getElementById('ch-create-msg').textContent = '';
+  document.getElementById('ch-create-modal').style.display = 'flex';
+}
+function closeCreate() {
+  document.getElementById('ch-create-modal').style.display = 'none';
+}
+
+async function createChallenge() {
+  const title = document.getElementById('ch-title').value.trim();
+  const desc  = document.getElementById('ch-desc').value.trim();
+  const msg   = document.getElementById('ch-create-msg');
+  if (!title || !desc) { msg.style.color='#EF4444'; msg.textContent='Título e descrição obrigatórios.'; return; }
+  const btn = document.getElementById('ch-create-btn');
+  btn.disabled = true; btn.textContent = 'Publicando...';
+  try {
+    const res = await fetch('/api/teacher/weekly-challenges', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ title, description: desc }),
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    closeCreate();
+    document.getElementById('ch-list').style.display = 'none';
+    document.getElementById('ch-loading').style.display = '';
+    document.getElementById('ch-loading').textContent = 'Carregando...';
+    await loadChallenges();
+  } catch(e) { msg.style.color='#EF4444'; msg.textContent = e.message; }
+  finally   { btn.disabled=false; btn.textContent='Publicar desafio'; }
+}
+
+async function loadResponses(id, title) {
+  document.getElementById('resp-title').textContent = title;
+  document.getElementById('resp-body').innerHTML = '<p style="text-align:center;color:#9C8460;font-size:13px;">Carregando...</p>';
+  document.getElementById('responses-modal').style.display = 'flex';
+  try {
+    const data = await (await fetch(`/api/teacher/weekly-challenges/${id}/responses`)).json();
+    const list = data.responses || [];
+    document.getElementById('resp-body').innerHTML = list.length
+      ? list.map(r => `<div style="border-bottom:1px solid #F0E8D4;padding:12px 0;"><p style="font-size:11px;font-weight:700;color:#9C8460;margin:0 0 4px;">${r.student_name}</p><p style="font-size:13px;color:#2A2419;margin:0;line-height:1.5;">${r.response}</p></div>`).join('')
+      : '<p style="text-align:center;color:#9C8460;font-size:13px;padding:20px;">Nenhuma resposta ainda.</p>';
+  } catch { document.getElementById('resp-body').innerHTML = '<p style="text-align:center;color:#EF4444;font-size:13px;">Erro ao carregar.</p>'; }
+}
+function closeResponsesModal() { document.getElementById('responses-modal').style.display = 'none'; }
+
+// ── Configurações ─────────────────────────────────────────────────────────────
+async function loadSettings() {
+  try {
+    const data = await (await fetch('/api/teacher/settings')).json();
+    const days = data.settings?.module_lock_days ?? '3';
+    document.getElementById('lock-days-input').value = days;
+  } catch {}
+}
+
+async function saveLockDays() {
+  const days = parseInt(document.getElementById('lock-days-input').value) || 0;
+  const msg  = document.getElementById('lock-save-msg');
+  try {
+    const res = await fetch('/api/teacher/settings', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ module_lock_days: days }),
+    });
+    if (!res.ok) throw new Error('Erro ao salvar');
+    msg.style.color = '#5A8A6A'; msg.textContent = '✓ Salvo!';
+    setTimeout(() => { msg.textContent = ''; }, 2500);
+  } catch {
+    msg.style.color = '#EF4444'; msg.textContent = 'Erro ao salvar. Tente novamente.';
+  }
+}
+</script>
+{% endblock %}

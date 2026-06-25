@@ -2,49 +2,55 @@
 number: 52
 slug: tercina-de-colcheias
 title: Tercina de colcheias
-description: Lição focada em Tercina de colcheias, separada do antigo módulo “Quiálteras e Divisões Irregulares” para estudar um conceito por vez.
+description: Três notas no espaço de duas — a tercina é a divisão que dá aquela sensação de fluência e leveza que separa músicos comuns dos que têm "feeling".
 topics: Tercina de colcheias
 game_kind: game-challenge
 ---
 
 ## Teoria
 
-Esta lição isola o tema Tercina de colcheias dentro do estudo de Quiálteras e Divisões Irregulares. O foco é compreender um conceito por vez, reconhecer seus sinais e aplicar em situações musicais reais.
+A **tercina de colcheias** é um tipo especial de divisão rítmica chamada **quiáltera**. Em vez de dividir um tempo em duas colcheias (como acontece normalmente em compassos simples), a tercina **divide o mesmo tempo em três notas iguais**. Isso significa colocar três sons no espaço que normalmente caberiam apenas dois — uma "compressão" rítmica que cria fluidez e movimento.
 
-Leia a ideia principal, procure exemplos no repertório que você já conhece e transforme a explicação em prática: cantar, bater palma, escrever, ouvir ou tocar. Um tópico só está aprendido quando aparece na execução.
+Na partitura, a tercina aparece com um número **3** desenhado em cima (ou embaixo) das três notas, geralmente unidas por uma barra ou um colchete. Esse "3" é o aviso ao músico: "atenção, aqui não são colcheias normais — são três notas no espaço de duas". A duração total continua sendo igual a uma semínima (um tempo), mas com três pulsações internas em vez de duas.
 
-Ao estudar de forma separada, o aluno evita misturar conceitos parecidos e cria uma base mais firme para as próximas lições.
+A tercina é a alma do **feel "triplet"** tão característico do gospel, do blues e de muitas baladas. Quando o pianista toca aquele acompanhamento "tum-tu-ru, tum-tu-ru" embaixo da melodia, ele está tocando tercinas. Músicas como "**You Raise Me Up**", muitos louvores lentos de Hillsong e baladas gospel clássicas usam tercinas no piano ou na bateria para criar o tapete rítmico que sustenta a melodia. Esse fluxo de três é o que dá leveza e movimento contínuo.
+
+Para sentir a tercina, treine assim: bata o pé em quatro tempos firmes e fale "**tri-o-le, tri-o-le, tri-o-le, tri-o-le**" — uma sílaba por nota da tercina, três sílabas por tempo. Depois alterne pares de colcheias retas ("um-e, dois-e") com tercinas ("tri-o-le, tri-o-le"). Sentir essa diferença entre **dois e três por tempo** é a chave para dominar grooves modernos.
 
 ## Visual
 
-Cartão visual central com o título “Tercina de colcheias”, um exemplo musical simples e uma comparação lado a lado entre execução incorreta e execução correta.
+Uma imagem comparando duas divisões dentro de um tempo de semínima: à esquerda, "Colcheias normais" com duas notas iguais e a contagem "1-e"; à direita, "Tercina de colcheias" com três notas iguais conectadas por uma barra com um "3" em cima, e a contagem "tri-o-le". Setas mostram que ambas duram o mesmo tempo (uma semínima), mas com quantidades diferentes de notas internas.
 
 ## Exercícios
 
 ### MC
-Qual é o foco principal desta lição?
-- Decorar repertório sem entender o conceito
-- Estudar Tercina de colcheias de forma isolada e aplicável ✓
-- Pular diretamente para assuntos avançados
-- Substituir a escuta pela teoria
+Quantas notas iguais formam uma tercina de colcheias?
+- Duas notas no tempo de uma
+- Três notas no tempo de duas ✓
+- Quatro notas no tempo de três
+- Cinco notas no tempo de quatro
 
 ### VF
-Um tópico musical bem estudado deve ser reconhecido na escuta, na leitura e na prática.
+A tercina é indicada na partitura com o número 3 escrito acima ou abaixo do grupo de notas.
 > Verdadeiro
 
 ### Fill
-Nesta lição, o tema central é ___.
-- andamento aleatório
-- Tercina de colcheias ✓
-- troca de instrumento
+A tercina de colcheias divide um tempo em ___ notas iguais.
+- duas
+- três ✓
+- quatro
 
-### Match
-Associe cada etapa de estudo à ação correta:
-- Conceito → Entender a ideia principal
-- Escuta → Reconhecer o tema em músicas reais
-- Prática → Aplicar com voz, corpo ou instrumento
-- Revisão → Corrigir e repetir com consciência
+### MC
+Em qual estilo musical a tercina é especialmente frequente?
+- Marcha quadrada militar
+- Gospel, blues e baladas com feel triplet ✓
+- Música eletrônica de pista
+- Cantochão monódico
+
+### VF
+A tercina e duas colcheias normais ocupam o mesmo tempo, mas com quantidades diferentes de notas internas.
+> Verdadeiro
 
 ## Jogo
 
-MISSÃO TERCINA DE COLCHEIAS: escolha uma música simples do repertório de louvor ou de estudo. Ouça uma vez procurando apenas Tercina de colcheias. Depois execute um trecho curto aplicando esse tema de propósito. Grave ou anote o resultado e responda: onde o conceito apareceu com clareza e onde ainda precisa de ajuste?
+MISSÃO TRI-O-LE: ponha o metrônomo em 60 bpm e bata cada clique como uma semínima. Em cima de cada batida, fale "tri-o-le" pronunciando três sílabas exatamente do mesmo tamanho dentro de cada clique. Treine por dois minutos. Depois alterne um compasso de colcheias normais ("1-e-2-e-3-e-4-e") com um compasso de tercinas ("tri-o-le" quatro vezes). Grave e ouça: as tercinas estão soando uniformes ou desiguais?

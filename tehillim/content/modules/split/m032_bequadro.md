@@ -2,7 +2,7 @@
 number: 32
 slug: bequadro
 title: Bequadro
-description: Lição focada em Bequadro, separada do antigo módulo "Acidentes Musicais" para estudar um conceito por vez.
+description: O bequadro é o "cancelar" da partitura — devolve a nota ao seu estado original quando sustenido ou bemol estavam no caminho. Sem ele, você tocaria errado o compasso inteiro.
 topics: Bequadro
 game_kind: game-quiz
 ---

@@ -4,7 +4,7 @@ slug: orquestra-sinfonica
 title: Orquestra Sinfônica
 description: 100 músicos, um maestro, e todos precisam soar como um único instrumento. Entenda como isso é possível.
 topics: Orquestra Sinfônica
-game_kind: game-match
+game_kind: game-arrange
 ---
 
 ## Teoria
@@ -26,33 +26,36 @@ Diagrama de palco da orquestra visto de cima (planta baixa): o maestro no centro
 ## Exercícios
 
 ### MC
-Qual naipe forma a espinha dorsal da orquestra sinfônica e tem o maior número de músicos?
+Você vai assistir a uma orquestra e olha pro palco. Qual naipe ocupa mais espaço e tem o maior número de músicos?
 - Metais
 - Percussão
 - Cordas ✓
 - Madeiras
 
 ### VF
-O maestro usa a mão direita para indicar o pulso e a mão esquerda para comunicar nuances expressivas.
+Você observa o maestro: a mão direita marca o pulso com a batuta e a esquerda faz gestos expressivos para a dinâmica.
 > Verdadeiro
 
 ### Fill
-O primeiro violinista da orquestra, que fica à esquerda do maestro e lidera o naipe de cordas, é chamado de ___.
+O primeiro violinista, que senta à esquerda do maestro e lidera o naipe de cordas, é chamado de ___.
 - oboísta principal
 - spalla ✓
-- concertista
+- regente assistente
 
 ### MC
-Qual é a posição típica da percussão no palco de uma orquestra?
-- Na frente, ao lado do maestro
-- Ao lado das madeiras, no centro
-- Ao fundo do palco, atrás de todos os outros naipes ✓
-- No fosso, abaixo do nível do palco
+Você está montando o palco para uma orquestra. Onde coloca a percussão?
+- Na frente, junto ao maestro
+- No meio do palco, entre as madeiras
+- Ao fundo do palco, atrás de todos os naipes ✓
+- Fora do palco principal
 
-### VF
-Igrejas evangelicas no Brasil podem ter orquestras de louvor com formação inspirada na orquestra sinfônica.
-> Verdadeiro
+### Match
+Associe cada naipe à sua posição típica no palco da orquestra:
+- Cordas → Na frente, mais perto do maestro
+- Madeiras → No centro, atrás das cordas
+- Metais → Atrás das madeiras
+- Percussão → Ao fundo do palco, atrás de todos
 
 ## Jogo
 
-MAPA DA ORQUESTRA — Em grupos, cada aluno recebe o nome de um instrumento (violino, oboé, trompete, tímpano, harpa, fagote, trombone, viola, etc.). Sem consultar anotações, cada um deve ir para o lugar do palco onde esse instrumento ficaria em uma orquestra: à frente perto do maestro (cordas graves ou agudas?), no meio, atrás. Montem a orquestra humana no espaço da sala. O professor (maestro) verifica a disposição e corrige. Depois, cada aluno diz o naipe do seu instrumento e qual família de instrumentos ele representa.
+MAPA DA ORQUESTRA — Em grupos de 10 a 20 alunos (15 minutos). Cada aluno recebe um cartão com um instrumento (violino, viola, oboé, fagote, trompete, trombone, tímpano, harpa, contrabaixo, etc.). SEM consultar anotações, cada um corre para o lugar do palco-sala onde esse instrumento ficaria de verdade. O "maestro" (professor ou um aluno) confere a disposição. Pontuação: posição correta = 2 pontos; naipe correto mas posição errada = 1 ponto. Fase 2: o maestro reorganiza o palco e os alunos têm 60 segundos para se acomodar. Vence quem somar mais pontos em 3 rodadas.
