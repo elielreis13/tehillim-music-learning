@@ -5,3 +5,4 @@ requests>=2.32
 PyJWT>=2.8
 elevenlabs>=1.0
 sentry-sdk[flask]>=2.0
+google-cloud-texttospeech>=2.0
