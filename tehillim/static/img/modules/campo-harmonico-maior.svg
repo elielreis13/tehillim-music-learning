@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="800" height="280" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="280" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">CAMPO HARMÔNICO MAIOR — TOM DE DÓ</text>
+
+  <!-- 7 chords of C major: I ii iii IV V vi vii° -->
+  <!-- Positions evenly spaced -->
+
+  <!-- I: C major -->
+  <rect x="30" y="45" width="90" height="160" rx="8" fill="#1565C0"/>
+  <text x="75" y="70" text-anchor="middle" font-size="22" font-weight="700" fill="white">I</text>
+  <text x="75" y="92" text-anchor="middle" font-size="13" fill="#BBD5FF">Dó M</text>
+  <!-- notes stacked -->
+  <text x="75" y="120" text-anchor="middle" font-size="13" fill="white">Sol</text>
+  <text x="75" y="136" text-anchor="middle" font-size="13" fill="white">Mi</text>
+  <text x="75" y="152" text-anchor="middle" font-size="13" fill="white">Dó</text>
+  <text x="75" y="175" text-anchor="middle" font-size="11" fill="#90CAF9">TÔNICA</text>
+  <text x="75" y="191" text-anchor="middle" font-size="10" fill="#90CAF9">repouso</text>
+
+  <!-- ii: D minor -->
+  <rect x="130" y="45" width="90" height="160" rx="8" fill="#455A64"/>
+  <text x="175" y="70" text-anchor="middle" font-size="22" font-weight="700" fill="white">ii</text>
+  <text x="175" y="92" text-anchor="middle" font-size="13" fill="#CFD8DC">Ré m</text>
+  <text x="175" y="120" text-anchor="middle" font-size="13" fill="white">Lá</text>
+  <text x="175" y="136" text-anchor="middle" font-size="13" fill="white">Fá</text>
+  <text x="175" y="152" text-anchor="middle" font-size="13" fill="white">Ré</text>
+  <text x="175" y="175" text-anchor="middle" font-size="11" fill="#90CAF9">SUBDOMINANTE</text>
+
+  <!-- iii: E minor -->
+  <rect x="230" y="45" width="90" height="160" rx="8" fill="#455A64"/>
+  <text x="275" y="70" text-anchor="middle" font-size="22" font-weight="700" fill="white">iii</text>
+  <text x="275" y="92" text-anchor="middle" font-size="13" fill="#CFD8DC">Mi m</text>
+  <text x="275" y="120" text-anchor="middle" font-size="13" fill="white">Si</text>
+  <text x="275" y="136" text-anchor="middle" font-size="13" fill="white">Sol</text>
+  <text x="275" y="152" text-anchor="middle" font-size="13" fill="white">Mi</text>
+  <text x="275" y="175" text-anchor="middle" font-size="11" fill="#90CAF9">TÔNICA</text>
+
+  <!-- IV: F major -->
+  <rect x="330" y="45" width="90" height="160" rx="8" fill="#2E7D32"/>
+  <text x="375" y="70" text-anchor="middle" font-size="22" font-weight="700" fill="white">IV</text>
+  <text x="375" y="92" text-anchor="middle" font-size="13" fill="#C8E6C9">Fá M</text>
+  <text x="375" y="120" text-anchor="middle" font-size="13" fill="white">Dó</text>
+  <text x="375" y="136" text-anchor="middle" font-size="13" fill="white">Lá</text>
+  <text x="375" y="152" text-anchor="middle" font-size="13" fill="white">Fá</text>
+  <text x="375" y="175" text-anchor="middle" font-size="11" fill="#A5D6A7">SUBDOMINANTE</text>
+  <text x="375" y="191" text-anchor="middle" font-size="10" fill="#A5D6A7">movimento</text>
+
+  <!-- V: G major (dominant) -->
+  <rect x="430" y="45" width="90" height="160" rx="8" fill="#B71C1C"/>
+  <text x="475" y="70" text-anchor="middle" font-size="22" font-weight="700" fill="white">V</text>
+  <text x="475" y="92" text-anchor="middle" font-size="13" fill="#FFCDD2">Sol M</text>
+  <text x="475" y="120" text-anchor="middle" font-size="13" fill="white">Ré</text>
+  <text x="475" y="136" text-anchor="middle" font-size="13" fill="white">Si</text>
+  <text x="475" y="152" text-anchor="middle" font-size="13" fill="white">Sol</text>
+  <text x="475" y="175" text-anchor="middle" font-size="11" fill="#FFAB91">DOMINANTE</text>
+  <text x="475" y="191" text-anchor="middle" font-size="10" fill="#FFAB91">tensão → I</text>
+
+  <!-- vi: A minor -->
+  <rect x="530" y="45" width="90" height="160" rx="8" fill="#4A148C"/>
+  <text x="575" y="70" text-anchor="middle" font-size="22" font-weight="700" fill="white">vi</text>
+  <text x="575" y="92" text-anchor="middle" font-size="13" fill="#E1BEE7">Lá m</text>
+  <text x="575" y="120" text-anchor="middle" font-size="13" fill="white">Mi</text>
+  <text x="575" y="136" text-anchor="middle" font-size="13" fill="white">Dó</text>
+  <text x="575" y="152" text-anchor="middle" font-size="13" fill="white">Lá</text>
+  <text x="575" y="175" text-anchor="middle" font-size="11" fill="#CE93D8">TÔNICA</text>
+  <text x="575" y="191" text-anchor="middle" font-size="10" fill="#CE93D8">relativo menor</text>
+
+  <!-- vii°: B diminished -->
+  <rect x="630" y="45" width="100" height="160" rx="8" fill="#4E342E"/>
+  <text x="680" y="70" text-anchor="middle" font-size="22" font-weight="700" fill="white">vii°</text>
+  <text x="680" y="92" text-anchor="middle" font-size="13" fill="#D7CCC8">Si dim</text>
+  <text x="680" y="120" text-anchor="middle" font-size="13" fill="white">Fá</text>
+  <text x="680" y="136" text-anchor="middle" font-size="13" fill="white">Ré</text>
+  <text x="680" y="152" text-anchor="middle" font-size="13" fill="white">Si</text>
+  <text x="680" y="175" text-anchor="middle" font-size="11" fill="#FFCCBC">DOMINANTE</text>
+
+  <!-- Bottom note -->
+  <text x="400" y="230" text-anchor="middle" font-size="11.5" fill="#555">I e vi = Tônica (repouso)   ·   IV e ii = Subdominante (movimento)   ·   V e vii° = Dominante (tensão)</text>
+  <text x="400" y="248" text-anchor="middle" font-size="11" fill="#888">Progressão mais usada no louvor: I – V – vi – IV (Dó – Sol – Lám – Fá)</text>
+  <text x="400" y="265" text-anchor="middle" font-size="10" fill="#AAA">Maiúsculas = acorde maior  ·  minúsculas = acorde menor  ·  ° = diminuto</text>
+</svg>

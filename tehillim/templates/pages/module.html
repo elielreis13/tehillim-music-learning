@@ -4,6 +4,13 @@
 
 {% block head %}
 <style>
+  /* CSS variables required by games.css */
+  :root {
+    --ink: #24313f; --mint: #dff7ea; --sky: #dcefff; --sun: #ffd66b;
+    --coral: #ff8a7a; --plum: #6d5dfc; --green: #2e9f65;
+    --shadow: 0 18px 48px rgba(31,43,56,.14); --radius: 8px;
+  }
+
   /* ── Layout ─────────────────────────────────────── */
   .study-layout {
     display: flex;
@@ -101,6 +108,7 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+    position: relative;
   }
 
   .eyebrow {
@@ -330,6 +338,25 @@
     color: #374151;
     padding: 6px 0;
     cursor: pointer;
+  }
+
+  /* ── Marca-texto ─────────────────────────────────── */
+  .stage-body mark {
+    background: #F2EAD8;
+    color: #7A5C2E;
+    border-bottom: 2px solid #C4943A;
+    border-radius: 3px;
+    padding: 0 2px;
+    font-style: normal;
+  }
+
+  /* ── Imagens de módulo ───────────────────────────── */
+  .module-img {
+    width: 100%;
+    max-width: 560px;
+    border-radius: 12px;
+    margin: 14px 0;
+    display: block;
   }
 
   /* ── Visual fallbacks ────────────────────────────── */
@@ -580,7 +607,7 @@
 <header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
   <div class="flex items-center justify-between relative z-10">
     <div class="flex flex-wrap items-center gap-3">
-      <a href="/index.html"
+      <a href="/trilhas"
          class="w-8 h-8 rounded-lg bg-white/60 hover:bg-white flex items-center justify-center transition-colors flex-shrink-0">
         <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
@@ -631,5 +658,7 @@
 <script src="/static/js/vexflow-utils.js"></script>
 <script src="/static/js/audio.js"></script>
 <script src="/static/js/recorder.js"></script>
+<link rel="stylesheet" href="/static/css/games.css">
+<script src="/static/js/games.js" data-module-player="true"></script>
 <script src="/static/js/app.js"></script>
 {% endblock %}

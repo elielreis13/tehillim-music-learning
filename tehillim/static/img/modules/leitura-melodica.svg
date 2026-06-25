@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="240" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">LEITURA MELÓDICA — 3 PASSOS</text>
+
+  <!-- Staff lines -->
+  <g stroke="#CCC" stroke-width="1">
+    <line x1="60" y1="65"  x2="540" y2="65"/>
+    <line x1="60" y1="80"  x2="540" y2="80"/>
+    <line x1="60" y1="95"  x2="540" y2="95"/>
+    <line x1="60" y1="110" x2="540" y2="110"/>
+    <line x1="60" y1="125" x2="540" y2="125"/>
+  </g>
+
+  <!-- Treble clef (simplified) -->
+  <text x="60" y="115" font-size="72" fill="#555" font-family="serif">𝄞</text>
+
+  <!-- Time sig 4/4 -->
+  <text x="103" y="92" font-size="22" font-weight="700" fill="#555">4</text>
+  <text x="103" y="115" font-size="22" font-weight="700" fill="#555">4</text>
+
+  <!-- Notes: ascending Do Re Mi Fa Sol (step-wise) -->
+  <!-- y positions: Do=125, Re=118, Mi=110, Fa=102, Sol=95, La=88, Si=80 -->
+  <g fill="#1565C0">
+    <ellipse cx="160" cy="125" rx="10" ry="7"/>
+    <ellipse cx="220" cy="118" rx="10" ry="7"/>
+    <ellipse cx="280" cy="110" rx="10" ry="7"/>
+    <ellipse cx="340" cy="102" rx="10" ry="7"/>
+    <ellipse cx="400" cy="95"  rx="10" ry="7"/>
+    <ellipse cx="460" cy="88"  rx="10" ry="7"/>
+  </g>
+  <!-- Stems -->
+  <g stroke="#1565C0" stroke-width="1.8">
+    <line x1="170" y1="125" x2="170" y2="90"/>
+    <line x1="230" y1="118" x2="230" y2="83"/>
+    <line x1="290" y1="110" x2="290" y2="75"/>
+    <line x1="350" y1="102" x2="350" y2="67"/>
+    <line x1="410" y1="95"  x2="410" y2="60"/>
+    <line x1="470" y1="88"  x2="470" y2="53"/>
+  </g>
+  <!-- Arrows showing ascent -->
+  <g fill="#F44336" stroke="#F44336" stroke-width="1">
+    <polygon points="197,106 203,106 200,100"/>
+    <polygon points="257,99 263,99 260,93"/>
+    <polygon points="317,91 323,91 320,85"/>
+    <polygon points="377,83 383,83 380,77"/>
+    <polygon points="437,76 443,76 440,70"/>
+  </g>
+  <!-- Note names below -->
+  <g font-size="11" fill="#888" text-anchor="middle">
+    <text x="160" y="145">Dó</text>
+    <text x="220" y="145">Ré</text>
+    <text x="280" y="145">Mi</text>
+    <text x="340" y="145">Fá</text>
+    <text x="400" y="145">Sol</text>
+    <text x="460" y="145">Lá</text>
+  </g>
+
+  <!-- 3-step boxes on the right -->
+  <rect x="565" y="48" width="210" height="44" rx="8" fill="#E3F2FD"/>
+  <text x="575" y="66" font-size="11" font-weight="700" fill="#1565C0">① Tonalidade</text>
+  <text x="575" y="82" font-size="10" fill="#555">Veja a armadura de clave</text>
+
+  <rect x="565" y="100" width="210" height="44" rx="8" fill="#E8F5E9"/>
+  <text x="575" y="118" font-size="11" font-weight="700" fill="#2E7D32">② Ritmo</text>
+  <text x="575" y="134" font-size="10" fill="#555">Leia as figuras e pausas</text>
+
+  <rect x="565" y="152" width="210" height="44" rx="8" fill="#FFF3E0"/>
+  <text x="575" y="170" font-size="11" font-weight="700" fill="#E65100">③ Alturas</text>
+  <text x="575" y="186" font-size="10" fill="#555">Adicione as notas corretas</text>
+
+  <!-- Footer -->
+  <text x="400" y="222" text-anchor="middle" font-size="11" fill="#888">Melodia ascendente por grau conjunto — a forma mais natural de começar a ler</text>
+</svg>

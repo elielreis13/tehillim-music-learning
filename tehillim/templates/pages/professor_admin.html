@@ -2,109 +2,166 @@
 
 {% block title %}Administração | Tehillim{% endblock %}
 
+{% block head %}
+<style>
+.admin-tab {
+  font-size: 13px; font-weight: 600; padding: 8px 16px;
+  border-radius: 10px; color: #7A6A4D; cursor: pointer;
+  transition: background .15s, color .15s; white-space: nowrap;
+  text-decoration: none; display: inline-block; border: none; background: none;
+}
+.admin-tab:hover { background: rgba(196,148,58,.1); color: #C4943A; }
+.admin-tab.active { background: #C4943A; color: white; }
+
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+.s-card {
+  background: white; border: 1.5px solid #F0E8D4; border-radius: 14px;
+  padding: 16px; display: flex; flex-direction: column; gap: 10px;
+  transition: border-color .18s, box-shadow .18s;
+}
+.s-card:hover { border-color: #C4943A; box-shadow: 0 4px 16px rgba(196,148,58,.1); }
+.s-card.is-teacher { border-color: #DDD6FE; }
+
+.s-action {
+  font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 7px;
+  border: none; cursor: pointer; transition: opacity .15s;
+}
+.s-action:hover { opacity: .8; }
+
+@media (max-width: 640px) {
+  .student-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-strip { flex-wrap: wrap; }
+}
+</style>
+{% endblock %}
+
 {% block header %}
-<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
-  <div class="flex items-center justify-between relative z-10">
-    <div>
-      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Professor</p>
-      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Administração</h1>
-      <p class="text-[13px] text-gray-500 mt-0.5">Gerencie alunos e permissões de acesso</p>
-    </div>
-    <div class="flex items-center gap-3">
-      <a href="/professor/alunos"
-         class="hidden sm:flex items-center gap-2 bg-white text-gray-700 text-[13px] font-semibold px-4 py-2.5 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-        Ver Evolução
-      </a>
+<header style="background:#F2EAD8;border-bottom:1px solid #ECE3D0;flex-shrink:0;">
+  <div style="padding:16px 24px 0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <p style="font-size:11px;color:#9C8460;text-transform:uppercase;letter-spacing:.18em;font-weight:600;margin:0;">Professor</p>
+        <h1 style="font-size:20px;font-weight:700;color:#2A2419;margin:3px 0 0;">Administração</h1>
+      </div>
       <button id="open-create-btn"
-              class="flex items-center gap-1.5 bg-[#C4943A] hover:bg-[#B3852F] text-white text-[13px] font-semibold px-4 py-2.5 rounded-xl transition-colors shadow-sm">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              style="display:flex;align-items:center;gap:6px;background:#C4943A;color:white;font-size:13px;font-weight:600;padding:9px 16px;border-radius:10px;border:none;cursor:pointer;">
+        <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
         </svg>
         Novo Aluno
       </button>
     </div>
+
+    <!-- Nav tabs -->
+    <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:0;">
+      <span class="admin-tab active">Alunos</span>
+      <a href="/admin/modulos"    class="admin-tab">Módulos</a>
+      <a href="/admin/jogos"      class="admin-tab">Jogos</a>
+      <a href="/admin/exercicios" class="admin-tab">Exercícios</a>
+      <a href="/admin/desafios"   class="admin-tab">Desafios</a>
+      <a href="/admin/relatorios" class="admin-tab">Relatórios</a>
+    </div>
   </div>
-  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
 </header>
 {% endblock %}
 
 {% block content %}
-<div class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-5">
+<div class="flex-1 overflow-y-auto flex flex-col" style="min-height:0;">
 
-  <!-- Stats rápidas -->
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Total de Alunos</p>
-      <p class="text-[28px] font-bold text-gray-800 mt-1" id="stat-total">—</p>
+  <!-- Stats strip -->
+  <div class="stat-strip" style="display:flex;border-bottom:1px solid #F0E8D4;background:white;flex-shrink:0;">
+    <div style="flex:1;padding:12px 16px;border-right:1px solid #F0E8D4;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#2A2419;margin:0;" id="stat-total">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;">Alunos</p>
     </div>
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Módulos Completos</p>
-      <p class="text-[28px] font-bold text-[#C4943A] mt-1" id="stat-completed">—</p>
+    <div style="flex:1;padding:12px 16px;border-right:1px solid #F0E8D4;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#C4943A;margin:0;" id="stat-completed">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;">Módulos completos</p>
     </div>
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Dias de Estudo</p>
-      <p class="text-[28px] font-bold text-[#4E7A60] mt-1" id="stat-days">—</p>
+    <div style="flex:1;padding:12px 16px;border-right:1px solid #F0E8D4;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#4E7A60;margin:0;" id="stat-days">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;">Dias de estudo</p>
     </div>
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <p class="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Ativos (7 dias)</p>
-      <p class="text-[28px] font-bold text-gray-800 mt-1" id="stat-active">—</p>
+    <div style="flex:1;padding:12px 16px;text-align:center;">
+      <p style="font-size:20px;font-weight:700;color:#2A2419;margin:0;" id="stat-active">—</p>
+      <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;">Ativos (7 dias)</p>
     </div>
   </div>
 
-  <!-- Formulário criar aluno (inline, oculto por padrão) -->
-  <div id="create-form-card" style="display:none"
-       class="bg-white rounded-2xl shadow-sm overflow-hidden flex-col">
-    <div class="px-6 py-4 bg-[#FAF7F2] border-b border-gray-100 flex items-center justify-between">
-      <h2 class="font-bold text-[15px] text-gray-800">Criar Novo Aluno</h2>
-      <button id="cancel-create-btn" class="text-gray-400 hover:text-gray-600 transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
+  <!-- Search + sort bar -->
+  <div style="display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid #F0E8D4;background:#FDFAF6;flex-shrink:0;flex-wrap:wrap;">
+    <div style="flex:1;min-width:180px;display:flex;align-items:center;gap:8px;background:white;border:1.5px solid #E5E7EB;border-radius:10px;padding:7px 12px;">
+      <svg style="width:14px;height:14px;color:#9CA3AF;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+      </svg>
+      <input id="student-search" type="text" placeholder="Buscar aluno por nome ou email..."
+             style="flex:1;font-size:13px;outline:none;border:none;background:none;color:#374151;"
+             oninput="window._adminFilterStudents(this.value)">
     </div>
-    <form id="create-form" novalidate class="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+    <select id="student-sort" onchange="window._adminSortStudents(this.value)"
+            style="font-size:12px;padding:7px 10px;border:1.5px solid #E5E7EB;border-radius:10px;color:#374151;background:white;cursor:pointer;">
+      <option value="name">Nome A→Z</option>
+      <option value="activity">Mais recentes</option>
+      <option value="progress">Maior progresso</option>
+    </select>
+    <p id="admin-loading" style="font-size:12px;color:#9C8460;flex-shrink:0;">Carregando...</p>
+  </div>
+
+  <!-- Create form (hidden) -->
+  <div id="create-form-card" style="display:none;flex-shrink:0;background:white;border-bottom:1px solid #F0E8D4;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 0;">
+      <p style="font-size:13px;font-weight:700;color:#2A2419;margin:0;">Novo Aluno</p>
+      <button id="cancel-create-btn" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:18px;">×</button>
+    </div>
+    <form id="create-form" novalidate style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;padding:12px 20px 16px;align-items:end;">
       <div>
-        <label class="text-[12px] font-semibold text-gray-600 block mb-1.5">Nome do aluno</label>
+        <label style="font-size:11px;font-weight:600;color:#7A6A4D;display:block;margin-bottom:4px;">Nome</label>
         <input id="new-name" type="text" placeholder="Ex: João Silva" autocomplete="off"
-               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+               style="width:100%;padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;outline:none;box-sizing:border-box;">
       </div>
       <div>
-        <label class="text-[12px] font-semibold text-gray-600 block mb-1.5">E-mail</label>
-        <input id="new-email" type="email" placeholder="aluno@email.com" autocomplete="off" required
-               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+        <label style="font-size:11px;font-weight:600;color:#7A6A4D;display:block;margin-bottom:4px;">E-mail</label>
+        <input id="new-email" type="email" placeholder="aluno@email.com" required autocomplete="off"
+               style="width:100%;padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;outline:none;box-sizing:border-box;">
       </div>
       <div>
-        <label class="text-[12px] font-semibold text-gray-600 block mb-1.5">Senha inicial</label>
-        <div class="relative">
-          <input id="new-password" type="password" placeholder="mínimo 6 caracteres"
-                 autocomplete="new-password" required minlength="6"
-                 class="w-full px-4 py-2.5 pr-10 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
-          <button type="button" class="toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]" data-target="new-password">👁</button>
+        <label style="font-size:11px;font-weight:600;color:#7A6A4D;display:block;margin-bottom:4px;">Senha inicial</label>
+        <div style="position:relative;">
+          <input id="new-password" type="password" placeholder="mín. 6 caracteres" required minlength="6" autocomplete="new-password"
+                 style="width:100%;padding:8px 36px 8px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;outline:none;box-sizing:border-box;">
+          <button type="button" class="toggle-pw" data-target="new-password"
+                  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:14px;color:#9CA3AF;">👁</button>
         </div>
       </div>
-      <div class="md:col-span-3 flex items-center gap-4 pt-1">
+      <div style="display:flex;flex-direction:column;gap:4px;">
         <button type="submit" id="create-btn"
-                class="px-6 py-2.5 rounded-xl bg-[#C4943A] text-white text-[13px] font-semibold hover:bg-[#B3852F] transition-colors">
+                style="background:#C4943A;color:white;font-size:13px;font-weight:600;padding:9px 18px;border-radius:9px;border:none;cursor:pointer;white-space:nowrap;">
           Criar Aluno
         </button>
-        <p id="create-feedback" class="text-[13px] min-h-[18px]"></p>
+        <p id="create-feedback" style="font-size:11px;min-height:16px;margin:0;"></p>
       </div>
     </form>
   </div>
 
-  <!-- Lista de alunos -->
-  <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-    <div class="px-6 py-4 bg-[#FAF7F2] border-b border-gray-100 flex items-center justify-between">
-      <h2 class="font-bold text-[15px] text-gray-800">Alunos</h2>
-      <p id="admin-loading" class="text-[12px] text-gray-400">Carregando...</p>
-    </div>
-    <p id="admin-error" class="px-6 py-4 text-[13px] text-red-500" style="display:none"></p>
-    <div id="admin-student-list"></div>
+  <!-- Teacher filter strip (visível apenas para owner) -->
+  <div id="teacher-strip" style="display:none;flex-shrink:0;padding:10px 20px;border-bottom:1px solid #F0E8D4;background:#FDFAF6;overflow-x:auto;">
+    <div id="teacher-chips" style="display:flex;gap:6px;width:max-content;"></div>
+  </div>
+
+  <!-- Student grid -->
+  <div style="flex:1;overflow-y:auto;padding:16px 20px;">
+    <p id="admin-error" style="display:none;color:#ef4444;font-size:13px;margin-bottom:12px;"></p>
+    <div class="student-grid" id="admin-student-list"></div>
+    <p id="admin-no-results" style="display:none;text-align:center;color:#9C8460;font-size:13px;padding:40px 0;">Nenhum aluno encontrado.</p>
   </div>
 
 </div>
 
-<!-- Modal: controle de acesso -->
+<!-- Modal: Controle de Acesso -->
 <div id="access-backdrop" style="display:none"
      class="fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl max-h-[85vh] flex flex-col">
@@ -125,7 +182,7 @@
   </div>
 </div>
 
-<!-- Modal: redefinir senha -->
+<!-- Modal: Redefinir Senha -->
 <div id="reset-backdrop" style="display:none"
      class="fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl w-full max-w-sm shadow-2xl">
@@ -146,21 +203,16 @@
         <div class="relative">
           <input id="reset-password" type="password" placeholder="mínimo 6 caracteres"
                  autocomplete="new-password" required minlength="6"
-                 class="w-full px-4 py-2.5 pr-10 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A] focus:ring-2 focus:ring-[#C4943A]/20 transition-all">
+                 class="w-full px-4 py-2.5 pr-10 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-[#C4943A]">
           <button type="button" class="toggle-pw absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[16px]" data-target="reset-password">👁</button>
         </div>
       </div>
       <p id="reset-feedback" class="text-[12px] text-center min-h-[18px]"></p>
       <div class="flex gap-3">
-        <button type="button" id="cancel-reset-btn-2"
-                onclick="document.getElementById('reset-backdrop').style.display='none'"
-                class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
-          Cancelar
-        </button>
+        <button type="button" onclick="document.getElementById('reset-backdrop').style.display='none'"
+                class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] font-semibold text-gray-600">Cancelar</button>
         <button type="submit" id="reset-btn"
-                class="flex-1 px-4 py-2.5 rounded-xl bg-[#C4943A] text-white text-[13px] font-semibold hover:bg-[#B3852F] transition-colors">
-          Salvar Senha
-        </button>
+                class="flex-1 px-4 py-2.5 rounded-xl bg-[#C4943A] text-white text-[13px] font-semibold">Salvar Senha</button>
       </div>
     </form>
   </div>

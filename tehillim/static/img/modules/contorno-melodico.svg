@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="240" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">CONTORNO MELÓDICO — A FORMA DA MELODIA</text>
+
+  <!-- Staff lines -->
+  <g stroke="#CCC" stroke-width="1">
+    <line x1="60" y1="80"  x2="740" y2="80"/>
+    <line x1="60" y1="96"  x2="740" y2="96"/>
+    <line x1="60" y1="112" x2="740" y2="112"/>
+    <line x1="60" y1="128" x2="740" y2="128"/>
+    <line x1="60" y1="144" x2="740" y2="144"/>
+  </g>
+
+  <!-- Notes of a typical hymn melodic contour: "ascending, plateau, descending arch" -->
+  <!-- Note positions (x, y) -->
+  <!-- y: line1=144, space1=136, line2=128, space2=120, line3=112, space3=104, line4=96, space4=88, line5=80 -->
+  <!-- Melody: C E G A G F E D C (arch shape) -->
+
+  <!-- Note data: x=100,140,180,230,280,340,400,450,500,560,620,680,730 -->
+  <!-- Heights: 144,136,128,112,128,120,112,128,136,144,128,112,144 (Dó-Mi-Sol-Sol-Mi-Dó arch then descend) -->
+
+  <!-- Notes as filled ellipses -->
+  <g fill="#2196F3">
+    <ellipse cx="110" cy="144" rx="10" ry="7"/>
+    <ellipse cx="175" cy="128" rx="10" ry="7"/>
+    <ellipse cx="240" cy="112" rx="10" ry="7"/>
+    <ellipse cx="305" cy="96"  rx="10" ry="7"/>
+    <ellipse cx="375" cy="80"  rx="10" ry="7"/>
+    <ellipse cx="430" cy="80"  rx="10" ry="7"/>
+    <ellipse cx="490" cy="96"  rx="10" ry="7"/>
+    <ellipse cx="555" cy="112" rx="10" ry="7"/>
+    <ellipse cx="620" cy="128" rx="10" ry="7"/>
+    <ellipse cx="685" cy="144" rx="10" ry="7"/>
+  </g>
+
+  <!-- Stems -->
+  <g stroke="#2196F3" stroke-width="1.8">
+    <line x1="120" y1="144" x2="120" y2="108"/>
+    <line x1="185" y1="128" x2="185" y2="92"/>
+    <line x1="250" y1="112" x2="250" y2="76"/>
+    <line x1="315" y1="96"  x2="315" y2="60"/>
+    <line x1="385" y1="80"  x2="385" y2="44"/>
+    <line x1="440" y1="80"  x2="440" y2="44"/>
+    <line x1="500" y1="96"  x2="500" y2="60"/>
+    <line x1="565" y1="112" x2="565" y2="76"/>
+    <line x1="630" y1="128" x2="630" y2="92"/>
+    <line x1="695" y1="144" x2="695" y2="108"/>
+  </g>
+
+  <!-- Contour line connecting note heads -->
+  <polyline points="110,144 175,128 240,112 305,96 375,80 430,80 490,96 555,112 620,128 685,144" fill="none" stroke="#F44336" stroke-width="2.5" stroke-dasharray="6,3"/>
+
+  <!-- Arrow indicating shape -->
+  <text x="380" y="170" text-anchor="middle" font-size="11" fill="#F44336" font-weight="600">↑ Contorno em arco — sobe, platô, desce ↑</text>
+
+  <!-- Note names under -->
+  <g font-size="10" fill="#888" text-anchor="middle">
+    <text x="110" y="162">Dó</text>
+    <text x="175" y="162">Mi</text>
+    <text x="240" y="162">Sol</text>
+    <text x="305" y="162">Lá</text>
+    <text x="375" y="162">Si</text>
+    <text x="430" y="162">Lá</text>
+    <text x="490" y="162">Sol</text>
+    <text x="555" y="162">Mi</text>
+    <text x="620" y="162">Ré</text>
+    <text x="685" y="162">Dó</text>
+  </g>
+
+  <!-- Contour type labels -->
+  <rect x="40" y="185" width="220" height="38" rx="6" fill="#FFF3E0"/>
+  <text x="150" y="199" text-anchor="middle" font-size="10" font-weight="700" fill="#E65100">Contornos comuns:</text>
+  <text x="150" y="213" text-anchor="middle" font-size="10" fill="#555">Arco ↑↓  ·  Ascendente ↑</text>
+
+  <rect x="270" y="185" width="220" height="38" rx="6" fill="#E8F5E9"/>
+  <text x="380" y="199" text-anchor="middle" font-size="10" font-weight="700" fill="#2E7D32">Descendente ↓  ·  Ondulado ~</text>
+  <text x="380" y="213" text-anchor="middle" font-size="10" fill="#555">Estático — (nota repetida)</text>
+
+  <rect x="500" y="185" width="260" height="38" rx="6" fill="#E3F2FD"/>
+  <text x="630" y="199" text-anchor="middle" font-size="10" font-weight="700" fill="#1565C0">Sem partitura:</text>
+  <text x="630" y="213" text-anchor="middle" font-size="10" fill="#555">Desenhe a linha no ar ao ouvir</text>
+</svg>

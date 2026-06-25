@@ -1,0 +1,187 @@
+{% extends "base_app.html" %}
+{% block title %}Demo de Vozes | Tehillim{% endblock %}
+
+{% block header %}
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 flex-shrink-0">
+  <h1 class="text-[20px] font-bold text-gray-800">🎙 Escolha de Voz</h1>
+  <p class="text-[13px] text-gray-500 mt-0.5">Clique em "Ouvir" para escutar cada voz. A escolhida será usada nos módulos.</p>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="p-4 md:p-6 max-w-3xl mx-auto flex flex-col gap-4">
+
+  <!-- Texto de amostra -->
+  <div class="bg-white rounded-2xl shadow-sm p-5">
+    <label class="block text-[12px] font-semibold text-gray-600 mb-2">Texto de amostra — edite à vontade</label>
+    <textarea id="sample-text" rows="3"
+              class="w-full border border-gray-200 rounded-xl p-3 text-[13px] resize-none focus:outline-none focus:border-[#C4943A]"
+    >Bem-vindo ao Tehillim! Nesta lição você vai aprender sobre teoria musical, ritmo e melodia. Vamos começar com os conceitos fundamentais do som e da música.</textarea>
+  </div>
+
+  <!-- Loading -->
+  <div id="voices-loading" class="bg-white rounded-2xl shadow-sm p-8 flex flex-col items-center gap-3 text-gray-400">
+    <svg class="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M4 12a8 8 0 018-8"/></svg>
+    <p class="text-[13px]">Carregando vozes...</p>
+  </div>
+
+  <!-- Error / setup -->
+  <div id="voices-setup" class="hidden bg-[#FEF3C7] rounded-2xl p-5 text-[#92400E]">
+    <p class="font-bold text-[13px] mb-2">⚠ ElevenLabs não configurado</p>
+    <ol class="text-[12px] flex flex-col gap-1 list-decimal list-inside">
+      <li>Acesse <a href="https://elevenlabs.io" target="_blank" class="underline font-semibold">elevenlabs.io</a> → crie conta gratuita (10K chars/mês)</li>
+      <li>Vá em <strong>Profile → API Key</strong> → copie sua chave</li>
+      <li>Adicione no <code class="bg-white px-1 rounded">.env</code>: <code class="bg-white px-1 rounded">ELEVENLABS_KEY=sua_chave</code></li>
+      <li>Reinicie o servidor e recarregue esta página</li>
+    </ol>
+    <p class="text-[11px] mt-3 text-[#78350F]">Enquanto isso, o sistema usa a voz do navegador como fallback.</p>
+  </div>
+
+  <!-- Voice list -->
+  <div id="voices-container" class="hidden flex flex-col gap-3"></div>
+
+  <!-- Voz selecionada -->
+  <div id="selected-banner" class="hidden bg-[#DFF0E8] rounded-2xl p-4 flex items-center gap-3">
+    <span class="text-[22px]">✅</span>
+    <div>
+      <p class="font-bold text-[13px] text-[#2D6A4F]">Voz selecionada: <span id="selected-name"></span></p>
+      <p class="text-[11px] text-[#3D6B52]">Essa voz será usada no botão "Ouvir" de todas as lições.</p>
+    </div>
+  </div>
+
+</div>
+
+<audio id="tts-audio" style="display:none"></audio>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const audio = document.getElementById("tts-audio");
+let _playing = null;
+const SAVED_VOICE = localStorage.getItem("tts_el_voice_id");
+const SAVED_NAME  = localStorage.getItem("tts_el_voice_name");
+
+async function loadVoices() {
+  const res = await fetch("/api/tts/voices");
+  const json = await res.json();
+  document.getElementById("voices-loading").style.display = "none";
+
+  if (!json.voices || json.voices.length === 0) {
+    document.getElementById("voices-setup").classList.remove("hidden");
+    return;
+  }
+
+  const container = document.getElementById("voices-container");
+  container.classList.remove("hidden");
+
+  // Group: premade first, then cloned/generated
+  const premade = json.voices.filter(v => v.category === "premade");
+  const other   = json.voices.filter(v => v.category !== "premade");
+
+  function section(title, voices) {
+    if (!voices.length) return;
+    const hdr = document.createElement("p");
+    hdr.style.cssText = "font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.1em;margin:4px 0 -4px;";
+    hdr.textContent = title;
+    container.appendChild(hdr);
+
+    voices.forEach(v => {
+      const labels = Object.entries(v.labels || {}).map(([,val]) => val).join(" · ");
+      const isActive = v.id === SAVED_VOICE;
+      const card = document.createElement("div");
+      card.id = "card-" + v.id;
+      card.style.cssText = `display:flex;align-items:center;gap:12px;padding:12px 14px;border:2px solid ${isActive ? "#C4943A" : "#F3F4F6"};border-radius:14px;background:${isActive ? "#FBF6EE" : "white"};transition:border-color .15s;`;
+      card.innerHTML = `
+        <div style="flex:1;min-width:0;">
+          <p style="font-weight:700;font-size:13px;color:#1F2937;margin:0;">${v.name}</p>
+          ${labels ? `<p style="font-size:11px;color:#9CA3AF;margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${labels}</p>` : ""}
+        </div>
+        <button id="play-${v.id}" onclick="playVoice('${v.id}','${v.name.replace(/'/g,"\\'")}')"
+                style="padding:6px 14px;border-radius:20px;border:1.5px solid #C4943A;color:#C4943A;font-size:12px;font-weight:600;background:white;cursor:pointer;white-space:nowrap;flex-shrink:0;">
+          ▶ Ouvir
+        </button>
+        <button onclick="selectVoice('${v.id}','${v.name.replace(/'/g,"\\'")}')"
+                id="sel-${v.id}"
+                style="padding:6px 14px;border-radius:20px;border:1.5px solid ${isActive ? "#4E7A60" : "#E5E7EB"};color:${isActive ? "#4E7A60" : "#9CA3AF"};font-size:12px;font-weight:600;background:${isActive ? "#DFF0E8" : "white"};cursor:pointer;white-space:nowrap;flex-shrink:0;">
+          ${isActive ? "✓ Usando" : "Usar esta"}
+        </button>`;
+      container.appendChild(card);
+    });
+  }
+
+  section("Vozes pré-fabricadas", premade);
+  section("Suas vozes", other);
+
+  if (SAVED_NAME) {
+    document.getElementById("selected-name").textContent = SAVED_NAME;
+    document.getElementById("selected-banner").classList.remove("hidden");
+  }
+}
+
+async function playVoice(id, name) {
+  const btn = document.getElementById("play-" + id);
+  if (_playing === id) {
+    audio.pause(); audio.src = "";
+    btn.textContent = "▶ Ouvir"; btn.style.background = "white"; btn.style.color = "#C4943A";
+    _playing = null; return;
+  }
+  // stop previous
+  if (_playing) {
+    const prev = document.getElementById("play-" + _playing);
+    if (prev) { prev.textContent = "▶ Ouvir"; prev.style.background = "white"; prev.style.color = "#C4943A"; }
+    audio.pause();
+  }
+  btn.textContent = "⏳"; btn.disabled = true;
+  const text = document.getElementById("sample-text").value.trim() ||
+    "Bem-vindo ao Tehillim! Vamos aprender teoria musical juntos.";
+  try {
+    const res = await fetch("/api/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, voice: id }),
+    });
+    if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error(j.error || "Erro"); }
+    const blob = await res.blob();
+    audio.src = URL.createObjectURL(blob);
+    audio.play();
+    _playing = id;
+    btn.textContent = "⏸ Parar"; btn.disabled = false;
+    btn.style.background = "#C4943A"; btn.style.color = "white";
+    audio.onended = () => {
+      btn.textContent = "▶ Ouvir"; btn.style.background = "white"; btn.style.color = "#C4943A";
+      _playing = null;
+    };
+  } catch(e) {
+    btn.textContent = "▶ Ouvir"; btn.disabled = false;
+    alert("Erro: " + e.message);
+  }
+}
+
+function selectVoice(id, name) {
+  // deselect all
+  document.querySelectorAll("[id^='sel-']").forEach(b => {
+    b.textContent = "Usar esta"; b.style.borderColor = "#E5E7EB"; b.style.color = "#9CA3AF"; b.style.background = "white";
+  });
+  document.querySelectorAll("[id^='card-']").forEach(c => {
+    c.style.borderColor = "#F3F4F6"; c.style.background = "white";
+  });
+  // select
+  const selBtn = document.getElementById("sel-" + id);
+  const card   = document.getElementById("card-" + id);
+  if (selBtn) { selBtn.textContent = "✓ Usando"; selBtn.style.borderColor = "#4E7A60"; selBtn.style.color = "#4E7A60"; selBtn.style.background = "#DFF0E8"; }
+  if (card)   { card.style.borderColor = "#C4943A"; card.style.background = "#FBF6EE"; }
+
+  localStorage.setItem("tts_el_voice_id",   id);
+  localStorage.setItem("tts_el_voice_name", name);
+
+  document.getElementById("selected-name").textContent = name;
+  document.getElementById("selected-banner").classList.remove("hidden");
+}
+
+loadVoices().catch(e => {
+  document.getElementById("voices-loading").style.display = "none";
+  document.getElementById("voices-setup").classList.remove("hidden");
+  console.error(e);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="800" height="280" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="280" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">ACIDENTES MUSICAIS</text>
+
+  <!-- Piano keyboard background -->
+  <!-- White keys: C D E F G A B C -->
+  <rect x="60" y="50" width="680" height="130" rx="6" fill="#FFF" stroke="#CCC" stroke-width="1"/>
+
+  <!-- White keys individual -->
+  <g stroke="#999" stroke-width="1" fill="white">
+    <rect x="70"  y="55" width="72" height="120" rx="3"/>
+    <rect x="147" y="55" width="72" height="120" rx="3"/>
+    <rect x="224" y="55" width="72" height="120" rx="3"/>
+    <rect x="301" y="55" width="72" height="120" rx="3"/>
+    <rect x="378" y="55" width="72" height="120" rx="3"/>
+    <rect x="455" y="55" width="72" height="120" rx="3"/>
+    <rect x="532" y="55" width="72" height="120" rx="3"/>
+    <rect x="609" y="55" width="72" height="120" rx="3"/>
+  </g>
+
+  <!-- Black keys -->
+  <g fill="#222">
+    <!-- C# / Db -->
+    <rect x="125" y="55" width="44" height="78" rx="3"/>
+    <!-- D# / Eb -->
+    <rect x="202" y="55" width="44" height="78" rx="3"/>
+    <!-- F# / Gb -->
+    <rect x="356" y="55" width="44" height="78" rx="3"/>
+    <!-- G# / Ab -->
+    <rect x="433" y="55" width="44" height="78" rx="3"/>
+    <!-- A# / Bb -->
+    <rect x="510" y="55" width="44" height="78" rx="3"/>
+    <!-- D# / Eb high -->
+    <rect x="663" y="55" width="44" height="78" rx="3"/>
+  </g>
+
+  <!-- Note names on white keys -->
+  <g font-size="13" font-weight="600" fill="#444" text-anchor="middle">
+    <text x="106" y="165">Dó</text>
+    <text x="183" y="165">Ré</text>
+    <text x="260" y="165">Mi</text>
+    <text x="337" y="165">Fá</text>
+    <text x="414" y="165">Sol</text>
+    <text x="491" y="165">Lá</text>
+    <text x="568" y="165">Si</text>
+    <text x="645" y="165">Dó</text>
+  </g>
+
+  <!-- Sustenido label on C# (black key) -->
+  <rect x="100" y="195" width="90" height="32" rx="6" fill="#E53935" opacity="0.9"/>
+  <text x="145" y="208" text-anchor="middle" font-size="10" font-weight="700" fill="white">Dó♯ = C#</text>
+  <text x="145" y="220" text-anchor="middle" font-size="9" fill="white">sobe ½ tom</text>
+  <line x1="147" y1="133" x2="147" y2="195" stroke="#E53935" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <!-- Bemol label on Db -->
+  <rect x="168" y="195" width="90" height="32" rx="6" fill="#1565C0" opacity="0.9"/>
+  <text x="213" y="208" text-anchor="middle" font-size="10" font-weight="700" fill="white">Ré♭ = Db</text>
+  <text x="213" y="220" text-anchor="middle" font-size="9" fill="white">desce ½ tom</text>
+  <line x1="224" y1="133" x2="213" y2="195" stroke="#1565C0" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <!-- Arrow showing same key -->
+  <path d="M 195,213 Q 215,235 228,213" stroke="#666" stroke-width="1.5" fill="none" stroke-dasharray="4,2"/>
+  <text x="215" y="250" text-anchor="middle" font-size="11" fill="#666" font-style="italic">mesma tecla!</text>
+
+  <!-- Legend: sustenido and bemol symbols -->
+  <rect x="430" y="195" width="320" height="65" rx="8" fill="#F5F5F5"/>
+  <text x="450" y="215" font-size="28" fill="#E53935" font-weight="700">♯</text>
+  <text x="480" y="215" font-size="12" fill="#333">Sustenido — sobe ½ tom</text>
+  <text x="450" y="245" font-size="28" fill="#1565C0" font-weight="700">♭</text>
+  <text x="480" y="245" font-size="12" fill="#333">Bemol — desce ½ tom</text>
+  <text x="590" y="260" font-size="11" fill="#999">♮ = Bequadro (cancela)</text>
+</svg>

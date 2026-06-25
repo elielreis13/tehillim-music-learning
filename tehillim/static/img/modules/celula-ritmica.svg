@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="240" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">CÉLULA RÍTMICA — O TIJOLO DO RITMO</text>
+
+  <!-- Time grid: 1 compasso 4/4 dividido em colcheias -->
+  <!-- Timeline: 1  e  2  e  3  e  4  e -->
+
+  <!-- Position x: 1=80, e=150, 2=220, e=290, 3=360, e=430, 4=500, e=570 -->
+
+  <!-- Beat labels -->
+  <rect x="65"  y="45" width="80" height="30" rx="4" fill="#E3F2FD"/>
+  <rect x="205" y="45" width="80" height="30" rx="4" fill="#E3F2FD"/>
+  <rect x="345" y="45" width="80" height="30" rx="4" fill="#E3F2FD"/>
+  <rect x="485" y="45" width="80" height="30" rx="4" fill="#E3F2FD"/>
+
+  <g font-size="16" font-weight="700" text-anchor="middle" fill="#1565C0">
+    <text x="105" y="65">1</text>
+    <text x="245" y="65">2</text>
+    <text x="385" y="65">3</text>
+    <text x="525" y="65">4</text>
+  </g>
+  <g font-size="13" text-anchor="middle" fill="#AAA">
+    <text x="175" y="65">e</text>
+    <text x="315" y="65">e</text>
+    <text x="455" y="65">e</text>
+    <text x="595" y="65">e</text>
+  </g>
+
+  <!-- EXAMPLE CELL 1: "Tum-tum-ta" (3-cell pattern) -->
+  <rect x="40" y="90" width="100" height="28" rx="5" fill="#4CAF50"/>
+  <rect x="148" y="90" width="30"  height="28" rx="5" fill="#777"/>
+  <rect x="185" y="90" width="100" height="28" rx="5" fill="#4CAF50"/>
+  <rect x="292" y="90" width="30"  height="28" rx="5" fill="#777"/>
+  <rect x="330" y="90" width="55"  height="28" rx="5" fill="#F44336"/>
+  <rect x="393" y="90" width="55"  height="28" rx="5" fill="#F44336"/>
+  <rect x="456" y="90" width="100" height="28" rx="5" fill="#4CAF50"/>
+  <rect x="563" y="90" width="100" height="28" rx="5" fill="#4CAF50"/>
+
+  <g font-size="11" fill="white" text-anchor="middle" font-weight="600">
+    <text x="90"  y="109">TUM</text>
+    <text x="163" y="109">—</text>
+    <text x="235" y="109">TUM</text>
+    <text x="307" y="109">—</text>
+    <text x="357" y="109">TA</text>
+    <text x="420" y="109">TA</text>
+    <text x="506" y="109">TUM</text>
+    <text x="613" y="109">—</text>
+  </g>
+
+  <!-- Cell bracket label -->
+  <line x1="330" y1="82" x2="510" y2="82" stroke="#F44336" stroke-width="1.5"/>
+  <text x="420" y="79" text-anchor="middle" font-size="10" fill="#F44336" font-weight="700">célula rítmica (padrão repetível)</text>
+
+  <!-- EXAMPLE CELL 2: Gospel groove -->
+  <text x="40" y="148" font-size="11" fill="#888">Groove gospel:</text>
+  <rect x="40"  y="155" width="100" height="28" rx="5" fill="#1565C0"/>
+  <rect x="148" y="155" width="30"  height="28" rx="5" fill="#777"/>
+  <rect x="185" y="155" width="55"  height="28" rx="5" fill="#FF9800"/>
+  <rect x="248" y="155" width="55"  height="28" rx="5" fill="#FF9800"/>
+  <rect x="310" y="155" width="100" height="28" rx="5" fill="#1565C0"/>
+  <rect x="418" y="155" width="55"  height="28" rx="5" fill="#FF9800"/>
+  <rect x="480" y="155" width="55"  height="28" rx="5" fill="#FF9800"/>
+  <rect x="543" y="155" width="100" height="28" rx="5" fill="#1565C0"/>
+
+  <g font-size="10" fill="white" text-anchor="middle" font-weight="600">
+    <text x="90"  y="174">BUM</text>
+    <text x="163" y="174">—</text>
+    <text x="212" y="174">ta</text>
+    <text x="275" y="174">ta</text>
+    <text x="360" y="174">BUM</text>
+    <text x="447" y="174">ta</text>
+    <text x="507" y="174">ta</text>
+    <text x="593" y="174">BUM</text>
+  </g>
+
+  <!-- Legend -->
+  <rect x="40" y="195" width="720" height="32" rx="6" fill="#F5F5F5"/>
+  <rect x="56" y="203" width="16" height="16" rx="3" fill="#4CAF50"/>
+  <text x="78" y="215" font-size="11" fill="#555">Nota longa (semínima)</text>
+  <rect x="220" y="203" width="16" height="16" rx="3" fill="#FF9800"/>
+  <text x="242" y="215" font-size="11" fill="#555">Nota curta (colcheia)</text>
+  <rect x="380" y="203" width="16" height="16" rx="3" fill="#1565C0"/>
+  <text x="402" y="215" font-size="11" fill="#555">Acento (tempo forte)</text>
+  <rect x="540" y="203" width="16" height="16" rx="3" fill="#777"/>
+  <text x="562" y="215" font-size="11" fill="#555">Silêncio (pausa)</text>
+</svg>

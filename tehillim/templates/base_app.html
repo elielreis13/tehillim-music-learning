@@ -3,6 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-MCSBVW3L');</script>
+  <!-- End Google Tag Manager -->
   <title>{% block title %}Tehillim{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -102,7 +109,11 @@
   </style>
   {% block head %}{% endblock %}
 </head>
-<body class="app-shell bg-[#FAF7F2] h-screen flex overflow-hidden text-gray-800" style="visibility:hidden">
+<body class="app-shell bg-[#FAF7F2] h-screen flex overflow-hidden text-gray-800">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MCSBVW3L"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
   <!-- ══════════════ SIDEBAR ══════════════ -->
   <aside class="app-sidebar w-[210px] bg-white flex flex-col shadow-sm flex-shrink-0">
@@ -125,13 +136,7 @@
         Início
       </a>
 
-      <a href="/grupos" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
-        {% if active_page == 'grupos' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
-        <img src="{{ url_for('static', filename='icons/nav-grupos.svg') }}" class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'grupos' %}opacity-40{% endif %}"/>
-        Grupos
-      </a>
-
-      <a href="/trilhas" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
+<a href="/trilhas" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
         {% if active_page == 'trilhas' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
         <img src="{{ url_for('static', filename='icons/nav-trilhas.svg') }}" class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'trilhas' %}opacity-40{% endif %}"/>
         Minhas Trilhas
@@ -146,13 +151,28 @@
       <a href="/desempenho" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
         {% if active_page == 'desempenho' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
         <img src="{{ url_for('static', filename='icons/nav-desempenho.svg') }}" class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'desempenho' %}opacity-40{% endif %}"/>
-        Desempenho
+        Progresso
       </a>
 
-      <a href="/conquistas" class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
-        {% if active_page == 'conquistas' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
-        <img src="{{ url_for('static', filename='icons/nav-conquistas.svg') }}" class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'conquistas' %}opacity-40{% endif %}"/>
-        Conquistas
+      <a href="/exercicios" class="student-only hidden flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
+        {% if active_page == 'exercicios' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
+        <svg class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'exercicios' %}opacity-40{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V19.5a2.25 2.25 0 002.25 2.25h.75m0-3H12"/>
+        </svg>
+        Exercícios
+        <span id="ex-nav-badge" style="display:none"
+              class="ml-auto bg-[#5A8A6A] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] text-center"></span>
+      </a>
+
+      <a href="/mensagens" id="nav-mensagens"
+         class="student-only hidden flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
+        {% if active_page == 'mensagens' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
+        <svg class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'mensagens' %}opacity-40{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+        </svg>
+        Mensagens
+        <span id="msg-nav-badge" style="display:none"
+              class="ml-auto bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] text-center"></span>
       </a>
 
       <!-- ── Links exclusivos do professor (ocultos por padrão) ── -->
@@ -164,11 +184,17 @@
         Admin
       </a>
 
-      <a href="/professor/alunos" class="teacher-nav hidden flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
-        {% if active_page == 'professor_alunos' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
-        <img src="{{ url_for('static', filename='icons/nav-dashboard.svg') }}" class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'professor_alunos' %}opacity-40{% endif %}"/>
-        Alunos
+      <a href="/professor/mensagens" class="teacher-nav hidden flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
+        {% if active_page == 'professor_mensagens' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
+        <svg class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'professor_mensagens' %}opacity-40{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+        </svg>
+        Mensagens
+        <span id="teacher-msg-badge" style="display:none"
+              class="ml-auto bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] text-center"></span>
       </a>
+
+
 
       <!-- ── Botão de perfil visível apenas no mobile ── -->
       <a href="#" id="mobile-profile-nav-btn"
@@ -186,7 +212,7 @@
     <div class="sidebar-profile mx-3 mb-4 mt-3 relative flex-shrink-0" id="user-profile-wrap">
       <button id="user-profile-btn"
         class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-left">
-        <div class="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden border-2 border-gray-200">
+        <div id="sidebar-avatar" class="w-9 h-9 rounded-full flex-shrink-0 overflow-hidden border-2 border-gray-200">
           <svg viewBox="0 0 36 36" class="w-full h-full" fill="none">
             <rect width="36" height="36" fill="#D4A574"/>
             <circle cx="18" cy="14" r="7" fill="#C49060"/>
@@ -210,7 +236,7 @@
           <p class="text-[11px] text-gray-400 mt-0.5" id="popup-user-email">—</p>
         </div>
         <div class="p-1.5">
-          <a href="/configuracoes"
+          <a href="/perfil"
             class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] text-gray-600 hover:bg-gray-50 transition-colors">
             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/>
@@ -241,23 +267,10 @@
     </div>
   </div>
 
-  <!-- Supabase config -->
   <script>
-    window.SUPABASE_URL      = "{{ supabase_url }}";
-    window.SUPABASE_ANON_KEY = "{{ supabase_anon_key }}";
+    window.CURRENT_USER = {{ current_user | tojson }};
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/static/js/auth.js"></script>
-  <script>
-    window.auth.ready.then(() => {
-      if (!window.auth.isLoggedIn()) {
-        const next = encodeURIComponent(window.location.pathname + window.location.search);
-        window.location.replace(`/login?next=${next}`);
-        return;
-      }
-      document.body.style.visibility = 'visible';
-    });
-  </script>
+  <script src="/static/js/auth.js?v=4"></script>
 
   <!-- ① Leitura SÍNCRONA do localStorage — roda antes do DOMContentLoaded
        Garante que window._progress já existe quando as páginas renderizam      -->
@@ -303,46 +316,61 @@
 
     (async () => {
       try {
-        await window.auth.ready;
-        if (!window.auth.isLoggedIn()) return;
+        if (!window.CURRENT_USER) return;
 
-        const session    = window.auth.session;
-        window._sb       = window.auth.client;
-        window._userId   = session.user.id;
-        window._userName = window.auth.getName();
+        window._userId   = window.CURRENT_USER.id;
+        window._userName = window.CURRENT_USER.name || window.CURRENT_USER.email?.split('@')[0] || 'Aluno';
 
         document.querySelectorAll('[data-user-name]').forEach(el => el.textContent = window._userName);
 
         // Popula perfil na sidebar e popup
-        const _user  = window.auth.getUser();
-        const _email = _user?.email || '';
-        const _role  = (_user?.user_metadata?.role === 'teacher') ? 'Professor' : 'Aluno';
+        const _email = window.CURRENT_USER.email || '';
+        const _role  = window.CURRENT_USER.is_teacher ? 'Professor' : 'Aluno';
         ['sidebar-user-name','popup-user-name'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = window._userName; });
         const roleEl  = document.getElementById('sidebar-user-role'); if (roleEl)  roleEl.textContent  = _role;
         const emailEl = document.getElementById('popup-user-email');  if (emailEl) emailEl.textContent = _email;
 
         // Mostra itens de navegação exclusivos do professor
-        if (_user?.user_metadata?.role === 'teacher') {
+        if (window.CURRENT_USER.is_teacher) {
           document.querySelectorAll('.teacher-nav').forEach(el => el.classList.remove('hidden'));
+          // Badge de mensagens não lidas de alunos
+          function refreshTeacherMsgBadge() {
+            fetch('/api/teacher/messages/unread')
+              .then(r => r.ok ? r.json() : { total: 0 })
+              .then(({ total }) => {
+                const badge = document.getElementById('teacher-msg-badge');
+                if (!badge) return;
+                if (total > 0) { badge.style.display = ''; badge.textContent = total; }
+                else           { badge.style.display = 'none'; }
+                window._teacherUnreadByStudent = {};
+              }).catch(() => {});
+          }
+          refreshTeacherMsgBadge();
+          setInterval(refreshTeacherMsgBadge, 60000);
+        } else {
+          // Mostra link de mensagens e carrega badge de não lidas
+          document.querySelectorAll('.student-only').forEach(el => el.classList.remove('hidden'));
+          fetch('/api/messages/unread-count')
+            .then(r => r.ok ? r.json() : { count: 0 })
+            .then(({ count }) => {
+              if (count > 0) {
+                const badge = document.getElementById('msg-nav-badge');
+                if (badge) { badge.style.display = ''; badge.textContent = count; }
+              }
+            }).catch(() => {});
+          // Badge de exercícios avulsos pendentes
+          fetch('/api/standalone-exercises')
+            .then(r => r.ok ? r.json() : { exercises: [] })
+            .then(({ exercises }) => {
+              const pending = (exercises || []).filter(e => !e.completed).length;
+              if (pending > 0) {
+                const badge = document.getElementById('ex-nav-badge');
+                if (badge) { badge.style.display = ''; badge.textContent = pending; }
+              }
+            }).catch(() => {});
         }
 
-        // Re-lê localStorage após auth.js possivelmente sincronizar dados novos
-        const total = {{ groups | sum(attribute='module_count') }};
-        const prog  = [];
-        let done    = 0;
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (!key?.startsWith('tehillim:') || !key.endsWith(':completed')) continue;
-          const slug      = key.split(':')[1];
-          const completed = Number(localStorage.getItem(key) || 0);
-          prog.push({ module_slug: slug, completed });
-          if (completed > 0) done++;
-        }
-        window._progress     = prog;
-        window._totalModules = total;
-        window._doneModules  = done;
-
-        // Streak — cache diário (só faz fetch quando o dia muda)
+        // Streak — cache diário
         const today = new Date().toISOString().slice(0, 10);
         let sc = null;
         try { sc = JSON.parse(localStorage.getItem('tehillim:streak') || 'null'); } catch {}
@@ -353,12 +381,10 @@
           return;
         }
 
-        // Cache expirado → busca em background, sem bloquear
-        if (!window.auth.client) return;
-        window.auth.client
-          .from('study_days').select('day')
-          .eq('user_id', session.user.id).order('day', { ascending: false })
-          .then(({ data: days }) => {
+        // Cache expirado → busca via Flask API em background
+        fetch('/api/study-days')
+          .then(r => r.ok ? r.json() : { days: [] })
+          .then(({ days }) => {
             window._studyDays = days || [];
             window._streak    = _computeStreak(days || []);
             document.querySelectorAll('[data-streak]').forEach(el => el.textContent = window._streak);
@@ -398,7 +424,7 @@
         <p style="font-weight:600;font-size:14px;color:#1f2937;margin:0" id="mobile-popup-name">—</p>
         <p style="font-size:11px;color:#9ca3af;margin:4px 0 0" id="mobile-popup-email">—</p>
       </div>
-      <a href="/configuracoes" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;text-decoration:none;color:#4b5563;font-size:14px">
+      <a href="/perfil" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;text-decoration:none;color:#4b5563;font-size:14px">
         <svg style="width:20px;height:20px;flex-shrink:0;color:#9ca3af" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/>
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>

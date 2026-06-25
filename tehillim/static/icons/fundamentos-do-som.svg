@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Sound wave -->
+  <path d="M6 24 Q9 14 12 24 Q15 34 18 24 Q21 14 24 24 Q27 34 30 24 Q33 14 36 24 Q39 34 42 24"
+        stroke="#7A5C2E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Musical note -->
+  <ellipse cx="24" cy="40" rx="3.5" ry="2.5" transform="rotate(-15 24 40)" stroke="#7A5C2E" stroke-width="1.5"/>
+  <line x1="27" y1="38.5" x2="27" y2="30" stroke="#7A5C2E" stroke-width="1.8" stroke-linecap="round"/>
+</svg>

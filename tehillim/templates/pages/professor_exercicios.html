@@ -1,0 +1,341 @@
+{% extends "base_app.html" %}
+
+{% block title %}Exercícios | Tehillim{% endblock %}
+
+{% block head %}
+<style>
+.admin-tab {
+  font-size: 13px; font-weight: 600; padding: 8px 16px;
+  border-radius: 10px; color: #7A6A4D; cursor: pointer;
+  transition: background .15s, color .15s; white-space: nowrap;
+  text-decoration: none; display: inline-block; border: none; background: none;
+}
+.admin-tab:hover { background: rgba(196,148,58,.1); color: #C4943A; }
+.admin-tab.active { background: #C4943A; color: white; }
+
+.field-input {
+  width: 100%; padding: 9px 13px; border-radius: 9px;
+  border: 1.5px solid #E5E7EB; background: #FAF7F2;
+  font-size: 13px; color: #374151; outline: none;
+  transition: border-color .15s; box-sizing: border-box;
+}
+.field-input:focus { border-color: #C4943A; }
+
+.student-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #F2EAD8; border: 1.5px solid #E5E7EB; border-radius: 8px;
+  padding: 5px 10px; font-size: 12px; font-weight: 600; color: #7A5C2E;
+  cursor: pointer; transition: all .12s;
+}
+.student-chip.selected { background: #C4943A; color: white; border-color: #C4943A; }
+</style>
+{% endblock %}
+
+{% block header %}
+<header style="background:#F2EAD8;border-bottom:1px solid #ECE3D0;flex-shrink:0;">
+  <div style="padding:16px 24px 0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <p style="font-size:11px;color:#9C8460;text-transform:uppercase;letter-spacing:.18em;font-weight:600;margin:0;">Professor</p>
+        <h1 style="font-size:20px;font-weight:700;color:#2A2419;margin:3px 0 0;">Exercícios avulsos</h1>
+      </div>
+      <button onclick="openCreate()"
+              style="display:flex;align-items:center;gap:6px;background:#C4943A;color:white;font-size:13px;font-weight:600;padding:9px 16px;border-radius:10px;border:none;cursor:pointer;">
+        <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+        Novo exercício
+      </button>
+    </div>
+    <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:0;">
+      <a href="/admin"            class="admin-tab">Alunos</a>
+      <a href="/admin/modulos"    class="admin-tab">Módulos</a>
+      <a href="/admin/jogos"      class="admin-tab">Jogos</a>
+      <span                       class="admin-tab active">Exercícios</span>
+      <a href="/admin/desafios"   class="admin-tab">Desafios</a>
+      <a href="/admin/relatorios" class="admin-tab">Relatórios</a>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div style="flex:1;overflow-y:auto;padding:20px;max-width:700px;display:flex;flex-direction:column;gap:14px;">
+  <div id="ex-loading" style="text-align:center;padding:32px;color:#9C8460;font-size:13px;">Carregando...</div>
+  <div id="ex-list"    style="display:none;flex-direction:column;gap:12px;"></div>
+  <div id="ex-empty"   style="display:none;text-align:center;padding:40px;">
+    <div style="font-size:40px;margin-bottom:10px;">📋</div>
+    <p style="font-size:15px;font-weight:600;color:#2A2419;margin:0 0 6px;">Nenhum exercício criado</p>
+    <p style="font-size:13px;color:#9C8460;margin:0 0 16px;">Crie exercícios avulsos e envie para seus alunos</p>
+    <button onclick="openCreate()" style="padding:10px 24px;background:#C4943A;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Criar exercício</button>
+  </div>
+</div>
+
+<!-- ══ Modal criar exercício ══ -->
+<div id="create-modal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-end;justify-content:center;"
+     onclick="if(event.target===this)closeCreate()">
+  <div style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:620px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;" onclick="event.stopPropagation()">
+    <div style="padding:16px 20px;border-bottom:1px solid #F0E8D4;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <h3 style="font-size:15px;font-weight:700;color:#2A2419;margin:0;">Novo exercício</h3>
+      <button onclick="closeCreate()" style="background:none;border:none;cursor:pointer;color:#9C8460;font-size:24px;line-height:1;padding:0;">×</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;">
+
+      <!-- Título -->
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;">Título</label>
+        <input id="ex-title" type="text" placeholder="Ex: Identifique o ritmo binário" class="field-input"/>
+      </div>
+
+      <!-- Enunciado / prompt (id required by game editor partial for preview) -->
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;">Enunciado</label>
+        <textarea id="ge-prompt-input" rows="2" placeholder="Escreva a instrução do exercício..." class="field-input" style="resize:vertical;font-family:inherit;"></textarea>
+      </div>
+
+      <!-- Separador -->
+      <div style="border-top:1px solid #F0E8D4;margin:0;"></div>
+      <p style="font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:0;">Tipo de jogo</p>
+
+      <!-- Game editor partial (injects grid + editor + preview) -->
+      {% include 'pages/_game_editor_partial.html' %}
+
+      <!-- Separador -->
+      <div style="border-top:1px solid #F0E8D4;margin:0;"></div>
+
+      <!-- Destinatários -->
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Enviar para</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;font-weight:600;color:#2A2419;">
+            <input type="radio" name="assign-mode" value="all" checked onchange="toggleStudentPicker(this.value)" style="accent-color:#C4943A;"/>
+            Todos os alunos
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;font-weight:600;color:#2A2419;">
+            <input type="radio" name="assign-mode" value="select" onchange="toggleStudentPicker(this.value)" style="accent-color:#C4943A;"/>
+            Alunos específicos
+          </label>
+        </div>
+        <div id="student-picker" style="display:none;flex-wrap:wrap;gap:6px;max-height:140px;overflow-y:auto;padding:4px 0;">
+          {% for student in students %}
+          <div class="student-chip" data-id="{{ student.email }}" onclick="toggleChip(this)">
+            {{ student.name }}
+          </div>
+          {% endfor %}
+          {% if not students %}
+          <p style="font-size:12px;color:#9C8460;margin:0;">Nenhum aluno encontrado.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <p id="create-msg" style="font-size:12px;margin:0;min-height:14px;"></p>
+    </div>
+    <div style="padding:14px 20px;border-top:1px solid #F0E8D4;display:flex;gap:10px;flex-shrink:0;">
+      <button onclick="closeCreate()" style="flex:1;padding:11px;border-radius:10px;border:1.5px solid #E5E7EB;background:none;font-size:13px;font-weight:600;color:#374151;cursor:pointer;">Cancelar</button>
+      <button id="create-btn" onclick="createExercise()" style="flex:2;padding:11px;border-radius:10px;background:#C4943A;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;">Publicar exercício</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Modal respostas ══ -->
+<div id="resp-modal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-end;justify-content:center;"
+     onclick="if(event.target===this)closeResp()">
+  <div style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;" onclick="event.stopPropagation()">
+    <div style="padding:16px 20px;border-bottom:1px solid #F0E8D4;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <h3 style="font-size:15px;font-weight:700;color:#2A2419;margin:0;" id="resp-title">Respostas</h3>
+      <button onclick="closeResp()" style="background:none;border:none;cursor:pointer;color:#9C8460;font-size:24px;line-height:1;padding:0;">×</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px;" id="resp-body">
+      <p style="text-align:center;color:#9C8460;font-size:13px;">Carregando...</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/games.js"></script>
+<script>
+const STUDENTS = {{ students | tojson }};
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadExercises();
+  initGameEditor(null, null);
+});
+
+// ── Listagem ──────────────────────────────────────────────────────────────────
+
+const GAME_LABELS = {
+  "game-quiz": "Quiz", "game-memory": "Memória", "game-challenge": "Desafio",
+  "game-true-false-rapid": "V ou F", "game-fill-sentence": "Completar",
+  "game-sort": "Ordenar", "game-unscramble": "Embaralhar", "game-connect": "Conectar",
+  "game-sequence": "Sequência", "game-hot-cold": "Quente/Frio", "game-find-error": "Achar Erro",
+  "game-speedrun": "Velocidade", "game-word-select": "Clicar Palavra",
+  "game-rhythm-tap": "Ritmo Tap", "game-crossword": "Cruzadinha",
+  "game-build": "Monte Compasso", "game-teach": "Explicar", "game-drag": "Arrastar",
+};
+
+async function loadExercises() {
+  try {
+    const data = await (await fetch('/api/teacher/standalone-exercises')).json();
+    renderExercises(data.exercises || []);
+  } catch {
+    document.getElementById('ex-loading').textContent = 'Erro ao carregar.';
+  }
+}
+
+function renderExercises(list) {
+  document.getElementById('ex-loading').style.display = 'none';
+  if (!list.length) { document.getElementById('ex-empty').style.display = ''; return; }
+  const el = document.getElementById('ex-list');
+  el.style.display = 'flex';
+  el.innerHTML = list.map(ex => {
+    const kindLabel = GAME_LABELS[ex.game_kind] || ex.game_kind || '—';
+    const promptText = ex.prompt || '';
+    return `
+    <div style="background:white;border-radius:14px;border:1.5px solid #F0E8D4;padding:16px 18px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px;">
+        <div style="flex:1;min-width:0;">
+          <span style="font-size:10px;font-weight:700;color:#C4943A;text-transform:uppercase;letter-spacing:.1em;">${kindLabel}</span>
+          <h3 style="font-size:14px;font-weight:700;color:#2A2419;margin:3px 0 4px;">${ex.title}</h3>
+          ${promptText ? `<p style="font-size:12px;color:#7A6A4D;margin:0;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${promptText}</p>` : ''}
+        </div>
+        <button onclick="deleteExercise('${ex.id}', this)"
+                style="padding:5px;background:none;border:none;cursor:pointer;color:#9C8460;flex-shrink:0;" title="Excluir">
+          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+        </button>
+      </div>
+      <button onclick="loadResponses('${ex.id}','${ex.title.replace(/'/g,"\\'")}')"
+              style="padding:6px 12px;background:#F2EAD8;color:#7A5C2E;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;">
+        Ver respostas →
+      </button>
+    </div>`;
+  }).join('');
+}
+
+// ── Criar ─────────────────────────────────────────────────────────────────────
+
+function openCreate() {
+  document.getElementById('ex-title').value = '';
+  document.getElementById('ge-prompt-input').value = '';
+  document.getElementById('create-msg').textContent = '';
+  document.querySelectorAll('.student-chip').forEach(c => c.classList.remove('selected'));
+  document.querySelector('input[name="assign-mode"][value="all"]').checked = true;
+  document.getElementById('student-picker').style.display = 'none';
+  resetGameEditor();
+  document.getElementById('create-modal').style.display = 'flex';
+}
+
+function closeCreate() {
+  document.getElementById('create-modal').style.display = 'none';
+}
+
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
+
+function toggleStudentPicker(mode) {
+  document.getElementById('student-picker').style.display = mode === 'select' ? 'flex' : 'none';
+}
+
+async function createExercise() {
+  const title  = document.getElementById('ex-title').value.trim();
+  const prompt = document.getElementById('ge-prompt-input').value.trim();
+  const msg    = document.getElementById('create-msg');
+
+  if (!title) {
+    msg.style.color = '#EF4444';
+    msg.textContent = 'O título é obrigatório.';
+    return;
+  }
+
+  const { game_kind, game_data } = getGameEditorState();
+  if (!game_kind) {
+    msg.style.color = '#EF4444';
+    msg.textContent = 'Selecione um tipo de jogo.';
+    return;
+  }
+
+  const mode = document.querySelector('input[name="assign-mode"]:checked')?.value;
+  let assign_to = [];
+  if (mode === 'select') {
+    assign_to = Array.from(document.querySelectorAll('.student-chip.selected')).map(c => c.dataset.id);
+    if (!assign_to.length) {
+      msg.style.color = '#EF4444';
+      msg.textContent = 'Selecione pelo menos um aluno.';
+      return;
+    }
+  }
+
+  const btn = document.getElementById('create-btn');
+  btn.disabled = true; btn.textContent = 'Publicando...';
+  try {
+    const res = await fetch('/api/teacher/standalone-exercises', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, prompt, game_kind, game_data, assign_to }),
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Erro ao criar');
+    closeCreate();
+    document.getElementById('ex-list').style.display    = 'none';
+    document.getElementById('ex-empty').style.display   = 'none';
+    document.getElementById('ex-loading').style.display = '';
+    document.getElementById('ex-loading').textContent   = 'Carregando...';
+    await loadExercises();
+  } catch (e) {
+    msg.style.color = '#EF4444'; msg.textContent = e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Publicar exercício';
+  }
+}
+
+// ── Excluir ───────────────────────────────────────────────────────────────────
+
+async function deleteExercise(id, btn) {
+  if (!confirm('Excluir este exercício? As respostas dos alunos serão perdidas.')) return;
+  btn.disabled = true;
+  try {
+    await fetch(`/api/teacher/standalone-exercises/${id}`, { method: 'DELETE' });
+    const card = btn.closest('div[style]');
+    if (card) card.remove();
+    if (!document.querySelectorAll('#ex-list > div').length) {
+      document.getElementById('ex-list').style.display  = 'none';
+      document.getElementById('ex-empty').style.display = '';
+    }
+  } catch { btn.disabled = false; }
+}
+
+// ── Respostas ─────────────────────────────────────────────────────────────────
+
+async function loadResponses(id, title) {
+  document.getElementById('resp-title').textContent = title;
+  document.getElementById('resp-body').innerHTML = '<p style="text-align:center;color:#9C8460;font-size:13px;">Carregando...</p>';
+  document.getElementById('resp-modal').style.display = 'flex';
+  try {
+    const data = await (await fetch(`/api/teacher/standalone-exercises/${id}/responses`)).json();
+    const list = data.responses || [];
+    if (!list.length) {
+      document.getElementById('resp-body').innerHTML = '<p style="text-align:center;color:#9C8460;font-size:13px;padding:20px;">Nenhuma resposta ainda.</p>';
+      return;
+    }
+    document.getElementById('resp-body').innerHTML = list.map(r => {
+      const d = new Date(r.completed_at);
+      const dateStr = d.toLocaleDateString('pt-BR', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+      return `<div style="border-bottom:1px solid #F0E8D4;padding:12px 0;">
+        <p style="font-size:11px;font-weight:700;color:#9C8460;margin:0 0 2px;">${r.student_name}</p>
+        <p style="font-size:11px;color:#9C8460;margin:0;">${dateStr}</p>
+      </div>`;
+    }).join('');
+  } catch {
+    document.getElementById('resp-body').innerHTML = '<p style="text-align:center;color:#EF4444;font-size:13px;">Erro ao carregar.</p>';
+  }
+}
+
+function closeResp() {
+  document.getElementById('resp-modal').style.display = 'none';
+}
+</script>
+{% endblock %}

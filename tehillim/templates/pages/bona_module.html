@@ -4,10 +4,30 @@
 
 {% block head %}
 <style>
-  /* Desktop: partitura cabe bem em 480px */
-  .bona-frame { height: 480px; display: block; }
-  /* Mobile: controles ocupam 2 linhas (~90px), score precisa de mais espaço */
-  @media (max-width: 640px) { .bona-frame { height: 540px; } }
+  /* Fallback height while iframe content is loading */
+  .bona-frame { height: 520px; display: block; transition: height 0.2s ease; }
+  @media (max-width: 640px) { .bona-frame { height: 400px; } }
+
+  /* Back-to-top button — mobile only */
+  #bona-top-btn {
+    display: none;
+    position: fixed;
+    bottom: 80px; /* above bottom nav */
+    right: 16px;
+    z-index: 999;
+    background: #C4943A;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    align-items: center;
+    justify-content: center;
+  }
+  @media (max-width: 768px) { #bona-top-btn { display: flex; } }
 </style>
 {% endblock %}
 
@@ -71,6 +91,29 @@
         Ouça a lição completa antes de tentar ler. Depois acompanhe a partitura com o cursor.
         Por fim, reproduza vocalmente ou no instrumento enquanto acompanha o cursor em tempo real.
       </p>
+    </div>
+
+    <!-- ── Gravação de prática ── -->
+    <div class="bg-white rounded-2xl shadow-sm p-5" id="rec-card">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-[18px]">🎤</span>
+        <div>
+          <p class="font-bold text-[13px] text-gray-800">Gravar minha prática</p>
+          <p class="text-[11px] text-gray-400">Grave nos 3 andamentos para enviar ao professor</p>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-4" id="bpm-slots">
+        <!-- slot gerado por JS para 60, 80, 100 BPM -->
+      </div>
+
+      <div class="mt-4">
+        <button id="rec-send-btn" onclick="recSendAll()" disabled
+                class="w-full py-2.5 rounded-xl bg-[#4E7A60] text-white text-[12px] font-semibold opacity-40 cursor-not-allowed transition-all">
+          ☁ Enviar ao professor
+        </button>
+        <p id="rec-status" class="text-[11px] mt-2 min-h-[16px] text-center"></p>
+      </div>
     </div>
     {% endif %}
 
@@ -140,4 +183,201 @@
 </div>
 {% endblock %}
 
-{% block scripts %}{% endblock %}
+{% block scripts %}
+<button id="bona-top-btn" onclick="(document.querySelector('.app-content')||window).scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">↑</button>
+<script>
+// Resize iframe to match its content height
+window.addEventListener('message', e => {
+  if (e.data?.type === 'bona-height') {
+    const frame = document.querySelector('iframe.bona-frame');
+    if (frame) frame.style.height = (e.data.height + 8) + 'px';
+  }
+});
+
+// ── Gravação de prática — 3 BPMs ─────────────────────────────────────────────
+const MODULE_SLUG = "{{ module.slug }}";
+const BPM_LIST    = [60, 80, 90];
+
+// State per BPM slot: { blob, stream, mr, chunks, timer, seconds }
+const _slots = {};
+BPM_LIST.forEach(bpm => { _slots[bpm] = { blob: null, stream: null, mr: null, chunks: [], timer: null, seconds: 0 }; });
+
+let _activeRecBpm = null;   // which BPM is currently recording
+
+// ── Metrônomo ──────────────────────────────────────────────────────────────────
+let _metCtx  = null;
+let _metNext = null;
+
+function metStart(bpm) {
+  metStop();
+  _metCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const interval = 60 / bpm;
+  let next = _metCtx.currentTime + 0.05;
+
+  function tick() {
+    const osc  = _metCtx.createOscillator();
+    const gain = _metCtx.createGain();
+    osc.connect(gain);
+    gain.connect(_metCtx.destination);
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.4, next);
+    gain.gain.exponentialRampToValueAtTime(0.001, next + 0.06);
+    osc.start(next);
+    osc.stop(next + 0.08);
+    next += interval;
+    _metNext = setTimeout(tick, Math.max(0, (next - _metCtx.currentTime - 0.1) * 1000));
+  }
+  tick();
+}
+
+function metStop() {
+  clearTimeout(_metNext);
+  _metCtx?.close().catch(() => {});
+  _metCtx = null;
+}
+
+// ── Comunicação com o iframe do player ────────────────────────────────────────
+function playerSetNotes(show) {
+  const frame = document.querySelector("iframe.bona-frame");
+  if (frame) frame.contentWindow.postMessage({ type: "set-notes", show }, "*");
+}
+
+// ── Render dos slots ──────────────────────────────────────────────────────────
+function renderSlots() {
+  document.getElementById("bpm-slots").innerHTML = BPM_LIST.map(bpm => {
+    const s = _slots[bpm];
+    const isRec = _activeRecBpm === bpm;
+    let inner = "";
+
+    if (isRec) {
+      inner = `
+        <div class="flex items-center gap-1.5 mb-2">
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse inline-block"></span>
+          <span class="text-[11px] font-bold text-red-500" id="timer-${bpm}">0:00</span>
+        </div>
+        <button onclick="slotStop(${bpm})"
+                class="w-full py-1.5 rounded-lg border-2 border-red-300 text-red-500 text-[11px] font-semibold hover:bg-red-50 transition-colors">
+          ⏹ Parar
+        </button>`;
+    } else if (s.blob) {
+      inner = `
+        <div class="flex items-center gap-1 mb-2">
+          <span class="text-green-600 text-[13px]">✓</span>
+          <span class="text-[11px] font-semibold text-green-600">Gravado</span>
+        </div>
+        <audio src="${URL.createObjectURL(s.blob)}" controls class="w-full mb-1.5" style="height:28px;"></audio>
+        <button onclick="slotReset(${bpm})" class="w-full flex items-center justify-center gap-1 py-1.5 rounded-lg border border-[#C4943A] text-[#C4943A] text-[11px] font-semibold hover:bg-[#FBF3E8] transition-colors">⟳ Regravar</button>`;
+    } else {
+      const blocked = _activeRecBpm && _activeRecBpm !== bpm;
+      inner = `
+        <button onclick="slotStart(${bpm})" ${blocked ? "disabled" : ""}
+                class="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-[#C4943A] text-white text-[11px] font-semibold ${blocked ? "opacity-30 cursor-not-allowed" : "hover:bg-[#B3852F]"} transition-colors">
+          <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>
+          Gravar
+        </button>`;
+    }
+
+    return `
+    <div class="flex-1 bg-gray-50 rounded-xl p-3 flex flex-col min-w-0">
+      <p class="text-[13px] font-bold text-gray-700 mb-2 text-center">${bpm} <span class="text-[10px] font-medium text-gray-400">BPM</span></p>
+      ${inner}
+    </div>`;
+  }).join("");
+
+  // Enable send button only when all 3 done
+  const allDone = BPM_LIST.every(b => _slots[b].blob);
+  const btn = document.getElementById("rec-send-btn");
+  btn.disabled = !allDone;
+  btn.classList.toggle("opacity-40",      !allDone);
+  btn.classList.toggle("cursor-not-allowed", !allDone);
+  btn.classList.toggle("hover:bg-[#3D6B52]", allDone);
+}
+
+// ── Controle por slot ─────────────────────────────────────────────────────────
+async function slotStart(bpm) {
+  if (_activeRecBpm) return;
+  const s = _slots[bpm];
+  try {
+    s.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch {
+    alert("Permissão de microfone negada ou indisponível.");
+    return;
+  }
+  s.chunks  = [];
+  s.seconds = 0;
+  const mime = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "audio/ogg";
+  s.mr = new MediaRecorder(s.stream, { mimeType: mime });
+  s.mr.ondataavailable = e => { if (e.data.size > 0) s.chunks.push(e.data); };
+  s.mr.start(200);
+
+  _activeRecBpm = bpm;
+  metStart(bpm);
+  playerSetNotes(false);   // esconde nomes das notas no iframe
+
+  renderSlots();
+
+  s.timer = setInterval(() => {
+    s.seconds++;
+    const m = Math.floor(s.seconds / 60);
+    const sec = String(s.seconds % 60).padStart(2, "0");
+    const el = document.getElementById(`timer-${bpm}`);
+    if (el) el.textContent = `${m}:${sec}`;
+  }, 1000);
+}
+
+function slotStop(bpm) {
+  const s = _slots[bpm];
+  clearInterval(s.timer);
+  metStop();
+  s.mr.onstop = () => {
+    s.blob = new Blob(s.chunks, { type: s.mr.mimeType || "audio/webm" });
+    s.stream?.getTracks().forEach(t => t.stop());
+    _activeRecBpm = null;
+    renderSlots();
+  };
+  s.mr.stop();
+}
+
+function slotReset(bpm) {
+  const s = _slots[bpm];
+  s.blob = null; s.chunks = []; s.seconds = 0;
+  document.getElementById("rec-status").textContent = "";
+  renderSlots();
+}
+
+// ── Envio dos 3 áudios ────────────────────────────────────────────────────────
+async function recSendAll() {
+  const btn    = document.getElementById("rec-send-btn");
+  const status = document.getElementById("rec-status");
+  btn.disabled = true;
+  status.style.color = "#9CA3AF";
+
+  for (const bpm of BPM_LIST) {
+    const s = _slots[bpm];
+    if (!s.blob) continue;
+    status.textContent = `Enviando ${bpm} BPM...`;
+    try {
+      const ext = s.blob.type.includes("ogg") ? "ogg" : "webm";
+      const fd  = new FormData();
+      fd.append("file", s.blob, `bpm${bpm}.${ext}`);
+      fd.append("module_slug", MODULE_SLUG);
+      fd.append("bpm", bpm);
+      const res  = await fetch("/api/recordings/upload", { method: "POST", body: fd });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Erro");
+    } catch(e) {
+      status.textContent = `Erro ao enviar ${bpm} BPM: ` + e.message;
+      status.style.color = "#EF4444";
+      btn.disabled = false;
+      return;
+    }
+  }
+
+  status.textContent = "✓ Todas as gravações enviadas ao professor!";
+  status.style.color = "#4E7A60";
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", renderSlots);
+</script>
+{% endblock %}

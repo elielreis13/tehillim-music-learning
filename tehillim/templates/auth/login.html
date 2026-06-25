@@ -80,13 +80,9 @@
 
 {% block scripts %}
 <script>
-  window.auth.ready.then(() => {
-    if (window.auth.isLoggedIn()) window.location.href = getNextUrl();
-  });
-
   function getNextUrl() {
-    const next = new URLSearchParams(window.location.search).get('next') || '/index.html';
-    if (!next.startsWith('/') || next.startsWith('//')) return '/index.html';
+    const next = new URLSearchParams(window.location.search).get('next') || '/inicio';
+    if (!next.startsWith('/') || next.startsWith('//')) return '/inicio';
     return next;
   }
 
@@ -97,7 +93,6 @@
     const btn   = document.getElementById('btn-entrar');
     const erro  = document.getElementById('msg-error');
 
-    // Validação de campos vazios
     if (!email) { mostrarErro('Informe seu e-mail!', erro); return; }
     if (!senha)  { mostrarErro('Informe sua senha!', erro); return; }
 
@@ -106,11 +101,16 @@
     btn.textContent = 'Entrando…';
 
     try {
-      const error = await window.auth.signInWithPassword(email, senha);
-      if (error) throw error;
+      const res  = await fetch('/auth/login', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email, password: senha }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Algo deu errado.');
       window.location.href = getNextUrl();
     } catch (err) {
-      mostrarErro(traduzirErro(err), erro);
+      mostrarErro(err.message, erro);
       btn.disabled    = false;
       btn.textContent = 'Entrar';
     }
@@ -119,17 +119,6 @@
   function mostrarErro(msg, el) {
     el.textContent = msg;
     el.classList.remove('hidden');
-  }
-
-  function traduzirErro(err) {
-    const msg = err?.message || String(err);
-    if (!msg || msg.includes('null'))              return 'Serviço indisponível. Tente novamente em instantes.';
-    if (msg.includes('Invalid login credentials')) return 'E-mail ou senha incorretos.';
-    if (msg.includes('Email not confirmed'))       return 'Confirme seu e-mail antes de entrar.';
-    if (msg.includes('User not found'))            return 'Nenhuma conta encontrada com este e-mail.';
-    if (msg.includes('rate limit'))                return 'Muitas tentativas. Aguarde alguns minutos.';
-    if (msg.includes('Failed to fetch'))           return 'Sem conexão. Verifique sua internet.';
-    return 'Algo deu errado. Tente novamente.';
   }
 </script>
 {% endblock %}

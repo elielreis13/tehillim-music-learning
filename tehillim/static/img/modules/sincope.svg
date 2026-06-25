@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" width="800" height="260" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="260" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">SÍNCOPE — A NOTA QUE "ROUBA" O TEMPO FORTE</text>
+
+  <!-- Timeline row: 1 e 2 e 3 e 4 e -->
+  <!-- Positions: 1=100, e=178, 2=256, e=334, 3=412, e=490, 4=568, e=646 -->
+
+  <!-- Strong beats highlight -->
+  <rect x="82"  y="50" width="80" height="35" rx="5" fill="#E3F2FD"/>
+  <rect x="238" y="50" width="80" height="35" rx="5" fill="#E3F2FD"/>
+  <rect x="394" y="50" width="80" height="35" rx="5" fill="#E3F2FD"/>
+  <rect x="550" y="50" width="80" height="35" rx="5" fill="#E3F2FD"/>
+
+  <!-- Time labels -->
+  <text x="122" y="73" text-anchor="middle" font-size="18" font-weight="700" fill="#1565C0">1</text>
+  <text x="200" y="73" text-anchor="middle" font-size="16" fill="#999">e</text>
+  <text x="278" y="73" text-anchor="middle" font-size="18" font-weight="700" fill="#1565C0">2</text>
+  <text x="356" y="73" text-anchor="middle" font-size="16" fill="#999">e</text>
+  <text x="434" y="73" text-anchor="middle" font-size="18" font-weight="700" fill="#1565C0">3</text>
+  <text x="512" y="73" text-anchor="middle" font-size="16" fill="#999">e</text>
+  <text x="590" y="73" text-anchor="middle" font-size="18" font-weight="700" fill="#1565C0">4</text>
+  <text x="668" y="73" text-anchor="middle" font-size="16" fill="#999">e</text>
+
+  <!-- === ROW 1: Sem síncope === -->
+  <text x="30" y="118" font-size="11" fill="#888" text-anchor="middle">SEM</text>
+  <text x="30" y="130" font-size="11" fill="#888" text-anchor="middle">síncope</text>
+
+  <!-- Notes on beats 1,2,3,4 -->
+  <rect x="92"  y="103" width="60" height="28" rx="6" fill="#4CAF50"/>
+  <text x="122" y="121" text-anchor="middle" font-size="12" fill="white" font-weight="700">nota</text>
+  <rect x="248" y="103" width="60" height="28" rx="6" fill="#4CAF50"/>
+  <text x="278" y="121" text-anchor="middle" font-size="12" fill="white" font-weight="700">nota</text>
+  <rect x="404" y="103" width="60" height="28" rx="6" fill="#4CAF50"/>
+  <text x="434" y="121" text-anchor="middle" font-size="12" fill="white" font-weight="700">nota</text>
+  <rect x="560" y="103" width="60" height="28" rx="6" fill="#4CAF50"/>
+  <text x="590" y="121" text-anchor="middle" font-size="12" fill="white" font-weight="700">nota</text>
+
+  <text x="122" y="145" text-anchor="middle" font-size="10" fill="#4CAF50">↑ forte</text>
+  <text x="278" y="145" text-anchor="middle" font-size="10" fill="#4CAF50">↑ forte</text>
+  <text x="434" y="145" text-anchor="middle" font-size="10" fill="#4CAF50">↑ forte</text>
+  <text x="590" y="145" text-anchor="middle" font-size="10" fill="#4CAF50">↑ forte</text>
+
+  <!-- === ROW 2: Com síncope === -->
+  <text x="30" y="186" font-size="11" fill="#E53935" text-anchor="middle">COM</text>
+  <text x="30" y="198" font-size="11" fill="#E53935" text-anchor="middle">síncope</text>
+
+  <!-- Note starts on "e" of 2 and extends over beat 3 -->
+  <rect x="92"  y="166" width="60" height="28" rx="6" fill="#4CAF50"/>
+  <text x="122" y="184" text-anchor="middle" font-size="12" fill="white" font-weight="700">nota</text>
+  <rect x="248" y="166" width="60" height="28" rx="6" fill="#4CAF50"/>
+  <text x="278" y="184" text-anchor="middle" font-size="12" fill="white" font-weight="700">nota</text>
+  <!-- Syncopated note: starts on "e" of 2, extends over beat 3 -->
+  <rect x="326" y="166" width="138" height="28" rx="6" fill="#F44336"/>
+  <text x="395" y="184" text-anchor="middle" font-size="12" fill="white" font-weight="700">SÍNCOPA!</text>
+  <!-- Arc over beat 3 showing extension -->
+  <text x="434" y="163" text-anchor="middle" font-size="18" fill="#F44336">⌒</text>
+  <rect x="560" y="166" width="60" height="28" rx="6" fill="#4CAF50"/>
+  <text x="590" y="184" text-anchor="middle" font-size="12" fill="white" font-weight="700">nota</text>
+
+  <text x="356" y="208" text-anchor="middle" font-size="10" fill="#F44336">↑ entra no "e"</text>
+  <text x="434" y="208" text-anchor="middle" font-size="10" fill="#F44336">tempo "roubado"</text>
+
+  <!-- Footer -->
+  <text x="400" y="240" text-anchor="middle" font-size="12" fill="#555">A nota síncopa começa num tempo fraco e se prolonga sobre o tempo forte seguinte.</text>
+</svg>

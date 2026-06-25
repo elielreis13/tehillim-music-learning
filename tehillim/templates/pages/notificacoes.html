@@ -144,18 +144,15 @@ function timeAgo(isoStr) {
 // ── Init ─────────────────────────────────────────────────────────────────────
 
 (async () => {
-  await window.auth.ready;
-
   const loadingEl  = document.getElementById('view-loading');
   const subtitleEl = document.getElementById('notif-subtitle');
 
-  if (!window.auth.isLoggedIn()) {
+  if (!window.CURRENT_USER) {
     loadingEl.innerHTML = '<p class="text-[13px] text-gray-400">Faça login para ver as notificações.</p>';
     return;
   }
 
-  const user      = window.auth.getUser();
-  const isTeacher = user?.user_metadata?.role === 'teacher';
+  const isTeacher = window.CURRENT_USER.is_teacher;
 
   loadingEl.classList.add('hidden');
 

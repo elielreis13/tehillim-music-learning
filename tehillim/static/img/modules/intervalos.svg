@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="800" height="280" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="280" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">INTERVALOS — QUANTIDADE E QUALIDADE</text>
+
+  <!-- Staff lines (treble clef) -->
+  <g stroke="#555" stroke-width="1.5">
+    <line x1="60" y1="80"  x2="750" y2="80"/>
+    <line x1="60" y1="95"  x2="750" y2="95"/>
+    <line x1="60" y1="110" x2="750" y2="110"/>
+    <line x1="60" y1="125" x2="750" y2="125"/>
+    <line x1="60" y1="140" x2="750" y2="140"/>
+  </g>
+  <!-- Treble clef -->
+  <text x="65" y="148" font-size="80" fill="#555" font-family="serif">𝄞</text>
+
+  <!-- Intervals displayed: Unison, 2nd, 3rd, 4th, 5th, 6th, 7th, Octave -->
+  <!-- Note positions (y): line1=140, space1=132, line2=125, space2=118, line3=110, space3=103, line4=95, space4=88, line5=80 -->
+  <!-- C4=line1 below (ledger), D4=space below line1, E4=line1 (140), F4=space1 (132), G4=line2 (125), A4=space2 (118), B4=line3 (110), C5=space3 (103), D5=line4 (95), E5=space4 (88) -->
+
+  <!-- Unison: C-C -->
+  <text x="125" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#555">Uníssono</text>
+  <ellipse cx="128" cy="148" rx="9" ry="6" fill="#333"/>
+  <ellipse cx="140" cy="148" rx="9" ry="6" fill="#333"/>
+  <text x="134" y="185" text-anchor="middle" font-size="10" fill="#999">1ª (0 sem.)</text>
+
+  <!-- 2nd: C-D -->
+  <text x="205" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#2196F3">2ª</text>
+  <ellipse cx="200" cy="148" rx="9" ry="6" fill="#2196F3"/>
+  <line x1="209" y1="148" x2="209" y2="110" stroke="#2196F3" stroke-width="1.5"/>
+  <ellipse cx="215" cy="140" rx="9" ry="6" fill="#2196F3" opacity="0.7"/>
+  <line x1="224" y1="140" x2="224" y2="102" stroke="#2196F3" stroke-width="1.5"/>
+  <text x="212" y="185" text-anchor="middle" font-size="10" fill="#999">2ª M=2  m=1</text>
+
+  <!-- 3rd: C-E -->
+  <text x="285" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#4CAF50">3ª</text>
+  <ellipse cx="278" cy="148" rx="9" ry="6" fill="#4CAF50"/>
+  <line x1="287" y1="148" x2="287" y2="110" stroke="#4CAF50" stroke-width="1.5"/>
+  <ellipse cx="294" cy="133" rx="9" ry="6" fill="#4CAF50" opacity="0.7"/>
+  <line x1="303" y1="133" x2="303" y2="95" stroke="#4CAF50" stroke-width="1.5"/>
+  <!-- bracket above -->
+  <path d="M 278,102 Q 290,90 303,102" fill="none" stroke="#4CAF50" stroke-width="1.5"/>
+  <text x="290" y="185" text-anchor="middle" font-size="10" fill="#999">3ª M=4  m=3</text>
+
+  <!-- 4th: C-F -->
+  <text x="365" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#FF9800">4ª</text>
+  <ellipse cx="355" cy="148" rx="9" ry="6" fill="#FF9800"/>
+  <line x1="364" y1="148" x2="364" y2="110" stroke="#FF9800" stroke-width="1.5"/>
+  <ellipse cx="373" cy="125" rx="9" ry="6" fill="#FF9800" opacity="0.7"/>
+  <line x1="382" y1="125" x2="382" y2="87" stroke="#FF9800" stroke-width="1.5"/>
+  <path d="M 355,95 Q 368,82 382,95" fill="none" stroke="#FF9800" stroke-width="1.5"/>
+  <text x="368" y="185" text-anchor="middle" font-size="10" fill="#999">4ª J=5  Au=6</text>
+
+  <!-- 5th: C-G -->
+  <text x="450" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#F44336">5ª</text>
+  <ellipse cx="435" cy="148" rx="9" ry="6" fill="#F44336"/>
+  <line x1="444" y1="148" x2="444" y2="110" stroke="#F44336" stroke-width="1.5"/>
+  <ellipse cx="455" cy="118" rx="9" ry="6" fill="#F44336" opacity="0.7"/>
+  <line x1="464" y1="118" x2="464" y2="80" stroke="#F44336" stroke-width="1.5"/>
+  <path d="M 435,88 Q 449,74 464,88" fill="none" stroke="#F44336" stroke-width="1.5"/>
+  <text x="449" y="185" text-anchor="middle" font-size="10" fill="#999">5ª J=7  Dim=6</text>
+
+  <!-- 6th: C-A -->
+  <text x="540" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#9C27B0">6ª</text>
+  <ellipse cx="525" cy="148" rx="9" ry="6" fill="#9C27B0"/>
+  <line x1="534" y1="148" x2="534" y2="110" stroke="#9C27B0" stroke-width="1.5"/>
+  <ellipse cx="548" cy="110" rx="9" ry="6" fill="#9C27B0" opacity="0.7"/>
+  <line x1="557" y1="110" x2="557" y2="72" stroke="#9C27B0" stroke-width="1.5"/>
+  <path d="M 525,80 Q 541,65 557,80" fill="none" stroke="#9C27B0" stroke-width="1.5"/>
+  <text x="540" y="185" text-anchor="middle" font-size="10" fill="#999">6ª M=9  m=8</text>
+
+  <!-- 8th: C-C (octave) -->
+  <text x="650" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#795548">8ª</text>
+  <ellipse cx="632" cy="148" rx="9" ry="6" fill="#795548"/>
+  <line x1="641" y1="148" x2="641" y2="110" stroke="#795548" stroke-width="1.5"/>
+  <ellipse cx="662" cy="103" rx="9" ry="6" fill="#795548" opacity="0.7"/>
+  <line x1="671" y1="103" x2="671" y2="65" stroke="#795548" stroke-width="1.5"/>
+  <path d="M 632,73 Q 651,57 671,73" fill="none" stroke="#795548" stroke-width="1.5"/>
+  <text x="650" y="185" text-anchor="middle" font-size="10" fill="#999">Oitava = 12 sem.</text>
+
+  <!-- Legend box -->
+  <rect x="60" y="200" width="680" height="52" rx="8" fill="#F5F5F5"/>
+  <text x="400" y="220" text-anchor="middle" font-size="11" font-weight="700" fill="#333">Qualidades: M = Maior  ·  m = menor  ·  J = Justa  ·  Au = Aumentada  ·  Dim = Diminuta</text>
+  <text x="400" y="240" text-anchor="middle" font-size="10.5" fill="#666">Os números entre parênteses indicam o número de semitons do intervalo.</text>
+</svg>

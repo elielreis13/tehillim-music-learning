@@ -2,312 +2,572 @@
 
 {% block title %}Início | Tehillim{% endblock %}
 
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet"/>
+<style>
+  .fraunces { font-family: 'Fraunces', serif; }
+
+  .group-tile {
+    background: white;
+    border: 1.5px solid #F0E8D4;
+    border-radius: 16px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .18s, box-shadow .18s, transform .18s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .group-tile:hover {
+    border-color: var(--gc);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+    transform: translateY(-2px);
+  }
+  .group-tile .tile-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gc);
+    border-radius: 0 0 16px 16px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .5s ease;
+  }
+  .group-tile.loaded .tile-bar { transform: scaleX(var(--pct)); }
+
+  @media (max-width: 768px) {
+    .groups-grid { grid-template-columns: repeat(2,1fr) !important; gap: 10px !important; }
+    .home-wrap   { padding: 12px !important; gap: 12px !important; }
+    .trail-inner { flex-direction: column !important; }
+    #trail-panel { width: 100% !important; min-height: 80px !important; }
+  }
+</style>
+{% endblock %}
+
 {% block header %}
-<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
+<header style="background:linear-gradient(120deg,#2A2419 0%,#3D3018 60%,#5A4520 100%);padding:22px 28px;position:relative;overflow:hidden;color:white;flex-shrink:0;">
+  <div style="position:absolute;right:-80px;top:-80px;width:340px;height:340px;background:radial-gradient(circle,rgba(232,199,122,0.22) 0%,transparent 70%);pointer-events:none;"></div>
+  <svg id="hero-wave-svg" width="520" height="100%" viewBox="0 0 520 100" preserveAspectRatio="none"
+    style="position:absolute;right:0;top:0;height:100%;pointer-events:none;opacity:0.18;"></svg>
 
-  <div class="flex items-center justify-between relative z-10">
-    <!-- Greeting -->
+  <div style="position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
     <div>
-      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Bem-vindo de volta 👋</p>
-      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Olá, <span data-user-name>Aluno</span>!</h1>
-      <p class="text-[13px] text-gray-500 mt-0.5">Vamos continuar sua jornada musical hoje?</p>
+      <p style="font-size:10px;color:#E8C77A;text-transform:uppercase;letter-spacing:0.22em;font-weight:700;margin:0;">♪ De volta ao palco</p>
+      <h1 class="fraunces" style="font-size:32px;font-weight:400;line-height:1.1;margin:6px 0 4px;letter-spacing:-0.02em;">
+        Olá, <em style="font-style:italic;font-weight:300;color:#E8C77A;" data-user-name>Aluno</em>
+      </h1>
+      <p style="font-size:13px;color:#C4B89A;margin:0;" id="hero-subtitle">Pronto para a prática de hoje?</p>
     </div>
-
-    <!-- Top bar -->
-    <div class="flex items-center gap-3">
-      <div class="flex items-center gap-2">
-        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-6 h-6 flex-shrink-0"/>
-        <div class="leading-tight">
-          <p class="font-bold text-[16px] text-gray-800 leading-none" data-streak>—</p>
-          <p class="text-[10px] text-gray-500">dias de sequência</p>
-        </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div style="background:rgba(232,99,42,0.15);border:1px solid rgba(232,99,42,0.35);border-radius:12px;padding:10px 16px;text-align:center;min-width:72px;">
+        <div class="fraunces" style="font-size:22px;font-weight:600;color:#FFB78F;line-height:1;" id="stat-streak">—</div>
+        <div style="font-size:9px;color:#FFB78F;text-transform:uppercase;letter-spacing:0.1em;margin-top:3px;">Sequência 🔥</div>
       </div>
-      <div class="w-px h-6 bg-[#D4C4A8]"></div>
-      <a href="/notificacoes" class="w-8 h-8 rounded-full bg-white/70 flex items-center justify-center shadow-sm hover:bg-white transition-colors" id="notif-bell-btn">
-        <img src="{{ url_for('static', filename='icons/ui-comment.svg') }}" class="w-4 h-4"/>
-      </a>
+      <div style="background:rgba(232,199,122,0.12);border:1px solid rgba(232,199,122,0.22);border-radius:12px;padding:10px 16px;text-align:center;min-width:72px;">
+        <div class="fraunces" style="font-size:22px;font-weight:600;color:#E8C77A;line-height:1;" id="stat-modules">—</div>
+        <div style="font-size:9px;color:#C4B89A;text-transform:uppercase;letter-spacing:0.1em;margin-top:3px;">Concluídos</div>
+      </div>
     </div>
   </div>
-
-  <!-- Decorative -->
-  <div class="absolute right-[60px] top-[-10px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:140px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
 </header>
 {% endblock %}
 
 {% block content %}
-<div class="p-4 md:p-5 flex flex-col xl:flex-row gap-4 min-h-full">
+<div class="home-wrap" style="padding:16px 20px;display:flex;flex-direction:column;gap:18px;">
 
-  <!-- ── LEFT / CENTER COLUMN ── -->
-  <div class="flex-1 flex flex-col gap-4 min-w-0">
-
-    <!-- Grupos de Estudo -->
-    <section>
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="font-bold text-[16px] text-gray-800">Seus Grupos de Estudo</h2>
-        <a href="/grupos" class="text-[13px] text-gray-400 hover:text-gray-600 transition-colors">Ver todos</a>
+  <!-- ── Continue sua trilha ── -->
+  <div style="border-radius:18px;border:1px solid #F0E8D4;overflow:hidden;display:flex;" class="trail-inner">
+    <!-- Color panel -->
+    <div id="trail-panel" style="width:160px;background:linear-gradient(135deg,#C4943A 0%,#8B6920 100%);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:24px 16px;">
+      <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.12;" preserveAspectRatio="none">
+        <defs><pattern id="staff-v" x="0" y="0" width="100" height="70" patternUnits="userSpaceOnUse">
+          {% for y in [0,8,16,24,32] %}<line x1="0" y1="{{ y+19 }}" x2="100" y2="{{ y+19 }}" stroke="white" stroke-width="0.6"/>{% endfor %}
+        </pattern></defs>
+        <rect width="100%" height="100%" fill="url(#staff-v)"/>
+      </svg>
+      <div style="position:relative;text-align:center;color:white;">
+        <p style="font-size:9px;text-transform:uppercase;letter-spacing:0.18em;opacity:0.8;margin:0 0 6px;font-weight:700;" id="trail-num">M01</p>
+        <p class="fraunces" style="font-size:14px;font-weight:400;margin:0;line-height:1.25;letter-spacing:-0.01em;" id="trail-title-panel">—</p>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {% set colors = ['#EDD9B0', '#C4D9CE', '#C4D4E4'] %}
-        {% set prog_colors = ['#C4943A', '#5A8A6A', '#4A4A5A'] %}
-        {% for group in groups[:3] %}
-        <a href="/grupos/{{ group.slug }}" class="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow block">
-          <div class="flex justify-center mb-4">
-            <div class="w-[70px] h-[70px] rounded-full flex items-center justify-center" style="background-color: {{ colors[loop.index0 % 3] }}">
-              <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" class="w-12 h-12 object-contain">
-            </div>
-          </div>
-          <h3 class="font-bold text-[14px] text-center text-gray-800">{{ group.name }}</h3>
-          <p class="text-[11px] text-center text-gray-400 mt-1">{{ group.module_count }} módulos</p>
-          <div class="mt-3.5">
-            <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-              <div class="h-full rounded-full transition-all duration-500" style="background-color: {{ prog_colors[loop.index0 % 3] }}; width:0%"
-                   data-group-progress="{{ group.slug }}"></div>
-            </div>
-            <p class="text-right text-[11px] font-semibold text-gray-500 mt-1" data-group-pct="{{ group.slug }}">—</p>
-          </div>
+    </div>
+    <!-- Content -->
+    <div style="flex:1;padding:20px;display:flex;flex-direction:column;justify-content:space-between;min-width:0;background:white;">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <p style="font-size:11px;color:#9C8460;text-transform:uppercase;letter-spacing:.14em;font-weight:600;margin:0;">Continue sua trilha</p>
+          <span style="font-size:11px;color:#9C8460;font-weight:500;" id="trail-group">—</span>
+        </div>
+        <h3 class="fraunces" style="font-size:20px;font-weight:500;margin:4px 0 8px;color:#2A2419;line-height:1.2;" id="trail-title">Carregando...</h3>
+        <p style="font-size:13px;color:#7A6A4D;line-height:1.5;margin:0 0 14px;" id="trail-desc"></p>
+        <div style="display:flex;gap:4px;margin-bottom:6px;" id="trail-steps"></div>
+        <p style="font-size:11px;color:#9C8460;margin:0;" id="trail-step-lbl"></p>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <a id="trail-btn" href="#"
+           style="flex:1;padding:12px 0;background:#C4943A;color:white;border-radius:10px;font-size:13px;font-weight:700;text-align:center;text-decoration:none;display:block;">
+          Continuar módulo →
         </a>
-        {% endfor %}
+        <a href="/trilhas"
+           style="padding:12px 16px;background:#F4ECD8;color:#7A5C2E;border:1px solid #ECE3D0;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;">
+          Ver trilha
+        </a>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- Continue Trilha + Desempenho -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <!-- ── Atividades do dia ── -->
+  <div id="daily-cards" style="display:flex;flex-direction:column;gap:10px;">
 
-      <!-- Continue sua Trilha -->
-      <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 class="font-bold text-[15px] text-gray-800 mb-4">Continue sua Trilha</h2>
-        <div id="trail-widget">
-          <p class="text-[13px] text-gray-400">Carregando...</p>
+    <!-- Exercício do dia -->
+    <div id="card-daily-ex" style="display:none;background:white;border-radius:16px;border:1px solid #F0E8D4;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 18px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#5A8A6A,#3A6A4A);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">🎯</div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:10px;font-weight:700;color:#5A8A6A;text-transform:uppercase;letter-spacing:.12em;margin:0 0 2px;">Exercício do dia</p>
+          <p style="font-size:13px;font-weight:600;color:#2A2419;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="daily-ex-title">—</p>
         </div>
-      </div>
-
-      <!-- Desempenho Geral -->
-      <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="font-bold text-[15px] text-gray-800">Desempenho Geral</h2>
-          <a href="/desempenho" class="text-[11px] text-gray-400 hover:text-gray-600 transition-colors">Ver relatório</a>
-        </div>
-        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div class="relative flex-shrink-0 w-[100px] h-[100px]">
-            <svg class="w-full h-full" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" fill="none" stroke="#D4EAE0" stroke-width="10"/>
-              <circle cx="50" cy="50" r="42" fill="none" stroke="#3D7A5E" stroke-width="10"
-                id="perf-circle" stroke-dasharray="0 263.9" stroke-linecap="round" transform="rotate(-90 50 50)"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <span class="font-bold text-[18px] text-gray-800 leading-tight" id="perf-pct">—</span>
-              <span class="text-[9px] text-gray-400 mt-0.5">Desempenho</span>
-            </div>
-          </div>
-          <div class="flex-1 flex flex-col gap-3">
-            <div class="flex items-center justify-between">
-              <span class="text-[12px] text-gray-500">Módulos Concluídos</span>
-              <span class="text-[12px] font-bold text-gray-700" id="perf-modules">—</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-[12px] text-gray-500">🔥 Sequência</span>
-              <span class="text-[12px] font-bold text-gray-700"><span data-streak>—</span> dias</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-[12px] text-gray-500">Dias de estudo</span>
-              <span class="text-[12px] font-bold text-gray-700" id="perf-days">—</span>
-            </div>
-          </div>
-        </div>
+        <div id="daily-ex-badge" style="display:none;background:#5A8A6A;color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;flex-shrink:0;">✓ Feito</div>
+        <button id="daily-ex-btn" onclick="openDailyExercise()"
+                style="padding:8px 14px;background:#5A8A6A;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;display:none;">
+          Praticar
+        </button>
       </div>
     </div>
 
-    <!-- Quote -->
-    <div class="bg-[#EEF3FA] rounded-2xl px-7 py-5 relative overflow-hidden">
-      <div class="relative z-10 max-w-full md:max-w-[60%]">
-        <svg class="w-8 h-6 text-[#4A78B0] opacity-30 mb-1" fill="currentColor" viewBox="0 0 32 24">
-          <path d="M0 24V14.4C0 6.72 4.8 1.92 14.4 0l1.6 2.56C10.56 3.84 7.68 6.56 7.04 10.4H12V24H0zm18 0V14.4C18 6.72 22.8 1.92 32.4 0L34 2.56c-5.44 1.28-8.32 4-8.96 7.84H30V24H18z"/>
-        </svg>
-        <p class="text-gray-700 font-medium text-[14px] leading-relaxed">A música é a linguagem universal da humanidade.</p>
-        <p class="text-gray-400 text-[12px] mt-2">— Henry Wadsworth Longfellow</p>
+    <!-- Revisões pendentes -->
+    <div id="card-reviews" style="display:none;background:white;border-radius:16px;border:1px solid #F0E8D4;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 18px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#7B5EA7,#4A3470);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">🔁</div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:10px;font-weight:700;color:#7B5EA7;text-transform:uppercase;letter-spacing:.12em;margin:0 0 2px;">Revisão pendente</p>
+          <p style="font-size:13px;font-weight:600;color:#2A2419;margin:0;" id="reviews-label">—</p>
+        </div>
+        <a href="/revisoes" style="padding:8px 14px;background:#7B5EA7;color:white;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;flex-shrink:0;">
+          Revisar
+        </a>
       </div>
-      <div class="absolute right-6 -bottom-2 opacity-[0.08] pointer-events-none select-none" style="font-size:90px;line-height:1;">🎻</div>
+    </div>
+
+    <!-- Desafio da semana -->
+    <div id="card-challenge" style="display:none;background:white;border-radius:16px;border:1px solid #F0E8D4;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 18px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#E8632A,#B04020);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">⭐</div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:10px;font-weight:700;color:#E8632A;text-transform:uppercase;letter-spacing:.12em;margin:0 0 2px;">Desafio da semana</p>
+          <p style="font-size:13px;font-weight:600;color:#2A2419;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="challenge-title">—</p>
+        </div>
+        <div id="challenge-done-badge" style="display:none;background:#5A8A6A;color:white;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;flex-shrink:0;">✓ Respondido</div>
+        <button id="challenge-btn" onclick="openChallengeModal()"
+                style="padding:8px 14px;background:#E8632A;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;display:none;">
+          Responder
+        </button>
+      </div>
     </div>
 
   </div>
 
-  <!-- ── RIGHT PANEL ── -->
-  <div class="w-full xl:w-[272px] flex-shrink-0 flex flex-col gap-4">
-
-    <!-- Próxima Aula -->
-    <div class="bg-white rounded-2xl overflow-hidden shadow-sm">
-      <p class="font-bold text-[15px] text-gray-800 px-5 pt-5 pb-3">Próxima Aula</p>
-      <div id="next-lesson-widget" class="px-5 pb-5">
-        <p class="text-[13px] text-gray-400">Carregando...</p>
-      </div>
+  <!-- ── Grupos de estudo ── -->
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;">
+      <h2 class="fraunces" style="font-size:18px;font-weight:500;margin:0;color:#2A2419;">Grupos de estudo</h2>
+      <a href="/grupos" style="font-size:12px;color:#9C8460;text-decoration:none;">Ver todos →</a>
     </div>
-
-    <!-- Conquistas Recentes -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="font-bold text-[15px] text-gray-800">Conquistas Recentes</h3>
-        <a href="/conquistas" class="text-[11px] text-gray-400 hover:text-gray-600 transition-colors">Ver todas</a>
-      </div>
-      <div class="flex flex-col gap-3.5" id="achievements-widget">
-        <p class="text-[13px] text-gray-400">Carregando...</p>
-      </div>
+    <div class="groups-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+      {% set group_colors = ['#C4943A','#5A8A6A','#7B5EA7','#4A78B0','#E8632A'] %}
+      {% set group_bgs    = ['#FDF5E6','#E8F5EE','#EDE8F8','#E6EFF8','#FEF0EB'] %}
+      {% for group in groups %}
+      {% set ci = loop.index0 % 5 %}
+      <a href="/grupos/{{ group.slug }}"
+         class="group-tile"
+         style="--gc:{{ group_colors[ci] }};"
+         data-slug="{{ group.slug }}"
+         data-total="{{ group.module_count }}">
+        <div style="width:52px;height:52px;border-radius:14px;background:{{ group_bgs[ci] }};display:flex;align-items:center;justify-content:center;">
+          <img src="{{ url_for('static', filename='icons/' ~ group.icon_file) }}" alt="" style="width:26px;height:26px;object-fit:contain;"/>
+        </div>
+        <div style="text-align:center;">
+          <p style="font-size:13px;font-weight:700;color:#2A2419;margin:0;line-height:1.25;">{{ group.name }}</p>
+          <p style="font-size:11px;color:#9C8460;margin:3px 0 0;">{{ group.module_count }} módulos</p>
+        </div>
+        <div style="width:100%;height:4px;background:#F4ECD8;border-radius:2px;overflow:hidden;margin-top:2px;">
+          <div style="height:100%;width:0%;background:{{ group_colors[ci] }};border-radius:2px;transition:width .6s ease;" data-group-bar="{{ group.slug }}"></div>
+        </div>
+        <div class="tile-bar"></div>
+      </a>
+      {% endfor %}
     </div>
+  </div>
 
+</div>
+
+<!-- ── Modal: Exercício do dia ── -->
+<div id="daily-ex-modal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:flex-end;justify-content:center;"
+     onclick="if(event.target===this)closeDailyModal()">
+  <div style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:480px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;" onclick="event.stopPropagation()">
+    <div style="padding:16px 20px;border-bottom:1px solid #F0E8D4;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <p style="font-size:10px;font-weight:700;color:#5A8A6A;text-transform:uppercase;letter-spacing:.14em;margin:0 0 2px;">🎯 Exercício do dia</p>
+        <h3 style="font-size:14px;font-weight:600;color:#2A2419;margin:0;" id="dex-module-title">—</h3>
+      </div>
+      <button onclick="closeDailyModal()" style="background:none;border:none;cursor:pointer;color:#9C8460;font-size:24px;line-height:1;padding:0;">×</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px;">
+      <p style="font-size:15px;font-weight:600;color:#2A2419;margin:0 0 16px;line-height:1.4;" id="dex-prompt"></p>
+      <div style="display:flex;flex-direction:column;gap:8px;" id="dex-options"></div>
+      <div id="dex-result" style="display:none;margin-top:16px;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;"></div>
+    </div>
   </div>
 </div>
+
+<!-- ── Modal: Desafio da semana ── -->
+<div id="challenge-modal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:flex-end;justify-content:center;"
+     onclick="if(event.target===this)closeChallengeModal()">
+  <div style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:480px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;" onclick="event.stopPropagation()">
+    <div style="padding:16px 20px;border-bottom:1px solid #F0E8D4;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <p style="font-size:10px;font-weight:700;color:#E8632A;text-transform:uppercase;letter-spacing:.14em;margin:0 0 2px;">⭐ Desafio da semana</p>
+        <h3 style="font-size:14px;font-weight:600;color:#2A2419;margin:0;" id="ch-modal-title">—</h3>
+      </div>
+      <button onclick="closeChallengeModal()" style="background:none;border:none;cursor:pointer;color:#9C8460;font-size:24px;line-height:1;padding:0;">×</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;">
+      <p style="font-size:14px;color:#374151;line-height:1.6;margin:0;" id="ch-modal-desc"></p>
+      <div id="ch-response-area">
+        <label style="display:block;font-size:11px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Sua resposta</label>
+        <textarea id="ch-textarea" rows="4"
+                  style="width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid #E5E7EB;background:#FAF7F2;font-size:13px;color:#374151;resize:vertical;outline:none;box-sizing:border-box;font-family:inherit;"
+                  placeholder="Escreva sua resposta aqui..."></textarea>
+        <p id="ch-send-msg" style="font-size:12px;margin:6px 0 0;min-height:16px;"></p>
+      </div>
+      <div id="ch-already-sent" style="display:none;padding:12px 14px;background:#F0F9F4;border-radius:10px;border:1px solid #C6E8D4;">
+        <p style="font-size:12px;font-weight:600;color:#3A7A5A;margin:0 0 4px;">✓ Resposta enviada</p>
+        <p style="font-size:13px;color:#374151;margin:0;" id="ch-sent-text"></p>
+      </div>
+    </div>
+    <div style="padding:14px 20px;border-top:1px solid #F0E8D4;flex-shrink:0;" id="ch-footer">
+      <button id="ch-send-btn" onclick="sendChallengeResponse()"
+              style="width:100%;padding:12px;border-radius:10px;background:#E8632A;color:white;font-size:13px;font-weight:700;border:none;cursor:pointer;">
+        Enviar resposta
+      </button>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
-const GROUPS_DATA = {{ groups | tojson }};
+const GROUPS_DATA  = {{ groups | tojson }};
+const GROUP_COLORS = ['#C4943A','#5A8A6A','#7B5EA7','#4A78B0','#E8632A'];
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await waitForProgress();
-  renderGroupProgress();
-  renderPerformance();
-  renderTrailWidget();
-  renderNextLesson();
-  renderAchievements();
-});
+/* ── Sound wave ── */
+(function() {
+  const svg = document.getElementById('hero-wave-svg');
+  if (!svg) return;
+  const bars = 85;
+  let html = '';
+  for (let i = 0; i < bars; i++) {
+    const h = Math.abs(Math.sin(i * 0.22) * Math.cos(i * 0.15)) * 76 + 10;
+    const y = (100 - h) / 2;
+    html += `<rect x="${i*6.1}" y="${y.toFixed(1)}" width="3" height="${h.toFixed(1)}" fill="${i%5===0?'#E8C77A':'#C4943A'}" rx="1.5"/>`;
+  }
+  svg.innerHTML = html;
+})();
 
 function waitForProgress() {
   return new Promise(resolve => {
     if (window._progress !== undefined) return resolve();
-    const t = setInterval(() => {
-      if (window._progress !== undefined) { clearInterval(t); resolve(); }
-    }, 100);
+    const t = setInterval(() => { if (window._progress !== undefined) { clearInterval(t); resolve(); } }, 100);
     setTimeout(() => { clearInterval(t); resolve(); }, 5000);
   });
 }
 
-function renderGroupProgress() {
-  if (!window._progress) return;
-  const doneSet = new Set(window._progress.filter(p => p.completed > 0).map(p => p.module_slug));
-  GROUPS_DATA.forEach(group => {
-    const slugsInGroup = group.modules.map(m => m.slug);
-    const done = slugsInGroup.filter(s => doneSet.has(s)).length;
-    const pct = group.module_count > 0 ? Math.round((done / group.module_count) * 100) : 0;
-    const bar = document.querySelector(`[data-group-progress="${group.slug}"]`);
-    const lbl = document.querySelector(`[data-group-pct="${group.slug}"]`);
-    if (bar) bar.style.width = pct + '%';
-    if (lbl) lbl.textContent = pct + '%';
+document.addEventListener('DOMContentLoaded', async () => {
+  await waitForProgress();
+
+  const prog      = window._progress || [];
+  const done      = window._doneModules || 0;
+  const streak    = window._streak || 0;
+  const doneSet   = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
+
+  // Header
+  set('stat-streak',  streak || '0');
+  set('stat-modules', done);
+  if (streak > 0) set('hero-subtitle', `${streak} dia${streak !== 1 ? 's' : ''} seguidos — continue assim! 🔥`);
+
+  renderTrail(doneSet);
+  renderGroupBars(doneSet);
+
+  // Daily engagement cards (run in parallel)
+  loadDailyExercise();
+  loadPendingReviews();
+  loadWeeklyChallenge();
+});
+
+// ── Exercício do dia ──────────────────────────────────────────────────────────
+
+let _dailyExData = null;
+
+async function loadDailyExercise() {
+  try {
+    const res = await fetch('/api/daily-exercise');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.available) return;
+    _dailyExData = data;
+    const card = document.getElementById('card-daily-ex');
+    card.style.display = '';
+    if (data.completed) {
+      set('daily-ex-title', data.module_title || 'Tudo em dia!');
+      document.getElementById('daily-ex-badge').style.display = '';
+    } else {
+      const pending = data.pending_count || 1;
+      set('daily-ex-title', data.module_title);
+      const btn = document.getElementById('daily-ex-btn');
+      btn.style.display = '';
+      if (pending > 1) {
+        btn.textContent = `Praticar (${pending})`;
+        btn.title = `${pending} exercício${pending !== 1 ? 's' : ''} acumulado${pending !== 1 ? 's' : ''}`;
+      } else {
+        btn.textContent = 'Praticar';
+      }
+    }
+  } catch {}
+}
+
+function openDailyExercise() {
+  if (!_dailyExData) return;
+  const d = _dailyExData;
+  set('dex-module-title', d.module_title);
+  set('dex-prompt', d.prompt);
+  const optEl = document.getElementById('dex-options');
+  optEl.innerHTML = '';
+  document.getElementById('dex-result').style.display = 'none';
+
+  const opts = d.kind === 'exercise-tf' ? ['Verdadeiro', 'Falso'] : (d.options || []);
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.textContent = opt;
+    btn.style.cssText = 'width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #E5E7EB;background:#FAF7F2;font-size:13px;text-align:left;cursor:pointer;transition:border-color .15s;';
+    btn.onmouseover = () => btn.style.borderColor = '#C4943A';
+    btn.onmouseout  = () => { if (!btn.dataset.selected) btn.style.borderColor = '#E5E7EB'; };
+    btn.onclick     = () => checkDailyAnswer(opt, d.answer, d);
+    optEl.appendChild(btn);
+  });
+
+  const modal = document.getElementById('daily-ex-modal');
+  modal.style.display = 'flex';
+}
+
+async function checkDailyAnswer(chosen, correct, data) {
+  const isCorrect = chosen === correct;
+  const resultEl  = document.getElementById('dex-result');
+  resultEl.textContent = isCorrect ? '🎉 Correto! Ótimo trabalho!' : `Resposta correta: ${correct}`;
+  resultEl.style.cssText = `display:;margin-top:16px;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;background:${isCorrect ? '#F0F9F4' : '#FEF2F2'};color:${isCorrect ? '#3A7A5A' : '#B91C1C'};border:1px solid ${isCorrect ? '#C6E8D4' : '#FECACA'};`;
+
+  // Mark as complete
+  try {
+    await fetch('/api/daily-exercise/complete', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        module_slug:    data.module_slug,
+        exercise_index: data.exercise_index,
+        exercise_date:  data.exercise_date,
+      }),
+    });
+  } catch {}
+
+  // Disable options
+  document.querySelectorAll('#dex-options button').forEach(b => b.disabled = true);
+
+  // Reload card after 1.5s — if more exercises are pending, the next one shows
+  setTimeout(async () => {
+    closeDailyModal();
+    _dailyExData = null;
+    document.getElementById('daily-ex-badge').style.display = 'none';
+    document.getElementById('daily-ex-btn').style.display   = 'none';
+    await loadDailyExercise();
+  }, 1500);
+}
+
+function closeDailyModal() {
+  document.getElementById('daily-ex-modal').style.display = 'none';
+}
+
+// ── Revisões pendentes ────────────────────────────────────────────────────────
+
+async function loadPendingReviews() {
+  try {
+    const res = await fetch('/api/reviews');
+    if (!res.ok) return;
+    const data = await res.json();
+    const card = document.getElementById('card-reviews');
+
+    if (data.blocked) {
+      const n = data.pending_daily || 1;
+      card.style.display = '';
+      card.style.borderColor = '#E5E7EB';
+      card.querySelector('[style*="gradient"]').style.opacity = '0.5';
+      set('reviews-label', `Faça ${n} exercício${n !== 1 ? 's' : ''} diário${n !== 1 ? 's' : ''} primeiro`);
+      const reviewBtn = card.querySelector('a[href="/revisoes"]');
+      if (reviewBtn) {
+        reviewBtn.style.pointerEvents = 'none';
+        reviewBtn.style.opacity = '0.4';
+        reviewBtn.textContent = '🔒';
+        reviewBtn.style.padding = '8px 12px';
+      }
+      return;
+    }
+
+    const count = (data.this_week || []).length;
+    if (count === 0) return;
+    card.style.display = '';
+    set('reviews-label', `${count} módulo${count !== 1 ? 's' : ''} para revisar esta semana`);
+  } catch {}
+}
+
+// ── Desafio da semana ─────────────────────────────────────────────────────────
+
+let _challengeData = null;
+
+async function loadWeeklyChallenge() {
+  try {
+    const res = await fetch('/api/weekly-challenge');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.challenge) return;
+    _challengeData = data.challenge;
+    const card = document.getElementById('card-challenge');
+    card.style.display = '';
+    set('challenge-title', data.challenge.title);
+    if (data.challenge.my_response) {
+      document.getElementById('challenge-done-badge').style.display = '';
+    } else {
+      document.getElementById('challenge-btn').style.display = '';
+    }
+  } catch {}
+}
+
+function openChallengeModal() {
+  if (!_challengeData) return;
+  set('ch-modal-title', _challengeData.title);
+  set('ch-modal-desc',  _challengeData.description);
+
+  const hasResponse = !!_challengeData.my_response;
+  document.getElementById('ch-response-area').style.display   = hasResponse ? 'none' : '';
+  document.getElementById('ch-already-sent').style.display    = hasResponse ? '' : 'none';
+  document.getElementById('ch-footer').style.display          = hasResponse ? 'none' : '';
+  if (hasResponse) {
+    set('ch-sent-text', _challengeData.my_response);
+  }
+  document.getElementById('ch-send-msg').textContent = '';
+  document.getElementById('ch-textarea').value = '';
+  document.getElementById('challenge-modal').style.display = 'flex';
+}
+
+async function sendChallengeResponse() {
+  if (!_challengeData) return;
+  const text = (document.getElementById('ch-textarea').value || '').trim();
+  const msgEl = document.getElementById('ch-send-msg');
+  if (!text) { msgEl.style.color = '#EF4444'; msgEl.textContent = 'Escreva sua resposta antes de enviar.'; return; }
+
+  const btn = document.getElementById('ch-send-btn');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+  try {
+    const res = await fetch(`/api/weekly-challenge/${_challengeData.id}/respond`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ response: text }),
+    });
+    if (!res.ok) throw new Error('Erro ao enviar');
+    _challengeData.my_response = text;
+
+    // Show sent state
+    document.getElementById('ch-response-area').style.display = 'none';
+    document.getElementById('ch-footer').style.display = 'none';
+    document.getElementById('ch-already-sent').style.display = '';
+    set('ch-sent-text', text);
+
+    // Update card badge
+    document.getElementById('challenge-btn').style.display = 'none';
+    document.getElementById('challenge-done-badge').style.display = '';
+  } catch {
+    msgEl.style.color = '#EF4444'; msgEl.textContent = 'Erro ao enviar. Tente novamente.';
+    btn.disabled = false; btn.textContent = 'Enviar resposta';
+  }
+}
+
+function closeChallengeModal() {
+  document.getElementById('challenge-modal').style.display = 'none';
+}
+
+function renderTrail(doneSet) {
+  let current = null, groupName = '', groupColor = GROUP_COLORS[0];
+
+  for (let gi = 0; gi < GROUPS_DATA.length; gi++) {
+    const g = GROUPS_DATA[gi];
+    for (const m of g.modules || []) {
+      if (!doneSet.has(m.slug)) {
+        current    = m;
+        groupName  = g.name;
+        groupColor = GROUP_COLORS[gi % GROUP_COLORS.length];
+        break;
+      }
+    }
+    if (current) break;
+  }
+
+  if (!current) {
+    set('trail-title', '🎉 Todos os módulos concluídos!');
+    set('trail-desc', 'Parabéns pelo progresso! Aguarde novos módulos em breve.');
+    set('trail-num', '✓');
+    set('trail-title-panel', 'Completo');
+    document.getElementById('trail-steps').innerHTML = '';
+    return;
+  }
+
+  document.getElementById('trail-panel').style.background =
+    `linear-gradient(135deg,${groupColor} 0%,${groupColor}BB 100%)`;
+
+  set('trail-num',         `M${String(current.number||'').padStart(2,'0')}`);
+  set('trail-title-panel', current.title || '—');
+  set('trail-title',       current.title || '—');
+  set('trail-group',       groupName);
+  set('trail-desc',        current.description || 'Próximo módulo da sua trilha de aprendizado.');
+
+  const steps = Math.min(current.step_count || 5, 8);
+  document.getElementById('trail-steps').innerHTML =
+    Array.from({length: steps}, (_, i) =>
+      `<div style="flex:1;height:5px;border-radius:3px;background:${i===0 ? groupColor : '#F4ECD8'};"></div>`
+    ).join('');
+  set('trail-step-lbl', `0 de ${steps} etapas concluídas`);
+
+  const btn = document.getElementById('trail-btn');
+  if (btn) btn.href = `/modulos/${current.slug}`;
+}
+
+function renderGroupBars(doneSet) {
+  GROUPS_DATA.forEach(g => {
+    const gDone = (g.modules||[]).filter(m => doneSet.has(m.slug)).length;
+    const pct   = g.module_count > 0 ? Math.round((gDone / g.module_count) * 100) : 0;
+    const bar   = document.querySelector(`[data-group-bar="${g.slug}"]`);
+    if (bar) setTimeout(() => { bar.style.width = pct + '%'; }, 300);
   });
 }
 
-function renderPerformance() {
-  const done = window._doneModules || 0;
-  const total = window._totalModules || 1;
-  const pct = Math.round((done / total) * 100);
-  const circumference = 263.9;
-  const dashArr = (pct / 100) * circumference;
-
-  const circle = document.getElementById('perf-circle');
-  if (circle) circle.setAttribute('stroke-dasharray', `${dashArr} ${circumference}`);
-  const pctEl = document.getElementById('perf-pct');
-  if (pctEl) pctEl.textContent = pct + '%';
-  const modEl = document.getElementById('perf-modules');
-  if (modEl) modEl.textContent = `${done} / ${total}`;
-  const daysEl = document.getElementById('perf-days');
-  if (daysEl) daysEl.textContent = (window._studyDays || []).length;
-}
-
-function renderTrailWidget() {
-  const container = document.getElementById('trail-widget');
-  if (!container) return;
-  const prog = window._progress || [];
-  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
-  let currentModule = null;
-  for (const group of GROUPS_DATA) {
-    for (const m of group.modules) {
-      if (!doneSet.has(m.slug)) { currentModule = m; break; }
-    }
-    if (currentModule) break;
-  }
-
-  if (!currentModule) {
-    container.innerHTML = '<p class="text-[13px] text-[#4E7A60] font-semibold">🎉 Todos os módulos concluídos!</p>';
-    return;
-  }
-
-  const steps = currentModule.step_count || 7;
-  const stepsHTML = Array.from({length: Math.min(steps, 5)}, (_, i) => `
-    <div class="flex flex-col items-center gap-1.5 z-10">
-      <div class="w-8 h-8 rounded-full ${i < 2 ? 'bg-[#4E7A60]' : i === 2 ? 'bg-[#C4943A] ring-4 ring-[#C4943A]/20' : 'bg-[#F5EFE4] border-2 border-gray-200'} flex items-center justify-center shadow-sm">
-        ${i < 2 ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
-          : i === 2 ? '<span class="text-white text-sm">&#9834;</span>'
-          : '<svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>'}
-      </div>
-    </div>`).join('');
-
-  container.innerHTML = `
-    <div class="relative flex items-start justify-between px-1 mb-4">
-      <div class="absolute left-4 right-4 top-4 h-0.5 bg-gray-200 z-0"></div>
-      ${stepsHTML}
-    </div>
-    <p class="font-semibold text-[13px] text-gray-700">M${String(currentModule.number).padStart(2,'0')} — ${currentModule.title}</p>
-    <p class="text-[11px] text-gray-400 mt-1">${currentModule.description}</p>
-    <a href="/modulos/${currentModule.slug}" class="block w-full mt-3 bg-[#C4943A] hover:bg-[#B3852F] text-white font-semibold text-[13px] py-2.5 rounded-xl transition-colors text-center">
-      Continuar Módulo
-    </a>`;
-}
-
-function renderNextLesson() {
-  const container = document.getElementById('next-lesson-widget');
-  if (!container) return;
-  const prog = window._progress || [];
-  const doneSet = new Set(prog.filter(p => p.completed > 0).map(p => p.module_slug));
-  let nextModule = null;
-  for (const group of GROUPS_DATA) {
-    for (const m of group.modules) {
-      if (!doneSet.has(m.slug)) { nextModule = m; break; }
-    }
-    if (nextModule) break;
-  }
-
-  if (!nextModule) {
-    container.innerHTML = '<p class="text-[13px] text-[#4E7A60]">Todos concluídos! 🎉</p>';
-    return;
-  }
-
-  container.innerHTML = `
-    <div class="rounded-xl bg-[#F2EAD8] h-[110px] relative overflow-hidden flex items-center justify-center mb-3">
-      <span class="absolute text-[#C4943A] opacity-20 select-none" style="font-size:80px;font-family:'Georgia',serif;right:-10px;bottom:-10px;">&#119070;</span>
-      <a href="/modulos/${nextModule.slug}" class="absolute inset-0 flex items-center justify-center">
-        <div class="w-10 h-10 rounded-full bg-gray-800/75 flex items-center justify-center shadow-lg hover:bg-gray-800/90 transition-colors">
-          <svg class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-      </a>
-    </div>
-    <p class="font-bold text-[14px] text-gray-800">${nextModule.title}</p>
-    <p class="text-[11px] text-gray-400 mt-0.5">${nextModule.topics ? nextModule.topics.slice(0,2).join(' · ') : ''}</p>
-    <a href="/modulos/${nextModule.slug}" class="block w-full mt-3 bg-[#C4943A] hover:bg-[#B3852F] text-white font-semibold text-[13px] py-2.5 rounded-xl transition-colors text-center">
-      Continuar Aula
-    </a>`;
-}
-
-function renderAchievements() {
-  const container = document.getElementById('achievements-widget');
-  if (!container) return;
-  const done = window._doneModules || 0;
-  const streak = window._streak || 0;
-
-  const list = [
-    { icon: '🎵', bg: 'bg-[#C4D9CE]', name: 'Primeiros Passos', desc: 'Concluiu sua primeira trilha', xp: 50, earned: done >= 1 },
-    { icon: '⭐', bg: 'bg-[#F0E4B8]', name: 'Dedicado', desc: 'Estudou por 10 dias seguidos', xp: 100, earned: streak >= 10 },
-    { icon: '🎯', bg: 'bg-[#F4CACA]', name: 'Em Ritmo', desc: 'Completou 5 módulos', xp: 80, earned: done >= 5 },
-  ];
-
-  container.innerHTML = list.map(a => `
-    <div class="flex items-center gap-3 ${!a.earned ? 'opacity-40' : ''}">
-      <div class="w-10 h-10 rounded-full ${a.bg} flex items-center justify-center flex-shrink-0 text-lg">
-        ${a.earned ? a.icon : '🔒'}
-      </div>
-      <div class="flex-1 min-w-0">
-        <p class="font-semibold text-[12px] text-gray-800">${a.name}</p>
-        <p class="text-[10px] text-gray-400 truncate">${a.desc}</p>
-      </div>
-      ${a.earned ? `<span class="text-[10px] font-bold text-[#4E7A60] bg-[#E8F4EE] px-2 py-1 rounded-full flex-shrink-0">+${a.xp} XP</span>` : ''}
-    </div>`).join('');
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
 }
 </script>
 {% endblock %}

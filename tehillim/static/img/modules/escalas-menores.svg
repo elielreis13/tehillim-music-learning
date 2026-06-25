@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="800" height="300" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="300" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">ESCALAS MENORES — 3 TIPOS</text>
+
+  <!-- 3 types of minor scales: Natural, Harmonic, Melodic -->
+
+  <!-- Row labels -->
+  <text x="40" y="85"  font-size="12" font-weight="700" fill="#C62828" text-anchor="middle">NATURAL</text>
+  <text x="40" y="155" font-size="12" font-weight="700" fill="#AD1457" text-anchor="middle">HARMÔNICA</text>
+  <text x="40" y="225" font-size="12" font-weight="700" fill="#6A1B9A" text-anchor="middle">MELÓDICA</text>
+
+  <!-- Scale notes: A natural minor: A B C D E F G A -->
+  <!-- A harmonic minor: A B C D E F G# A -->
+  <!-- A melodic minor: A B C D E F# G# A (ascending) -->
+
+  <!-- Notes x positions: 95, 185, 275, 365, 455, 545, 635, 725 -->
+  <!-- Note names -->
+  <g font-size="13" text-anchor="middle" font-weight="600">
+    <!-- Headers -->
+    <text x="95"  y="50" fill="#888">Lá</text>
+    <text x="185" y="50" fill="#888">Si</text>
+    <text x="275" y="50" fill="#888">Dó</text>
+    <text x="365" y="50" fill="#888">Ré</text>
+    <text x="455" y="50" fill="#888">Mi</text>
+    <text x="545" y="50" fill="#888">Fá</text>
+    <text x="635" y="50" fill="#888">Sol</text>
+    <text x="725" y="50" fill="#888">Lá</text>
+
+    <text x="95"  y="55" fill="#888">1</text>
+    <text x="185" y="55" fill="#888">2</text>
+    <text x="275" y="55" fill="#888">3</text>
+    <text x="365" y="55" fill="#888">4</text>
+    <text x="455" y="55" fill="#888">5</text>
+    <text x="545" y="55" fill="#888">6</text>
+    <text x="635" y="55" fill="#888">7</text>
+    <text x="725" y="55" fill="#888">8</text>
+  </g>
+
+  <!-- NATURAL minor: A B C D E F G A (all natural) -->
+  <g>
+    <circle cx="95"  cy="80" r="18" fill="#C62828"/>
+    <circle cx="185" cy="80" r="18" fill="#C62828"/>
+    <circle cx="275" cy="80" r="18" fill="#C62828"/>
+    <circle cx="365" cy="80" r="18" fill="#C62828"/>
+    <circle cx="455" cy="80" r="18" fill="#C62828"/>
+    <circle cx="545" cy="80" r="18" fill="#C62828"/>
+    <circle cx="635" cy="80" r="18" fill="#C62828"/>
+    <circle cx="725" cy="80" r="18" fill="#C62828"/>
+    <g font-size="11" text-anchor="middle" fill="white">
+      <text x="95"  y="84">Lá</text>
+      <text x="185" y="84">Si</text>
+      <text x="275" y="84">Dó</text>
+      <text x="365" y="84">Ré</text>
+      <text x="455" y="84">Mi</text>
+      <text x="545" y="84">Fá</text>
+      <text x="635" y="84">Sol</text>
+      <text x="725" y="84">Lá</text>
+    </g>
+    <!-- intervals T S T T S T T -->
+    <g font-size="9" text-anchor="middle" fill="#C62828">
+      <text x="140" y="100">T</text>
+      <text x="230" y="100">S</text>
+      <text x="320" y="100">T</text>
+      <text x="410" y="100">T</text>
+      <text x="500" y="100">S</text>
+      <text x="590" y="100">T</text>
+      <text x="680" y="100">T</text>
+    </g>
+  </g>
+
+  <!-- HARMONIC minor: A B C D E F G# A -->
+  <g>
+    <circle cx="95"  cy="150" r="18" fill="#AD1457"/>
+    <circle cx="185" cy="150" r="18" fill="#AD1457"/>
+    <circle cx="275" cy="150" r="18" fill="#AD1457"/>
+    <circle cx="365" cy="150" r="18" fill="#AD1457"/>
+    <circle cx="455" cy="150" r="18" fill="#AD1457"/>
+    <circle cx="545" cy="150" r="18" fill="#AD1457"/>
+    <circle cx="635" cy="150" r="18" fill="#FF4081"/>
+    <circle cx="725" cy="150" r="18" fill="#AD1457"/>
+    <g font-size="11" text-anchor="middle" fill="white">
+      <text x="95"  y="154">Lá</text>
+      <text x="185" y="154">Si</text>
+      <text x="275" y="154">Dó</text>
+      <text x="365" y="154">Ré</text>
+      <text x="455" y="154">Mi</text>
+      <text x="545" y="154">Fá</text>
+      <text x="635" y="154">Sol♯</text>
+      <text x="725" y="154">Lá</text>
+    </g>
+    <!-- 7th raised -->
+    <text x="635" y="136" text-anchor="middle" font-size="9" fill="#FF4081">↑ 7ª ↑</text>
+    <!-- intervals T S T T S T+ S -->
+    <g font-size="9" text-anchor="middle" fill="#AD1457">
+      <text x="140" y="170">T</text>
+      <text x="230" y="170">S</text>
+      <text x="320" y="170">T</text>
+      <text x="410" y="170">T</text>
+      <text x="500" y="170">S</text>
+      <text x="590" y="170">T+½</text>
+      <text x="680" y="170">S</text>
+    </g>
+    <text x="590" y="182" text-anchor="middle" font-size="8" fill="#FF4081">(3 sem.)</text>
+  </g>
+
+  <!-- MELODIC minor: A B C D E F# G# A -->
+  <g>
+    <circle cx="95"  cy="220" r="18" fill="#6A1B9A"/>
+    <circle cx="185" cy="220" r="18" fill="#6A1B9A"/>
+    <circle cx="275" cy="220" r="18" fill="#6A1B9A"/>
+    <circle cx="365" cy="220" r="18" fill="#6A1B9A"/>
+    <circle cx="455" cy="220" r="18" fill="#6A1B9A"/>
+    <circle cx="545" cy="220" r="18" fill="#CE93D8"/>
+    <circle cx="635" cy="220" r="18" fill="#CE93D8"/>
+    <circle cx="725" cy="220" r="18" fill="#6A1B9A"/>
+    <g font-size="11" text-anchor="middle" fill="white">
+      <text x="95"  y="224">Lá</text>
+      <text x="185" y="224">Si</text>
+      <text x="275" y="224">Dó</text>
+      <text x="365" y="224">Ré</text>
+      <text x="455" y="224">Mi</text>
+      <text x="545" y="224">Fá♯</text>
+      <text x="635" y="224">Sol♯</text>
+      <text x="725" y="224">Lá</text>
+    </g>
+    <text x="545" y="206" text-anchor="middle" font-size="9" fill="#CE93D8">↑ 6ª e 7ª ↑</text>
+    <text x="635" y="206" text-anchor="middle" font-size="9" fill="#CE93D8">elevadas</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="400" y="268" text-anchor="middle" font-size="11.5" fill="#555">Natural = notas naturais  ·  Harmônica = 7ª elevada (sensível)  ·  Melódica = 6ª e 7ª elevadas (subindo)</text>
+  <text x="400" y="285" text-anchor="middle" font-size="10.5" fill="#888">As 3 menores têm o mesmo 3º grau abaixado (b3) — é isso que as torna "menores".</text>
+</svg>

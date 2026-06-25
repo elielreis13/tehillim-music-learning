@@ -1,0 +1,1710 @@
+{% extends "base_app.html" %}
+
+{% block title %}{{ "Editar" if mode == "edit" else "Novo" }} Módulo | Tehillim{% endblock %}
+
+{% block head %}
+<style>
+  :root {
+    --ink: #24313f; --mint: #dff7ea; --sky: #dcefff; --sun: #ffd66b;
+    --coral: #ff8a7a; --plum: #6d5dfc; --green: #2e9f65;
+    --shadow: 0 18px 48px rgba(31,43,56,.14); --radius: 8px;
+  }
+  #ex-live-preview, #game-live-preview { font-family: 'Segoe UI', system-ui, sans-serif; color: #24313f; }
+  #ex-live-preview .game-prompt, #game-live-preview .game-prompt { font-size:1rem; font-weight:700; margin-bottom:14px; }
+</style>
+{% endblock %}
+
+{% block header %}
+<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
+  <div class="flex items-center justify-between relative z-10 flex-wrap gap-3">
+    <div class="flex items-center gap-3">
+      <a href="/admin/modulos" class="text-gray-500 hover:text-gray-800 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </a>
+      <div>
+        <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">
+          Professor — Módulos
+          {% if mode == "edit" and source == "md" %}
+          <span class="ml-2 text-amber-600 font-semibold">· importado do .md — salvar cria versão no DB</span>
+          {% endif %}
+        </p>
+        <h1 class="text-[20px] font-bold text-gray-800 mt-0.5">
+          {{ "Editar: " + module_data.title if module_data else "Novo Módulo" }}
+        </h1>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <p id="save-feedback" class="text-[13px] min-h-[18px] mr-1"></p>
+      <a href="/admin/modulos" class="px-4 py-2 rounded-xl border border-gray-200 text-[13px] text-gray-600 hover:bg-gray-50 transition-colors">Cancelar</a>
+      <button id="save-btn" class="px-6 py-2.5 rounded-xl bg-[#C4943A] text-white text-[13px] font-semibold hover:bg-[#B3852F] transition-colors shadow-sm">
+        Salvar Módulo
+      </button>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-5">
+
+  <!-- Section 1: Info básica -->
+  <div class="bg-white rounded-2xl shadow-sm p-5">
+    <h2 class="sec-title">1. Informações básicas</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div class="md:col-span-2">
+        <label class="f-label">Slug <span class="text-gray-300 font-normal">(único, sem espaços)</span></label>
+        <input id="f-slug" type="text" placeholder="ex: som-e-ruido"
+               class="f-input font-mono" value="{{ module_data.slug if module_data else '' }}"
+               {% if mode == "edit" %}readonly style="background:#F9FAFB;color:#6B7280;"{% endif %}>
+      </div>
+      <div>
+        <label class="f-label">Grupo</label>
+        <select id="f-group" class="f-input">
+          <option value="">Selecione...</option>
+          {% for g in available_groups %}
+          <option value="{{ g.slug }}" {{ "selected" if module_data and module_data.group_slug == g.slug else "" }}>
+            {{ g.name | truncate(30, True) }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div>
+        <label class="f-label">Título</label>
+        <input id="f-title" type="text" placeholder="Ex: Som e Ruído" class="f-input"
+               value="{{ module_data.title if module_data else '' }}">
+      </div>
+      <div>
+        <label class="f-label">Tópicos <span class="text-gray-300 font-normal">(separados por vírgula)</span></label>
+        <input id="f-topics" type="text" placeholder="Ex: Som, Ruído, Vibração" class="f-input"
+               value="{{ module_data.topics if module_data else '' }}">
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="f-label">Descrição curta</label>
+        <input id="f-description" type="text" placeholder="Frase de introdução para o aluno" class="f-input"
+               value="{{ module_data.description if module_data else '' }}">
+      </div>
+      <div>
+        <label class="f-label">
+          URL do YouTube <span class="text-gray-300 font-normal">(opcional)</span>
+          <span class="ml-2 text-[11px] text-[#C4943A] font-semibold">→ cria uma etapa de Vídeo no módulo</span>
+        </label>
+        <input id="f-video" type="url" placeholder="https://www.youtube.com/watch?v=..." class="f-input"
+               value="{{ module_data.video_url if module_data else '' }}">
+      </div>
+    </div>
+
+    <!-- Module type -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-100">
+      <div>
+        <label class="f-label">Tipo do módulo</label>
+        <select id="f-module-type" class="f-input" onchange="toggleAssignedStudents()">
+          <option value="canonical" {{ 'selected' if not module_data or module_data.get('module_type','canonical') == 'canonical' else '' }}>
+            Canônico — aparece em Minhas Trilhas para todos
+          </option>
+          <option value="lesson" {{ 'selected' if module_data and module_data.get('module_type') == 'lesson' else '' }}>
+            Aula Extra — para alunos específicos
+          </option>
+        </select>
+        <p class="text-[11px] text-gray-400 mt-1">Módulos canônicos aparecem no menu "Minhas Trilhas" de todos os alunos.</p>
+      </div>
+      <div id="f-assigned-row" style="{{ 'display:none' if not module_data or module_data.get('module_type','canonical') != 'lesson' else '' }}">
+        <label class="f-label">Alunos</label>
+        {% if students %}
+        {% set assigned_set = (module_data.assigned_to if module_data and module_data.assigned_to else '') %}
+        <div style="position:relative;" id="student-multiselect">
+          <!-- Trigger button -->
+          <button type="button" id="student-trigger"
+                  onclick="toggleStudentDropdown()"
+                  class="f-input text-left flex items-center justify-between"
+                  style="cursor:pointer;user-select:none;">
+            <span id="student-trigger-label" class="text-gray-400">Selecione os alunos...</span>
+            <svg style="width:16px;height:16px;flex-shrink:0;color:#9CA3AF;transition:transform 0.15s;" id="student-chevron"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <!-- Dropdown panel -->
+          <div id="student-dropdown"
+               style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:100;
+                      background:white;border:1px solid #E5E7EB;border-radius:12px;
+                      box-shadow:0 8px 24px rgba(0,0,0,0.10);overflow:hidden;">
+            <div style="padding:8px 8px 4px;">
+              <input type="text" placeholder="Buscar aluno..." id="student-search-input"
+                     style="width:100%;padding:7px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;outline:none;"
+                     oninput="filterStudentDropdown(this.value)">
+            </div>
+            <div id="student-options" style="max-height:200px;overflow-y:auto;padding:4px 0;">
+              {% for s in students %}
+              {% set checked = s.email in assigned_set %}
+              <label class="student-option flex items-center gap-3 px-3 py-2 hover:bg-[#FBF6EE] cursor-pointer"
+                     data-name="{{ s.name | lower }}" data-email="{{ s.email | lower }}">
+                <input type="checkbox" class="student-check w-4 h-4 accent-[#C4943A] flex-shrink-0"
+                       value="{{ s.email }}" {{ 'checked' if checked else '' }}>
+                <div class="flex-1 min-w-0">
+                  <p style="font-size:13px;font-weight:500;color:#374151;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ s.name }}</p>
+                  <p style="font-size:11px;color:#9CA3AF;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ s.email }}</p>
+                </div>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <p class="f-input text-gray-400" style="cursor:default;">Nenhum aluno cadastrado ainda.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Teoria -->
+  <div class="bg-white rounded-2xl shadow-sm p-5">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="sec-title mb-0">2. Teoria</h2>
+      <div class="flex items-center gap-2">
+        <button type="button" id="theory-img-btn"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-[12px] text-gray-600 hover:border-[#C4943A] hover:text-[#C4943A] transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+          </svg>
+          Inserir imagem
+        </button>
+        <button type="button" id="gen-narration-btn" onclick="generateNarration()"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#C4943A] text-[12px] text-[#C4943A] font-semibold hover:bg-[#FBF6EE] transition-colors">
+          🎙 Gerar narração
+        </button>
+      </div>
+    </div>
+    <textarea id="f-theory" rows="10" placeholder="Escreva o conteúdo teórico. Pode usar **negrito**, _itálico_, listas, etc.&#10;&#10;Para inserir uma imagem, use: ![descrição](URL da imagem)"
+              class="f-textarea">{{ module_data.theory if module_data else '' }}</textarea>
+
+    <!-- Narration preview -->
+    <div id="narration-box" class="hidden mt-3 p-3 bg-[#F0FAF4] rounded-xl flex items-center gap-3">
+      <span class="text-[13px] text-[#2D6A4F] font-semibold flex-shrink-0">🎙 Narração gerada</span>
+      <audio id="narration-preview" controls class="flex-1 h-8" style="min-width:0;"></audio>
+      <button type="button" onclick="generateNarration()" class="text-[11px] text-[#C4943A] underline flex-shrink-0">Regerar</button>
+    </div>
+    <input type="hidden" id="f-theory-audio-url" value="{{ module_data.theory_audio_url if module_data else '' }}">
+  </div>
+
+  <!-- Section 3: Exercícios -->
+  <div class="bg-white rounded-2xl shadow-sm p-5">
+    <h2 class="sec-title">3. Exercícios</h2>
+
+    <!-- Classic type cards -->
+    <p class="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Exercícios Clássicos</p>
+    <div class="grid grid-cols-4 gap-3 mb-4" id="ex-classic-grid"></div>
+
+    <!-- Game type cards -->
+    <p class="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-2">Jogos como Exercício</p>
+    <div class="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-8 gap-3 mb-4" id="ex-game-grid"></div>
+
+    <!-- Editor + Preview row -->
+    <div id="ex-editor-row" style="display:none" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+      <!-- Editor -->
+      <div class="border border-gray-100 rounded-xl p-4 flex flex-col gap-3">
+        <div id="ex-dynamic-editor"></div>
+        <div class="flex items-center gap-3 pt-2 border-t border-gray-100">
+          <button id="ex-add-btn"
+                  class="px-5 py-2 rounded-xl bg-[#C4943A] text-white text-[13px] font-semibold hover:bg-[#B3852F] transition-colors">
+            Adicionar ao módulo
+          </button>
+          <button id="ex-cancel-edit-btn" style="display:none"
+                  class="px-4 py-2 rounded-xl border border-gray-200 text-[13px] text-gray-600 hover:bg-gray-50 transition-colors"
+                  onclick="cancelExEdit()">
+            Cancelar edição
+          </button>
+        </div>
+      </div>
+      <!-- Preview -->
+      <div class="bg-[#FAF9F7] rounded-xl overflow-hidden flex flex-col">
+        <div class="px-4 py-2.5 bg-[#1F2937] flex items-center gap-2">
+          <div class="flex gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-400 opacity-70"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-yellow-400 opacity-70"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-green-400 opacity-70"></span>
+          </div>
+          <span id="ex-preview-label" class="text-[11px] text-gray-400 ml-1">preview</span>
+        </div>
+        <div class="p-4 flex-1 bg-white" style="min-height:200px;">
+          <div id="ex-live-preview">
+            <p style="font-size:13px;color:#9CA3AF;text-align:center;margin-top:30px;">
+              Selecione um tipo e preencha para ver o preview.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exercise list -->
+    <div id="ex-list-container">
+      <p id="ex-empty" class="text-[13px] text-gray-400 text-center py-4">
+        Nenhum exercício adicionado ainda.
+      </p>
+      <div id="ex-cards" class="flex flex-col gap-2"></div>
+    </div>
+    <button onclick="document.getElementById('ex-classic-grid').scrollIntoView({behavior:'smooth',block:'center'})"
+            class="mt-3 w-full py-2 rounded-xl border-2 border-dashed border-gray-200 text-[13px] text-gray-400 hover:border-[#C4943A] hover:text-[#C4943A] transition-colors">
+      + Adicionar exercício
+    </button>
+  </div>
+
+  <!-- Section 4: Jogo Final -->
+  <div class="bg-white rounded-2xl shadow-sm p-5">
+    <h2 class="sec-title">4. Jogo Final</h2>
+
+    <!-- Game type cards -->
+    <div class="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-8 gap-3 mb-4" id="game-type-grid"></div>
+
+    <!-- Editor + Preview row -->
+    <div id="game-editor-row" style="display:none" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+      <div class="border border-gray-100 rounded-xl p-4">
+        <div id="game-dynamic-editor"></div>
+      </div>
+      <div class="bg-[#FAF9F7] rounded-xl overflow-hidden flex flex-col">
+        <div class="px-4 py-2.5 bg-[#1F2937] flex items-center gap-2">
+          <div class="flex gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-400 opacity-70"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-yellow-400 opacity-70"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-green-400 opacity-70"></span>
+          </div>
+          <span id="game-preview-label" class="text-[11px] text-gray-400 ml-1">preview interativo</span>
+        </div>
+        <div class="p-4 flex-1 bg-white" style="min-height:220px;">
+          <div id="game-live-preview">
+            <p style="font-size:13px;color:#9CA3AF;text-align:center;margin-top:40px;">
+              Configure o conteúdo para ver o preview.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game description (always shown) -->
+    <div id="game-desc-row">
+      <label class="f-label">Instrução para o aluno <span class="text-gray-300 font-normal">(descreve o que fazer)</span></label>
+      <textarea id="f-game" rows="4" placeholder="Ex: Ouça os exemplos e identifique o instrumento. Para cada som, escolha a opção correta..."
+                class="f-textarea">{{ module_data.game if module_data else '' }}</textarea>
+    </div>
+  </div>
+
+  <!-- Image insert dialog -->
+  <div id="img-dialog" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.45);align-items:center;justify-content:center;">
+    <div class="bg-white rounded-2xl shadow-xl p-6" style="width:min(500px,94vw)">
+      <h3 class="font-bold text-[15px] text-gray-800 mb-4">Inserir imagem</h3>
+
+      <!-- Tabs -->
+      <div class="flex gap-1 mb-4 bg-gray-100 p-1 rounded-xl">
+        <button type="button" id="img-tab-upload"
+                onclick="switchImgTab('upload')"
+                class="flex-1 py-1.5 rounded-lg text-[12px] font-semibold transition-colors bg-white text-gray-800 shadow-sm">
+          📁 Do computador
+        </button>
+        <button type="button" id="img-tab-url"
+                onclick="switchImgTab('url')"
+                class="flex-1 py-1.5 rounded-lg text-[12px] font-semibold transition-colors text-gray-500 hover:text-gray-700">
+          🔗 Por URL
+        </button>
+      </div>
+
+      <!-- Upload tab -->
+      <div id="img-panel-upload">
+        <label id="img-drop-zone"
+               style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:2px dashed #E5E7EB;border-radius:12px;padding:28px 16px;cursor:pointer;transition:border-color .15s;"
+               onmouseover="this.style.borderColor='#C4943A'" onmouseout="this.style.borderColor='#E5E7EB'">
+          <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+          </svg>
+          <p class="text-[13px] text-gray-500">Clique para escolher ou arraste a imagem aqui</p>
+          <p class="text-[11px] text-gray-400">JPG, PNG, GIF, WebP — máx. 5 MB</p>
+          <input id="img-file-input" type="file" accept="image/*" class="hidden">
+        </label>
+        <div id="img-upload-preview" class="mt-3 hidden">
+          <img id="img-upload-preview-el" src="" alt="" style="max-width:100%;max-height:180px;border-radius:8px;object-fit:contain;display:block;margin:0 auto;">
+          <p id="img-upload-filename" class="text-[11px] text-gray-400 text-center mt-1"></p>
+        </div>
+        <div id="img-upload-progress" class="hidden mt-3">
+          <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <div id="img-progress-bar" class="h-full bg-[#C4943A] rounded-full transition-all duration-300" style="width:0%"></div>
+          </div>
+          <p id="img-upload-status" class="text-[11px] text-gray-500 mt-1 text-center">Enviando...</p>
+        </div>
+      </div>
+
+      <!-- URL tab -->
+      <div id="img-panel-url" class="hidden">
+        <label class="f-label">URL da imagem</label>
+        <input id="img-url-input" type="url" class="f-input mb-3" placeholder="https://exemplo.com/imagem.jpg">
+        <div id="img-preview" class="mb-3 hidden">
+          <img id="img-preview-el" src="" alt="" style="max-width:100%;max-height:180px;border-radius:8px;object-fit:contain;">
+        </div>
+      </div>
+
+      <label class="f-label mt-3">Descrição (alt text)</label>
+      <input id="img-alt-input" type="text" class="f-input mb-4" placeholder="Descrição da imagem (opcional)">
+
+      <div class="flex gap-3">
+        <button type="button" id="img-insert-btn" onclick="confirmImgInsert()"
+                class="px-5 py-2 rounded-xl bg-[#C4943A] text-white text-[13px] font-semibold hover:bg-[#B3852F] transition-colors">
+          Inserir
+        </button>
+        <button type="button" onclick="closeImgDialog()"
+                class="px-5 py-2 rounded-xl border border-gray-200 text-gray-600 text-[13px] hover:border-gray-300 transition-colors">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom save -->
+  <div class="flex items-center gap-3 pb-4">
+    <button id="save-btn-bottom"
+            class="px-8 py-3 rounded-xl bg-[#C4943A] text-white text-[14px] font-semibold hover:bg-[#B3852F] transition-colors shadow-sm">
+      Salvar Módulo
+    </button>
+    <p id="save-feedback-bottom" class="text-[13px] min-h-[18px]"></p>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<link rel="stylesheet" href="/static/css/games.css">
+<script src="https://cdn.jsdelivr.net/npm/vexflow@3.0.9/releases/vexflow-min.js"></script>
+<script src="/static/js/vexflow-utils.js"></script>
+<script src="/static/js/audio.js"></script>
+<script src="/static/js/games.js" data-module-player="true"></script>
+
+<style>
+  .sec-title { font-size:14px; font-weight:700; color:#374151; margin-bottom:16px; }
+  .f-label { display:block; font-size:12px; font-weight:600; color:#4B5563; margin-bottom:5px; }
+  .f-input {
+    display:block; width:100%; padding:9px 13px; border:1px solid #E5E7EB; border-radius:10px;
+    font-size:13px; outline:none; transition:border-color .15s; background:#fff;
+  }
+  .f-input:focus { border-color:#C4943A; box-shadow:0 0 0 3px rgba(196,148,58,.1); }
+  .f-textarea {
+    display:block; width:100%; padding:10px 13px; border:1px solid #E5E7EB; border-radius:10px;
+    font-size:13px; outline:none; resize:vertical; transition:border-color .15s; line-height:1.6;
+  }
+  .f-textarea:focus { border-color:#C4943A; box-shadow:0 0 0 3px rgba(196,148,58,.1); }
+  .mb-0 { margin-bottom: 0 !important; }
+
+  /* EasyMDE fit */
+  .EasyMDEContainer { width: 100%; }
+  .EasyMDEContainer .CodeMirror {
+    border-radius: 0 0 10px 10px; border-color: #E5E7EB;
+    font-size: 13px; font-family: inherit; line-height: 1.6;
+  }
+  .EasyMDEContainer .editor-toolbar {
+    border-radius: 10px 10px 0 0; border-color: #E5E7EB;
+    opacity: 1; background: #FAFAFA;
+  }
+  .EasyMDEContainer .editor-toolbar button:hover,
+  .EasyMDEContainer .editor-toolbar button.active { background: #F2EAD8; color: #C4943A; border-color: transparent; }
+  .EasyMDEContainer .CodeMirror-focused { border-color: #C4943A; box-shadow: 0 0 0 3px rgba(196,148,58,.1); }
+
+  /* Type cards (shared by exercises and games) */
+  .type-card {
+    cursor:pointer; border:2px solid #E5E7EB; border-radius:14px; padding:12px 8px;
+    text-align:center; transition:all .15s; user-select:none;
+  }
+  .type-card:hover { border-color:#C4943A; background:#FFFBF2; }
+  .type-card.active { border-color:#C4943A; background:#FDF6EC; }
+  .type-card .tc-icon { font-size:22px; margin-bottom:3px; }
+  .type-card .tc-label { font-size:10px; font-weight:600; color:#374151; line-height:1.2; }
+
+  /* Field rows inside editors */
+  .field-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+  .field-row input, .field-row textarea, .field-row select {
+    flex:1; padding:8px 12px; border:1px solid #E5E7EB; border-radius:10px;
+    font-size:13px; outline:none; transition:border-color .15s;
+  }
+  .field-row input:focus { border-color:#C4943A; }
+  .del-btn {
+    flex-shrink:0; width:28px; height:28px; border-radius:8px; border:none;
+    background:#FEE2E2; color:#EF4444; cursor:pointer; font-size:14px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .add-row-btn {
+    display:inline-flex; align-items:center; gap:6px; padding:7px 14px;
+    border:1.5px dashed #D1D5DB; border-radius:10px; background:transparent;
+    color:#6B7280; font-size:12px; cursor:pointer; transition:all .15s;
+  }
+  .add-row-btn:hover { border-color:#C4943A; color:#C4943A; }
+  .field-label { font-size:12px; font-weight:600; color:#4B5563; margin-bottom:6px; }
+  .quiz-question-block { border:1px solid #E5E7EB; border-radius:12px; padding:12px; margin-bottom:10px; }
+  .quiz-question-block .q-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .quiz-question-block .q-num { font-size:11px; font-weight:700; color:#9CA3AF; }
+  .option-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .option-row input[type=radio] { flex-shrink:0; accent-color:#C4943A; }
+  .option-row input[type=text] { flex:1; padding:6px 10px; border:1px solid #E5E7EB; border-radius:8px; font-size:12px; }
+  .option-row input[type=text]:focus { border-color:#C4943A; outline:none; }
+  .tf-toggle { display:flex; }
+  .tf-toggle button { padding:5px 12px; font-size:12px; border:1px solid #E5E7EB; cursor:pointer; }
+  .tf-toggle button:first-child { border-radius:8px 0 0 8px; }
+  .tf-toggle button:last-child { border-radius:0 8px 8px 0; border-left:none; }
+  .tf-toggle button.active-v { background:#D1FAE5; color:#065F46; border-color:#6EE7B7; }
+  .tf-toggle button.active-f { background:#FEE2E2; color:#991B1B; border-color:#FCA5A5; }
+  .pattern-grid { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .beat-cell { width:38px; height:38px; border-radius:8px; border:2px solid #E5E7EB; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px; transition:all .1s; }
+  .beat-cell.on { background:#C4943A; border-color:#C4943A; }
+  .beat-cell.off { background:#F9FAFB; }
+
+  /* Exercise list cards */
+  .ex-card-item {
+    display:flex; align-items:center; gap:10px; padding:10px 14px;
+    border:1px solid #E5E7EB; border-radius:12px; background:#FAFAFA;
+    cursor:pointer; transition:all .15s;
+  }
+  .ex-card-item:hover { border-color:#C4943A; background:#FFFBF2; }
+  .ex-badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:6px; text-transform:uppercase; flex-shrink:0; }
+  .badge-mc    { background:#DBEAFE; color:#1E40AF; }
+  .badge-tf    { background:#D1FAE5; color:#065F46; }
+  .badge-fill  { background:#FEF3C7; color:#92400E; }
+  .badge-match { background:#EDE9FE; color:#5B21B6; }
+  .ex-move { display:flex; gap:2px; margin-left:auto; }
+  .ex-move button { width:24px; height:24px; border:none; background:#F3F4F6; border-radius:6px; cursor:pointer; font-size:13px; color:#6B7280; }
+  .ex-move button:hover { background:#E5E7EB; }
+  .badge-game { background:#FEF3C7; color:#92400E; font-size:9px; }
+</style>
+
+<script>
+// ════════════════════════════════════════════════════════════════════════════════
+// CONTEXT ALIASES — set before calling any buildXxxEditor function
+// _D    = active data object (gameData or exData)
+// _upd  = active preview update fn
+// _rebld = active rebuild fn (kind) => void
+// ════════════════════════════════════════════════════════════════════════════════
+let _D = {}, _upd = () => {}, _rebld = () => {};
+
+// ════════════════════════════════════════════════════════════════════════════════
+// EXERCISE EDITOR
+// ════════════════════════════════════════════════════════════════════════════════
+
+let exercises = {{ (module_data.exercises | tojson) if module_data and module_data.exercises else '[]' }};
+let selectedExKind = null;
+let exData = {};
+let editingExIdx = null;
+
+const EX_CLASSIC = [
+  { kind: "exercise-mc",    icon: "❓", label: "Múltipla Escolha" },
+  { kind: "exercise-tf",    icon: "⚡", label: "V / F" },
+  { kind: "exercise-fill",  icon: "📝", label: "Completar" },
+  { kind: "exercise-match", icon: "🔗", label: "Associação" },
+];
+const EX_LABELS    = { "exercise-mc":"MC", "exercise-tf":"V/F", "exercise-fill":"Fill", "exercise-match":"Match" };
+const EX_BADGE_CLS = { "exercise-mc":"badge-mc", "exercise-tf":"badge-tf", "exercise-fill":"badge-fill", "exercise-match":"badge-match" };
+
+function _buildTypeGrid(gridId, types) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = types.map(t => `
+    <div class="type-card" data-kind="${t.kind}">
+      <div class="tc-icon">${t.icon}</div>
+      <div class="tc-label">${t.label}</div>
+    </div>`).join("");
+  grid.querySelectorAll(".type-card").forEach(card =>
+    card.addEventListener("click", () => selectExType(card.dataset.kind))
+  );
+}
+
+function selectExType(kind) {
+  document.querySelectorAll("#ex-classic-grid .type-card, #ex-game-grid .type-card")
+    .forEach(c => c.classList.remove("active"));
+  const card = document.querySelector(`#ex-classic-grid [data-kind="${kind}"], #ex-game-grid [data-kind="${kind}"]`);
+  if (card) card.classList.add("active");
+  selectedExKind = kind;
+  exData = exDefaultData(kind);
+  editingExIdx = null;
+  document.getElementById("ex-editor-row").style.display = "grid";
+  document.getElementById("ex-add-btn").textContent = "Adicionar ao módulo";
+  document.getElementById("ex-cancel-edit-btn").style.display = "none";
+  buildExEditor(kind);
+  updateExPreview();
+}
+
+function exDefaultData(kind) {
+  if (kind.startsWith("game-")) return { prompt: "", ...defaultGameData(kind) };
+  switch (kind) {
+    case "exercise-mc":    return { kind, prompt: "", options: ["", "", "", ""], answer: "" };
+    case "exercise-tf":    return { kind, prompt: "", options: ["Verdadeiro", "Falso"], answer: "Verdadeiro" };
+    case "exercise-fill":  return { kind, prompt: "", options: ["", "", ""], answer: "" };
+    case "exercise-match": return { kind, prompt: "", options: [" → ", " → "], answer: "" };
+    default: return { kind, prompt: "", options: [], answer: "" };
+  }
+}
+
+function buildExEditor(kind) {
+  const outer = document.getElementById("ex-dynamic-editor");
+  const allTypes = [...EX_CLASSIC, ...GAME_TYPES];
+  const typeInfo = allTypes.find(t => t.kind === kind);
+  document.getElementById("ex-preview-label").textContent = `${typeInfo?.icon||""} ${typeInfo?.label||""} — preview`;
+
+  if (kind.startsWith("game-")) {
+    _D = exData; _upd = updateExPreview; _rebld = buildExEditor;
+    outer.innerHTML = `
+      <p class="field-label">Instrução <span style="font-weight:400;color:#9CA3AF;">(opcional)</span></p>
+      <input type="text" class="f-input" placeholder="Ex: Complete as lacunas abaixo..."
+             value="${esc(exData.prompt||'')}" style="margin-bottom:12px;"
+             oninput="exData.prompt=this.value;updateExPreview()">
+      <div id="ex-game-inner"></div>`;
+    _dispatchEditor(kind, outer.querySelector("#ex-game-inner"));
+    return;
+  }
+
+  if (kind === "exercise-mc" || kind === "exercise-fill") {
+    const lbl = kind === "exercise-fill" ? "Frase com ___ para completar" : "Pergunta";
+    outer.innerHTML = `
+      <p class="field-label">${lbl}</p>
+      <input type="text" class="f-input" placeholder="..." value="${esc(exData.prompt)}"
+             style="margin-bottom:12px;" oninput="exData.prompt=this.value;updateExPreview()">
+      <p class="field-label">Opções <span style="font-weight:400;color:#9CA3AF;">(● = correta)</span></p>
+      ${(exData.options||[]).map((opt,i) => `
+        <div class="option-row">
+          <input type="radio" name="ex-correct" ${exData.answer===opt&&opt?"checked":""}
+                 onchange="exData.answer=exData.options[${i}];updateExPreview()">
+          <input type="text" placeholder="Opção ${i+1}" value="${esc(opt)}"
+                 oninput="exData.options[${i}]=this.value;if(this.closest('.option-row').querySelector('input[type=radio]').checked){exData.answer=this.value;}updateExPreview()">
+          <button class="del-btn" onclick="if(exData.options.length>2){exData.options.splice(${i},1);buildExEditor('${kind}');updateExPreview();}">×</button>
+        </div>`).join("")}
+      <button class="add-row-btn" onclick="exData.options.push('');buildExEditor('${kind}');updateExPreview()">+ opção</button>`;
+  } else if (kind === "exercise-tf") {
+    outer.innerHTML = `
+      <p class="field-label">Afirmação</p>
+      <input type="text" class="f-input" placeholder="Digite a afirmação..." value="${esc(exData.prompt)}"
+             style="margin-bottom:12px;" oninput="exData.prompt=this.value;updateExPreview()">
+      <p class="field-label">Resposta correta</p>
+      <div class="tf-toggle">
+        <button id="ex-tf-v" class="${exData.answer==='Verdadeiro'?'active-v':''}"
+                onclick="exData.answer='Verdadeiro';document.getElementById('ex-tf-v').className='active-v';document.getElementById('ex-tf-f').className='';updateExPreview()">✓ Verdadeiro</button>
+        <button id="ex-tf-f" class="${exData.answer==='Falso'?'active-f':''}"
+                onclick="exData.answer='Falso';document.getElementById('ex-tf-f').className='active-f';document.getElementById('ex-tf-v').className='';updateExPreview()">✗ Falso</button>
+      </div>`;
+  } else if (kind === "exercise-match") {
+    outer.innerHTML = `
+      <p class="field-label">Instrução <span style="font-weight:400;color:#9CA3AF;">(opcional)</span></p>
+      <input type="text" class="f-input" placeholder="Ex: Associe cada símbolo ao seu nome..." value="${esc(exData.prompt)}"
+             style="margin-bottom:12px;" oninput="exData.prompt=this.value;updateExPreview()">
+      <p class="field-label">Pares (Esquerda → Direita)</p>
+      ${(exData.options||[]).map((pair,i) => {
+        const parts = pair.split("→").map(s=>s.trim());
+        return `<div class="field-row">
+          <input type="text" placeholder="Esquerda" value="${esc(parts[0]||'')}"
+                 oninput="updateMatchPair(${i},'left',this.value)" style="flex:1;">
+          <span style="color:#9CA3AF;font-size:14px;flex-shrink:0;">→</span>
+          <input type="text" placeholder="Direita" value="${esc(parts[1]||'')}"
+                 oninput="updateMatchPair(${i},'right',this.value)" style="flex:1;">
+          <button class="del-btn" onclick="exData.options.splice(${i},1);buildExEditor('exercise-match');updateExPreview();">×</button>
+        </div>`;
+      }).join("")}
+      <button class="add-row-btn" onclick="exData.options.push(' → ');buildExEditor('exercise-match');updateExPreview()">+ par</button>`;
+  }
+}
+
+function updateMatchPair(pairIdx, side, val) {
+  const parts = (exData.options[pairIdx] || " → ").split("→").map(s=>s.trim());
+  if (side === "left") parts[0] = val; else parts[1] = val;
+  exData.options[pairIdx] = parts[0] + " → " + parts[1];
+  updateExPreview();
+}
+
+function updateExPreview() {
+  const el = document.getElementById("ex-live-preview");
+  if (!selectedExKind) return;
+
+  if (selectedExKind.startsWith("game-")) {
+    window.markComplete = window.markComplete || (() => {});
+    window.setFeedback  = window.setFeedback  || (() => {});
+    const gd = Object.assign({}, exData); delete gd.prompt;
+    const prompt = exData.prompt || "preview";
+    if (typeof RENDERERS !== "undefined" && RENDERERS[selectedExKind]) {
+      const mock = buildGameMockStep(selectedExKind, gd, prompt);
+      if (mock) {
+        try {
+          el.innerHTML = '<div class="game-body" id="exprev-body"></div>';
+          RENDERERS[selectedExKind](mock, el.querySelector("#exprev-body"));
+          return;
+        } catch(e) { console.warn("ex preview error", e); }
+      }
+    }
+    el.innerHTML = `<div style="text-align:center;padding:24px 16px;color:#9CA3AF;font-size:12px;">Preencha os campos acima para ver o preview</div>`;
+    return;
+  }
+
+  switch (selectedExKind) {
+    case "exercise-mc":
+    case "exercise-fill": {
+      const isFill = selectedExKind === "exercise-fill";
+      let promptHtml = esc(exData.prompt) || "(pergunta)";
+      if (isFill) promptHtml = promptHtml.replace(/___/g, `<span style="display:inline-block;min-width:60px;border-bottom:2px solid #C4943A;margin:0 4px;">&nbsp;</span>`);
+      el.innerHTML = `
+        <p class="game-prompt">${promptHtml}</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${(exData.options||[]).filter(Boolean).map(opt => `
+            <button class="choice" style="text-align:left;background:${opt===exData.answer?'var(--mint)':'#F9FAFB'};border-color:${opt===exData.answer?'var(--green)':'#E5E7EB'};">${esc(opt)}</button>
+          `).join("")}
+        </div>`;
+      break;
+    }
+    case "exercise-tf":
+      el.innerHTML = `
+        <p class="game-prompt">${esc(exData.prompt)||'(afirmação)'}</p>
+        <div style="display:flex;gap:10px;margin-top:12px;">
+          <button class="choice" style="flex:1;background:${exData.answer==='Verdadeiro'?'var(--mint)':'#F9FAFB'};border-color:${exData.answer==='Verdadeiro'?'var(--green)':'#E5E7EB'};">✓ Verdadeiro</button>
+          <button class="choice" style="flex:1;background:${exData.answer==='Falso'?'#FEE2E2':'#F9FAFB'};border-color:${exData.answer==='Falso'?'#FCA5A5':'#E5E7EB'};">✗ Falso</button>
+        </div>`;
+      break;
+    case "exercise-match":
+      el.innerHTML = `
+        ${exData.prompt ? `<p class="game-prompt">${esc(exData.prompt)}</p>` : ""}
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;">
+          ${(exData.options||[]).filter(Boolean).map(pair => {
+            const [l,r] = pair.split("→").map(s=>s.trim());
+            return `<button class="choice" style="background:#F9FAFB;">${esc(l)||'…'}</button><span style="color:#C4943A;font-size:16px;text-align:center;">→</span><button class="choice" style="background:#F9FAFB;">${esc(r)||'…'}</button>`;
+          }).join("")}
+        </div>`;
+      break;
+  }
+}
+
+document.getElementById("ex-add-btn").addEventListener("click", () => {
+  if (!selectedExKind) return;
+  let entry;
+  if (selectedExKind.startsWith("game-")) {
+    const gd = Object.assign({}, exData);
+    const promptText = gd.prompt || "";
+    delete gd.prompt;
+    entry = { kind: selectedExKind, prompt: promptText, options: [], answer: "", game_data: gd };
+  } else {
+    entry = { kind: exData.kind, prompt: exData.prompt, options: [...(exData.options||[])], answer: exData.answer };
+  }
+  if (editingExIdx !== null) {
+    exercises[editingExIdx] = entry;
+    editingExIdx = null;
+    document.getElementById("ex-add-btn").textContent = "Adicionar ao módulo";
+    document.getElementById("ex-cancel-edit-btn").style.display = "none";
+  } else {
+    exercises.push(entry);
+  }
+  exData = exDefaultData(selectedExKind);
+  buildExEditor(selectedExKind);
+  updateExPreview();
+  renderExList();
+});
+
+function cancelExEdit() {
+  editingExIdx = null;
+  exData = exDefaultData(selectedExKind);
+  buildExEditor(selectedExKind);
+  updateExPreview();
+  document.getElementById("ex-add-btn").textContent = "Adicionar ao módulo";
+  document.getElementById("ex-cancel-edit-btn").style.display = "none";
+}
+
+function editExercise(idx) {
+  const ex = exercises[idx];
+  selectedExKind = ex.kind;
+  if (ex.kind.startsWith("game-")) {
+    exData = Object.assign({ prompt: ex.prompt || "" }, ex.game_data || defaultGameData(ex.kind));
+  } else {
+    exData = { kind: ex.kind, prompt: ex.prompt, options: [...(ex.options||[])], answer: ex.answer };
+  }
+  editingExIdx = idx;
+  document.getElementById("ex-editor-row").style.display = "grid";
+  document.getElementById("ex-add-btn").textContent = "Salvar alterações";
+  document.getElementById("ex-cancel-edit-btn").style.display = "";
+  document.querySelectorAll("#ex-classic-grid .type-card, #ex-game-grid .type-card")
+    .forEach(c => c.classList.toggle("active", c.dataset.kind === selectedExKind));
+  buildExEditor(selectedExKind);
+  updateExPreview();
+  document.getElementById("ex-editor-row").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function moveExercise(idx, dir) {
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= exercises.length) return;
+  [exercises[idx], exercises[newIdx]] = [exercises[newIdx], exercises[idx]];
+  renderExList();
+}
+
+function renderExList() {
+  const cards = document.getElementById("ex-cards");
+  const empty = document.getElementById("ex-empty");
+  empty.style.display = exercises.length ? "none" : "block";
+  cards.innerHTML = exercises.map((ex, idx) => {
+    const classicInfo = EX_CLASSIC.find(t => t.kind === ex.kind);
+    const gameInfo    = GAME_TYPES.find(t => t.kind === ex.kind);
+    const badgeClass  = classicInfo ? (EX_BADGE_CLS[ex.kind]||"badge-mc") : "badge-game";
+    const label       = classicInfo ? (EX_LABELS[ex.kind]||ex.kind)
+                      : gameInfo    ? (gameInfo.icon+" "+gameInfo.label) : ex.kind;
+    const preview = ex.prompt ? (ex.prompt.length>60 ? ex.prompt.slice(0,60)+"…" : ex.prompt) : "(sem texto)";
+    return `
+      <div class="ex-card-item" onclick="editExercise(${idx})">
+        <span class="ex-badge ${badgeClass}">${label}</span>
+        <span style="font-size:13px;color:#374151;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(preview)}</span>
+        <div class="ex-move" onclick="event.stopPropagation()">
+          <button onclick="moveExercise(${idx},-1)" ${idx===0?'disabled':''}>↑</button>
+          <button onclick="moveExercise(${idx},1)" ${idx===exercises.length-1?'disabled':''}>↓</button>
+          <button onclick="event.stopPropagation();exercises.splice(${idx},1);renderExList();"
+                  style="background:#FEE2E2;color:#EF4444;">×</button>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+// ════════════════════════════════════════════════════════════════════════════════
+// GAME TYPES + GAME FINAL EDITOR
+// ════════════════════════════════════════════════════════════════════════════════
+
+const GAME_TYPES = [
+  { kind: "game-memory",           icon: "🃏", label: "Memória" },
+  { kind: "game-quiz",             icon: "❓", label: "Quiz" },
+  { kind: "game-challenge",        icon: "🎯", label: "Desafio" },
+  { kind: "game-true-false-rapid", icon: "⚡", label: "V ou F" },
+  { kind: "game-hot-cold",         icon: "🌡️", label: "Quente/Frio" },
+  { kind: "game-sort",             icon: "↕️", label: "Ordenar" },
+  { kind: "game-speedrun",         icon: "⏱️", label: "Velocidade" },
+  { kind: "game-fill-sentence",    icon: "📝", label: "Completar" },
+  { kind: "game-word-select",      icon: "👆", label: "Clicar Palavra" },
+  { kind: "game-find-error",       icon: "🔍", label: "Achar Erro" },
+  { kind: "game-unscramble",       icon: "🔀", label: "Desembaralhar" },
+  { kind: "game-connect",          icon: "🔗", label: "Conectar" },
+  { kind: "game-crossword",        icon: "✏️", label: "Cruzadinha" },
+  { kind: "game-sequence",         icon: "🔢", label: "Sequência" },
+  { kind: "game-rhythm-tap",       icon: "🥁", label: "Ritmo Tap" },
+  { kind: "game-build",            icon: "🎵", label: "Monte o Compasso" },
+  { kind: "game-teach",            icon: "✍️", label: "Explicar" },
+  { kind: "game-drag",             icon: "🖱️", label: "Arrastar" },
+];
+
+let selectedGameKind = null;
+let gameData = {};
+
+function buildGameTypeGrid() {
+  const grid = document.getElementById("game-type-grid");
+  grid.innerHTML = GAME_TYPES.map(t => `
+    <div class="type-card" data-kind="${t.kind}">
+      <div class="tc-icon">${t.icon}</div>
+      <div class="tc-label">${t.label}</div>
+    </div>
+  `).join("");
+  grid.querySelectorAll(".type-card").forEach(card => {
+    card.addEventListener("click", () => {
+      grid.querySelectorAll(".type-card").forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+      selectedGameKind = card.dataset.kind;
+      // Keep existing gameData if same kind, else reset
+      if (gameData._kind !== selectedGameKind) {
+        gameData = defaultGameData(selectedGameKind);
+        gameData._kind = selectedGameKind;
+      }
+      document.getElementById("game-editor-row").style.display = "grid";
+      const typeInfo = GAME_TYPES.find(t => t.kind === selectedGameKind);
+      document.getElementById("game-preview-label").textContent = `${typeInfo?.icon||""} ${typeInfo?.label||""} — preview interativo`;
+      buildGameEditor(selectedGameKind);
+      updateGamePreview();
+    });
+  });
+}
+
+function defaultGameData(kind) {
+  switch (kind) {
+    case "game-memory":           return { pairs: [["",""],["",""],["",""]] };
+    case "game-quiz":             return { questions: [{ prompt:"", options:["","","",""], answer:"" }] };
+    case "game-challenge":        return { mission:"", checklist:["",""] };
+    case "game-true-false-rapid": return { statements:[{text:"",answer:"Verdadeiro"},{text:"",answer:"Verdadeiro"}] };
+    case "game-hot-cold":         return { answer:"", hints:["",""] };
+    case "game-sort":             return { solution:["","",""] };
+    case "game-speedrun":         return { time_limit:30, questions:[{prompt:"",options:["","",""],answer:""}] };
+    case "game-fill-sentence":    return { before:"", after:"", options:["","",""], answer:"" };
+    case "game-word-select":      return { parts:[{text:"",clickable:false,correct:false},{text:"",clickable:true,correct:true},{text:"",clickable:false,correct:false}] };
+    case "game-find-error":       return { parts:[{text:"",error:false},{text:"",error:false},{text:"",error:true}] };
+    case "game-unscramble":       return { solution:["","","",""] };
+    case "game-connect":          return { pairs:[["",""],["",""],["",""]] };
+    case "game-crossword":        return { clues:[{direction:"H",clue:"",answer:""},{direction:"V",clue:"",answer:""}] };
+    case "game-sequence":         return { items:["","","","",""], blank_index:2, options:["","",""], answer:"" };
+    case "game-rhythm-tap":       return { pattern:[1,0,1,0,1,1,0,1] };
+    case "game-build":            return { time_signature:"4/4", target_beats:4, available:[
+      {name:"Semínima",symbol:"♩",beats:1},
+      {name:"Mínima",symbol:"𝅗𝅥",beats:2},
+      {name:"Colcheia",symbol:"♪",beats:0.5},
+      {name:"Semibreve",symbol:"𝅝",beats:4},
+    ]};
+    case "game-teach":            return { min_chars:50, placeholder:"Explique com suas palavras..." };
+    case "game-drag":             return { pairs:[["",""],["",""],["",""]] };
+    default: return {};
+  }
+}
+
+function _dispatchEditor(kind, el) {
+  switch (kind) {
+    case "game-memory":           return buildMemoryEditor(el);
+    case "game-quiz":             return buildQuizEditor(el);
+    case "game-challenge":        return buildChallengeEditor(el);
+    case "game-true-false-rapid": return buildTFEditor(el);
+    case "game-hot-cold":         return buildHotColdEditor(el);
+    case "game-sort":             return buildSortEditor(el);
+    case "game-speedrun":         return buildSpeedrunEditor(el);
+    case "game-fill-sentence":    return buildFillSentenceEditor(el);
+    case "game-word-select":      return buildWordSelectEditor(el);
+    case "game-find-error":       return buildFindErrorEditor(el);
+    case "game-unscramble":       return buildUnscrambleEditor(el);
+    case "game-connect":          return buildConnectEditor(el);
+    case "game-crossword":        return buildCrosswordEditor(el);
+    case "game-sequence":         return buildSequenceEditor(el);
+    case "game-rhythm-tap":       return buildRhythmTapEditor(el);
+    case "game-build":            return buildBuildMeasureEditor(el);
+    case "game-teach":            return buildTeachEditor(el);
+    case "game-drag":             return buildDragEditor(el);
+    default: el.innerHTML = "<p style='color:#9CA3AF;font-size:13px;'>Configure este tipo.</p>";
+  }
+}
+
+function buildGameEditor(kind) {
+  _D = gameData; _upd = updateGamePreview; _rebld = buildGameEditor;
+  _dispatchEditor(kind, document.getElementById("game-dynamic-editor"));
+}
+
+// ── Game editors — all use _D, _upd, _rebld ────────────────────────────────────
+
+function buildMemoryEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Pares de cartas (frente → verso)</p>
+    ${_D.pairs.map((pair,i) => `
+      <div class="field-row">
+        <input type="text" placeholder="Frente" value="${esc(pair[0])}" oninput="_D.pairs[${i}][0]=this.value;_upd()">
+        <span style="color:#9CA3AF;font-size:16px;">↔</span>
+        <input type="text" placeholder="Verso" value="${esc(pair[1])}" oninput="_D.pairs[${i}][1]=this.value;_upd()">
+        <button class="del-btn" onclick="_D.pairs.splice(${i},1);_rebld('game-memory');_upd()">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.pairs.push(['','']);_rebld('game-memory');_upd()">+ par</button>`;
+}
+
+function buildQuizEditor(el) {
+  el.innerHTML = `
+    <div id="gqz-qs"></div>
+    <button class="add-row-btn" onclick="_D.questions.push({prompt:'',options:['','','',''],answer:''});_rebld('game-quiz');_upd()">+ pergunta</button>`;
+  const c = el.querySelector("#gqz-qs");
+  _D.questions.forEach((q,qi) => {
+    const b = document.createElement("div"); b.className = "quiz-question-block";
+    b.innerHTML = `
+      <div class="q-header">
+        <span class="q-num">P${qi+1}</span>
+        <input type="text" placeholder="Pergunta" value="${esc(q.prompt)}" style="flex:1;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"
+               oninput="_D.questions[${qi}].prompt=this.value;_upd()">
+        <button class="del-btn" onclick="_D.questions.splice(${qi},1);_rebld('game-quiz');_upd()">×</button>
+      </div>
+      ${q.options.map((opt,oi) => `
+        <div class="option-row">
+          <input type="radio" name="gq-${qi}" ${q.answer===opt&&opt?"checked":""}
+                 onchange="_D.questions[${qi}].answer=_D.questions[${qi}].options[${oi}];_upd()">
+          <input type="text" placeholder="Opção ${oi+1}" value="${esc(opt)}"
+                 oninput="_D.questions[${qi}].options[${oi}]=this.value;if(this.closest('.option-row').querySelector('input[type=radio]').checked){_D.questions[${qi}].answer=this.value;}_upd()">
+        </div>`).join("")}`;
+    c.appendChild(b);
+  });
+}
+
+function buildChallengeEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Missão</p>
+    <textarea rows="3" style="width:100%;padding:10px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;resize:vertical;margin-bottom:10px;"
+              oninput="_D.mission=this.value;_upd()">${esc(_D.mission)}</textarea>
+    <p class="field-label">Checklist</p>
+    ${_D.checklist.map((item,i) => `
+      <div class="field-row">
+        <input type="text" placeholder="Passo ${i+1}" value="${esc(item)}"
+               oninput="_D.checklist[${i}]=this.value;_upd()">
+        <button class="del-btn" onclick="_D.checklist.splice(${i},1);_rebld('game-challenge');_upd()">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.checklist.push('');_rebld('game-challenge');_upd()">+ passo</button>`;
+}
+
+function buildTFEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Afirmações</p>
+    ${_D.statements.map((s,i) => `
+      <div style="border:1px solid #E5E7EB;border-radius:10px;padding:10px;margin-bottom:8px;">
+        <div class="field-row" style="margin-bottom:6px;">
+          <input type="text" placeholder="Afirmação ${i+1}" value="${esc(s.text)}"
+                 oninput="_D.statements[${i}].text=this.value;_upd()">
+          <button class="del-btn" onclick="_D.statements.splice(${i},1);_rebld('game-true-false-rapid');_upd()">×</button>
+        </div>
+        <div class="tf-toggle">
+          <button class="${s.answer==='Verdadeiro'?'active-v':''}"
+                  onclick="_D.statements[${i}].answer='Verdadeiro';_rebld('game-true-false-rapid');_upd()">✓ Verdadeiro</button>
+          <button class="${s.answer==='Falso'?'active-f':''}"
+                  onclick="_D.statements[${i}].answer='Falso';_rebld('game-true-false-rapid');_upd()">✗ Falso</button>
+        </div>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.statements.push({text:'',answer:'Verdadeiro'});_rebld('game-true-false-rapid');_upd()">+ afirmação</button>`;
+}
+
+function buildHotColdEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Resposta</p>
+    <input type="text" placeholder="Ex: Semínima" value="${esc(_D.answer)}"
+           style="width:100%;padding:10px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:10px;"
+           oninput="_D.answer=this.value;_upd()">
+    <p class="field-label">Dicas</p>
+    ${_D.hints.map((h,i) => `
+      <div class="field-row">
+        <span style="font-size:11px;color:#9CA3AF;min-width:20px;">${i+1}.</span>
+        <input type="text" placeholder="Dica ${i+1}" value="${esc(h)}" oninput="_D.hints[${i}]=this.value;_upd()">
+        <button class="del-btn" onclick="_D.hints.splice(${i},1);_rebld('game-hot-cold');_upd()">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.hints.push('');_rebld('game-hot-cold');_upd()">+ dica</button>`;
+}
+
+function buildSortEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Itens na ordem correta</p>
+    ${_D.solution.map((item,i) => `
+      <div class="field-row">
+        <span style="font-size:11px;color:#9CA3AF;min-width:22px;font-weight:700;">${i+1}.</span>
+        <input type="text" placeholder="Item ${i+1}" value="${esc(item)}"
+               oninput="_D.solution[${i}]=this.value;_upd()">
+        <button class="del-btn" onclick="_D.solution.splice(${i},1);_rebld('game-sort');_upd()">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.solution.push('');_rebld('game-sort');_upd()">+ item</button>`;
+}
+
+function buildSpeedrunEditor(el) {
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <p class="field-label" style="margin:0">Tempo:</p>
+      <input type="number" min="10" max="120" value="${_D.time_limit}"
+             style="width:70px;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"
+             oninput="_D.time_limit=parseInt(this.value)||30;_upd()">
+      <span style="font-size:12px;color:#6B7280;">seg</span>
+    </div>
+    <div id="gsp-qs"></div>
+    <button class="add-row-btn" onclick="_D.questions.push({prompt:'',options:['','',''],answer:''});_rebld('game-speedrun');_upd()">+ pergunta</button>`;
+  const c = el.querySelector("#gsp-qs");
+  _D.questions.forEach((q,qi) => {
+    const b = document.createElement("div"); b.className = "quiz-question-block";
+    b.innerHTML = `
+      <div class="q-header">
+        <span class="q-num">P${qi+1}</span>
+        <input type="text" placeholder="Pergunta" value="${esc(q.prompt)}" style="flex:1;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"
+               oninput="_D.questions[${qi}].prompt=this.value;_upd()">
+        <button class="del-btn" onclick="_D.questions.splice(${qi},1);_rebld('game-speedrun');_upd()">×</button>
+      </div>
+      ${q.options.map((opt,oi) => `
+        <div class="option-row">
+          <input type="radio" name="gsp-${qi}" ${q.answer===opt&&opt?"checked":""}
+                 onchange="_D.questions[${qi}].answer=_D.questions[${qi}].options[${oi}];_upd()">
+          <input type="text" placeholder="Opção ${oi+1}" value="${esc(opt)}"
+                 oninput="_D.questions[${qi}].options[${oi}]=this.value;if(this.closest('.option-row').querySelector('input[type=radio]').checked){_D.questions[${qi}].answer=this.value;}_upd()">
+        </div>`).join("")}`;
+    c.appendChild(b);
+  });
+}
+
+function buildFillSentenceEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Início da frase</p>
+    <input type="text" placeholder="Ex: A semínima vale" value="${esc(_D.before)}"
+           style="width:100%;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:8px;"
+           oninput="_D.before=this.value;_upd()">
+    <p class="field-label">Fim da frase</p>
+    <input type="text" placeholder="Ex: tempos." value="${esc(_D.after)}"
+           style="width:100%;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:10px;"
+           oninput="_D.after=this.value;_upd()">
+    <p class="field-label">Opções (● = correta)</p>
+    ${_D.options.map((opt,i) => `
+      <div class="option-row">
+        <input type="radio" name="gfs-c" ${_D.answer===opt&&opt?"checked":""} style="accent-color:#C4943A;"
+               onchange="_D.answer=_D.options[${i}];_upd()">
+        <input type="text" placeholder="Opção ${i+1}" value="${esc(opt)}"
+               oninput="_D.options[${i}]=this.value;if(this.closest('.option-row').querySelector('input[type=radio]').checked){_D.answer=this.value;}_upd()">
+        <button class="del-btn" onclick="if(_D.options.length>2){_D.options.splice(${i},1);_rebld('game-fill-sentence');_upd();}">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.options.push('');_rebld('game-fill-sentence');_upd()">+ opção</button>`;
+}
+
+function buildWordSelectEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Partes da frase</p>
+    ${_D.parts.map((p,i) => `
+      <div style="border:1px solid #E5E7EB;border-radius:10px;padding:8px;margin-bottom:6px;">
+        <div class="field-row" style="margin-bottom:4px;">
+          <input type="text" placeholder="Texto" value="${esc(p.text)}" oninput="_D.parts[${i}].text=this.value;_upd()">
+          <button class="del-btn" onclick="_D.parts.splice(${i},1);_rebld('game-word-select');_upd()">×</button>
+        </div>
+        <div style="display:flex;gap:12px;font-size:12px;">
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;">
+            <input type="checkbox" ${p.clickable?"checked":""} onchange="_D.parts[${i}].clickable=this.checked;if(!this.checked)_D.parts[${i}].correct=false;_rebld('game-word-select');_upd()">
+            Clicável
+          </label>
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;${p.clickable?'':'opacity:.4;pointer-events:none;'}">
+            <input type="checkbox" ${p.correct?"checked":""} onchange="_D.parts[${i}].correct=this.checked;_upd()">
+            Correto
+          </label>
+        </div>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.parts.push({text:'',clickable:false,correct:false});_rebld('game-word-select');_upd()">+ parte</button>`;
+}
+
+function buildFindErrorEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Termos (● = o incorreto)</p>
+    ${_D.parts.map((p,i) => `
+      <div class="option-row">
+        <input type="radio" name="gfe-e" ${p.error?"checked":""} style="accent-color:#EF4444;"
+               onchange="_D.parts.forEach((x,j)=>x.error=j===${i});_upd()">
+        <input type="text" placeholder="Termo ${i+1}" value="${esc(p.text)}" oninput="_D.parts[${i}].text=this.value;_upd()">
+        <button class="del-btn" onclick="_D.parts.splice(${i},1);_rebld('game-find-error');_upd()">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.parts.push({text:'',error:false});_rebld('game-find-error');_upd()">+ termo</button>`;
+}
+
+function buildUnscrambleEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Palavras na ordem correta</p>
+    ${_D.solution.map((item,i) => `
+      <div class="field-row">
+        <span style="font-size:11px;color:#9CA3AF;min-width:22px;font-weight:700;">${i+1}.</span>
+        <input type="text" placeholder="Palavra ${i+1}" value="${esc(item)}" oninput="_D.solution[${i}]=this.value;_upd()">
+        <button class="del-btn" onclick="_D.solution.splice(${i},1);_rebld('game-unscramble');_upd()">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.solution.push('');_rebld('game-unscramble');_upd()">+ palavra</button>`;
+}
+
+function buildConnectEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Pares para conectar</p>
+    ${_D.pairs.map((pair,i) => `
+      <div class="field-row">
+        <input type="text" placeholder="Esquerda" value="${esc(pair[0])}" oninput="_D.pairs[${i}][0]=this.value;_upd()">
+        <span style="color:#9CA3AF;font-size:16px;flex-shrink:0;">→</span>
+        <input type="text" placeholder="Direita" value="${esc(pair[1])}" oninput="_D.pairs[${i}][1]=this.value;_upd()">
+        <button class="del-btn" onclick="_D.pairs.splice(${i},1);_rebld('game-connect');_upd()">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.pairs.push(['','']);_rebld('game-connect');_upd()">+ par</button>`;
+}
+
+function buildCrosswordEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Dicas e respostas</p>
+    ${_D.clues.map((c,i) => `
+      <div style="border:1px solid #E5E7EB;border-radius:10px;padding:8px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:700;color:#9CA3AF;">#${i+1}</span>
+          <select style="padding:4px 8px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;" onchange="_D.clues[${i}].direction=this.value;_upd()">
+            <option value="H" ${c.direction==="H"?"selected":""}>→ Horizontal</option>
+            <option value="V" ${c.direction==="V"?"selected":""}>↓ Vertical</option>
+          </select>
+          <button class="del-btn" onclick="_D.clues.splice(${i},1);_rebld('game-crossword');_upd()">×</button>
+        </div>
+        <input type="text" placeholder="Dica" value="${esc(c.clue)}"
+               style="width:100%;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;margin-bottom:4px;"
+               oninput="_D.clues[${i}].clue=this.value;_upd()">
+        <input type="text" placeholder="RESPOSTA" value="${esc(c.answer)}"
+               style="width:100%;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:12px;font-family:monospace;"
+               oninput="_D.clues[${i}].answer=this.value.toUpperCase();this.value=this.value.toUpperCase();_upd()">
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.clues.push({direction:'H',clue:'',answer:''});_rebld('game-crossword');_upd()">+ dica</button>`;
+}
+
+function buildSequenceEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Itens (clique ·/_ para marcar a lacuna)</p>
+    ${_D.items.map((item,i) => `
+      <div class="field-row">
+        <button onclick="_D.blank_index=${i};_rebld('game-sequence');_upd()"
+                style="flex-shrink:0;width:28px;height:28px;border-radius:6px;border:1.5px solid ${_D.blank_index===i?'#C4943A':'#E5E7EB'};background:${_D.blank_index===i?'#FDF6EC':'#F9FAFB'};cursor:pointer;font-size:14px;">
+          ${_D.blank_index===i?"_":"·"}
+        </button>
+        <input type="text" placeholder="Item ${i+1}" value="${esc(item)}" oninput="_D.items[${i}]=this.value;_upd()">
+        <button class="del-btn" onclick="_D.items.splice(${i},1);if(_D.blank_index>=_D.items.length)_D.blank_index=0;_rebld('game-sequence');_upd()">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.items.push('');_rebld('game-sequence');_upd()" style="margin-bottom:10px;">+ item</button>
+    <p class="field-label" style="margin-top:8px;">Opções para a lacuna (● = correta)</p>
+    ${_D.options.map((opt,i) => `
+      <div class="option-row">
+        <input type="radio" name="gseq-c" ${_D.answer===opt&&opt?"checked":""} style="accent-color:#C4943A;"
+               onchange="_D.answer=_D.options[${i}];_upd()">
+        <input type="text" placeholder="Opção ${i+1}" value="${esc(opt)}"
+               oninput="_D.options[${i}]=this.value;if(this.closest('.option-row').querySelector('input[type=radio]').checked){_D.answer=this.value;}_upd()">
+        <button class="del-btn" onclick="if(_D.options.length>2){_D.options.splice(${i},1);_rebld('game-sequence');_upd();}">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.options.push('');_rebld('game-sequence');_upd()">+ opção</button>`;
+}
+
+function buildRhythmTapEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Padrão (clique para ligar/desligar)</p>
+    <div class="pattern-grid">
+      ${_D.pattern.map((beat,i) => `
+        <div class="beat-cell ${beat?'on':'off'}" onclick="toggleBeat(${i})">${beat?"●":"○"}</div>`).join("")}
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="add-row-btn" onclick="_D.pattern.push(0);_rebld('game-rhythm-tap');_upd()">+ beat</button>
+      <button class="add-row-btn" onclick="if(_D.pattern.length>2){_D.pattern.pop();_rebld('game-rhythm-tap');_upd();}">- beat</button>
+    </div>`;
+}
+function toggleBeat(i) { _D.pattern[i]=_D.pattern[i]?0:1; _rebld("game-rhythm-tap"); _upd(); }
+
+function buildBuildMeasureEditor(el) {
+  const NOTE_SYMBOLS = [{name:"Semibreve",symbol:"𝅝",beats:4},{name:"Mínima",symbol:"𝅗𝅥",beats:2},{name:"Semínima",symbol:"♩",beats:1},{name:"Colcheia",symbol:"♪",beats:0.5}];
+  el.innerHTML = `
+    <p class="field-label">Fórmula de compasso</p>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      ${["2/4","3/4","4/4"].map(ts => `
+        <button onclick="_D.time_signature='${ts}';_upd()"
+                style="padding:6px 12px;border-radius:8px;border:1.5px solid ${(_D.time_signature||'4/4')===ts?'#C4943A':'#E5E7EB'};background:${(_D.time_signature||'4/4')===ts?'#FDF6EC':'#F9FAFB'};cursor:pointer;font-size:13px;font-weight:700;">${ts}</button>
+      `).join("")}
+    </div>
+    <p class="field-label">Tempos por compasso</p>
+    <input type="number" min="1" max="8" step="0.5" value="${_D.target_beats||4}"
+           style="width:80px;padding:8px 10px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:10px;"
+           oninput="_D.target_beats=parseFloat(this.value)||4;_upd()">
+    <p class="field-label">Figuras disponíveis (sempre presentes)</p>
+    <p style="font-size:11px;color:#9CA3AF;margin-bottom:6px;">O jogo já inclui as 4 figuras principais — nenhuma configuração necessária.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      ${NOTE_SYMBOLS.map(n => `<span style="padding:6px 12px;background:#F2EAD8;border-radius:8px;font-size:13px;">${n.symbol} ${n.name} (${n.beats}t)</span>`).join("")}
+    </div>`;
+}
+
+function buildDictationEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Padrão visual</p>
+    <input type="text" placeholder="Ex: ●●○●" value="${esc(_D.visual_pattern)}"
+           style="width:100%;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:14px;font-family:monospace;margin-bottom:10px;"
+           oninput="_D.visual_pattern=this.value;_upd()">
+    <p class="field-label">Opções (● = correta)</p>
+    ${_D.options.map((opt,i) => `
+      <div class="option-row">
+        <input type="radio" name="gdict-c" ${_D.answer===opt&&opt?"checked":""} style="accent-color:#C4943A;"
+               onchange="_D.answer=_D.options[${i}];_upd()">
+        <input type="text" placeholder="Opção ${i+1}" value="${esc(opt)}"
+               oninput="_D.options[${i}]=this.value;if(this.closest('.option-row').querySelector('input[type=radio]').checked){_D.answer=this.value;}_upd()">
+        <button class="del-btn" onclick="if(_D.options.length>2){_D.options.splice(${i},1);_rebld('game-dictation');_upd();}">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.options.push('');_rebld('game-dictation');_upd()">+ opção</button>`;
+}
+
+function buildIdentifySoundEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Descrição do som</p>
+    <textarea rows="3" placeholder="Ex: Um instrumento de cordas com som grave..."
+              style="width:100%;padding:10px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;resize:vertical;margin-bottom:10px;"
+              oninput="_D.description=this.value;_upd()">${esc(_D.description)}</textarea>
+    <p class="field-label">Opções (● = correta)</p>
+    ${_D.options.map((opt,i) => `
+      <div class="option-row">
+        <input type="radio" name="gis-c" ${_D.answer===opt&&opt?"checked":""} style="accent-color:#C4943A;"
+               onchange="_D.answer=_D.options[${i}];_upd()">
+        <input type="text" placeholder="Opção ${i+1}" value="${esc(opt)}"
+               oninput="_D.options[${i}]=this.value;if(this.closest('.option-row').querySelector('input[type=radio]').checked){_D.answer=this.value;}_upd()">
+        <button class="del-btn" onclick="if(_D.options.length>2){_D.options.splice(${i},1);_rebld('game-identify-sound');_upd();}">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.options.push('');_rebld('game-identify-sound');_upd()">+ opção</button>`;
+}
+
+function buildKaraokeEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Sílabas (uma por linha)</p>
+    <textarea rows="4" placeholder="Can&#10;tar&#10;é&#10;vi&#10;da"
+              style="width:100%;padding:10px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;resize:vertical;margin-bottom:10px;"
+              oninput="_D.syllables=this.value.split(/[\\n ]+/).filter(Boolean);_upd()">${(_D.syllables||[]).join('\n')}</textarea>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <p class="field-label" style="margin:0">Intervalo:</p>
+      <input type="number" min="200" max="2000" step="50" value="${_D.interval_ms||600}"
+             style="width:80px;padding:6px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;"
+             oninput="_D.interval_ms=parseInt(this.value)||600;_upd()">
+      <span style="font-size:12px;color:#6B7280;">ms</span>
+    </div>`;
+}
+
+function buildStoryEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Cena / narrativa</p>
+    <textarea rows="3" style="width:100%;padding:10px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;resize:vertical;margin-bottom:10px;"
+              oninput="_D.scene=this.value;_upd()">${esc(_D.scene)}</textarea>
+    <p class="field-label">Opções (● = correta)</p>
+    ${_D.options.map((opt,i) => `
+      <div class="option-row">
+        <input type="radio" name="gst-c" ${opt.correct?"checked":""} style="accent-color:#C4943A;"
+               onchange="_D.options.forEach((o,j)=>o.correct=j===${i});_upd()">
+        <input type="text" placeholder="Opção ${i+1}" value="${esc(opt.name)}"
+               oninput="_D.options[${i}].name=this.value;_upd()">
+        <button class="del-btn" onclick="_D.options.splice(${i},1);_rebld('game-story');_upd()">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.options.push({name:'',correct:false});_rebld('game-story');_upd()">+ opção</button>`;
+}
+
+function buildVoteEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Opção A</p>
+    <input type="text" placeholder="Ex: Guitarra elétrica" value="${esc(_D.option_a)}"
+           style="width:100%;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:10px;"
+           oninput="_D.option_a=this.value;_upd()">
+    <p class="field-label">Opção B</p>
+    <input type="text" placeholder="Ex: Piano clássico" value="${esc(_D.option_b)}"
+           style="width:100%;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:10px;"
+           oninput="_D.option_b=this.value;_upd()">
+    <p class="field-label">Resposta esperada</p>
+    <div style="display:flex;gap:8px;">
+      <button onclick="_D.answer=_D.option_a||'A';_upd();_rebld('game-vote')"
+              style="flex:1;padding:8px;border-radius:10px;border:2px solid ${_D.answer===_D.option_a&&_D.option_a?'#C4943A':'#E5E7EB'};background:${_D.answer===_D.option_a&&_D.option_a?'#FDF6EC':'#F9FAFB'};font-size:13px;cursor:pointer;">
+        A: ${esc(_D.option_a)||"(Opção A)"}
+      </button>
+      <button onclick="_D.answer=_D.option_b||'B';_upd();_rebld('game-vote')"
+              style="flex:1;padding:8px;border-radius:10px;border:2px solid ${_D.answer===_D.option_b&&_D.option_b?'#C4943A':'#E5E7EB'};background:${_D.answer===_D.option_b&&_D.option_b?'#FDF6EC':'#F9FAFB'};font-size:13px;cursor:pointer;">
+        B: ${esc(_D.option_b)||"(Opção B)"}
+      </button>
+    </div>`;
+}
+
+function buildTeachEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Mínimo de caracteres</p>
+    <input type="number" min="10" max="500" value="${_D.min_chars||50}"
+           style="width:100px;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;margin-bottom:12px;"
+           oninput="_D.min_chars=parseInt(this.value)||50;_upd()">
+    <p class="field-label">Placeholder</p>
+    <input type="text" placeholder="Explique com suas palavras..." value="${esc(_D.placeholder)}"
+           style="width:100%;padding:8px 12px;border:1px solid #E5E7EB;border-radius:10px;font-size:13px;"
+           oninput="_D.placeholder=this.value;_upd()">`;
+}
+
+function buildDragEditor(el) {
+  el.innerHTML = `
+    <p class="field-label">Pares alvo → item</p>
+    ${_D.pairs.map((pair,i) => `
+      <div class="field-row">
+        <input type="text" placeholder="Alvo ${i+1}" value="${esc(pair[0])}" oninput="_D.pairs[${i}][0]=this.value;_upd()">
+        <span style="color:#9CA3AF;font-size:16px;flex-shrink:0;">←</span>
+        <input type="text" placeholder="Item ${i+1}" value="${esc(pair[1])}" oninput="_D.pairs[${i}][1]=this.value;_upd()">
+        <button class="del-btn" onclick="_D.pairs.splice(${i},1);_rebld('game-drag');_upd()">×</button>
+      </div>`).join("")}
+    <button class="add-row-btn" onclick="_D.pairs.push(['','']);_rebld('game-drag');_upd()">+ par</button>`;
+}
+
+// ── Game preview ────────────────────────────────────────────────────────────
+function updateGamePreview() {
+  const el = document.getElementById("game-live-preview");
+  if (!selectedGameKind) return;
+  window.markComplete = window.markComplete || (() => {});
+  window.setFeedback  = window.setFeedback  || (() => {});
+  const prompt = document.getElementById("f-game")?.value || "Preview do jogo";
+  if (typeof RENDERERS !== "undefined" && RENDERERS[selectedGameKind]) {
+    const mock = buildGameMockStep(selectedGameKind, gameData, prompt);
+    if (mock) {
+      try {
+        el.innerHTML = '<div class="game-body" id="gprev-body"></div>';
+        RENDERERS[selectedGameKind](mock, el.querySelector("#gprev-body"));
+        return;
+      } catch(e) { console.warn("preview error", e); }
+    }
+  }
+  el.innerHTML = `<div style="text-align:center;padding:24px 16px;color:#9CA3AF;font-size:12px;">Preencha os campos acima para ver o preview</div>`;
+}
+
+function buildGameMockStep(kind, data, prompt) {
+  const d = structuredClone ? structuredClone(data) : JSON.parse(JSON.stringify(data));
+  prompt = prompt || "Preview";
+  switch (kind) {
+    case "game-memory": { const p=d.pairs.filter(p=>p[0]||p[1]); return p.length?{kind,prompt,game_data:{pairs:p}}:null; }
+    case "game-quiz": { const q=d.questions.filter(q=>q.prompt); return q.length?{kind,prompt,game_data:{questions:q}}:null; }
+    case "game-challenge": return (d.mission||d.checklist?.length)?{kind,prompt,game_data:{mission:d.mission||"(missão)",checklist:d.checklist.filter(Boolean)}}:null;
+    case "game-true-false-rapid": { const s=d.statements.filter(s=>s.text); return s.length?{kind,prompt,game_data:{statements:s}}:null; }
+    case "game-hot-cold": return d.answer?{kind,prompt,game_data:{answer:d.answer,hints:d.hints.filter(Boolean)}}:null;
+    case "game-sort": { const s=d.solution.filter(Boolean); return s.length>=2?{kind,prompt,game_data:{shuffled:[...s].sort(()=>Math.random()-.5),solution:s}}:null; }
+    case "game-speedrun": { const q=d.questions.filter(q=>q.prompt); return q.length?{kind,prompt,game_data:{time_limit:d.time_limit,questions:q}}:null; }
+    case "game-fill-sentence": return (d.before||d.after)?{kind,prompt,game_data:{before:d.before,after:d.after,options:d.options.filter(Boolean),answer:d.answer}}:null;
+    case "game-word-select": { const p=d.parts.filter(p=>p.text); return p.length?{kind,prompt,game_data:{parts:p}}:null; }
+    case "game-find-error": { const p=d.parts.filter(p=>p.text); return p.length?{kind,prompt,game_data:{parts:p}}:null; }
+    case "game-unscramble": { const s=d.solution.filter(Boolean); return s.length>=2?{kind,prompt,game_data:{shuffled:[...s].sort(()=>Math.random()-.5),solution:s}}:null; }
+    case "game-connect": { const p=d.pairs.filter(p=>p[0]&&p[1]); return p.length?{kind,prompt,game_data:{left:p.map(x=>x[0]),right_shuffled:[...p.map(x=>x[1])].sort(()=>Math.random()-.5),pairs:p}}:null; }
+    case "game-crossword": { const c=d.clues.filter(c=>c.clue&&c.answer); return c.length?{kind,prompt,game_data:{clues:c}}:null; }
+    case "game-sequence": { const it=d.items.filter(Boolean); return it.length?{kind,prompt,game_data:{items:it,blank_index:d.blank_index,options:d.options.filter(Boolean),answer:d.answer}}:null; }
+    case "game-rhythm-tap": return {kind,prompt,game_data:{pattern:d.pattern}};
+    case "game-build": return {kind,prompt,game_data:{time_signature:d.time_signature||"4/4",target_beats:d.target_beats||4,available:[{name:"Semibreve",symbol:"𝅝",beats:4},{name:"Mínima",symbol:"𝅗𝅥",beats:2},{name:"Semínima",symbol:"♩",beats:1},{name:"Colcheia",symbol:"♪",beats:0.5}]}};
+    case "game-teach": return {kind,prompt,game_data:{min_chars:d.min_chars||50,placeholder:d.placeholder||"…"}};
+    case "game-drag": { const p=d.pairs.filter(p=>p[0]&&p[1]); return p.length?{kind,prompt,game_data:{targets:p.map(x=>x[0]),items_shuffled:[...p.map(x=>x[1])].sort(()=>Math.random()-.5),solution:p.map(x=>x[1])}}:null; }
+    default: return null;
+  }
+}
+
+// ── Module type toggle ────────────────────────────────────────────────────────
+function toggleAssignedStudents() {
+  const type = document.getElementById("f-module-type").value;
+  document.getElementById("f-assigned-row").style.display = type === "lesson" ? "" : "none";
+  updateStudentTrigger();
+}
+
+// ── Student multi-select dropdown ─────────────────────────────────────────────
+let _studentDropdownOpen = false;
+
+function toggleStudentDropdown() {
+  _studentDropdownOpen = !_studentDropdownOpen;
+  const dd = document.getElementById("student-dropdown");
+  const chevron = document.getElementById("student-chevron");
+  if (!dd) return;
+  dd.style.display = _studentDropdownOpen ? "block" : "none";
+  if (chevron) chevron.style.transform = _studentDropdownOpen ? "rotate(180deg)" : "";
+  if (_studentDropdownOpen) {
+    setTimeout(() => document.getElementById("student-search-input")?.focus(), 50);
+  }
+}
+
+function filterStudentDropdown(q) {
+  q = (q || "").toLowerCase();
+  document.querySelectorAll(".student-option").forEach(opt => {
+    const match = !q || opt.dataset.name.includes(q) || opt.dataset.email.includes(q);
+    opt.style.display = match ? "" : "none";
+  });
+}
+
+function updateStudentTrigger() {
+  const checks = document.querySelectorAll(".student-check:checked");
+  const label = document.getElementById("student-trigger-label");
+  if (!label) return;
+  if (checks.length === 0) {
+    label.textContent = "Selecione os alunos...";
+    label.style.color = "#9CA3AF";
+  } else {
+    const names = Array.from(checks).map(cb => {
+      const opt = cb.closest(".student-option");
+      return opt ? opt.querySelector("p")?.textContent || cb.value : cb.value;
+    });
+    label.textContent = names.join(", ");
+    label.style.color = "#111827";
+  }
+}
+
+function getSelectedStudents() {
+  return Array.from(document.querySelectorAll(".student-check:checked"))
+    .map(cb => cb.value).join(", ");
+}
+
+// Wire checkboxes
+document.querySelectorAll(".student-check").forEach(cb =>
+  cb.addEventListener("change", updateStudentTrigger)
+);
+
+// Close dropdown when clicking outside
+document.addEventListener("click", e => {
+  if (_studentDropdownOpen && !document.getElementById("student-multiselect")?.contains(e.target)) {
+    _studentDropdownOpen = false;
+    const dd = document.getElementById("student-dropdown");
+    const chevron = document.getElementById("student-chevron");
+    if (dd) dd.style.display = "none";
+    if (chevron) chevron.style.transform = "";
+  }
+});
+
+updateStudentTrigger();
+
+// ── Shared helper ─────────────────────────────────────────────────────────────
+function esc(s) {
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ── Save module ───────────────────────────────────────────────────────────────
+async function saveModule() {
+  const slug  = document.getElementById("f-slug").value.trim();
+  const title = document.getElementById("f-title").value.trim();
+  const theory = (window._theoryEditor ? window._theoryEditor.value() : document.getElementById("f-theory").value).trim();
+  if (!slug)   { showFeedback("Slug é obrigatório.", "error"); return; }
+  if (!title)  { showFeedback("Título é obrigatório.", "error"); return; }
+  if (!theory) { showFeedback("A seção Teoria não pode estar vazia.", "error"); return; }
+
+  // Build clean game_data (strip internal _kind key)
+  const cleanGameData = Object.assign({}, gameData);
+  delete cleanGameData._kind;
+
+  const payload = {
+    slug,
+    title,
+    description: document.getElementById("f-description").value.trim(),
+    topics:      document.getElementById("f-topics").value.trim(),
+    group_slug:  document.getElementById("f-group").value,
+    video_url:   document.getElementById("f-video").value.trim(),
+    theory,
+    theory_audio_url: document.getElementById("f-theory-audio-url").value.trim(),
+    exercises,
+    game:           document.getElementById("f-game").value.trim(),
+    game_kind:      selectedGameKind || "game-challenge",
+    game_data:      Object.keys(cleanGameData).length ? cleanGameData : {},
+    module_type:    document.getElementById("f-module-type")?.value || "canonical",
+    assigned_to:    getSelectedStudents(),
+  };
+
+  setBtnState(true);
+  try {
+    const res = await fetch("/api/admin/modulos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Erro ao salvar");
+    showFeedback("Módulo salvo!", "ok");
+    setTimeout(() => { window.location.href = "/admin/modulos"; }, 700);
+  } catch(err) {
+    showFeedback(err.message, "error");
+  } finally {
+    setBtnState(false);
+  }
+}
+
+async function generateNarration() {
+  const slug = document.getElementById("f-slug").value.trim();
+  if (!slug) { alert("Preencha o Slug antes de gerar a narração."); return; }
+  const theory = (window._theoryEditor ? window._theoryEditor.value() : document.getElementById("f-theory").value).trim();
+  if (!theory) { alert("Escreva o texto da teoria antes de gerar."); return; }
+
+  const btn = document.getElementById("gen-narration-btn");
+  btn.disabled = true;
+  btn.textContent = "⏳ Gerando…";
+
+  try {
+    const res = await fetch("/api/admin/generate-narration", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: theory, module_slug: slug, voice_id: "CstacWqMhJQlnfLPxRG4" }),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Erro");
+
+    document.getElementById("f-theory-audio-url").value = json.url;
+    const audio = document.getElementById("narration-preview");
+    audio.src = json.url;
+    document.getElementById("narration-box").classList.remove("hidden");
+  } catch(e) {
+    alert("Erro ao gerar narração: " + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "🎙 Gerar narração";
+  }
+}
+
+function setBtnState(loading) {
+  ["save-btn","save-btn-bottom"].forEach(id => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.textContent = loading ? "Salvando…" : "Salvar Módulo";
+  });
+}
+
+// ── Image insert ─────────────────────────────────────────────────────────────
+let _imgTargetId = null;
+let _imgUploadedUrl = null;
+let _imgActiveTab = "upload";
+
+function switchImgTab(tab) {
+  _imgActiveTab = tab;
+  document.getElementById("img-panel-upload").classList.toggle("hidden", tab !== "upload");
+  document.getElementById("img-panel-url").classList.toggle("hidden",   tab !== "url");
+  const btnUpload = document.getElementById("img-tab-upload");
+  const btnUrl    = document.getElementById("img-tab-url");
+  btnUpload.className = tab === "upload"
+    ? "flex-1 py-1.5 rounded-lg text-[12px] font-semibold transition-colors bg-white text-gray-800 shadow-sm"
+    : "flex-1 py-1.5 rounded-lg text-[12px] font-semibold transition-colors text-gray-500 hover:text-gray-700";
+  btnUrl.className = tab === "url"
+    ? "flex-1 py-1.5 rounded-lg text-[12px] font-semibold transition-colors bg-white text-gray-800 shadow-sm"
+    : "flex-1 py-1.5 rounded-lg text-[12px] font-semibold transition-colors text-gray-500 hover:text-gray-700";
+}
+
+function openImgDialog(textareaId) {
+  _imgTargetId = textareaId;
+  _imgUploadedUrl = null;
+  document.getElementById("img-url-input").value = "";
+  document.getElementById("img-alt-input").value = "";
+  document.getElementById("img-preview").classList.add("hidden");
+  document.getElementById("img-upload-preview").classList.add("hidden");
+  document.getElementById("img-upload-progress").classList.add("hidden");
+  document.getElementById("img-file-input").value = "";
+  switchImgTab("upload");
+  document.getElementById("img-dialog").style.display = "flex";
+}
+
+function closeImgDialog() {
+  document.getElementById("img-dialog").style.display = "none";
+  _imgTargetId = null;
+  _imgUploadedUrl = null;
+}
+
+function _insertMarkdownImage(url, alt) {
+  const markdown = `![${alt}](${url})`;
+  if (!_imgTargetId && window._theoryEditor) {
+    const cm = window._theoryEditor.codemirror;
+    cm.getDoc().replaceRange("\n\n" + markdown + "\n\n", cm.getCursor());
+    cm.focus();
+  } else {
+    const ta = document.getElementById(_imgTargetId);
+    if (ta) {
+      const start = ta.selectionStart;
+      ta.value = ta.value.slice(0, start) + "\n\n" + markdown + "\n\n" + ta.value.slice(start);
+      ta.selectionStart = ta.selectionEnd = start + markdown.length + 4;
+      ta.focus();
+    }
+  }
+}
+
+async function confirmImgInsert() {
+  const alt = document.getElementById("img-alt-input").value.trim();
+
+  if (_imgActiveTab === "upload") {
+    if (_imgUploadedUrl) {
+      _insertMarkdownImage(_imgUploadedUrl, alt);
+      closeImgDialog();
+      return;
+    }
+    // upload pending
+    const file = document.getElementById("img-file-input").files[0];
+    if (!file) return;
+    await _doUpload(file, alt, true);
+    return;
+  }
+
+  // URL tab
+  const url = document.getElementById("img-url-input").value.trim();
+  if (!url) return;
+  _insertMarkdownImage(url, alt);
+  closeImgDialog();
+}
+
+async function _doUpload(file, alt, insertAfter) {
+  const prog = document.getElementById("img-upload-progress");
+  const bar  = document.getElementById("img-progress-bar");
+  const status = document.getElementById("img-upload-status");
+  prog.classList.remove("hidden");
+  bar.style.width = "30%";
+  status.textContent = "Enviando...";
+  document.getElementById("img-insert-btn").disabled = true;
+
+  try {
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Erro no upload");
+    bar.style.width = "100%";
+    status.textContent = "Concluído!";
+    _imgUploadedUrl = json.url;
+    if (insertAfter) {
+      _insertMarkdownImage(json.url, alt || file.name.replace(/\.[^.]+$/, ""));
+      closeImgDialog();
+    }
+  } catch(e) {
+    status.textContent = "Erro: " + e.message;
+    bar.style.width = "0%";
+    bar.style.background = "#EF4444";
+  } finally {
+    document.getElementById("img-insert-btn").disabled = false;
+  }
+}
+
+document.getElementById("img-file-input")?.addEventListener("change", function() {
+  const file = this.files[0];
+  if (!file) return;
+  _imgUploadedUrl = null;
+  const prev = document.getElementById("img-upload-preview");
+  const prevEl = document.getElementById("img-upload-preview-el");
+  const fname  = document.getElementById("img-upload-filename");
+  prevEl.src = URL.createObjectURL(file);
+  fname.textContent = file.name;
+  prev.classList.remove("hidden");
+  document.getElementById("img-upload-progress").classList.add("hidden");
+  document.getElementById("img-progress-bar").style.width = "0%";
+  document.getElementById("img-progress-bar").style.background = "#C4943A";
+});
+
+document.getElementById("img-url-input")?.addEventListener("input", function() {
+  const url = this.value.trim();
+  const preview = document.getElementById("img-preview");
+  const img = document.getElementById("img-preview-el");
+  if (url) { img.src = url; preview.classList.remove("hidden"); }
+  else      { preview.classList.add("hidden"); }
+});
+
+document.getElementById("img-dialog")?.addEventListener("click", function(e) {
+  if (e.target === this) closeImgDialog();
+});
+
+function showFeedback(msg, type) {
+  const cls = type === "ok" ? "text-[13px] text-green-600" : "text-[13px] text-red-500";
+  ["save-feedback","save-feedback-bottom"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg; el.className = cls;
+  });
+  if (type === "ok") setTimeout(() => {
+    document.querySelectorAll("#save-feedback,#save-feedback-bottom").forEach(el => el.textContent = "");
+  }, 3000);
+}
+
+document.getElementById("save-btn").addEventListener("click", saveModule);
+document.getElementById("save-btn-bottom").addEventListener("click", saveModule);
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+_buildTypeGrid("ex-classic-grid", EX_CLASSIC);
+_buildTypeGrid("ex-game-grid", GAME_TYPES);
+renderExList();
+buildGameTypeGrid();
+
+// Pre-select game kind if editing
+{% if module_data and module_data.game_kind %}
+const _initKind = {{ module_data.game_kind | tojson }};
+const _initData = {{ (module_data.game_data | tojson) if module_data.game_data else '{}' }};
+const _initCard = document.querySelector(`#game-type-grid [data-kind="${_initKind}"]`);
+if (_initCard) {
+  _initCard.classList.add("active");
+  selectedGameKind = _initKind;
+  gameData = (Object.keys(_initData).length > 0) ? _initData : defaultGameData(_initKind);
+  gameData._kind = _initKind;
+  document.getElementById("game-editor-row").style.display = "grid";
+  const typeInfo = GAME_TYPES.find(t => t.kind === _initKind);
+  if (typeInfo) document.getElementById("game-preview-label").textContent = `${typeInfo.icon} ${typeInfo.label} — preview interativo`;
+  buildGameEditor(_initKind);
+  updateGamePreview();
+}
+{% endif %}
+
+// Restore narration box if module already has audio
+(function() {
+  const url = document.getElementById("f-theory-audio-url").value.trim();
+  if (url) {
+    document.getElementById("narration-preview").src = url;
+    document.getElementById("narration-box").classList.remove("hidden");
+  }
+})();
+
+// ── EasyMDE for theory textarea ───────────────────────────────────────────────
+if (typeof EasyMDE !== "undefined") {
+  window._theoryEditor = new EasyMDE({
+    element: document.getElementById("f-theory"),
+    spellChecker: false,
+    autosave: { enabled: false },
+    toolbar: ["bold","italic","heading","|","unordered-list","ordered-list","|","link","|","preview","side-by-side","fullscreen"],
+    placeholder: "Escreva o conteúdo teórico. Use **negrito**, _itálico_, ## títulos, etc.",
+    minHeight: "200px",
+    status: false,
+  });
+  document.getElementById("theory-img-btn")?.addEventListener("click", () => {
+    _imgTargetId = null;
+    document.getElementById("img-url-input").value = "";
+    document.getElementById("img-alt-input").value = "";
+    document.getElementById("img-preview").classList.add("hidden");
+    document.getElementById("img-dialog").style.display = "flex";
+    document.getElementById("img-url-input").focus();
+  });
+} else {
+  // Fallback: plain textarea mode
+  document.getElementById("theory-img-btn")?.addEventListener("click", () => openImgDialog("f-theory"));
+}
+</script>
+{% endblock %}

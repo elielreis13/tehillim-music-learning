@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="240" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">MOVIMENTO CONJUNTO vs. DISJUNTO</text>
+
+  <!-- LEFT: Staircase (stepwise motion) -->
+  <text x="200" y="52" text-anchor="middle" font-size="13" font-weight="700" fill="#2E7D32">CONJUNTO (passo a passo)</text>
+
+  <!-- Stair steps ascending left to right -->
+  <g fill="#C8E6C9" stroke="#2E7D32" stroke-width="1.5">
+    <rect x="40"  y="170" width="55" height="20" rx="3"/>
+    <rect x="95"  y="152" width="55" height="20" rx="3"/>
+    <rect x="150" y="134" width="55" height="20" rx="3"/>
+    <rect x="205" y="116" width="55" height="20" rx="3"/>
+    <rect x="260" y="98"  width="55" height="20" rx="3"/>
+    <rect x="315" y="80"  width="55" height="20" rx="3"/>
+  </g>
+  <!-- Note labels on steps -->
+  <g font-size="11" fill="#1B5E20" text-anchor="middle" font-weight="600">
+    <text x="67"  y="184">Dó</text>
+    <text x="122" y="166">Ré</text>
+    <text x="177" y="148">Mi</text>
+    <text x="232" y="130">Fá</text>
+    <text x="287" y="112">Sol</text>
+    <text x="342" y="94">Lá</text>
+  </g>
+
+  <!-- Semitone markers (Mi-Fa and Si-Do are smaller steps) -->
+  <rect x="150" y="122" width="4" height="12" rx="1" fill="#F44336"/>
+  <text x="153" y="119" font-size="9" fill="#F44336">S</text>
+
+  <!-- Walking figure on steps -->
+  <circle cx="80" cy="152" r="8" fill="#2E7D32"/>
+  <text x="80" y="156" text-anchor="middle" font-size="10" fill="white">♪</text>
+
+  <!-- Step arrow -->
+  <path d="M 96 161 L 108 149" stroke="#2E7D32" stroke-width="2" marker-end="url(#green-arrow)"/>
+
+  <!-- RIGHT: Jump (disjunct motion) -->
+  <text x="600" y="52" text-anchor="middle" font-size="13" font-weight="700" fill="#C62828">DISJUNTO (salto)</text>
+
+  <!-- Staff snippet showing a leap -->
+  <g stroke="#CCC" stroke-width="1">
+    <line x1="420" y1="90"  x2="780" y2="90"/>
+    <line x1="420" y1="106" x2="780" y2="106"/>
+    <line x1="420" y1="122" x2="780" y2="122"/>
+    <line x1="420" y1="138" x2="780" y2="138"/>
+    <line x1="420" y1="154" x2="780" y2="154"/>
+  </g>
+  <!-- Do (low) -->
+  <ellipse cx="480" cy="154" rx="11" ry="7" fill="#C62828"/>
+  <line x1="491" y1="154" x2="491" y2="118" stroke="#C62828" stroke-width="2"/>
+  <text x="480" y="172" font-size="10" fill="#888" text-anchor="middle">Dó</text>
+
+  <!-- Sol (leaps up a 5th) -->
+  <ellipse cx="600" cy="122" rx="11" ry="7" fill="#C62828"/>
+  <line x1="611" y1="122" x2="611" y2="86" stroke="#C62828" stroke-width="2"/>
+  <text x="600" y="172" font-size="10" fill="#888" text-anchor="middle">Sol</text>
+
+  <!-- Big curved arrow showing the leap -->
+  <path d="M 495 145 Q 545 100 585 125" fill="none" stroke="#C62828" stroke-width="2.5" stroke-dasharray="5,3"/>
+  <polygon points="585,125 578,118 580,130" fill="#C62828"/>
+  <text x="540" y="102" font-size="11" fill="#C62828" font-weight="700" text-anchor="middle">quinta justa</text>
+
+  <!-- Legend -->
+  <rect x="30" y="200" width="740" height="28" rx="6" fill="#F5F5F5"/>
+  <rect x="46" y="208" width="14" height="12" rx="3" fill="#2E7D32"/>
+  <text x="66" y="218" font-size="11" fill="#555">Conjunto: grau vizinho da escala (2ª)</text>
+  <rect x="300" y="208" width="14" height="12" rx="3" fill="#C62828"/>
+  <text x="320" y="218" font-size="11" fill="#555">Disjunto: salto maior que uma 2ª</text>
+  <text x="580" y="218" font-size="11" fill="#888">S = semitom (degrau menor)</text>
+</svg>

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="240" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">MELODIAS CROMÁTICAS — NOTAS FORA DA ESCALA</text>
+
+  <!-- TOP: Diatonic scale (C major) -->
+  <text x="40" y="58" font-size="11" font-weight="700" fill="#2E7D32">Escala Diatônica (Dó Maior — 7 notas)</text>
+  <g stroke="#CCC" stroke-width="1">
+    <line x1="30" y1="68" x2="540" y2="68"/>
+    <line x1="30" y1="80" x2="540" y2="80"/>
+    <line x1="30" y1="92" x2="540" y2="92"/>
+    <line x1="30" y1="104" x2="540" y2="104"/>
+    <line x1="30" y1="116" x2="540" y2="116"/>
+  </g>
+  <!-- Notes: Do Re Mi Fa Sol La Si Do -->
+  <g fill="#2E7D32">
+    <ellipse cx="60"  cy="116" rx="9" ry="6"/>
+    <ellipse cx="118" cy="110" rx="9" ry="6"/>
+    <ellipse cx="176" cy="104" rx="9" ry="6"/>
+    <ellipse cx="234" cy="98"  rx="9" ry="6"/>
+    <ellipse cx="292" cy="92"  rx="9" ry="6"/>
+    <ellipse cx="350" cy="86"  rx="9" ry="6"/>
+    <ellipse cx="408" cy="80"  rx="9" ry="6"/>
+    <ellipse cx="466" cy="68"  rx="9" ry="6"/>
+  </g>
+  <g font-size="9" fill="#888" text-anchor="middle">
+    <text x="60"  y="130">Dó</text><text x="118" y="130">Ré</text><text x="176" y="130">Mi</text>
+    <text x="234" y="130">Fá</text><text x="292" y="130">Sol</text><text x="350" y="130">Lá</text>
+    <text x="408" y="130">Si</text><text x="466" y="130">Dó</text>
+  </g>
+
+  <!-- BOTTOM: Chromatic scale -->
+  <text x="40" y="148" font-size="11" font-weight="700" fill="#C62828">Escala Cromática (12 notas por semitons)</text>
+  <g stroke="#CCC" stroke-width="0.8">
+    <line x1="30" y1="157" x2="540" y2="157"/>
+    <line x1="30" y1="166" x2="540" y2="166"/>
+    <line x1="30" y1="175" x2="540" y2="175"/>
+    <line x1="30" y1="184" x2="540" y2="184"/>
+    <line x1="30" y1="193" x2="540" y2="193"/>
+  </g>
+  <!-- 12 chromatic notes -->
+  <g fill="#C62828">
+    <ellipse cx="60"  cy="193" rx="8" ry="5"/>
+    <ellipse cx="98"  cy="189" rx="8" ry="5" fill="#E57373"/>
+    <ellipse cx="136" cy="184" rx="8" ry="5"/>
+    <ellipse cx="174" cy="180" rx="8" ry="5" fill="#E57373"/>
+    <ellipse cx="212" cy="175" rx="8" ry="5"/>
+    <ellipse cx="250" cy="171" rx="8" ry="5"/>
+    <ellipse cx="288" cy="166" rx="8" ry="5" fill="#E57373"/>
+    <ellipse cx="326" cy="162" rx="8" ry="5"/>
+    <ellipse cx="364" cy="157" rx="8" ry="5" fill="#E57373"/>
+    <ellipse cx="402" cy="153" rx="8" ry="5"/>
+    <ellipse cx="440" cy="148" rx="8" ry="5" fill="#E57373"/>
+    <ellipse cx="478" cy="143" rx="8" ry="5"/>
+    <ellipse cx="516" cy="139" rx="8" ry="5"/>
+  </g>
+  <!-- Semitone arrows -->
+  <g stroke="#C62828" stroke-width="1" fill="#C62828">
+    <text x="79"  y="196" font-size="8" text-anchor="middle">↑½</text>
+    <text x="117" y="192" font-size="8" text-anchor="middle">↑½</text>
+    <text x="155" y="187" font-size="8" text-anchor="middle">↑½</text>
+    <text x="193" y="183" font-size="8" text-anchor="middle">↑½</text>
+    <text x="231" y="178" font-size="8" text-anchor="middle">↑½</text>
+    <text x="269" y="173" font-size="8" text-anchor="middle">↑½</text>
+  </g>
+  <!-- Note names for chromatic -->
+  <g font-size="8" fill="#888" text-anchor="middle">
+    <text x="60"  y="207">Dó</text><text x="98"  y="207">Dó#</text><text x="136" y="207">Ré</text>
+    <text x="174" y="207">Ré#</text><text x="212" y="207">Mi</text><text x="250" y="207">Fá</text>
+    <text x="288" y="207">Fá#</text><text x="326" y="207">Sol</text><text x="364" y="207">Sol#</text>
+    <text x="402" y="207">Lá</text><text x="440" y="207">Lá#</text><text x="478" y="207">Si</text>
+    <text x="516" y="207">Dó</text>
+  </g>
+
+  <!-- Right panel: 3 chromatic uses -->
+  <rect x="560" y="45" width="220" height="170" rx="8" fill="#F5F5F5"/>
+  <text x="670" y="63" text-anchor="middle" font-size="11" font-weight="700" fill="#333">Cromatismo na prática</text>
+  <rect x="572" y="70" width="196" height="38" rx="5" fill="#FFF8E1"/>
+  <text x="670" y="84" text-anchor="middle" font-size="10" font-weight="700" fill="#F57F17">Cor expressiva</text>
+  <text x="670" y="99" text-anchor="middle" font-size="9" fill="#555">Nota alterada isolada no hino</text>
+  <rect x="572" y="114" width="196" height="38" rx="5" fill="#FCE4EC"/>
+  <text x="670" y="128" text-anchor="middle" font-size="10" font-weight="700" fill="#C62828">Glissando</text>
+  <text x="670" y="143" text-anchor="middle" font-size="9" fill="#555">Deslize cromático entre acordes</text>
+  <rect x="572" y="158" width="196" height="38" rx="5" fill="#EDE7F6"/>
+  <text x="670" y="172" text-anchor="middle" font-size="10" font-weight="700" fill="#4527A0">Blue note</text>
+  <text x="670" y="187" text-anchor="middle" font-size="9" fill="#555">Ornamento afro-gospel (b3, b5)</text>
+</svg>

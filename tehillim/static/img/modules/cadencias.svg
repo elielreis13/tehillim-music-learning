@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" width="800" height="260" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="260" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">CADÊNCIAS — PONTOS DE CHEGADA NA HARMONIA</text>
+
+  <!-- 4 cadence types -->
+
+  <!-- Authentic Perfect: V→I -->
+  <rect x="30" y="45" width="175" height="180" rx="10" fill="#E3F2FD"/>
+  <text x="117" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#1565C0">AUTÊNTICA</text>
+  <text x="117" y="84" text-anchor="middle" font-size="11" fill="#1565C0">PERFEITA</text>
+  <text x="117" y="110" text-anchor="middle" font-size="28" font-weight="700" fill="#1565C0">V → I</text>
+  <text x="117" y="135" text-anchor="middle" font-size="13" fill="#555">Sol → Dó</text>
+  <text x="117" y="155" text-anchor="middle" font-size="11" fill="#888">Conclusão definitiva</text>
+  <text x="117" y="171" text-anchor="middle" font-size="11" fill="#888">Ponto final da música</text>
+  <text x="117" y="192" text-anchor="middle" font-size="28">✓</text>
+  <text x="117" y="215" text-anchor="middle" font-size="10" fill="#1565C0" font-style="italic">fechamento total</text>
+
+  <!-- Plagal: IV→I (Amen) -->
+  <rect x="215" y="45" width="175" height="180" rx="10" fill="#E8F5E9"/>
+  <text x="302" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#2E7D32">PLAGAL</text>
+  <text x="302" y="84" text-anchor="middle" font-size="11" fill="#2E7D32">"AMÉM"</text>
+  <text x="302" y="110" text-anchor="middle" font-size="28" font-weight="700" fill="#2E7D32">IV → I</text>
+  <text x="302" y="135" text-anchor="middle" font-size="13" fill="#555">Fá → Dó</text>
+  <text x="302" y="155" text-anchor="middle" font-size="11" fill="#888">Conclusão suave</text>
+  <text x="302" y="171" text-anchor="middle" font-size="11" fill="#888">Muito usada em hinos</text>
+  <text x="302" y="192" text-anchor="middle" font-size="20">🙏</text>
+  <text x="302" y="215" text-anchor="middle" font-size="10" fill="#2E7D32" font-style="italic">caráter religioso</text>
+
+  <!-- Half cadence: ?→V (semicadence) -->
+  <rect x="400" y="45" width="175" height="180" rx="10" fill="#FFF8E1"/>
+  <text x="487" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#F57F17">SEMICADÊNCIA</text>
+  <text x="487" y="84" text-anchor="middle" font-size="11" fill="#F57F17">(meia cadência)</text>
+  <text x="487" y="110" text-anchor="middle" font-size="28" font-weight="700" fill="#F57F17">? → V</text>
+  <text x="487" y="135" text-anchor="middle" font-size="13" fill="#555">termina no Sol</text>
+  <text x="487" y="155" text-anchor="middle" font-size="11" fill="#888">Pergunta sem resposta</text>
+  <text x="487" y="171" text-anchor="middle" font-size="11" fill="#888">Suspensão harmônica</text>
+  <text x="487" y="192" text-anchor="middle" font-size="20">❓</text>
+  <text x="487" y="215" text-anchor="middle" font-size="10" fill="#F57F17" font-style="italic">fica em suspense</text>
+
+  <!-- Deceptive: V→vi -->
+  <rect x="585" y="45" width="185" height="180" rx="10" fill="#FCE4EC"/>
+  <text x="677" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#C62828">DECEPTIVA</text>
+  <text x="677" y="84" text-anchor="middle" font-size="11" fill="#C62828">(enganosa)</text>
+  <text x="677" y="110" text-anchor="middle" font-size="28" font-weight="700" fill="#C62828">V → vi</text>
+  <text x="677" y="135" text-anchor="middle" font-size="13" fill="#555">Sol → Lám</text>
+  <text x="677" y="155" text-anchor="middle" font-size="11" fill="#888">Surpresa harmônica</text>
+  <text x="677" y="171" text-anchor="middle" font-size="11" fill="#888">Evita a resolução</text>
+  <text x="677" y="192" text-anchor="middle" font-size="20">😮</text>
+  <text x="677" y="215" text-anchor="middle" font-size="10" fill="#C62828" font-style="italic">engana o ouvinte</text>
+
+  <!-- Footer -->
+  <text x="400" y="244" text-anchor="middle" font-size="11" fill="#888">Cadências são os "sinais de pontuação" da música — ponto final, vírgula, ponto de interrogação.</text>
+</svg>

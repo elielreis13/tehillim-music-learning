@@ -27,8 +27,24 @@ def _load_all() -> tuple[StudyModule, ...]:
     # ── 1. Arquivos .md (prioridade) ──────────────────────────────────────────
     from tehillim.content.md_loader import load_md_module
 
-    for md_path in sorted(_HERE.glob("*.md")):
+    split_dir = _HERE / "split"
+    superseded_path = split_dir / "_superseded.txt"
+    superseded_md = set()
+    if superseded_path.exists():
+        superseded_md = {
+            line.strip()
+            for line in superseded_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        }
+
+    md_paths = list(sorted(_HERE.glob("*.md")))
+    if split_dir.exists():
+        md_paths.extend(sorted(split_dir.glob("*.md")))
+
+    for md_path in md_paths:
         if md_path.name.startswith("_"):
+            continue
+        if md_path.parent == _HERE and md_path.name in superseded_md:
             continue
         try:
             sm = load_md_module(md_path)

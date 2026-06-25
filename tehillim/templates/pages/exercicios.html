@@ -2,196 +2,526 @@
 
 {% block title %}Exercícios | Tehillim{% endblock %}
 
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet"/>
+<style>
+.fraunces { font-family: 'Fraunces', serif; }
+
+/* ── Week strip ── */
+.week-strip { display: flex; gap: 6px; }
+
+.day-btn {
+  flex: 1; padding: 10px 4px; border-radius: 12px; border: none;
+  background: white; cursor: pointer; text-align: center;
+  transition: all .15s; position: relative;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.day-btn:hover:not(.locked):not(.active) { background: #FFFBF2; }
+.day-btn.active { background: linear-gradient(160deg,#C4943A,#8B6820); }
+.day-btn.locked { opacity: .5; cursor: default; }
+
+.day-btn .d-short { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #9C8460; margin-bottom: 4px; }
+.day-btn.active .d-short { color: rgba(255,255,255,.75); }
+.day-btn.locked .d-short { color: #B0B0B0; }
+
+.day-btn .d-num { font-size: 18px; font-weight: 700; color: #2A2419; line-height: 1; }
+.day-btn.active .d-num { color: white; }
+.day-btn.locked .d-num { color: #C0C0C0; }
+
+.day-btn .d-dot { height: 6px; display: flex; align-items: center; justify-content: center; margin-top: 5px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+
+/* ── Exercise cards ── */
+.ex-card {
+  background: white; border-radius: 18px; overflow: hidden;
+  border: 1.5px solid #EDE8DF; cursor: pointer;
+  transition: box-shadow .15s, transform .1s;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+}
+.ex-card:hover { box-shadow: 0 6px 20px rgba(196,148,58,.15); transform: translateY(-1px); }
+.ex-card.done { cursor: default; }
+.ex-card.done:hover { box-shadow: 0 2px 10px rgba(0,0,0,.05); transform: none; }
+
+.ex-card-head {
+  padding: 18px 20px 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.ex-card-body {
+  padding: 0 20px 18px;
+}
+.ex-card-foot {
+  padding: 0 20px 18px;
+  display: flex; justify-content: flex-end;
+}
+
+.ex-icon {
+  width: 44px; height: 44px; border-radius: 11px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+}
+
+/* ── Modal ── */
+.mc-btn {
+  width: 100%; padding: 13px 16px; border-radius: 11px;
+  border: 1.5px solid #E5E7EB; background: #FAF7F2;
+  font-size: 13px; text-align: left; cursor: pointer;
+  display: block; margin-bottom: 10px; font-family: inherit;
+  transition: border-color .15s, background .1s;
+}
+.mc-btn:hover { border-color: #C4943A; background: #FFFBF2; }
+.mc-btn:disabled { opacity: .6; cursor: default; }
+</style>
+{% endblock %}
+
 {% block header %}
-<header class="bg-[#F2EAD8] px-4 md:px-8 py-5 relative overflow-hidden flex-shrink-0">
-  <div class="flex items-center justify-between relative z-10">
-    <div>
-      <p class="text-[12px] text-gray-500 uppercase tracking-wider font-medium">Prática</p>
-      <h1 class="text-[22px] font-bold text-gray-800 mt-0.5">Exercícios</h1>
-      <p class="text-[13px] text-gray-500 mt-0.5">Pratique teoria, leitura e percepção musical</p>
-    </div>
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-2">
-        <img src="{{ url_for('static', filename='icons/ui-streak.svg') }}" class="w-7 h-7 flex-shrink-0"/>
-        <div class="leading-tight">
-          <p class="font-bold text-[18px] text-gray-800 leading-none" data-streak>—</p>
-          <p class="text-[10px] text-gray-500">dias de sequência</p>
-        </div>
-      </div>
-      <div class="w-px h-7 bg-[#D4C4A8]"></div>
-    </div>
-  </div>
-  <div class="absolute right-[-20px] bottom-[-20px] text-[#C4943A] opacity-[0.08] select-none pointer-events-none" style="font-size:160px;line-height:1;font-family:'Georgia',serif;">&#119070;</div>
+<header style="background:#F2EAD8;border-bottom:1px solid #ECE3D0;flex-shrink:0;padding:20px 24px 16px;">
+  <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.2em;font-weight:700;margin:0 0 3px;">Exercícios</p>
+  <h1 class="fraunces" style="font-size:24px;font-weight:400;color:#2A2419;margin:0 0 2px;line-height:1.1;">Exercícios</h1>
+  <p id="header-subtitle" style="font-size:12px;color:#9C8460;margin:0;">Carregando...</p>
 </header>
 {% endblock %}
 
 {% block content %}
-<div class="p-4 md:p-6 flex flex-col xl:flex-row gap-5">
+<div style="flex:1;overflow-y:auto;padding:20px 20px 40px;display:flex;flex-direction:column;gap:24px;">
 
-  <!-- ── COLUNA PRINCIPAL ── -->
-  <div class="flex-1 flex flex-col gap-5 min-w-0">
+  <div id="section-loading" style="text-align:center;padding:60px;color:#9C8460;font-size:13px;">Carregando...</div>
 
-    <!-- Cards de tipo de exercício -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {% set ex_types = [
-        ('📝', 'bg-[#FEF3C7]', 'text-amber-700', 'Múltipla Escolha', 'Escolha a alternativa correta entre 4 opções.', 'exercise-mc'),
-        ('✅', 'bg-[#D1FAE5]', 'text-emerald-700', 'Verdadeiro ou Falso', 'Avalie se a afirmação é verdadeira ou falsa.', 'exercise-tf'),
-        ('🔗', 'bg-[#DBEAFE]', 'text-blue-700', 'Associação', 'Relacione colunas para fixar conceitos.', 'exercise-match'),
-        ('✍️', 'bg-[#EDE9FE]', 'text-violet-700', 'Completar', 'Preencha os espaços em branco.', 'exercise-fill'),
-      ] %}
-      {% for icon, bg, tc, name, desc, kind in ex_types %}
-      <div class="{{ bg }} rounded-2xl p-5 shadow-sm">
-        <div class="text-3xl mb-3">{{ icon }}</div>
-        <h3 class="font-bold text-[15px] {{ tc }}">{{ name }}</h3>
-        <p class="text-[12px] text-gray-600 mt-1 leading-relaxed">{{ desc }}</p>
-        <div class="mt-3 flex items-center justify-between">
-          <span class="text-[11px] text-gray-500" id="count-{{ kind }}">— disponíveis</span>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-
-    <!-- Módulos com exercícios disponíveis -->
-    <div>
-      <h2 class="font-bold text-[16px] text-gray-800 mb-3">Exercícios por Módulo</h2>
-      <div class="flex flex-col gap-3" id="exercise-list">
-        <p class="text-[13px] text-gray-400">Carregando...</p>
-      </div>
-    </div>
-
+  <!-- Week strip -->
+  <div id="section-week" style="display:none;">
+    <div class="week-strip" id="week-strip"></div>
   </div>
 
-  <!-- ── PAINEL DIREITO ── -->
-  <div class="w-full xl:w-[260px] flex-shrink-0 flex flex-col gap-4">
+  <!-- Day exercises -->
+  <div id="section-day" style="display:none;flex-direction:column;gap:16px;">
+    <div>
+      <h2 id="day-title" class="fraunces" style="font-size:20px;font-weight:500;color:#2A2419;margin:0 0 3px;"></h2>
+      <p id="day-subtitle" style="font-size:12px;color:#9C8460;margin:0;"></p>
+    </div>
+    <div id="day-cards" style="display:flex;flex-direction:column;gap:14px;"></div>
+  </div>
 
-    <!-- Próximo módulo para exercitar -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <h3 class="font-bold text-[14px] text-gray-800 mb-3">Próximo a Praticar</h3>
-      <div id="next-exercise-widget">
-        <p class="text-[13px] text-gray-400">Carregando...</p>
+  <!-- Week summary -->
+  <div id="section-week-summary" style="display:none;background:white;border-radius:18px;border:1.5px solid #EDE8DF;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.04);">
+    <p style="font-size:10px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:0 0 14px;">Semana</p>
+    <div id="week-summary-bars" style="display:flex;gap:8px;align-items:flex-end;height:48px;margin-bottom:12px;"></div>
+    <p id="week-summary-text" style="font-size:12px;color:#9C8460;margin:0;"></p>
+  </div>
+
+  <!-- Empty -->
+  <div id="section-empty" style="display:none;text-align:center;padding:60px 20px;">
+    <div style="font-size:48px;margin-bottom:14px;">📚</div>
+    <p style="font-size:15px;font-weight:600;color:#2A2419;margin:0 0 8px;">Nenhum módulo concluído</p>
+    <p style="font-size:13px;color:#9C8460;margin:0 0 20px;">Conclua seu primeiro módulo para desbloquear os exercícios diários.</p>
+    <a href="/grupos" style="display:inline-block;padding:12px 28px;background:#C4943A;color:white;border-radius:12px;font-size:13px;font-weight:700;text-decoration:none;">Ver módulos →</a>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div id="ex-modal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-end;justify-content:center;"
+     onclick="if(event.target===this)closeModal()">
+  <div style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:500px;max-height:84vh;display:flex;flex-direction:column;overflow:hidden;" onclick="event.stopPropagation()">
+    <div style="padding:16px 20px;border-bottom:1px solid #F0E8D4;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <p id="modal-badge" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;margin:0 0 2px;color:#5A8A6A;"></p>
+        <h3 id="modal-module-title" style="font-size:14px;font-weight:600;color:#2A2419;margin:0;"></h3>
+      </div>
+      <button onclick="closeModal()" style="background:none;border:none;cursor:pointer;color:#9C8460;font-size:24px;line-height:1;padding:0;">×</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:22px;">
+      <div id="modal-mc-mode">
+        <p id="modal-prompt" style="font-size:16px;font-weight:600;color:#2A2419;margin:0 0 20px;line-height:1.45;"></p>
+        <div id="modal-options"></div>
+        <div id="modal-result" style="display:none;margin-top:14px;padding:13px 16px;border-radius:11px;font-size:13px;font-weight:600;text-align:center;"></div>
+      </div>
+      <div id="modal-game-mode" style="display:none;">
+        <div id="gfeedback" style="display:none;margin-bottom:14px;padding:11px 16px;border-radius:11px;font-size:13px;font-weight:600;text-align:center;"></div>
+        <div id="game-body"></div>
       </div>
     </div>
-
-    <!-- Tipos de exercícios -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <h3 class="font-bold text-[14px] text-gray-800 mb-4">Legenda</h3>
-      <div class="flex flex-col gap-2">
-        {% for icon, bg, tc, name, _, kind in ex_types %}
-        <div class="flex items-center gap-2.5">
-          <div class="w-7 h-7 rounded-lg {{ bg }} flex items-center justify-center flex-shrink-0 text-base">{{ icon }}</div>
-          <span class="text-[12px] text-gray-600">{{ name }}</span>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- Jogos -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm">
-      <h3 class="font-bold text-[14px] text-gray-800 mb-3">🎮 Laboratório de Jogos</h3>
-      <p class="text-[12px] text-gray-500 leading-relaxed mb-3">Visualize e teste todos os tipos de jogo da plataforma.</p>
-      <a href="/jogos" class="block w-full text-center text-[13px] font-semibold py-2.5 rounded-xl bg-[#F2EAD8] text-[#7A5C2E] hover:bg-[#EDD9B0] transition-colors">
-        Abrir Laboratório
-      </a>
-    </div>
-
   </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/audio.js"></script>
+<script src="/static/js/games.js"></script>
 <script>
-const GROUPS_DATA = {{ groups | tojson }};
+let _slug = null, _exIdx = null, _exDate = null, _saId = null;
+let _allDays = [];
+let _selectedDate = null;
+let _standalone = [];
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await waitForProgress();
-  renderExercises();
-});
-
-function waitForProgress() {
-  return new Promise(resolve => {
-    if (window._progress !== undefined) return resolve();
-    const t = setInterval(() => { if (window._progress !== undefined) { clearInterval(t); resolve(); } }, 100);
-    setTimeout(() => { clearInterval(t); resolve(); }, 5000);
-  });
+// ── Game callbacks ─────────────────────────────────────────────────────────────
+window.markComplete = function() {
+  const fb = document.getElementById("gfeedback");
+  if (fb) setFb(fb, "🎉 Concluído! Ótimo trabalho!", "ok");
+  _completeCurrentEx().finally(() => setTimeout(() => { closeModal(); loadPage(); }, 1600));
+};
+window.setFeedback = function(text, type) {
+  const fb = document.getElementById("gfeedback");
+  if (!fb) return;
+  if (!text) { fb.style.display = "none"; return; }
+  setFb(fb, text, type);
+  if (type === "ok") window.audio?.correct?.();
+  if (type === "no") window.audio?.wrong?.();
+};
+function setFb(el, text, type) {
+  const ok = type === "ok";
+  el.textContent = text;
+  el.style.cssText = `display:block;padding:11px 16px;border-radius:11px;font-size:13px;font-weight:600;text-align:center;margin-bottom:14px;background:${ok?'#F0F9F4':'#FEF2F2'};color:${ok?'#3A7A5A':'#B91C1C'};border:1px solid ${ok?'#C6E8D4':'#FECACA'};`;
+}
+async function _completeCurrentEx() {
+  try {
+    if (_saId) await fetch(`/api/standalone-exercises/${_saId}/complete`, { method: "POST" });
+    else if (_slug) await fetch("/api/daily-exercise/complete", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ module_slug: _slug, exercise_index: _exIdx, exercise_date: _exDate }),
+    });
+  } catch {}
 }
 
-function renderExercises() {
-  const doneSet = new Set((window._progress || []).filter(p => p.completed > 0).map(p => p.module_slug));
-  const list = document.getElementById('exercise-list');
-  const nextW = document.getElementById('next-exercise-widget');
-  if (!list) return;
+// ── Boot ───────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", loadPage);
 
-  const groupColors = ['#C4943A', '#5A8A6A', '#7B5EA7'];
-  const groupBgs   = ['bg-[#F2EAD8]', 'bg-[#DFF0E8]', 'bg-[#E8E0F4]'];
+async function loadPage() {
+  try {
+    const data = await (await fetch("/api/exercises-week")).json();
+    document.getElementById("section-loading").style.display = "none";
+    if (!data.has_modules) {
+      document.getElementById("section-empty").style.display = "";
+      document.getElementById("header-subtitle").textContent = "Conclua módulos para desbloquear exercícios";
+      return;
+    }
+    _allDays = data.days || [];
+    _standalone = data.standalone || [];
+    document.getElementById("section-week").style.display = "";
+    renderStrip(_allDays);
+    renderWeekSummary(_allDays);
+    // Select today by default, or the last non-future day
+    const today = _allDays.find(d => d.is_today);
+    selectDay((today || _allDays.find(d => d.is_past) || _allDays[0]).date);
+  } catch {
+    document.getElementById("section-loading").textContent = "Erro ao carregar.";
+  }
+}
 
-  let allModules = [];
-  GROUPS_DATA.forEach((g, gi) => {
-    g.modules.forEach(m => allModules.push({ ...m, group: g, gi }));
+// ── Week summary (bar chart) ───────────────────────────────────────────────────
+function renderWeekSummary(days) {
+  const daysWithEx  = days.filter(d => !d.is_future && d.total_count > 0).length;
+  const doneCount   = days.filter(d => !d.is_future && d.total_count > 0 && d.completed_count === d.total_count).length;
+
+  const bars = days.map(d => {
+    let bg, pct;
+    if (d.is_future)              { bg = "#F0F0F0"; pct = 25; }
+    else if (d.total_count === 0) { bg = "#F0ECE4"; pct = 12; }
+    else if (d.completed_count === d.total_count) { bg = "#5A8A6A"; pct = 100; }
+    else if (d.completed_count > 0) { bg = "#F59E0B"; pct = Math.max(20, Math.round(d.completed_count / d.total_count * 100)); }
+    else if (d.is_today)          { bg = "#C4943A"; pct = 50; }
+    else                          { bg = "#F87171"; pct = 15; }
+
+    const labelColor = d.is_today ? "#C4943A" : "#B0ACA6";
+    return `
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:100%;">
+      <div style="width:100%;border-radius:6px 6px 0 0;background:${bg};height:${pct}%;min-height:4px;"></div>
+      <span style="font-size:9px;font-weight:${d.is_today?'700':'600'};color:${labelColor};text-transform:uppercase;">${d.day_short}</span>
+    </div>`;
+  }).join("");
+
+  document.getElementById("week-summary-bars").innerHTML = bars;
+  document.getElementById("week-summary-text").textContent =
+    daysWithEx === 0
+      ? "Complete módulos para desbloquear exercícios diários."
+      : doneCount === daysWithEx
+        ? `Semana perfeita! ${doneCount} de ${daysWithEx} dias concluídos 🎉`
+        : `${doneCount} de ${daysWithEx} dia${daysWithEx !== 1 ? "s" : ""} concluídos esta semana`;
+
+  document.getElementById("section-week-summary").style.display = "";
+}
+
+// ── Week strip ─────────────────────────────────────────────────────────────────
+function renderStrip(days) {
+  let html = days.map(d => {
+    let dotHTML = "";
+    if (d.is_future) {
+      dotHTML = `<div class="d-dot"><span style="font-size:10px;opacity:.5;">🔒</span></div>`;
+    } else if (d.total_count === 0) {
+      dotHTML = `<div class="d-dot"></div>`;
+    } else if (d.completed_count === d.total_count) {
+      dotHTML = `<div class="d-dot"><span class="dot" style="background:#5A8A6A;"></span></div>`;
+    } else if (d.completed_count === 0) {
+      dotHTML = d.is_today
+        ? `<div class="d-dot"><span class="dot" style="background:rgba(255,255,255,.6);"></span></div>`
+        : `<div class="d-dot"><span class="dot" style="background:#EF4444;"></span></div>`;
+    } else {
+      dotHTML = `<div class="d-dot"><span class="dot" style="background:#F59E0B;"></span></div>`;
+    }
+
+    return `
+    <button class="day-btn${d.is_future?' locked':''}${d.is_today?' active':''}" id="dbtn-${d.date}"
+            ${d.is_future ? 'disabled' : `onclick="selectDay('${d.date}')"`}>
+      <div class="d-short">${d.day_short}</div>
+      <div class="d-num">${d.day_num}</div>
+      ${dotHTML}
+    </button>`;
+  }).join("");
+
+  if (_standalone.length > 0) {
+    const doneSA = _standalone.filter(s => s.completed).length;
+    const dotSA = doneSA === _standalone.length
+      ? `<div class="d-dot"><span class="dot" style="background:#5A8A6A;"></span></div>`
+      : doneSA > 0
+        ? `<div class="d-dot"><span class="dot" style="background:#F59E0B;"></span></div>`
+        : `<div class="d-dot"><span class="dot" style="background:#C4943A;"></span></div>`;
+    html += `
+    <button class="day-btn" id="dbtn-extra" onclick="selectDay('extra')"
+            style="flex:none;width:54px;border:1.5px solid #EDE8DF;">
+      <div class="d-short" style="font-size:9px;">Extra</div>
+      <div style="font-size:18px;line-height:1;">📋</div>
+      ${dotSA}
+    </button>`;
+  }
+
+  document.getElementById("week-strip").innerHTML = html;
+}
+
+// ── Select day ─────────────────────────────────────────────────────────────────
+function selectDay(date) {
+  _selectedDate = date;
+
+  // Update strip active state for all day buttons + extra button
+  _allDays.forEach(d => {
+    const btn = document.getElementById(`dbtn-${d.date}`);
+    if (!btn) return;
+    btn.classList.toggle("active", d.date === date);
+    if (d.is_today) {
+      const dot = btn.querySelector(".dot");
+      if (dot) dot.style.background = d.date === date ? "rgba(255,255,255,.6)" : (d.completed_count===d.total_count&&d.total_count>0?"#5A8A6A":d.completed_count>0?"#F59E0B":"#EF4444");
+    }
   });
+  const extraBtn = document.getElementById("dbtn-extra");
+  if (extraBtn) extraBtn.classList.toggle("active", date === "extra");
 
-  // Módulos acessíveis (desbloqueados ou em andamento)
-  const available = allModules.filter((_, i) => {
-    // Mostra módulos já concluídos + o próximo não concluído
-    const prev = allModules.slice(0, i);
-    return i === 0 || prev.some(p => doneSet.has(p.slug));
-  }).slice(0, 12);
-
-  if (!available.length) {
-    list.innerHTML = '<p class="text-[13px] text-gray-400">Nenhum módulo disponível ainda.</p>';
+  // Handle Extra tab
+  if (date === "extra") {
+    document.getElementById("day-title").textContent = "Exercícios do professor";
+    const pending = _standalone.filter(s => !s.completed).length;
+    document.getElementById("day-subtitle").textContent =
+      _standalone.length === 0 ? "Nenhum exercício disponível" :
+      pending === 0 ? "Todos os exercícios feitos 🎉" :
+      `${pending} exercício${pending!==1?"s":""} pendente${pending!==1?"s":""}`;
+    document.getElementById("section-day").style.display = "flex";
+    document.getElementById("day-cards").innerHTML =
+      _standalone.length
+        ? _standalone.map(c => exCardHTML(c, null)).join("")
+        : `<div style="text-align:center;padding:40px 20px;background:white;border-radius:16px;border:1.5px solid #F0F0F0;">
+             <div style="font-size:36px;margin-bottom:12px;">📋</div>
+             <p style="font-size:14px;font-weight:600;color:#9CA3AF;margin:0;">Nenhum exercício do professor</p>
+           </div>`;
     return;
   }
 
-  list.innerHTML = available.map(m => {
-    const done  = doneSet.has(m.slug);
-    const color = groupColors[m.gi % 3];
-    const bg    = groupBgs[m.gi % 3];
-    return `
-      <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
-        <div class="w-10 h-10 rounded-xl ${bg} flex items-center justify-center flex-shrink-0">
-          <span class="text-[11px] font-bold" style="color:${color}">M${String(m.number).padStart(2,'0')}</span>
-        </div>
-        <div class="flex-1 min-w-0">
-          <p class="font-semibold text-[13px] text-gray-800 truncate">${m.title}</p>
-          <p class="text-[10px] text-gray-400">${groupIconHtml(m.group, 'w-3 h-3 inline-block align-[-2px] mr-1')}${m.group.name}</p>
-        </div>
-        <div class="flex items-center gap-2 flex-shrink-0">
-          ${done ? '<span class="text-[10px] bg-[#E8F4EE] text-[#4E7A60] font-bold px-2 py-1 rounded-full">Concluído</span>' : ''}
-          <a href="/modulos/${m.slug}"
-             class="text-[12px] font-semibold px-3 py-1.5 rounded-lg transition-colors"
-             style="background-color:${color}1a;color:${color}">
-            ${done ? 'Revisar' : 'Praticar'}
-          </a>
-        </div>
-      </div>`;
-  }).join('');
+  const day = _allDays.find(d => d.date === date);
+  if (!day) return;
 
-  // Próximo a praticar
-  const nextModule = available.find(m => !doneSet.has(m.slug)) || available[available.length - 1];
-  if (nextModule && nextW) {
-    const color = groupColors[nextModule.gi % 3];
-    const bg    = groupBgs[nextModule.gi % 3];
-    nextW.innerHTML = `
-      <div class="flex items-center gap-3 mb-3">
-        <div class="w-10 h-10 rounded-xl ${bg} flex items-center justify-center">
-          <span class="text-[11px] font-bold" style="color:${color}">M${String(nextModule.number).padStart(2,'0')}</span>
-        </div>
-        <div>
-          <p class="font-bold text-[13px] text-gray-800">${nextModule.title}</p>
-          <p class="text-[11px] text-gray-400">${groupIconHtml(nextModule.group)}${nextModule.group.name}</p>
-        </div>
-      </div>
-      <a href="/modulos/${nextModule.slug}"
-         class="block w-full text-center text-[13px] font-semibold py-2.5 rounded-xl text-white transition-colors"
-         style="background-color:${color}">
-        Ir para Exercícios
-      </a>`;
+  // Day header
+  const dateObj  = new Date(day.date + "T12:00:00");
+  const dateLabel = dateObj.toLocaleDateString("pt-BR", { day: "numeric", month: "long" });
+  document.getElementById("day-title").textContent = day.day_full + (day.is_today ? " — Hoje" : `, ${dateLabel}`);
+
+  if (day.is_future) {
+    document.getElementById("section-day").style.display = "flex";
+    document.getElementById("day-subtitle").textContent = "";
+    document.getElementById("day-cards").innerHTML = lockedDayHTML(day);
+    document.getElementById("header-subtitle").textContent = "";
+    return;
   }
+
+  // Subtitle
+  const pending = day.total_count - day.completed_count;
+  let subtitle = "";
+  if (day.total_count === 0) subtitle = "Nenhum exercício disponível";
+  else if (pending === 0)    subtitle = "Todos os exercícios feitos 🎉";
+  else subtitle = `${pending} exercício${pending!==1?"s":""} pendente${pending!==1?"s":""}`;
+
+  document.getElementById("day-subtitle").textContent = subtitle;
+
+  if (day.is_today) {
+    document.getElementById("header-subtitle").textContent =
+      day.total_count === 0 ? "Nenhum exercício hoje" :
+      pending === 0 ? "Todos os exercícios de hoje feitos 🎉" :
+      `${pending} exercício${pending!==1?"s":""} pendente${pending!==1?"s":""} hoje`;
+  }
+
+  document.getElementById("section-day").style.display = "flex";
+  renderDayCards(day);
 }
 
-function groupIconHtml(group, className = 'w-4 h-4 inline-block align-[-3px] mr-1') {
-  return group && group.icon_file
-    ? `<img src="/static/icons/${group.icon_file}" alt="" class="${className}">`
-    : `${group ? group.icon : ''} `;
+function lockedDayHTML(day) {
+  return `
+  <div style="text-align:center;padding:40px 20px;background:white;border-radius:16px;border:1.5px solid #F0F0F0;">
+    <div style="font-size:36px;margin-bottom:12px;">🔒</div>
+    <p style="font-size:14px;font-weight:600;color:#9CA3AF;margin:0 0 4px;">${day.day_full}</p>
+    <p style="font-size:12px;color:#C4C4C4;margin:0;">${day.total_count} exercício${day.total_count!==1?"s":""} · ainda não disponível</p>
+  </div>`;
 }
+
+function renderDayCards(day) {
+  const cards = day.cards || [];
+  if (!cards.length) {
+    document.getElementById("day-cards").innerHTML = `
+    <div style="text-align:center;padding:40px 20px;background:white;border-radius:16px;border:1.5px solid #F0F0F0;">
+      <div style="font-size:36px;margin-bottom:12px;">📅</div>
+      <p style="font-size:14px;font-weight:600;color:#9CA3AF;margin:0;">Nenhum exercício disponível</p>
+      <p style="font-size:12px;color:#C4C4C4;margin:4px 0 0;">Os exercícios começam no dia seguinte à conclusão do módulo.</p>
+    </div>`;
+    return;
+  }
+
+  document.getElementById("day-cards").innerHTML = cards.map(c => exCardHTML(c, day.date)).join("");
+}
+
+function exCardHTML(c, date) {
+  const done  = c.completed;
+  const isSA  = c.type === "standalone";
+  const title = isSA ? c.title : c.module_title;
+  const prompt = isSA
+    ? (c.prompt || "")
+    : (c.exercise || {}).prompt || "";
+  const sub   = isSA ? `${kindLabel(c.game_kind)} · Do professor` : c.module_title;
+  const badge = isSA ? kindIcon(c.game_kind) : `M${String(c.module_number).padStart(2,"0")}`;
+
+  const headBg   = done ? "#F4FAF7" : isSA ? "#FDF6EC" : "#F7F2EA";
+  const iconBg   = done ? "#E8F5EE" : isSA ? "#FDE8C8" : "#EDE0C8";
+  const iconColor = done ? "#5A8A6A" : isSA ? "#9A6A1A" : "#7A5C2E";
+  const accentColor = isSA ? "#C4943A" : "#C4943A";
+
+  const clickAttr = done ? "" :
+    isSA ? `onclick="openStandalone(${JSON.stringify(c).replace(/"/g,'&quot;')})"` :
+            `onclick="openModuleEx('${c.module_slug}',${c.exercise_index},${JSON.stringify(c.exercise).replace(/"/g,'&quot;')},'${date}')"`;
+
+  if (done) {
+    return `
+    <div class="ex-card done">
+      <div class="ex-card-head" style="background:${headBg};">
+        <div class="ex-icon" style="background:${iconBg};color:${iconColor};">${badge}</div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:11px;color:#9C8460;margin:0 0 1px;font-weight:600;">${sub}</p>
+          <p style="font-size:14px;font-weight:700;color:#9CA3AF;margin:0;">✓ Feito</p>
+        </div>
+        <span style="font-size:22px;">✅</span>
+      </div>
+    </div>`;
+  }
+
+  return `
+  <div class="ex-card" ${clickAttr}>
+    <div class="ex-card-head" style="background:${headBg};border-bottom:1px solid #EDE8DF;">
+      <div class="ex-icon" style="background:${iconBg};color:${iconColor};">${badge}</div>
+      <div style="flex:1;min-width:0;">
+        <p style="font-size:10px;font-weight:700;color:#9C8460;text-transform:uppercase;letter-spacing:.08em;margin:0 0 2px;">${isSA?'Do professor':'Módulo'}</p>
+        <p style="font-size:14px;font-weight:700;color:#2A2419;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${title}</p>
+      </div>
+    </div>
+    <div class="ex-card-body">
+      <p style="font-size:14px;color:#374151;margin:0;line-height:1.55;">${prompt}</p>
+    </div>
+    <div class="ex-card-foot">
+      <button style="padding:10px 22px;background:${accentColor};color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;pointer-events:none;">
+        Responder →
+      </button>
+    </div>
+  </div>`;
+}
+
+// ── Open modals ────────────────────────────────────────────────────────────────
+function openModuleEx(slug, exIdx, ex, date) {
+  _slug = slug; _exIdx = exIdx; _exDate = date; _saId = null;
+  document.getElementById("modal-badge").textContent = "🎯 Exercício do dia";
+  document.getElementById("modal-badge").style.color = "#5A8A6A";
+  document.getElementById("modal-module-title").textContent = ex.prompt.slice(0,70)+(ex.prompt.length>70?"…":"");
+  document.getElementById("modal-mc-mode").style.display   = "";
+  document.getElementById("modal-game-mode").style.display = "none";
+  document.getElementById("modal-prompt").textContent   = ex.prompt;
+  document.getElementById("modal-result").style.display = "none";
+  const optEl = document.getElementById("modal-options");
+  optEl.innerHTML = "";
+  const opts = ex.kind === "exercise-tf" ? ["Verdadeiro","Falso"] : (ex.options||[]);
+  opts.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt; btn.className = "mc-btn";
+    btn.onclick = () => checkMC(opt, ex.answer);
+    optEl.appendChild(btn);
+  });
+  document.getElementById("ex-modal").style.display = "flex";
+}
+
+function openStandalone(ex) {
+  _saId = ex.id; _slug = null;
+  document.getElementById("modal-badge").textContent = "📋 Do professor";
+  document.getElementById("modal-badge").style.color = "#C4943A";
+  document.getElementById("modal-module-title").textContent = ex.title;
+  const gk = ex.game_kind;
+  if (ex.game_data && typeof RENDERERS !== "undefined" && RENDERERS[gk]) {
+    document.getElementById("modal-mc-mode").style.display   = "none";
+    document.getElementById("modal-game-mode").style.display = "";
+    document.getElementById("gfeedback").style.display       = "none";
+    const body = document.getElementById("game-body");
+    body.innerHTML = "";
+    try { RENDERERS[gk]({ kind: gk, prompt: ex.prompt, game_data: ex.game_data }, body); }
+    catch { body.innerHTML = `<p style="color:#EF4444;font-size:13px;">Erro ao renderizar.</p>`; }
+  } else {
+    document.getElementById("modal-mc-mode").style.display   = "";
+    document.getElementById("modal-game-mode").style.display = "none";
+    document.getElementById("modal-prompt").textContent   = ex.prompt || "";
+    document.getElementById("modal-result").style.display = "none";
+    const optEl = document.getElementById("modal-options");
+    optEl.innerHTML = "";
+    (ex.options||[]).forEach(opt => {
+      const btn = document.createElement("button");
+      btn.textContent = opt; btn.className = "mc-btn";
+      btn.onclick = () => checkMC(opt, ex.answer);
+      optEl.appendChild(btn);
+    });
+  }
+  document.getElementById("ex-modal").style.display = "flex";
+}
+
+function checkMC(chosen, correct) {
+  const ok  = chosen === correct;
+
+  // Disable buttons immediately — before any async work
+  document.querySelectorAll(".mc-btn").forEach(b => b.disabled = true);
+
+  // Show result feedback
+  const res = document.getElementById("modal-result");
+  res.textContent = ok ? "🎉 Correto! Ótimo trabalho!" : `Resposta correta: ${correct}`;
+  res.style.display = "block";
+  res.style.marginTop = "14px";
+  res.style.padding = "13px 16px";
+  res.style.borderRadius = "11px";
+  res.style.fontSize = "13px";
+  res.style.fontWeight = "600";
+  res.style.textAlign = "center";
+  res.style.background = ok ? "#F0F9F4" : "#FEF2F2";
+  res.style.color = ok ? "#3A7A5A" : "#B91C1C";
+  res.style.border = `1px solid ${ok ? "#C6E8D4" : "#FECACA"}`;
+
+  // Fire-and-forget complete — don't block the UI
+  _completeCurrentEx();
+
+  // Close modal after 1.6s regardless of network
+  setTimeout(() => { closeModal(); loadPage(); }, 1600);
+}
+
+function closeModal() { document.getElementById("ex-modal").style.display = "none"; }
+
+const _icons  = {"game-quiz":"❓","game-memory":"🃏","game-challenge":"🎯","game-true-false-rapid":"⚡","game-fill-sentence":"📝","game-sort":"↕️","game-unscramble":"🔀","game-connect":"🔗","game-sequence":"🔢","game-hot-cold":"🌡️","game-find-error":"🔍","game-speedrun":"⏱️","game-word-select":"👆","game-rhythm-tap":"🥁","game-crossword":"✏️","game-build":"🎵","game-teach":"✍️","game-drag":"🖱️"};
+const _labels = {"game-quiz":"Quiz","game-memory":"Memória","game-challenge":"Desafio","game-true-false-rapid":"V ou F","game-fill-sentence":"Completar","game-sort":"Ordenar","game-unscramble":"Embaralhar","game-connect":"Conectar","game-sequence":"Sequência","game-hot-cold":"Quente/Frio","game-find-error":"Achar Erro","game-speedrun":"Velocidade","game-word-select":"Clicar Palavra","game-rhythm-tap":"Ritmo Tap","game-crossword":"Cruzadinha","game-build":"Monte Compasso","game-teach":"Explicar","game-drag":"Arrastar"};
+function kindIcon(k)  { return _icons[k]  || "📋"; }
+function kindLabel(k) { return _labels[k] || k;    }
 </script>
 {% endblock %}

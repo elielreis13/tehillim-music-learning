@@ -1,0 +1,387 @@
+{% extends "base_app.html" %}
+
+{% block title %}Relatórios | Tehillim{% endblock %}
+
+{% block head %}
+<style>
+.admin-tab {
+  font-size: 13px; font-weight: 600; padding: 8px 16px;
+  border-radius: 10px; color: #7A6A4D; cursor: pointer;
+  transition: background .15s, color .15s; white-space: nowrap;
+  text-decoration: none; display: inline-block; border: none; background: none;
+}
+.admin-tab:hover { background: rgba(196,148,58,.1); color: #C4943A; }
+.admin-tab.active { background: #C4943A; color: white; }
+
+.report-card {
+  background: white; border: 1.5px solid #F0E8D4; border-radius: 14px;
+  padding: 16px 20px; cursor: pointer;
+  transition: border-color .18s, box-shadow .18s;
+}
+.report-card:hover { border-color: #C4943A; box-shadow: 0 4px 16px rgba(196,148,58,.1); }
+
+.stat-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 3px 10px;
+  border-radius: 999px; background: #F4ECD8; color: #7A6A4D;
+}
+</style>
+{% endblock %}
+
+{% block header %}
+<header style="background:#F2EAD8;border-bottom:1px solid #ECE3D0;flex-shrink:0;">
+  <div style="padding:16px 24px 0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <p style="font-size:11px;color:#9C8460;text-transform:uppercase;letter-spacing:.18em;font-weight:600;margin:0;">Professor</p>
+        <h1 style="font-size:20px;font-weight:700;color:#2A2419;margin:3px 0 0;">Relatórios</h1>
+      </div>
+      <button id="open-gen-btn"
+              style="display:flex;align-items:center;gap:6px;background:#C4943A;color:white;font-size:13px;font-weight:600;padding:9px 16px;border-radius:10px;border:none;cursor:pointer;">
+        <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+        Gerar Relatório
+      </button>
+    </div>
+    <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:0;">
+      <a href="/admin"          class="admin-tab">Alunos</a>
+      <a href="/admin/modulos"  class="admin-tab">Módulos</a>
+      <a href="/admin/jogos"    class="admin-tab">Jogos</a>
+      <span                     class="admin-tab active">Relatórios</span>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="flex-1 overflow-y-auto flex flex-col" style="min-height:0;">
+
+  <!-- Painel de geração (oculto por padrão) -->
+  <div id="gen-panel" style="display:none;flex-shrink:0;background:white;border-bottom:1.5px solid #F0E8D4;">
+    <div style="padding:16px 24px 20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <p style="font-size:14px;font-weight:700;color:#2A2419;margin:0;">Novo Relatório</p>
+        <button id="close-gen-btn" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:20px;line-height:1;">×</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:end;">
+        <!-- Escopo -->
+        <div>
+          <label style="font-size:11px;font-weight:600;color:#7A6A4D;display:block;margin-bottom:4px;">Escopo</label>
+          <select id="gen-scope" onchange="onScopeChange()"
+                  style="width:100%;padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;background:white;color:#374151;outline:none;box-sizing:border-box;">
+            <option value="all">Todos os alunos</option>
+            <option value="teacher">Por professor</option>
+            <option value="student">Aluno específico</option>
+          </select>
+        </div>
+        <!-- Ref (professor ou aluno) -->
+        <div id="gen-ref-wrap" style="display:none;">
+          <label id="gen-ref-label" style="font-size:11px;font-weight:600;color:#7A6A4D;display:block;margin-bottom:4px;">Professor</label>
+          <select id="gen-ref"
+                  style="width:100%;padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;background:white;color:#374151;outline:none;box-sizing:border-box;">
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+        <!-- Período -->
+        <div style="display:flex;gap:8px;">
+          <div style="flex:1;">
+            <label style="font-size:11px;font-weight:600;color:#7A6A4D;display:block;margin-bottom:4px;">De</label>
+            <input type="date" id="gen-start"
+                   style="width:100%;padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;color:#374151;outline:none;box-sizing:border-box;">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:11px;font-weight:600;color:#7A6A4D;display:block;margin-bottom:4px;">Até</label>
+            <input type="date" id="gen-end"
+                   style="width:100%;padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;color:#374151;outline:none;box-sizing:border-box;">
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:12px;">
+        <div style="flex:1;">
+          <label style="font-size:11px;font-weight:600;color:#7A6A4D;display:block;margin-bottom:4px;">Título (opcional)</label>
+          <input type="text" id="gen-title" placeholder="Ex: Relatório de Maio – Turma A"
+                 style="width:100%;padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;color:#374151;outline:none;box-sizing:border-box;">
+        </div>
+        <div style="padding-top:18px;">
+          <button id="gen-btn" onclick="generateReport()"
+                  style="background:#C4943A;color:white;font-size:13px;font-weight:600;padding:9px 20px;border-radius:9px;border:none;cursor:pointer;white-space:nowrap;">
+            Gerar e Salvar
+          </button>
+        </div>
+      </div>
+      <p id="gen-feedback" style="font-size:12px;margin-top:8px;min-height:18px;"></p>
+    </div>
+  </div>
+
+  <!-- Lista de relatórios -->
+  <div style="flex:1;overflow-y:auto;padding:16px 24px;">
+    <p id="reports-loading" style="font-size:13px;color:#9C8460;">Carregando...</p>
+    <p id="reports-empty" style="display:none;font-size:13px;color:#9C8460;text-align:center;padding:48px 0;">
+      Nenhum relatório gerado ainda.
+    </p>
+    <div id="reports-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
+
+</div>
+
+<!-- Modal de detalhe do relatório -->
+<div id="report-modal-backdrop" style="display:none;"
+     class="fixed inset-0 bg-gray-900/50 z-50 flex items-center justify-center p-4">
+  <div style="background:white;border-radius:20px;width:100%;max-width:760px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.18);">
+    <div style="padding:20px 24px 16px;border-bottom:1px solid #F0E8D4;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <h2 id="modal-title" style="font-size:17px;font-weight:700;color:#2A2419;margin:0;"></h2>
+        <p id="modal-subtitle" style="font-size:12px;color:#9C8460;margin:3px 0 0;"></p>
+      </div>
+      <button onclick="closeReportModal()" style="background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:22px;line-height:1;">×</button>
+    </div>
+    <!-- Stats resumo -->
+    <div id="modal-summary" style="display:flex;border-bottom:1px solid #F0E8D4;flex-shrink:0;"></div>
+    <!-- Tabela de alunos -->
+    <div style="flex:1;overflow-y:auto;padding:16px 24px;">
+      <div id="modal-students"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// ── Estado ─────────────────────────────────────────────────────────────────────
+let _allUsers = []; // {id, name, email, role, teacher_id}
+
+// ── Init ───────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", async () => {
+  // Pré-define período (mês atual)
+  const now = new Date();
+  const y = now.getFullYear(), m = String(now.getMonth()+1).padStart(2,"0");
+  const lastDay = new Date(y, now.getMonth()+1, 0).getDate();
+  document.getElementById("gen-start").value = `${y}-${m}-01`;
+  document.getElementById("gen-end").value   = `${y}-${m}-${String(lastDay).padStart(2,"0")}`;
+
+  await loadUsers();
+  await loadReports();
+});
+
+async function api(path, opts = {}) {
+  const headers = { "Content-Type": "application/json" };
+  const token = window.auth?.session?.access_token;
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const r = await fetch(path, { headers, ...opts });
+  if (r.status === 204) return null;
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || r.statusText);
+  return data;
+}
+
+// ── Usuários (para preencher selects) ─────────────────────────────────────────
+async function loadUsers() {
+  try {
+    const { students } = await api("/api/teacher/students");
+    _allUsers = students;
+  } catch (_) {}
+}
+
+// ── Painel de geração ──────────────────────────────────────────────────────────
+document.getElementById("open-gen-btn").addEventListener("click", () => {
+  document.getElementById("gen-panel").style.display = "";
+  onScopeChange();
+});
+document.getElementById("close-gen-btn").addEventListener("click", () => {
+  document.getElementById("gen-panel").style.display = "none";
+});
+
+function onScopeChange() {
+  const scope   = document.getElementById("gen-scope").value;
+  const wrap    = document.getElementById("gen-ref-wrap");
+  const label   = document.getElementById("gen-ref-label");
+  const sel     = document.getElementById("gen-ref");
+  if (scope === "all") { wrap.style.display = "none"; return; }
+  wrap.style.display = "";
+
+  if (scope === "teacher") {
+    label.textContent = "Professor";
+    const teachers = _allUsers.filter(u => u.role === "teacher");
+    sel.innerHTML = teachers.length
+      ? teachers.map(t => `<option value="${t.id}">${t.name || t.email}</option>`).join("")
+      : `<option value="">Nenhum professor cadastrado</option>`;
+  } else {
+    label.textContent = "Aluno";
+    const students = _allUsers.filter(u => u.role !== "teacher" && u.role !== "owner");
+    sel.innerHTML = students.length
+      ? students.map(s => `<option value="${s.id}">${s.name || s.email}</option>`).join("")
+      : `<option value="">Nenhum aluno cadastrado</option>`;
+  }
+}
+
+async function generateReport() {
+  const scope   = document.getElementById("gen-scope").value;
+  const refEl   = document.getElementById("gen-ref");
+  const scopeRef = scope !== "all" ? (refEl?.value || "") : "";
+  const scopeLabel = scope !== "all" ? (refEl?.options[refEl.selectedIndex]?.text || "") : "";
+  const start = document.getElementById("gen-start").value;
+  const end   = document.getElementById("gen-end").value;
+  const title = document.getElementById("gen-title").value.trim();
+  const fb    = document.getElementById("gen-feedback");
+  const btn   = document.getElementById("gen-btn");
+
+  if (!start || !end) { fb.style.color = "#ef4444"; fb.textContent = "Selecione o período."; return; }
+
+  btn.disabled = true; btn.textContent = "Gerando..."; fb.textContent = "";
+  try {
+    const { id } = await api("/api/admin/reports/generate", {
+      method: "POST",
+      body: JSON.stringify({ scope, scope_ref: scopeRef, scope_label: scopeLabel, start, end, title }),
+    });
+    fb.style.color = "#4E7A60";
+    fb.textContent = "✓ Relatório salvo!";
+    await loadReports();
+    setTimeout(() => { document.getElementById("gen-panel").style.display = "none"; fb.textContent = ""; }, 1500);
+  } catch (err) {
+    fb.style.color = "#ef4444";
+    fb.textContent = "Erro: " + err.message;
+  } finally {
+    btn.disabled = false; btn.textContent = "Gerar e Salvar";
+  }
+}
+
+// ── Lista de relatórios ────────────────────────────────────────────────────────
+async function loadReports() {
+  const loading = document.getElementById("reports-loading");
+  const empty   = document.getElementById("reports-empty");
+  const list    = document.getElementById("reports-list");
+  loading.style.display = "";
+  list.innerHTML = "";
+
+  try {
+    const { reports } = await api("/api/admin/reports");
+    loading.style.display = "none";
+    if (!reports.length) { empty.style.display = ""; return; }
+    empty.style.display = "none";
+
+    reports.forEach(r => {
+      const date  = new Date(r.created_at).toLocaleDateString("pt-BR", { day:"numeric", month:"short", year:"numeric" });
+      const s     = r.summary || {};
+      const scope_icon = r.scope === "all" ? "👥" : r.scope === "teacher" ? "👨‍🏫" : "👤";
+      const card = document.createElement("div");
+      card.className = "report-card";
+      card.innerHTML = `
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <span style="font-size:16px;">${scope_icon}</span>
+              <p style="font-size:14px;font-weight:700;color:#2A2419;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.title}</p>
+            </div>
+            <p style="font-size:11px;color:#9C8460;margin:0 0 10px;">${date}${r.scope_label ? " · " + r.scope_label : ""}</p>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span class="stat-pill">${r.student_count} aluno${r.student_count !== 1 ? "s" : ""}</span>
+              ${s.avg_modules != null ? `<span class="stat-pill">⌀ ${s.avg_modules} módulos</span>` : ""}
+              ${s.avg_study_days != null ? `<span class="stat-pill">⌀ ${s.avg_study_days} dias</span>` : ""}
+              ${s.avg_quiz_accuracy != null ? `<span class="stat-pill">⌀ ${s.avg_quiz_accuracy}% acerto</span>` : ""}
+            </div>
+          </div>
+          <button onclick="openReport('${r.id}')"
+                  style="flex-shrink:0;font-size:12px;font-weight:600;padding:7px 14px;border-radius:9px;background:#FBF6EE;color:#C4943A;border:none;cursor:pointer;">
+            Ver detalhes
+          </button>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+  } catch (err) {
+    loading.textContent = "Erro ao carregar: " + err.message;
+    loading.style.color = "#ef4444";
+  }
+}
+
+// ── Modal de detalhe ──────────────────────────────────────────────────────────
+async function openReport(id) {
+  document.getElementById("report-modal-backdrop").style.display = "";
+  document.getElementById("modal-title").textContent    = "Carregando...";
+  document.getElementById("modal-subtitle").textContent = "";
+  document.getElementById("modal-summary").innerHTML    = "";
+  document.getElementById("modal-students").innerHTML   = '<p style="color:#9C8460;font-size:13px;text-align:center;padding:32px 0;">Carregando...</p>';
+
+  try {
+    const data    = await api(`/api/admin/reports/${id}`);
+    const payload = data.data || {};
+    const summary = payload.summary || {};
+    const period  = payload.period || {};
+    const students = payload.students || [];
+
+    document.getElementById("modal-title").textContent = data.title;
+    const date = new Date(data.created_at).toLocaleDateString("pt-BR", { day:"numeric", month:"long", year:"numeric" });
+    const per  = period.start && period.end ? ` · Período: ${period.start} → ${period.end}` : "";
+    document.getElementById("modal-subtitle").textContent = `Gerado em ${date}${per}`;
+
+    // Summary strip
+    const stats = [
+      { label: "Alunos", val: summary.total_students ?? students.length, color: "#2A2419" },
+      { label: "⌀ Módulos", val: summary.avg_modules ?? "—", color: "#C4943A" },
+      { label: "⌀ Dias", val: summary.avg_study_days ?? "—", color: "#4E7A60" },
+      { label: "⌀ Acerto", val: summary.avg_quiz_accuracy != null ? summary.avg_quiz_accuracy + "%" : "—", color: "#7B5EA7" },
+    ];
+    document.getElementById("modal-summary").innerHTML = stats.map(s => `
+      <div style="flex:1;padding:12px 16px;text-align:center;border-right:1px solid #F0E8D4;">
+        <p style="font-size:20px;font-weight:700;color:${s.color};margin:0;">${s.val}</p>
+        <p style="font-size:10px;color:#9C8460;text-transform:uppercase;letter-spacing:.1em;margin:2px 0 0;">${s.label}</p>
+      </div>
+    `).join("") + `<div style="flex:1;"></div>`;
+
+    // Tabela de alunos
+    if (!students.length) {
+      document.getElementById("modal-students").innerHTML = '<p style="color:#9C8460;font-size:13px;text-align:center;padding:32px 0;">Nenhum aluno no período.</p>';
+      return;
+    }
+
+    document.getElementById("modal-students").innerHTML = `
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="text-align:left;border-bottom:2px solid #F0E8D4;">
+            <th style="padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#9C8460;font-weight:700;">Aluno</th>
+            <th style="padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#9C8460;font-weight:700;">Professor</th>
+            <th style="padding:8px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#9C8460;font-weight:700;text-align:center;">Módulos</th>
+            <th style="padding:8px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#9C8460;font-weight:700;text-align:center;">Dias</th>
+            <th style="padding:8px 12px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#9C8460;font-weight:700;text-align:center;">Acerto</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${students.map((s, i) => {
+            const acc = s.quiz_accuracy != null ? s.quiz_accuracy + "%" : "—";
+            const accColor = s.quiz_accuracy == null ? "#9C8460" : s.quiz_accuracy >= 70 ? "#4E7A60" : s.quiz_accuracy >= 40 ? "#C4943A" : "#ef4444";
+            const initial = (s.name || s.email)[0].toUpperCase();
+            return `
+            <tr style="border-bottom:1px solid #F9F5EE;${i % 2 === 0 ? "" : "background:#FDFAF6;"}">
+              <td style="padding:10px 12px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="width:30px;height:30px;border-radius:50%;background:#EDD9B0;color:#C4943A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;">${initial}</div>
+                  <div>
+                    <p style="font-weight:600;color:#1F2937;margin:0;">${s.name || s.email.split("@")[0]}</p>
+                    <p style="font-size:11px;color:#9C8460;margin:1px 0 0;">${s.email}</p>
+                  </div>
+                </div>
+              </td>
+              <td style="padding:10px 12px;color:#6B7280;font-size:12px;">${s.teacher_name || "—"}</td>
+              <td style="padding:10px 4px;text-align:center;font-weight:700;color:#C4943A;">${s.modules_completed}</td>
+              <td style="padding:10px 4px;text-align:center;font-weight:700;color:#4E7A60;">${s.study_days}</td>
+              <td style="padding:10px 12px;text-align:center;font-weight:700;color:${accColor};">${acc}</td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+  } catch (err) {
+    document.getElementById("modal-students").innerHTML = `<p style="color:#ef4444;font-size:13px;text-align:center;padding:32px 0;">Erro: ${err.message}</p>`;
+  }
+}
+
+function closeReportModal() {
+  document.getElementById("report-modal-backdrop").style.display = "none";
+}
+
+document.getElementById("report-modal-backdrop").addEventListener("click", e => {
+  if (e.target === e.currentTarget) closeReportModal();
+});
+</script>
+{% endblock %}

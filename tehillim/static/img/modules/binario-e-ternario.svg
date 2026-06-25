@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="800" height="280" font-family="'Segoe UI', Arial, sans-serif">
+  <rect width="800" height="280" fill="#FAFAFA" rx="12"/>
+  <text x="400" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#333">BINÁRIO E TERNÁRIO — COMO A MÚSICA PULSA</text>
+
+  <!-- LEFT: BINÁRIO -->
+  <rect x="40" y="45" width="340" height="200" rx="10" fill="#E3F2FD"/>
+  <text x="210" y="72" text-anchor="middle" font-size="16" font-weight="700" fill="#1565C0">BINÁRIO (2 subdivisões)</text>
+  <text x="210" y="90" text-anchor="middle" font-size="12" fill="#555">Cada tempo divide-se em 2 partes iguais</text>
+
+  <!-- 2 beats with subdivision -->
+  <!-- Beat 1: forte -->
+  <circle cx="110" cy="140" r="35" fill="#1565C0"/>
+  <text x="110" y="135" text-anchor="middle" font-size="24" font-weight="700" fill="white">1</text>
+  <text x="110" y="155" text-anchor="middle" font-size="11" fill="white">FORTE</text>
+
+  <!-- Beat 2: fraco -->
+  <circle cx="310" cy="140" r="28" fill="#1565C0" opacity="0.4"/>
+  <text x="310" y="135" text-anchor="middle" font-size="20" font-weight="700" fill="#1565C0">2</text>
+  <text x="310" y="153" text-anchor="middle" font-size="11" fill="#1565C0">fraco</text>
+
+  <!-- Subdivision marks under beat 1 -->
+  <text x="90"  y="190" text-anchor="middle" font-size="12" fill="#1565C0">ta</text>
+  <text x="130" y="190" text-anchor="middle" font-size="12" fill="#1565C0">te</text>
+  <text x="290" y="190" text-anchor="middle" font-size="12" fill="#999">ta</text>
+  <text x="330" y="190" text-anchor="middle" font-size="12" fill="#999">te</text>
+
+  <!-- Labels -->
+  <text x="210" y="222" text-anchor="middle" font-size="11" fill="#1565C0" font-weight="600">Exemplo: 2/4 e 4/4</text>
+  <text x="210" y="237" text-anchor="middle" font-size="11" fill="#666">Marcha, Gospel, Pop</text>
+
+  <!-- RIGHT: TERNÁRIO -->
+  <rect x="420" y="45" width="340" height="200" rx="10" fill="#E8F5E9"/>
+  <text x="590" y="72" text-anchor="middle" font-size="16" font-weight="700" fill="#2E7D32">TERNÁRIO (3 subdivisões)</text>
+  <text x="590" y="90" text-anchor="middle" font-size="12" fill="#555">Cada tempo divide-se em 3 partes iguais</text>
+
+  <!-- 1 beat with triple subdivision -->
+  <circle cx="530" cy="140" r="35" fill="#2E7D32"/>
+  <text x="530" y="135" text-anchor="middle" font-size="24" font-weight="700" fill="white">1</text>
+  <text x="530" y="155" text-anchor="middle" font-size="11" fill="white">FORTE</text>
+
+  <!-- Subdivision 3 marks -->
+  <text x="500" y="190" text-anchor="middle" font-size="12" fill="#2E7D32">ta</text>
+  <text x="527" y="190" text-anchor="middle" font-size="12" fill="#2E7D32">ki</text>
+  <text x="555" y="190" text-anchor="middle" font-size="12" fill="#2E7D32">da</text>
+
+  <!-- 3/4 beat pattern -->
+  <circle cx="640" cy="148" r="22" fill="#2E7D32" opacity="0.5"/>
+  <text x="640" y="144" text-anchor="middle" font-size="17" font-weight="700" fill="white">2</text>
+  <text x="640" y="159" text-anchor="middle" font-size="9" fill="white">fraco</text>
+
+  <circle cx="720" cy="148" r="22" fill="#2E7D32" opacity="0.25"/>
+  <text x="720" y="144" text-anchor="middle" font-size="17" font-weight="700" fill="#2E7D32">3</text>
+  <text x="720" y="159" text-anchor="middle" font-size="9" fill="#2E7D32">fraco</text>
+
+  <text x="590" y="222" text-anchor="middle" font-size="11" fill="#2E7D32" font-weight="600">Exemplo: 3/4 e 6/8</text>
+  <text x="590" y="237" text-anchor="middle" font-size="11" fill="#666">Valsa, Hinos antigos, Baladas</text>
+
+  <!-- Divider -->
+  <line x1="400" y1="50" x2="400" y2="240" stroke="#DDD" stroke-width="2" stroke-dasharray="5,4"/>
+
+  <!-- Footer -->
+  <text x="400" y="265" text-anchor="middle" font-size="11" fill="#888">Binário: sente 2 ou 4 tempos  ·  Ternário: sente 3 ou 6 tempos com balanço de valsa</text>
+</svg>
