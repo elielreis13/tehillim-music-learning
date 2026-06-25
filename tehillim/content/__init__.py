@@ -3,7 +3,7 @@ from tehillim.content.groups import GROUPS
 from tehillim.content.helpers import STEP_KINDS
 from tehillim.content.modules import MODULES
 from tehillim.content.types import Exercise, ModuleGroup, StudyModule, TrailStep
-from tehillim.content.extra import (
+from tehillim.content.extra_lessons import (
     get_student_extra_lessons,
     add_student_extra_lesson,
     delete_student_extra_lesson,

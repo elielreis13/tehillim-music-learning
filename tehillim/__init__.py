@@ -1,7 +1,13 @@
+import os
 from datetime import timedelta
 
+import sentry_sdk
 from flask import Flask, session as flask_session
 from .config import Config
+
+_dsn = os.environ.get("SENTRY_DSN", "")
+if _dsn:
+    sentry_sdk.init(dsn=_dsn, traces_sample_rate=0.2, send_default_pii=True)
 
 
 def create_app(config=None) -> Flask:
@@ -55,14 +61,14 @@ def create_app(config=None) -> Flask:
             "current_user": current_user,
         }
 
-    from .auth    import bp as auth_bp
-    from .modules import bp as modules_bp
-    from .admin   import bp as admin_bp
-    from .api     import bp as api_bp
+    from .blueprints.auth    import bp as auth_bp
+    from .blueprints.pages   import bp as pages_bp
+    from .blueprints.teacher import bp as teacher_bp
+    from .blueprints.api     import bp as api_bp
 
     app.register_blueprint(auth_bp)
-    app.register_blueprint(modules_bp)
-    app.register_blueprint(admin_bp)
+    app.register_blueprint(pages_bp)
+    app.register_blueprint(teacher_bp)
     app.register_blueprint(api_bp, url_prefix="/api")
 
     return app

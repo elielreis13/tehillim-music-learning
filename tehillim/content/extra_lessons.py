@@ -5,7 +5,7 @@ import json
 import uuid
 from pathlib import Path
 
-_LESSONS_FILE = Path(__file__).resolve().parent / "extra" / "lessons.json"
+_LESSONS_FILE = Path(__file__).resolve().parent / "data" / "lessons.json"
 
 
 def _load() -> dict:

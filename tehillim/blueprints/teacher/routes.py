@@ -11,14 +11,14 @@ from flask import current_app
 def dashboard():
     if err := require_teacher():
         return err
-    return render_template("pages/dashboard.html")
+    return render_template("teacher/dashboard.html")
 
 
 @bp.get("/admin")
 def admin():
     if err := require_teacher():
         return err
-    return render_template("pages/professor_admin.html", active_page="admin")
+    return render_template("teacher/admin.html", active_page="admin")
 
 
 @bp.get("/professor/alunos")
@@ -27,7 +27,7 @@ def professor_alunos():
         return err
     from tehillim.content import groups_summary
     return render_template(
-        "pages/professor_alunos.html",
+        "teacher/alunos.html",
         active_page="professor_alunos",
         groups=groups_summary(),
     )
@@ -53,7 +53,7 @@ def professor_aluno_detalhe(user_id: str):
     }
     from tehillim.content import groups_summary
     return render_template(
-        "pages/professor_aluno_detalhe.html",
+        "teacher/aluno_detalhe.html",
         student=student,
         groups=groups_summary(),
         active_page="admin",
@@ -64,14 +64,14 @@ def professor_aluno_detalhe(user_id: str):
 def professor_relatorios():
     if err := require_teacher():
         return err
-    return render_template("pages/professor_relatorios.html", active_page="admin")
+    return render_template("teacher/relatorios.html", active_page="admin")
 
 
 @bp.get("/professor/mensagens")
 def professor_mensagens():
     if err := require_teacher():
         return err
-    return render_template("pages/professor_mensagens.html", active_page="professor_mensagens")
+    return render_template("teacher/mensagens.html", active_page="professor_mensagens")
 
 
 @bp.get("/admin/exercicios")
@@ -79,7 +79,7 @@ def professor_exercicios():
     if err := require_teacher():
         return err
     students = _fetch_students()
-    return render_template("pages/professor_exercicios.html", active_page="admin", students=students)
+    return render_template("teacher/exercicios.html", active_page="admin", students=students)
 
 
 @bp.get("/admin/desafios")
@@ -87,7 +87,7 @@ def professor_desafios():
     if err := require_teacher():
         return err
     from tehillim.content import groups_summary
-    return render_template("pages/professor_desafios.html", active_page="admin", groups=groups_summary())
+    return render_template("teacher/desafios.html", active_page="admin", groups=groups_summary())
 
 
 @bp.get("/admin/jogos")
@@ -96,7 +96,7 @@ def professor_jogos():
         return err
     modules = module_summaries()
     return render_template(
-        "pages/professor_jogos.html",
+        "teacher/jogos.html",
         active_page="professor_jogos",
         modules=modules,
     )
@@ -111,7 +111,7 @@ def professor_jogos_lista():
     except Exception:
         games = []
     return render_template(
-        "pages/professor_jogos_lista.html",
+        "teacher/jogos_lista.html",
         active_page="professor_jogos",
         games=games,
     )
@@ -142,7 +142,7 @@ def professor_modulos():
         db_slugs = set()
         db_only_mods = []
     return render_template(
-        "pages/professor_modulos.html",
+        "teacher/modulos.html",
         active_page="professor_modulos",
         static_mods=static_mods,
         db_slugs=list(db_slugs),
@@ -194,7 +194,7 @@ def _modulos_editor_page(module_data, mode, source="db", next_number=None):
     game_kinds = [k for k in STEP_KINDS if k.startswith("game-")]
     students = _fetch_students()
     return render_template(
-        "pages/professor_modulos_editor.html",
+        "teacher/modulos_editor.html",
         active_page="professor_modulos",
         module_data=module_data,
         available_groups=available_groups,
