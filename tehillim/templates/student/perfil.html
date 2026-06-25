@@ -304,23 +304,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (lbl) lbl.textContent = score > 0 ? `Senha ${labels[score]}` : '';
   });
 
-  if (window._sb) {
-    const { data: { user } } = await window._sb.auth.getUser();
-    if (user) {
-      const meta  = user.user_metadata || {};
-      const name  = meta.name || user.email?.split('@')[0] || 'Aluno';
-      const email = user.email || '';
+  try {
+    const r = await fetch('/api/me/profile');
+    if (r.ok) {
+      const data = await r.json();
+      const name  = data.name  || data.email?.split('@')[0] || 'Aluno';
+      const email = data.email || '';
       set('header-name',  name);
       set('header-email', email);
       const nameEl  = document.getElementById('cfg-name');
       const emailEl = document.getElementById('cfg-email');
       if (nameEl)  nameEl.value  = name;
       if (emailEl) emailEl.value = email;
-      _currentAvatarId = meta.avatar || null;
-      _currentPhotoUrl = meta.avatar_url || null;
+      _currentAvatarId = data.avatar     || null;
+      _currentPhotoUrl = data.avatar_url || null;
       applyAvatar(_currentPhotoUrl, _currentAvatarId);
+      buildAvatarGrid();
     }
-  }
+  } catch (_) {}
 
   await waitForProgress();
 
@@ -449,24 +450,26 @@ function previewFile(file) {
 }
 
 async function saveAvatar() {
-  if (!window._sb) { setStatus('Erro: Supabase não disponível.', 'red'); return; }
   const btn = document.getElementById('save-avatar-btn');
   btn.disabled = true; btn.textContent = 'Salvando...';
   try {
     if (_pendingFile) {
-      const { data: { user } } = await window._sb.auth.getUser();
-      const ext  = _pendingFile.name.split('.').pop() || 'jpg';
-      const path = `${user.id}.${ext}`;
-      const { error: upErr } = await window._sb.storage
-        .from('avatars').upload(path, _pendingFile, { upsert: true, contentType: _pendingFile.type });
-      if (upErr) throw new Error(upErr.message);
-      const { data: { publicUrl } } = window._sb.storage.from('avatars').getPublicUrl(path);
-      await window._sb.auth.updateUser({ data: { avatar_url: publicUrl, avatar: null } });
-      _currentPhotoUrl = publicUrl + '?t=' + Date.now();
+      const form = new FormData();
+      form.append('file', _pendingFile);
+      const r = await fetch('/api/me/photo', { method: 'POST', body: form });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Erro ao enviar foto');
+      _currentPhotoUrl = data.url + '?t=' + Date.now();
       _currentAvatarId = null;
       applyAvatar(_currentPhotoUrl, null);
     } else if (_chosenAvatarId) {
-      await window._sb.auth.updateUser({ data: { avatar: _chosenAvatarId, avatar_url: null } });
+      const r = await fetch('/api/me/avatar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ avatar_id: _chosenAvatarId }),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Erro ao salvar avatar');
       _currentAvatarId = _chosenAvatarId;
       _currentPhotoUrl = null;
       applyAvatar(null, _currentAvatarId);
@@ -485,14 +488,18 @@ function setStatus(msg, color) {
 }
 
 async function saveName() {
-  if (!window._sb) return;
   const name = document.getElementById('cfg-name').value.trim();
   if (!name) return;
-  const { error } = await window._sb.auth.updateUser({ data: { name } });
   const okEl  = document.getElementById('cfg-name-ok');
   const errEl = document.getElementById('cfg-name-err');
-  if (error) {
-    if (errEl) { errEl.textContent = error.message; errEl.style.display = ''; }
+  const r = await fetch('/api/me/name', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  });
+  const data = await r.json();
+  if (!r.ok) {
+    if (errEl) { errEl.textContent = data.error || 'Erro ao salvar'; errEl.style.display = ''; }
     if (okEl)  okEl.style.display = 'none';
   } else {
     if (okEl)  { okEl.style.display = ''; }
@@ -504,7 +511,6 @@ async function saveName() {
 }
 
 async function savePassword() {
-  if (!window._sb) return;
   const pw1 = document.getElementById('cfg-pw1').value;
   const pw2 = document.getElementById('cfg-pw2').value;
   const msg = document.getElementById('cfg-pw-msg');
@@ -516,9 +522,14 @@ async function savePassword() {
   };
   if (pw1.length < 8) { show('A senha deve ter ao menos 8 caracteres.', false); return; }
   if (pw1 !== pw2)    { show('As senhas não coincidem.', false); return; }
-  const { error } = await window._sb.auth.updateUser({ password: pw1 });
-  if (error) {
-    show(error.message, false);
+  const r = await fetch('/api/me/password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: pw1 }),
+  });
+  const data = await r.json();
+  if (!r.ok) {
+    show(data.error || 'Erro ao alterar senha', false);
   } else {
     show('✓ Senha alterada com sucesso!', true);
     document.getElementById('cfg-pw1').value = '';
@@ -537,9 +548,7 @@ function togglePw(id) {
 }
 
 async function doSignOut() {
-  if (window._sb) await window._sb.auth.signOut();
-  else if (window.auth) await window.auth.signOut();
-  window.location.href = '/login';
+  window.location.href = '/logout';
 }
 
 function set(id, val) {

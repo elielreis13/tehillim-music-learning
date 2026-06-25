@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from flask import abort, jsonify, request, session
+from flask import abort, current_app, jsonify, request, session
 
 from . import bp
 from tehillim.extensions import (
-    sb_get, sb_post, sb_put, sb_upsert,
+    sb_get, sb_headers, sb_post, sb_put, sb_upsert,
     get_student_teacher_id,
 )
+import requests as _http
 
 
 def _now_iso() -> str:
@@ -200,6 +201,91 @@ def update_name():
     except Exception:
         pass
     return jsonify({"ok": True, "name": name})
+
+
+@bp.post("/me/avatar")
+def update_avatar():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Não autenticado"}), 401
+    avatar_id = (request.get_json(silent=True) or {}).get("avatar_id", "").strip()
+    if not avatar_id:
+        abort(400)
+    try:
+        sb_put(f"/auth/v1/admin/users/{user_id}", {"user_metadata": {"avatar": avatar_id, "avatar_url": None}})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+    return jsonify({"ok": True})
+
+
+@bp.post("/me/photo")
+def update_photo():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Não autenticado"}), 401
+    f = request.files.get("file")
+    if not f:
+        return jsonify({"error": "Nenhum arquivo enviado"}), 400
+    allowed = {"image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"}
+    content_type = (f.content_type or "image/jpeg").split(";")[0].strip()
+    if content_type not in allowed:
+        return jsonify({"error": "Tipo de arquivo não permitido"}), 400
+    ext_map = {"image/jpeg": "jpg", "image/jpg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif"}
+    ext = ext_map.get(content_type, "jpg")
+    filename = f"{user_id}.{ext}"
+    supabase_url = current_app.config["SUPABASE_URL"]
+    service_key  = current_app.config["SUPABASE_SERVICE_KEY"]
+    upload_url = f"{supabase_url}/storage/v1/object/avatars/{filename}"
+    r = _http.post(upload_url, headers={
+        "apikey":        service_key,
+        "Authorization": f"Bearer {service_key}",
+        "Content-Type":  content_type,
+        "x-upsert":      "true",
+    }, data=f.read(), timeout=30)
+    if not r.ok:
+        return jsonify({"error": f"Storage: {r.status_code} {r.text}"}), 500
+    public_url = f"{supabase_url}/storage/v1/object/public/avatars/{filename}"
+    try:
+        sb_put(f"/auth/v1/admin/users/{user_id}", {"user_metadata": {"avatar_url": public_url, "avatar": None}})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+    return jsonify({"ok": True, "url": public_url})
+
+
+@bp.post("/me/password")
+def update_password():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Não autenticado"}), 401
+    password = (request.get_json(silent=True) or {}).get("password", "")
+    if len(password) < 8:
+        return jsonify({"error": "Senha muito curta"}), 400
+    try:
+        sb_put(f"/auth/v1/admin/users/{user_id}", {"password": password})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+    return jsonify({"ok": True})
+
+
+@bp.get("/me/profile")
+def get_profile():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"error": "Não autenticado"}), 401
+    try:
+        r = _http.get(
+            f"{current_app.config['SUPABASE_URL']}/auth/v1/admin/users/{user_id}",
+            headers=sb_headers(), timeout=5,
+        )
+        meta = r.json().get("user_metadata") or {} if r.ok else {}
+    except Exception:
+        meta = {}
+    return jsonify({
+        "name":       session.get("name", ""),
+        "email":      session.get("email", ""),
+        "avatar":     meta.get("avatar"),
+        "avatar_url": meta.get("avatar_url"),
+    })
 
 
 @bp.get("/daily-exercise")
