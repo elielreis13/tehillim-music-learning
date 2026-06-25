@@ -100,12 +100,15 @@ def admin_generate_narration():
 
     text = _strip_markdown(raw_text)[:5000]
 
-    gcp_creds = current_app.config.get("GOOGLE_APPLICATION_CREDENTIALS", "")
-    if not gcp_creds:
-        return jsonify({"error": "GOOGLE_APPLICATION_CREDENTIALS não configurada no .env"}), 503
-
     import os
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = gcp_creds
+    from pathlib import Path
+    gcp_creds = current_app.config.get("GOOGLE_APPLICATION_CREDENTIALS", "")
+    if gcp_creds:
+        creds_path = Path(gcp_creds)
+        if not creds_path.is_absolute():
+            creds_path = Path(current_app.root_path).parent / creds_path
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(creds_path)
+    # if no creds configured, fall through to ADC (Cloud Run service account)
     try:
         from google.cloud import texttospeech as _tts
         voice_name = (body.get("voice_name") or "pt-BR-Chirp3-HD-Iapetus").strip()
