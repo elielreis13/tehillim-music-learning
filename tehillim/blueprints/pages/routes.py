@@ -64,7 +64,7 @@ def _get_access() -> tuple[set, bool]:
 
 @bp.before_request
 def require_login_for_app_pages():
-    if request.endpoint == "modules.landing":
+    if request.endpoint == "pages.landing":
         return None
     if session.get("user_id"):
         return None
@@ -81,7 +81,7 @@ def landing():
 @bp.get("/inicio")
 @bp.get("/index.html")
 def index():
-    return render_template("pages/home.html", active_page="inicio")
+    return render_template("student/home.html", active_page="inicio")
 
 
 @bp.get("/grupos/<group_slug>")
@@ -121,7 +121,7 @@ def group_page(group_slug: str):
 
     granted_slugs, is_teacher_cookie = _get_access()
     return render_template(
-        "pages/group.html",
+        "student/group.html",
         group=selected_group,
         modules_list=modules_list,
         granted_slugs=granted_slugs,
@@ -132,42 +132,42 @@ def group_page(group_slug: str):
 
 @bp.get("/trilhas")
 def trilhas_page():
-    return render_template("pages/trilhas.html", active_page="trilhas")
+    return render_template("student/trilhas.html", active_page="trilhas")
 
 
 @bp.get("/revisoes")
 def revisoes_page():
-    return render_template("pages/revisoes.html", active_page="revisoes")
+    return render_template("student/revisoes.html", active_page="revisoes")
 
 
 @bp.get("/exercicios")
 def exercicios_page():
-    return render_template("pages/exercicios.html", active_page="exercicios")
+    return render_template("student/exercicios.html", active_page="exercicios")
 
 
 @bp.get("/aulas")
 def aulas_page():
-    return render_template("pages/aulas.html", active_page="aulas")
+    return render_template("student/aulas.html", active_page="aulas")
 
 
 @bp.get("/desempenho")
 def desempenho_page():
-    return render_template("pages/desempenho.html", active_page="desempenho")
+    return render_template("student/desempenho.html", active_page="desempenho")
 
 
 @bp.get("/conquistas")
 def conquistas_page():
-    return render_template("pages/desempenho.html", active_page="desempenho")
+    return render_template("student/desempenho.html", active_page="desempenho")
 
 
 @bp.get("/mensagens")
 def mensagens_page():
-    return render_template("pages/mensagens.html", active_page="mensagens")
+    return render_template("student/mensagens.html", active_page="mensagens")
 
 
 @bp.get("/notificacoes")
 def notificacoes_page():
-    return render_template("pages/notificacoes.html", active_page="notificacoes")
+    return render_template("student/notificacoes.html", active_page="notificacoes")
 
 
 @bp.get("/configuracoes")
@@ -178,11 +178,11 @@ def configuracoes_page():
 
 @bp.get("/perfil")
 def perfil_page():
-    return render_template("pages/perfil.html", active_page="perfil")
+    return render_template("student/perfil.html", active_page="perfil")
 
 
-_BONA_SHEETS    = Path(__file__).resolve().parent.parent / "static" / "bona"
-_POZZOLI_SHEETS = Path(__file__).resolve().parent.parent / "static" / "pozzoli"
+_BONA_SHEETS    = Path(__file__).resolve().parent.parent.parent / "static" / "bona"
+_POZZOLI_SHEETS = Path(__file__).resolve().parent.parent.parent / "static" / "pozzoli"
 
 
 @bp.get("/modulos/<module_slug>")
@@ -195,7 +195,7 @@ def module_page(module_slug: str):
     if (101 <= selected_module.number <= 140) or (401 <= selected_module.number <= 460):
         has_sheet = (_BONA_SHEETS / f"{module_slug}.musicxml").exists()
         return render_template(
-            "pages/bona_module.html",
+            "players/bona_module.html",
             module=selected_module,
             access_ok=access_ok,
             has_sheet=has_sheet,
@@ -203,13 +203,13 @@ def module_page(module_slug: str):
     if (201 <= selected_module.number <= 212) or (301 <= selected_module.number <= 400):
         has_sheet = (_POZZOLI_SHEETS / f"{module_slug}.musicxml").exists()
         return render_template(
-            "pages/pozzoli_module.html",
+            "players/pozzoli_module.html",
             module=selected_module,
             access_ok=access_ok,
             has_sheet=has_sheet,
         )
     return render_template(
-        "pages/module.html",
+        "student/module.html",
         module=selected_module,
         access_ok=access_ok,
     )
@@ -217,20 +217,20 @@ def module_page(module_slug: str):
 
 @bp.get("/jogos")
 def jogos_page():
-    return render_template("pages/jogos.html", active_page="jogos")
+    return render_template("student/jogos.html", active_page="jogos")
 
 
 @bp.get("/demo/vozes")
 def vozes_demo():
     if err := require_login_for_app_pages():
         return err
-    return render_template("pages/vozes_demo.html")
+    return render_template("student/vozes_demo.html")
 
 
 @bp.get("/bona-player/<slug>")
 def bona_player(slug: str):
     has_sheet = (_BONA_SHEETS / f"{slug}.musicxml").exists()
-    return render_template("pages/bona_player.html", slug=slug, has_sheet=has_sheet)
+    return render_template("players/bona_player.html", slug=slug, has_sheet=has_sheet)
 
 
 @bp.get("/pozzoli-player/<slug>")
@@ -238,4 +238,4 @@ def pozzoli_player(slug: str):
     has_sheet = (_POZZOLI_SHEETS / f"{slug}.musicxml").exists()
     # Formata slug "pozzoli-p1" → "Pozzoli P1"
     module_title = slug.replace("-", " ").title()
-    return render_template("pages/pozzoli_player.html", slug=slug, has_sheet=has_sheet, module_title=module_title)
+    return render_template("players/pozzoli_player.html", slug=slug, has_sheet=has_sheet, module_title=module_title)

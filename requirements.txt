@@ -4,3 +4,4 @@ python-dotenv>=1.0
 requests>=2.32
 PyJWT>=2.8
 elevenlabs>=1.0
+sentry-sdk[flask]>=2.0

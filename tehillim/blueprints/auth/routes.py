@@ -26,19 +26,6 @@ def do_login():
     email    = (data.get("email") or "").strip()
     password = data.get("password") or ""
 
-    # Modo dev
-    if email == "dev" and password == "dev":
-        session.permanent = True
-        session["user_id"]      = "dev-user-00000000-0000-0000-0000-000000000000"
-        session["email"]        = "dev@tehillim.dev"
-        session["name"]         = "Dev"
-        session["is_teacher"]   = True
-        session["is_owner"]     = True
-        session["module_slugs"] = []
-        session["access_token"] = "__dev__"
-        session["expires_at"]   = int(time.time()) + 3600 * 24 * 7
-        return jsonify({"ok": True})
-
     if not email or not password:
         return jsonify({"error": "E-mail e senha são obrigatórios."}), 400
 
