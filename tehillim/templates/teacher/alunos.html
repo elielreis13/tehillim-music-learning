@@ -248,6 +248,9 @@
 
 {% block scripts %}
 <script>
+// Zera badge de gravações ao abrir esta página
+fetch("/api/teacher/submissions/mark-seen", { method: "POST" }).catch(() => {});
+
 const GROUPS_DATA = {{ groups | tojson }};
 const TOTAL_MODULES = {{ groups | sum(attribute='module_count') }};
 const MODULE_MAP = {};
@@ -289,11 +292,16 @@ function showTab(tab) {
 // ── Load students ─────────────────────────────────────────────────────────────
 async function loadStudents() {
   try {
-    const [{ students }, unreadData] = await Promise.all([
+    const [{ students }, unreadData, subData] = await Promise.all([
       api("/api/teacher/students"),
       api("/api/teacher/messages/unread").catch(() => ({ students: [] })),
+      api("/api/teacher/submissions").catch(() => ({ submissions: [] })),
     ]);
-    _unreadIds = new Set((unreadData.students || []).map(s => s.id));
+    const msgUnread = new Set((unreadData.students || []).map(s => s.id));
+    const recUnread = new Set((subData.submissions || []).map(s => s.user_id));
+    _unreadIds      = new Set([...msgUnread, ...recUnread]);
+    window._msgUnreadIds = msgUnread;
+    window._recUnreadIds = recUnread;
     _students = students.filter(u => u.role !== "teacher");
     document.getElementById("pa-loading").style.display = "none";
     renderStats(_students);
@@ -343,7 +351,7 @@ function renderGrid(students) {
 
     return `
       <div class="student-card fade-in ${hasUnread ? 'has-unread' : ''}"
-           onclick="openDetail('${u.id}','${name.replace(/'/g,"\\'")}','${u.email}','${u.id}')">
+           onclick="window.location.href='/professor/alunos/${u.id}'">
         <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
           <div style="position:relative;flex-shrink:0;">
             <div style="width:40px;height:40px;border-radius:50%;background:#EDD9B0;color:#C4943A;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;">
@@ -355,7 +363,10 @@ function renderGrid(students) {
             <p style="font-size:13px;font-weight:700;color:#2A2419;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</p>
             <p style="font-size:11px;color:#9C8460;margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.email}</p>
           </div>
-          ${hasUnread ? '<span style="font-size:10px;background:#DBEAFE;color:#1D4ED8;font-weight:700;padding:2px 7px;border-radius:20px;flex-shrink:0;">NOVA MSG</span>' : ''}
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;">
+            ${window._msgUnreadIds?.has(u.id) ? '<span style="font-size:10px;background:#DBEAFE;color:#1D4ED8;font-weight:700;padding:2px 7px;border-radius:20px;">MSG</span>' : ''}
+            ${window._recUnreadIds?.has(u.id) ? '<span style="font-size:10px;background:#FEF3C7;color:#92400E;font-weight:700;padding:2px 7px;border-radius:20px;">🎤 ÁUDIO</span>' : ''}
+          </div>
         </div>
 
         <div style="margin-bottom:8px;">

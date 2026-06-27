@@ -1,0 +1,335 @@
+{% extends "base_app.html" %}
+{% block title %}Notificações | Tehillim{% endblock %}
+
+{% block head %}
+<style>
+.notif-section { margin-bottom: 32px; }
+.notif-section-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: #9C8460; margin-bottom: 12px; padding: 0 2px;
+}
+.notif-card {
+  background: white; border: 1.5px solid #F0E8D4; border-radius: 16px;
+  overflow: hidden; margin-bottom: 12px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.notif-card:hover { border-color: #C4943A; box-shadow: 0 4px 16px rgba(196,148,58,0.10); }
+.notif-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; background: #FAF7F2;
+  border-bottom: 1px solid #F0E8D4;
+}
+.notif-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #EDD9B0; color: #C4943A;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; flex-shrink: 0;
+}
+.notif-meta { flex: 1; min-width: 0; }
+.notif-name { font-size: 13px; font-weight: 700; color: #2A2419; }
+.notif-info { font-size: 11px; color: #9C8460; margin-top: 1px; }
+.notif-badge-rec  { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: #FEF3C7; color: #92400E; flex-shrink: 0; }
+.notif-badge-msg  { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; background: #DBEAFE; color: #1D4ED8; flex-shrink: 0; }
+.notif-body { padding: 14px 18px; }
+.notif-text { font-size: 13px; color: #4B3E2A; line-height: 1.55; margin-bottom: 12px; }
+audio { width: 100%; height: 38px; border-radius: 8px; margin-bottom: 12px; }
+
+/* Reply box */
+.reply-box { border-top: 1px solid #F0E8D4; padding: 14px 18px; background: #FDFAF5; }
+.reply-row { display: flex; gap: 8px; align-items: flex-end; }
+.reply-input {
+  flex: 1; resize: none; border: 1.5px solid #E5D9C3; border-radius: 12px;
+  padding: 9px 12px; font-size: 13px; color: #2A2419; background: white;
+  outline: none; transition: border-color 0.15s; font-family: inherit;
+  min-height: 40px; max-height: 120px;
+}
+.reply-input:focus { border-color: #C4943A; }
+.reply-btn {
+  height: 40px; padding: 0 16px; border-radius: 12px;
+  font-size: 13px; font-weight: 600; cursor: pointer; border: none;
+  background: #C4943A; color: white; transition: background 0.15s; flex-shrink: 0;
+}
+.reply-btn:hover { background: #A87830; }
+.reply-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.rec-btn {
+  width: 40px; height: 40px; border-radius: 12px; border: 1.5px solid #E5D9C3;
+  background: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s; flex-shrink: 0;
+}
+.rec-btn:hover { background: #FEF3C7; border-color: #C4943A; }
+.rec-btn.recording { background: #FEE2E2; border-color: #EF4444; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+.reply-audio-preview { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding: 8px 12px; background: #FEF9F0; border-radius: 10px; border: 1px solid #F0E8D4; }
+.reply-audio-preview audio { flex: 1; height: 32px; margin: 0; }
+
+.empty-state { text-align: center; padding: 60px 20px; color: #9C8460; }
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-title { font-size: 15px; font-weight: 600; color: #4B3E2A; margin-bottom: 6px; }
+.empty-sub { font-size: 13px; }
+
+.sent-ok { font-size: 12px; color: #4E7A60; font-weight: 600; margin-top: 6px; display: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-6">
+
+  <div class="flex items-center gap-3 mb-6">
+    <h1 class="text-[20px] font-bold text-gray-800">Notificações</h1>
+    <span id="total-badge" style="display:none"
+          class="bg-red-500 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full"></span>
+  </div>
+
+  <div id="loading" class="text-center py-16 text-gray-400 text-sm">Carregando…</div>
+  <div id="content" style="display:none">
+    <div id="rec-section" class="notif-section" style="display:none">
+      <p class="notif-section-title">🎤 Gravações novas</p>
+      <div id="rec-list"></div>
+    </div>
+    <div id="msg-section" class="notif-section" style="display:none">
+      <p class="notif-section-title">💬 Mensagens não lidas</p>
+      <div id="msg-list"></div>
+    </div>
+    <div id="empty-state" class="empty-state" style="display:none">
+      <div class="empty-icon">✓</div>
+      <p class="empty-title">Tudo em dia!</p>
+      <p class="empty-sub">Nenhuma gravação nova nem mensagem não lida.</p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const STUDENT_URL = id => `/professor/alunos/${id}`;
+
+async function api(url, opts = {}) {
+  const r = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...opts });
+  if (!r.ok) throw new Error(`${r.status}`);
+  return r.json();
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleString('pt-BR', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
+// ── Gravação de áudio para resposta ──────────────────────────────────────────
+function makeRecorder(cardId) {
+  let mr = null, stream = null, chunks = [], blob = null;
+  const btn   = document.getElementById(`rec-mic-${cardId}`);
+  const prev  = document.getElementById(`rec-preview-${cardId}`);
+  const audio = document.getElementById(`rec-audio-${cardId}`);
+
+  btn.addEventListener('click', async () => {
+    if (!mr) {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mr = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/ogg' });
+      chunks = [];
+      mr.ondataavailable = e => chunks.push(e.data);
+      mr.onstop = () => {
+        blob = new Blob(chunks, { type: mr.mimeType });
+        audio.src = URL.createObjectURL(blob);
+        prev.style.display = 'flex';
+        stream.getTracks().forEach(t => t.stop());
+        mr = null; stream = null;
+      };
+      mr.start();
+      btn.classList.add('recording');
+      btn.title = 'Parar gravação';
+    } else {
+      mr.stop();
+      btn.classList.remove('recording');
+      btn.title = 'Gravar áudio';
+    }
+  });
+
+  return () => blob;
+}
+
+// ── Envio de resposta de texto ────────────────────────────────────────────────
+async function sendText(studentId, cardId) {
+  const input  = document.getElementById(`reply-text-${cardId}`);
+  const btn    = document.getElementById(`reply-send-${cardId}`);
+  const ok     = document.getElementById(`reply-ok-${cardId}`);
+  const content = input.value.trim();
+  if (!content) return;
+  btn.disabled = true;
+  try {
+    await api(`/api/teacher/student/${studentId}/messages`, {
+      method: 'POST', body: JSON.stringify({ content }),
+    });
+    input.value = '';
+    ok.style.display = '';
+    setTimeout(() => ok.style.display = 'none', 3000);
+  } catch(e) { alert('Erro: ' + e.message); }
+  finally { btn.disabled = false; }
+}
+
+// ── Envio de resposta de áudio ────────────────────────────────────────────────
+async function sendAudio(studentId, cardId, getBlob) {
+  const blob = getBlob();
+  if (!blob) { alert('Grave um áudio primeiro.'); return; }
+  const btn  = document.getElementById(`reply-audio-btn-${cardId}`);
+  const ok   = document.getElementById(`reply-ok-${cardId}`);
+  btn.disabled = true;
+  try {
+    const ext = blob.type.includes('webm') ? 'webm' : 'ogg';
+    const fd  = new FormData();
+    fd.append('file', blob, `resposta.${ext}`);
+    fd.append('student_id', studentId);
+    const r = await fetch(`/api/teacher/student/${studentId}/audio-message`, { method: 'POST', body: fd });
+    if (!r.ok) throw new Error(await r.text());
+    document.getElementById(`rec-preview-${cardId}`).style.display = 'none';
+    ok.style.display = '';
+    setTimeout(() => ok.style.display = 'none', 3000);
+  } catch(e) { alert('Erro ao enviar áudio: ' + e.message); }
+  finally { btn.disabled = false; }
+}
+
+// ── Render gravação ───────────────────────────────────────────────────────────
+function renderRecording(s, i) {
+  const id     = `rec-${i}`;
+  const name   = s.student_name || '?';
+  const initl  = name[0].toUpperCase();
+  const date   = fmtDate(s.created_at);
+  const slug   = s.module_slug || '';
+
+  const card = document.createElement('div');
+  card.className = 'notif-card';
+  card.innerHTML = `
+    <div class="notif-header">
+      <div class="notif-avatar">${initl}</div>
+      <div class="notif-meta">
+        <a href="${STUDENT_URL(s.user_id)}" class="notif-name hover:underline">${name}</a>
+        <p class="notif-info">${slug} · ${date}</p>
+      </div>
+      <span class="notif-badge-rec">🎤 ÁUDIO</span>
+    </div>
+    <div class="notif-body">
+      ${s.audio_url
+        ? `<audio controls src="${s.audio_url}" preload="none"></audio>`
+        : `<p class="notif-text" style="color:#9C8460;font-style:italic;">URL indisponível</p>`}
+    </div>
+    <div class="reply-box">
+      <div id="rec-preview-${id}" class="reply-audio-preview" style="display:none">
+        <audio id="rec-audio-${id}" controls></audio>
+        <button id="reply-audio-btn-${id}" class="reply-btn" style="font-size:11px;padding:0 12px;"
+                onclick="sendAudio('${s.user_id}','${id}',_getBlob_${id})">Enviar áudio</button>
+      </div>
+      <div class="reply-row">
+        <textarea id="reply-text-${id}" class="reply-input" rows="1" placeholder="Responder com texto…"></textarea>
+        <button id="rec-mic-${id}" class="rec-btn" title="Gravar áudio">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+          </svg>
+        </button>
+        <button id="reply-send-${id}" class="reply-btn" onclick="sendText('${s.user_id}','${id}')">Enviar</button>
+      </div>
+      <p id="reply-ok-${id}" class="sent-ok">✓ Enviado!</p>
+    </div>
+  `;
+  // Registra gravador e expõe getBlob globalmente
+  const getBlob = makeRecorder(id);
+  window[`_getBlob_${id}`] = getBlob;
+
+  // Enter no textarea envia texto
+  card.querySelector(`#reply-text-${id}`).addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendText(s.user_id, id); }
+  });
+
+  return card;
+}
+
+// ── Render mensagem ───────────────────────────────────────────────────────────
+function renderMessage(m, i) {
+  const id    = `msg-${i}`;
+  const name  = m.student_name || '?';
+  const initl = name[0].toUpperCase();
+  const date  = fmtDate(m.created_at);
+
+  const card = document.createElement('div');
+  card.className = 'notif-card';
+  card.innerHTML = `
+    <div class="notif-header">
+      <div class="notif-avatar">${initl}</div>
+      <div class="notif-meta">
+        <a href="${STUDENT_URL(m.student_id)}" class="notif-name hover:underline">${name}</a>
+        <p class="notif-info">${date}</p>
+      </div>
+      <span class="notif-badge-msg">💬 MSG</span>
+    </div>
+    <div class="notif-body">
+      <p class="notif-text">${m.content}</p>
+    </div>
+    <div class="reply-box">
+      <div id="rec-preview-${id}" class="reply-audio-preview" style="display:none">
+        <audio id="rec-audio-${id}" controls></audio>
+        <button id="reply-audio-btn-${id}" class="reply-btn" style="font-size:11px;padding:0 12px;"
+                onclick="sendAudio('${m.student_id}','${id}',_getBlob_${id})">Enviar áudio</button>
+      </div>
+      <div class="reply-row">
+        <textarea id="reply-text-${id}" class="reply-input" rows="1" placeholder="Responder…"></textarea>
+        <button id="rec-mic-${id}" class="rec-btn" title="Gravar áudio">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+          </svg>
+        </button>
+        <button id="reply-send-${id}" class="reply-btn" onclick="sendText('${m.student_id}','${id}')">Enviar</button>
+      </div>
+      <p id="reply-ok-${id}" class="sent-ok">✓ Enviado!</p>
+    </div>
+  `;
+  const getBlob = makeRecorder(id);
+  window[`_getBlob_${id}`] = getBlob;
+  card.querySelector(`#reply-text-${id}`).addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendText(m.student_id, id); }
+  });
+  return card;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+(async () => {
+  // Zera badge de gravações
+  fetch('/api/teacher/submissions/mark-seen', { method: 'POST' }).catch(() => {});
+
+  try {
+    const { recordings, messages, total } = await api('/api/teacher/notifications');
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = '';
+
+    const badge = document.getElementById('total-badge');
+    if (total > 0) { badge.textContent = total; badge.style.display = ''; }
+
+    if (recordings.length) {
+      document.getElementById('rec-section').style.display = '';
+      const list = document.getElementById('rec-list');
+      recordings.forEach((s, i) => list.appendChild(renderRecording(s, i)));
+    }
+
+    if (messages.length) {
+      document.getElementById('msg-section').style.display = '';
+      const list = document.getElementById('msg-list');
+      messages.forEach((m, i) => list.appendChild(renderMessage(m, i)));
+    }
+
+    if (!recordings.length && !messages.length) {
+      document.getElementById('empty-state').style.display = '';
+    }
+
+    // Marca mensagens como lidas
+    if (messages.length) {
+      const ids = [...new Set(messages.map(m => m.student_id))];
+      ids.forEach(id =>
+        fetch(`/api/teacher/student/${id}/messages/read-all`, { method: 'PATCH' }).catch(() => {})
+      );
+    }
+
+  } catch(e) {
+    document.getElementById('loading').textContent = 'Erro ao carregar notificações.';
+  }
+})();
+</script>
+{% endblock %}

@@ -293,7 +293,7 @@ def teacher_student_submissions(user_id: str):
     if err := require_teacher_token():
         return err
     try:
-        rows = sb_get("submissions", {"select": "id,user_id,module_slug,audio_url,status,created_at",
+        rows = sb_get("submissions", {"select": "id,user_id,module_slug,audio_url,professor_note,created_at",
                                       "user_id": f"eq.{user_id}", "order": "created_at.desc"})
         return jsonify({"submissions": rows})
     except Exception as exc:
@@ -306,7 +306,7 @@ def teacher_all_submissions():
     if err := require_teacher_token():
         return err
     try:
-        rows = sb_get("submissions", {"select": "id,user_id,module_slug,audio_url,status,created_at",
+        rows = sb_get("submissions", {"select": "id,user_id,module_slug,audio_url,professor_note,created_at",
                                       "order": "created_at.desc", "limit": "200"})
         # Filtra só alunos do professor (se não for owner)
         if not is_owner_session():
@@ -349,6 +349,70 @@ def teacher_all_progress():
         return jsonify({"progress": rows})
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
+
+
+@bp.get("/teacher/notifications")
+def teacher_notifications():
+    """Retorna gravações novas + mensagens não lidas, enriquecidas com nome do aluno."""
+    if err := require_teacher_token():
+        return err
+    teacher_id = session.get("user_id")
+    supabase_url = current_app.config["SUPABASE_URL"]
+
+    # Busca alunos do professor
+    try:
+        r = http.get(f"{supabase_url}/auth/v1/admin/users",
+                     headers=sb_headers(), params={"per_page": 200}, timeout=10)
+        all_users = r.json().get("users", []) if r.ok else []
+        if not is_owner_session():
+            all_users = [u for u in all_users
+                         if (u.get("user_metadata") or {}).get("teacher_id") == teacher_id]
+        user_map = {u["id"]: {
+            "name":  (u.get("user_metadata") or {}).get("name") or u["email"].split("@")[0],
+            "email": u["email"],
+        } for u in all_users}
+        my_ids = set(user_map)
+    except Exception:
+        user_map, my_ids = {}, set()
+
+    # Busca última vez que viu notificações
+    try:
+        rows = sb_get("teacher_settings", {"teacher_id": f"eq.{teacher_id}",
+                                           "key": "eq.submissions_last_seen"})
+        last_seen = rows[0]["value"] if rows else "1970-01-01T00:00:00Z"
+    except Exception:
+        last_seen = "1970-01-01T00:00:00Z"
+
+    # Gravações novas
+    try:
+        subs = sb_get("submissions", {"select": "id,user_id,module_slug,audio_url,created_at",
+                                      "created_at": f"gt.{last_seen}",
+                                      "order": "created_at.desc", "limit": "100"})
+        recordings = [
+            {**s, "student_name": user_map.get(s["user_id"], {}).get("name", "?"),
+                  "student_email": user_map.get(s["user_id"], {}).get("email", ""),
+                  "kind": "recording"}
+            for s in subs if s.get("user_id") in my_ids
+        ]
+    except Exception:
+        recordings = []
+
+    # Mensagens não lidas dos alunos
+    try:
+        msgs = sb_get("messages", {"select": "id,student_id,module_slug,content,created_at",
+                                   "sender_type": "eq.student", "read_at": "is.null",
+                                   "order": "created_at.desc", "limit": "100"})
+        messages = [
+            {**m, "student_name": user_map.get(m["student_id"], {}).get("name", "?"),
+                  "student_email": user_map.get(m["student_id"], {}).get("email", ""),
+                  "kind": "message"}
+            for m in msgs if m.get("student_id") in my_ids
+        ]
+    except Exception:
+        messages = []
+
+    total = len(recordings) + len(messages)
+    return jsonify({"recordings": recordings, "messages": messages, "total": total})
 
 
 @bp.get("/teacher/submissions/unread-count")

@@ -169,6 +169,44 @@ def teacher_mark_message_read(msg_id: str):
     return "", 204
 
 
+@bp.post("/teacher/student/<user_id>/audio-message")
+def teacher_send_audio_message(user_id: str):
+    """Professor envia mensagem de áudio para o aluno. Salva no Storage e registra como mensagem."""
+    if err := require_teacher_token():
+        return err
+    f = request.files.get("file")
+    if not f:
+        return jsonify({"error": "Nenhum arquivo enviado"}), 400
+
+    import uuid as _uuid
+    from flask import current_app
+    ext = "webm" if "webm" in (f.content_type or "") else "ogg"
+    filename = f"teacher-replies/{user_id}/{_uuid.uuid4().hex}.{ext}"
+    sb_url  = current_app.config["SUPABASE_URL"]
+    svc_key = current_app.config["SUPABASE_SERVICE_KEY"]
+
+    r = http.post(
+        f"{sb_url}/storage/v1/object/recordings/{filename}",
+        headers={"apikey": svc_key, "Authorization": f"Bearer {svc_key}",
+                 "Content-Type": f.content_type or "audio/webm", "x-upsert": "true"},
+        data=f.read(), timeout=30,
+    )
+    if not r.ok:
+        return jsonify({"error": f"Storage: {r.status_code}"}), 500
+
+    audio_url   = f"{sb_url}/storage/v1/object/public/recordings/{filename}"
+    module_slug = request.form.get("module_slug") or None
+    label       = request.form.get("label") or ""
+    prefix      = f"[🎤 {label}]\n" if label else ""
+    row = sb_post("messages", {
+        "student_id":  user_id,
+        "sender_type": "teacher",
+        "module_slug": module_slug,
+        "content":     f"{prefix}🎤 [Áudio do professor]({audio_url})",
+    })
+    return jsonify(row[0] if isinstance(row, list) else row), 201
+
+
 @bp.get("/teacher/messages/unread")
 def teacher_unread_messages():
     """Retorna contagem de msgs não lidas de alunos, agrupada por aluno."""

@@ -522,39 +522,152 @@ function renderAudios(submissions) {
     return;
   }
 
-  const statusLabel = { pending: 'Aguardando', reviewed: 'Revisado', approved: 'Aprovado' };
-  const statusColor = { pending: 'text-yellow-600 bg-yellow-50', reviewed: 'text-blue-600 bg-blue-50', approved: 'text-green-600 bg-green-50' };
+  el.innerHTML = '';
 
-  el.innerHTML = `
-    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-      <div class="px-6 py-4 bg-[#FAF7F2] border-b border-gray-100">
-        <h3 class="font-bold text-[14px] text-gray-800">Gravações Enviadas <span class="text-[#C4943A] ml-1">${submissions.length}</span></h3>
+  const wrap = document.createElement('div');
+  wrap.className = 'bg-white rounded-2xl shadow-sm overflow-hidden';
+  wrap.innerHTML = `
+    <div class="px-6 py-4 bg-[#FAF7F2] border-b border-gray-100">
+      <h3 class="font-bold text-[14px] text-gray-800">Gravações Enviadas <span class="text-[#C4943A] ml-1">${submissions.length}</span></h3>
+    </div>`;
+
+  // Estado dos gravadores por card — declarado antes das closures
+  const _recState = {};
+
+  submissions.forEach((s, i) => {
+    const mod    = MODULE_MAP[s.module_slug];
+    const label  = mod ? `M${String(mod.number).padStart(2,'0')} · ${mod.title}` : s.module_slug;
+    const date   = new Date(s.created_at).toLocaleDateString('pt-BR', { day:'numeric', month:'short', year:'numeric' });
+    const cid    = `aud-${i}`;
+    // contexto que vai junto com toda resposta sobre este áudio
+    const ctx    = `[🎤 ${label}]`;
+
+    const item = document.createElement('div');
+    item.style.borderTop = i > 0 ? '1px solid #F9F6F0' : '';
+    item.innerHTML = `
+      <div class="px-6 pt-4 pb-2">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-9 h-9 rounded-xl bg-[#F2EAD8] flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-[#C4943A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-[13px] font-semibold text-gray-800 truncate">${label}</p>
+            <p class="text-[11px] text-gray-400">${date}</p>
+          </div>
+        </div>
+        ${s.audio_url
+          ? `<audio controls src="${s.audio_url}" class="w-full" style="height:36px;border-radius:8px;" preload="none"></audio>`
+          : `<p class="text-[12px] text-gray-400 italic">URL indisponível</p>`}
       </div>
-      <div class="divide-y divide-gray-50">
-        ${submissions.map(s => {
-          const mod   = MODULE_MAP[s.module_slug];
-          const label = mod ? `M${String(mod.number).padStart(2,'0')} · ${mod.title}` : s.module_slug;
-          const date  = new Date(s.created_at).toLocaleDateString('pt-BR', { day:'numeric', month:'short', year:'numeric' });
-          const sc    = statusColor[s.status] || 'text-gray-600 bg-gray-100';
-          const sl    = statusLabel[s.status] || s.status;
-          return `
-            <div class="flex items-center gap-4 px-6 py-4">
-              <div class="w-10 h-10 rounded-xl bg-[#F2EAD8] flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-[#C4943A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-[13px] font-semibold text-gray-800 truncate">${label}</p>
-                <p class="text-[11px] text-gray-400">${date}</p>
-              </div>
-              <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full ${sc}">${sl}</span>
-            </div>
-          `;
-        }).join('')}
+      <!-- Resposta -->
+      <div class="px-6 pb-4">
+        <!-- Preview do áudio gravado (oculto até gravar) -->
+        <div id="ap-${cid}" style="display:none;margin-bottom:8px;padding:8px 12px;background:#FEF9F0;border-radius:10px;border:1px solid #F0E8D4;">
+          <p style="font-size:10px;color:#9C8460;margin-bottom:4px;">Prévia do áudio gravado:</p>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <audio id="aa-${cid}" controls style="flex:1;height:32px;border-radius:8px;"></audio>
+            <button id="ab-${cid}"
+                    style="height:32px;padding:0 12px;border-radius:8px;background:#C4943A;color:white;font-size:11px;font-weight:600;border:none;cursor:pointer;white-space:nowrap;"
+                    onclick="_sendAudRec('${cid}','${STUDENT_ID}','${s.module_slug}','${label.replace(/'/g,'')}')">
+              Enviar áudio
+            </button>
+          </div>
+        </div>
+        <!-- Linha de resposta -->
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="rt-${cid}" type="text" placeholder="Responder sobre esta gravação…"
+                 style="flex:1;border:1.5px solid #E5D9C3;border-radius:10px;padding:8px 12px;font-size:13px;outline:none;font-family:inherit;"
+                 onfocus="this.style.borderColor='#C4943A'" onblur="this.style.borderColor='#E5D9C3'"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();_sendTxtRec('${cid}','${STUDENT_ID}','${s.module_slug}','${label.replace(/'/g,'')}')}" />
+          <button id="rm-${cid}" title="Gravar áudio — clique para iniciar/parar"
+                  style="width:36px;height:36px;border-radius:10px;border:1.5px solid #E5D9C3;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;"
+                  onclick="_toggleMic('${cid}')">
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+            </svg>
+          </button>
+          <button onclick="_sendTxtRec('${cid}','${STUDENT_ID}','${s.module_slug}','${label.replace(/'/g,'')}')"
+                  style="height:36px;padding:0 14px;border-radius:10px;background:#C4943A;color:white;font-size:12px;font-weight:600;border:none;cursor:pointer;flex-shrink:0;">
+            Enviar
+          </button>
+        </div>
+        <p id="rok-${cid}" style="display:none;font-size:11px;color:#4E7A60;font-weight:600;margin-top:6px;">✓ Enviado!</p>
       </div>
-    </div>
-  `;
+    `;
+    wrap.appendChild(item);
+  });
+
+  el.appendChild(wrap);
+
+  window._toggleMic = async (cid) => {
+    if (!_recState[cid]) _recState[cid] = { mr: null, stream: null, chunks: [], blob: null };
+    const st  = _recState[cid];
+    const btn = document.getElementById(`rm-${cid}`);
+    if (!st.mr) {
+      try {
+        st.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch(e) { alert('Permissão de microfone negada.'); return; }
+      const mime = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/ogg';
+      st.mr = new MediaRecorder(st.stream, { mimeType: mime });
+      st.chunks = [];
+      st.mr.ondataavailable = e => { if (e.data.size > 0) st.chunks.push(e.data); };
+      st.mr.onstop = () => {
+        st.blob = new Blob(st.chunks, { type: mime });
+        const ap = document.getElementById(`ap-${cid}`);
+        document.getElementById(`aa-${cid}`).src = URL.createObjectURL(st.blob);
+        ap.style.display = 'block';
+        st.stream.getTracks().forEach(t => t.stop());
+        st.mr = null;
+        // Reset botão de mic
+        btn.style.background = 'white'; btn.style.borderColor = '#E5D9C3';
+        btn.innerHTML = `<svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>`;
+      };
+      st.mr.start(100);
+      // Feedback visual de gravando
+      btn.style.background = '#FEE2E2'; btn.style.borderColor = '#EF4444';
+      btn.innerHTML = `<svg width="12" height="12" fill="#EF4444" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>`;
+    } else {
+      st.mr.stop();
+    }
+  };
+
+  window._sendTxtRec = async (cid, studentId, moduleSlug, labelTxt) => {
+    const input = document.getElementById(`rt-${cid}`);
+    const text  = input.value.trim();
+    if (!text) return;
+    const content = `[🎤 ${labelTxt}]\n${text}`;
+    try {
+      await api(`/api/teacher/student/${studentId}/messages`, {
+        method: 'POST', body: JSON.stringify({ content, module_slug: moduleSlug }),
+      });
+      input.value = '';
+      const ok = document.getElementById(`rok-${cid}`);
+      ok.style.display = ''; setTimeout(() => ok.style.display = 'none', 3000);
+    } catch(e) { alert('Erro: ' + e.message); }
+  };
+
+  window._sendAudRec = async (cid, studentId, moduleSlug, labelTxt) => {
+    const st = _recState[cid];
+    if (!st?.blob) { alert('Nenhum áudio gravado.'); return; }
+    const btn = document.getElementById(`ab-${cid}`);
+    btn.disabled = true; btn.textContent = 'Enviando…';
+    try {
+      const ext = st.blob.type.includes('webm') ? 'webm' : 'ogg';
+      const fd  = new FormData();
+      fd.append('file', st.blob, `resposta.${ext}`);
+      fd.append('module_slug', moduleSlug || '');
+      fd.append('label', labelTxt || '');
+      const r = await fetch(`/api/teacher/student/${studentId}/audio-message`, { method: 'POST', body: fd });
+      if (!r.ok) throw new Error(await r.text());
+      document.getElementById(`ap-${cid}`).style.display = 'none';
+      st.blob = null;
+      const ok = document.getElementById(`rok-${cid}`);
+      ok.style.display = ''; setTimeout(() => ok.style.display = 'none', 3000);
+    } catch(e) { alert('Erro ao enviar áudio: ' + e.message); }
+    finally { btn.disabled = false; }
+  };
 }
 
 // ── Mensagens ─────────────────────────────────────────────────────────────────

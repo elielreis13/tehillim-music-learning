@@ -56,7 +56,7 @@ def professor_aluno_detalhe(user_id: str):
         "teacher/aluno_detalhe.html",
         student=student,
         groups=groups_summary(),
-        active_page="admin",
+        active_page="professor_alunos",
     )
 
 
@@ -65,6 +65,13 @@ def professor_relatorios():
     if err := require_teacher():
         return err
     return render_template("teacher/relatorios.html", active_page="admin")
+
+
+@bp.get("/professor/notificacoes")
+def professor_notificacoes():
+    if err := require_teacher():
+        return err
+    return render_template("teacher/notificacoes.html", active_page="professor_notificacoes")
 
 
 @bp.get("/professor/mensagens")
