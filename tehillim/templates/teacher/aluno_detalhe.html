@@ -59,6 +59,9 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="{{ tab_icon }}"/>
         </svg>
         {{ tab_label }}
+        {% if tab_id == 'audios' %}
+        <span id="audio-badge" style="display:none" class="bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center"></span>
+        {% endif %}
         {% if tab_id == 'mensagens' %}
         <span id="msg-badge" class="hidden bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">0</span>
         {% endif %}
@@ -506,6 +509,11 @@ async function loadAudios() {
   try {
     const { submissions } = await api(`/api/teacher/student/${STUDENT_ID}/submissions`);
     renderAudios(submissions);
+    // Badge na aba Áudios
+    if (submissions.length > 0) {
+      const badge = document.getElementById('audio-badge');
+      if (badge) { badge.textContent = submissions.length; badge.style.display = ''; }
+    }
   } catch (err) {
     document.getElementById('audio-loading').innerHTML =
       `<p class="text-[13px] text-red-500 text-center">Erro: ${err.message}</p>`;
@@ -679,6 +687,18 @@ async function loadMensagens() {
     const { messages } = await api(`/api/teacher/student/${STUDENT_ID}/messages`);
     _messages = messages;
     renderMensagens(messages);
+
+    // Badge na aba Mensagens
+    const unreadFromStudent = messages.filter(m => m.sender_type === 'student' && !m.read_at).length;
+    const msgTabBadge = document.getElementById('msg-badge');
+    if (msgTabBadge) {
+      if (unreadFromStudent > 0) {
+        msgTabBadge.textContent = unreadFromStudent;
+        msgTabBadge.classList.remove('hidden');
+      } else {
+        msgTabBadge.classList.add('hidden');
+      }
+    }
 
     // Marca todas as msgs do aluno como lidas e atualiza badge da sidebar
     const hasUnread = messages.some(m => m.sender_type === 'student' && !m.read_at);

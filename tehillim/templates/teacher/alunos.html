@@ -110,6 +110,15 @@
       </div>
     </div>
 
+    <!-- Banner de atividades pendentes -->
+    <div id="activity-banner" style="display:none;padding:10px 20px;background:#FFFBEB;border-bottom:1.5px solid #FDE68A;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <span style="font-size:12px;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:0.08em;">Novidades</span>
+        <span id="banner-recs" style="display:none;font-size:12px;font-weight:600;color:#92400E;background:#FEF3C7;padding:3px 10px;border-radius:20px;">🎤 <span id="banner-recs-n"></span> gravações novas</span>
+        <span id="banner-msgs" style="display:none;font-size:12px;font-weight:600;color:#1D4ED8;background:#DBEAFE;padding:3px 10px;border-radius:20px;">💬 <span id="banner-msgs-n"></span> mensagens não lidas</span>
+      </div>
+    </div>
+
     <!-- Inner tabs + search -->
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;border-bottom:1px solid #F0E8D4;background:#FDFAF6;flex-shrink:0;flex-wrap:wrap;">
       <div style="display:flex;gap:4px;">
@@ -302,6 +311,15 @@ async function loadStudents() {
     _unreadIds      = new Set([...msgUnread, ...recUnread]);
     window._msgUnreadIds = msgUnread;
     window._recUnreadIds = recUnread;
+
+    // Banner de atividades pendentes
+    const nRecs = recUnread.size, nMsgs = msgUnread.size;
+    if (nRecs > 0 || nMsgs > 0) {
+      document.getElementById('activity-banner').style.display = '';
+      if (nRecs > 0) { document.getElementById('banner-recs').style.display = ''; document.getElementById('banner-recs-n').textContent = nRecs; }
+      if (nMsgs > 0) { document.getElementById('banner-msgs').style.display = ''; document.getElementById('banner-msgs-n').textContent = nMsgs; }
+    }
+
     _students = students.filter(u => u.role !== "teacher");
     document.getElementById("pa-loading").style.display = "none";
     renderStats(_students);
@@ -363,9 +381,9 @@ function renderGrid(students) {
             <p style="font-size:13px;font-weight:700;color:#2A2419;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${name}</p>
             <p style="font-size:11px;color:#9C8460;margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.email}</p>
           </div>
-          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;">
-            ${window._msgUnreadIds?.has(u.id) ? '<span style="font-size:10px;background:#DBEAFE;color:#1D4ED8;font-weight:700;padding:2px 7px;border-radius:20px;">MSG</span>' : ''}
-            ${window._recUnreadIds?.has(u.id) ? '<span style="font-size:10px;background:#FEF3C7;color:#92400E;font-weight:700;padding:2px 7px;border-radius:20px;">🎤 ÁUDIO</span>' : ''}
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end;flex-shrink:0;">
+            ${window._recUnreadIds?.has(u.id) ? '<span style="font-size:11px;background:#FEF3C7;color:#92400E;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;">🎤 Áudio novo</span>' : ''}
+            ${window._msgUnreadIds?.has(u.id) ? '<span style="font-size:11px;background:#DBEAFE;color:#1D4ED8;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;">💬 Mensagem</span>' : ''}
           </div>
         </div>
 
