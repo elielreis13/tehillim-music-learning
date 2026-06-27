@@ -6,7 +6,7 @@ import requests as http
 from . import bp
 from tehillim.extensions import (
     sb_get, sb_headers, sb_post,
-    require_teacher_token,
+    require_teacher_token, log_activity,
 )
 from .progress import _now_iso
 
@@ -43,6 +43,7 @@ def student_send_message():
         "student_id": user_id, "sender_type": "student",
         "content": content, "module_slug": module_slug,
     })
+    log_activity(user_id, "send_message", "success", {"module_slug": module_slug})
     return jsonify(row[0] if isinstance(row, list) else row), 201
 
 

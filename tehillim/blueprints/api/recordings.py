@@ -3,7 +3,7 @@ from __future__ import annotations
 from flask import current_app, jsonify, request, session
 
 from . import bp
-from tehillim.extensions import sb_get, sb_headers, sb_post, require_teacher_token
+from tehillim.extensions import sb_get, sb_headers, sb_post, require_teacher_token, activity_scope
 import requests as http
 
 
@@ -38,28 +38,31 @@ def recordings_upload():
     service_key  = current_app.config["SUPABASE_SERVICE_KEY"]
     bucket = "recordings"
 
-    upload_url = f"{supabase_url}/storage/v1/object/{bucket}/{filename}"
-    headers = {
-        "apikey":        service_key,
-        "Authorization": f"Bearer {service_key}",
-        "Content-Type":  content_type,
-        "x-upsert":      "false",
-    }
-    r = http.post(upload_url, headers=headers, data=f.read(), timeout=60)
-    if not r.ok:
-        return jsonify({"error": f"Storage: {r.status_code} {r.text}"}), 500
+    meta = {"module_slug": module_slug, "bpm": bpm_raw or None, "content_type": content_type}
+    with activity_scope(user_id, "upload_recording", meta) as ctx:
+        upload_url = f"{supabase_url}/storage/v1/object/{bucket}/{filename}"
+        headers = {
+            "apikey":        service_key,
+            "Authorization": f"Bearer {service_key}",
+            "Content-Type":  content_type,
+            "x-upsert":      "false",
+        }
+        r = http.post(upload_url, headers=headers, data=f.read(), timeout=60)
+        if not r.ok:
+            raise RuntimeError(f"Storage: {r.status_code} {r.text}")
 
-    audio_url = f"{supabase_url}/storage/v1/object/public/{bucket}/{filename}"
+        audio_url = f"{supabase_url}/storage/v1/object/public/{bucket}/{filename}"
+        ctx["audio_url"] = audio_url
 
-    # Save record in submissions table (non-fatal)
-    try:
-        sb_post("submissions", {
-            "user_id":     user_id,
-            "module_slug": module_slug,
-            "audio_url":   audio_url,
-        })
-    except Exception:
-        pass
+        try:
+            sb_post("submissions", {
+                "user_id":     user_id,
+                "module_slug": module_slug,
+                "audio_url":   audio_url,
+            })
+            ctx["submission_saved"] = True
+        except Exception as exc:
+            ctx["submission_error"] = str(exc)
 
     return jsonify({"url": audio_url}), 200
 

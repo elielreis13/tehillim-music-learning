@@ -1,7 +1,7 @@
 import requests
 from flask import current_app, jsonify, redirect, session as flask_session
 
-from .supabase import sb_headers, sb_get
+from .supabase import sb_headers
 
 
 def get_current_user() -> dict | None:
@@ -40,6 +40,20 @@ def require_teacher_token():
     if is_teacher_session():
         return None
     return jsonify({"error": "Acesso restrito ao professor"}), 403
+
+
+def require_owner():
+    """Para rotas de página: redireciona se não for owner."""
+    if not is_owner_session():
+        return redirect("/")
+    return None
+
+
+def require_owner_token():
+    """Para APIs: retorna 403 se não for o owner da plataforma, None se ok."""
+    if is_owner_session():
+        return None
+    return jsonify({"error": "Acesso restrito ao owner"}), 403
 
 
 def get_student_teacher_id(student_user_id: str) -> str | None:
