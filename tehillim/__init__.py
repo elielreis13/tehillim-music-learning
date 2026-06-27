@@ -32,6 +32,8 @@ def create_app(config=None) -> Flask:
             "email":      flask_session.get("email", ""),
             "name":       flask_session.get("name", ""),
             "is_teacher": flask_session.get("is_teacher", False),
+            "avatar":     flask_session.get("avatar", ""),
+            "avatar_url": flask_session.get("avatar_url", ""),
         } if user_id else None
 
         groups = groups_summary()

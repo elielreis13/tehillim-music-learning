@@ -293,11 +293,111 @@ def teacher_student_submissions(user_id: str):
     if err := require_teacher_token():
         return err
     try:
-        rows = sb_get("submissions", {"select": "id,module_slug,audio_path,status,created_at",
+        rows = sb_get("submissions", {"select": "id,user_id,module_slug,audio_url,status,created_at",
                                       "user_id": f"eq.{user_id}", "order": "created_at.desc"})
         return jsonify({"submissions": rows})
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
+
+
+@bp.get("/teacher/submissions")
+def teacher_all_submissions():
+    """Todas as gravações dos alunos do professor, ordenadas por data."""
+    if err := require_teacher_token():
+        return err
+    try:
+        rows = sb_get("submissions", {"select": "id,user_id,module_slug,audio_url,status,created_at",
+                                      "order": "created_at.desc", "limit": "200"})
+        # Filtra só alunos do professor (se não for owner)
+        if not is_owner_session():
+            my_id = session.get("user_id")
+            import requests as _http
+            supabase_url = current_app.config["SUPABASE_URL"]
+            r = _http.get(f"{supabase_url}/auth/v1/admin/users",
+                          headers=sb_headers(), params={"per_page": 200}, timeout=10)
+            if r.ok:
+                my_student_ids = {
+                    u["id"] for u in r.json().get("users", [])
+                    if (u.get("user_metadata") or {}).get("teacher_id") == my_id
+                }
+                rows = [row for row in rows if row.get("user_id") in my_student_ids]
+        return jsonify({"submissions": rows})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+@bp.get("/teacher/progress")
+def teacher_all_progress():
+    """Progresso de módulos de todos os alunos do professor."""
+    if err := require_teacher_token():
+        return err
+    try:
+        rows = sb_get("module_progress", {"select": "user_id,module_slug,completed,updated_at",
+                                          "order": "updated_at.desc"})
+        if not is_owner_session():
+            my_id = session.get("user_id")
+            import requests as _http
+            supabase_url = current_app.config["SUPABASE_URL"]
+            r = _http.get(f"{supabase_url}/auth/v1/admin/users",
+                          headers=sb_headers(), params={"per_page": 200}, timeout=10)
+            if r.ok:
+                my_student_ids = {
+                    u["id"] for u in r.json().get("users", [])
+                    if (u.get("user_metadata") or {}).get("teacher_id") == my_id
+                }
+                rows = [row for row in rows if row.get("user_id") in my_student_ids]
+        return jsonify({"progress": rows})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+@bp.get("/teacher/submissions/unread-count")
+def teacher_submissions_unread_count():
+    """Conta gravações enviadas desde a última vez que o professor abriu o dashboard."""
+    if err := require_teacher_token():
+        return err
+    teacher_id = session.get("user_id")
+    try:
+        # Busca timestamp da última visualização
+        rows = sb_get("teacher_settings", {"teacher_id": f"eq.{teacher_id}",
+                                           "key": "eq.submissions_last_seen"})
+        last_seen = rows[0]["value"] if rows else "1970-01-01T00:00:00Z"
+
+        all_rows = sb_get("submissions", {"select": "id,user_id,created_at",
+                                          "created_at": f"gt.{last_seen}",
+                                          "order": "created_at.desc", "limit": "200"})
+        if not is_owner_session():
+            my_id = session.get("user_id")
+            import requests as _http
+            supabase_url = current_app.config["SUPABASE_URL"]
+            r = _http.get(f"{supabase_url}/auth/v1/admin/users",
+                          headers=sb_headers(), params={"per_page": 200}, timeout=10)
+            if r.ok:
+                my_student_ids = {
+                    u["id"] for u in r.json().get("users", [])
+                    if (u.get("user_metadata") or {}).get("teacher_id") == my_id
+                }
+                all_rows = [row for row in all_rows if row.get("user_id") in my_student_ids]
+        return jsonify({"count": len(all_rows)})
+    except Exception as exc:
+        return jsonify({"count": 0, "error": str(exc)})
+
+
+@bp.post("/teacher/submissions/mark-seen")
+def teacher_submissions_mark_seen():
+    """Marca o momento atual como 'visto' para zerar o badge de gravações."""
+    if err := require_teacher_token():
+        return err
+    teacher_id = session.get("user_id")
+    try:
+        sb_upsert("teacher_settings", {
+            "teacher_id": teacher_id,
+            "key":        "submissions_last_seen",
+            "value":      _now_iso(),
+        }, conflict_col="teacher_id,key")
+    except Exception:
+        pass
+    return jsonify({"ok": True})
 
 
 @bp.get("/teacher/settings")

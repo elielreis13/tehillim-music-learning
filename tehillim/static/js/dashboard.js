@@ -41,6 +41,9 @@
     return new Date(iso).toLocaleString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
   }
 
+  // Zera badge de gravações ao abrir o dashboard
+  fetch("/api/teacher/submissions/mark-seen", { method: "POST" }).catch(() => {});
+
   // ── Carregar dados iniciais ───────────────────────────────────────────────────
 
   let students = [], submissions = [], progress = [];
@@ -119,8 +122,8 @@
         <span class="recording-module">📚 ${sub.module_slug}</span>
         <span class="recording-date">${fmtDateTime(sub.created_at)}</span>
       </div>
-      ${sub.signed_url
-        ? `<audio controls src="${sub.signed_url}" class="recording-audio"></audio>`
+      ${sub.audio_url
+        ? `<audio controls src="${sub.audio_url}" class="recording-audio"></audio>`
         : `<p class="rec-no-url">URL indisponível</p>`}
     `;
     container.appendChild(item);
@@ -428,8 +431,8 @@
             <div class="detail-sub-meta">
               <span class="recording-date">${fmtDateTime(s.created_at)}</span>
             </div>
-            ${s.signed_url
-              ? `<audio controls src="${s.signed_url}" class="recording-audio"></audio>`
+            ${s.audio_url
+              ? `<audio controls src="${s.audio_url}" class="recording-audio"></audio>`
               : `<p class="rec-no-url">URL indisponível</p>`}
           </div>`).join("")
       : "";

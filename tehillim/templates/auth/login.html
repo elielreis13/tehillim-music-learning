@@ -34,11 +34,11 @@
         <div class="flex flex-col gap-4">
 
           <div class="flex flex-col gap-1.5">
-            <label for="email" class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-              E-mail
+            <label for="username" class="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              Nome de usuário
             </label>
-            <input id="email" type="email" autocomplete="email" required
-                   placeholder="seu@email.com"
+            <input id="username" type="text" autocomplete="username" required
+                   placeholder="Seu nome"
                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                           placeholder-gray-300 outline-none
                           focus:border-[#7A5C2E] focus:ring-2 focus:ring-[#7A5C2E]/10 transition">
@@ -88,13 +88,13 @@
 
   async function submitLogin(e) {
     e.preventDefault();
-    const email = document.getElementById('email').value.trim();
-    const senha = document.getElementById('senha').value;
-    const btn   = document.getElementById('btn-entrar');
-    const erro  = document.getElementById('msg-error');
+    const username = document.getElementById('username').value.trim();
+    const senha    = document.getElementById('senha').value;
+    const btn      = document.getElementById('btn-entrar');
+    const erro     = document.getElementById('msg-error');
 
-    if (!email) { mostrarErro('Informe seu e-mail!', erro); return; }
-    if (!senha)  { mostrarErro('Informe sua senha!', erro); return; }
+    if (!username) { mostrarErro('Informe seu nome de usuário!', erro); return; }
+    if (!senha)    { mostrarErro('Informe sua senha!', erro); return; }
 
     erro.classList.add('hidden');
     btn.disabled    = true;
@@ -104,7 +104,7 @@
       const res  = await fetch('/auth/login', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email, password: senha }),
+        body:    JSON.stringify({ username, password: senha }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Algo deu errado.');

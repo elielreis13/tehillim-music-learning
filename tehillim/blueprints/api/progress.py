@@ -215,6 +215,8 @@ def update_avatar():
         sb_put(f"/auth/v1/admin/users/{user_id}", {"user_metadata": {"avatar": avatar_id, "avatar_url": None}})
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
+    session["avatar"]     = avatar_id
+    session["avatar_url"] = ""
     return jsonify({"ok": True})
 
 
@@ -249,6 +251,8 @@ def update_photo():
         sb_put(f"/auth/v1/admin/users/{user_id}", {"user_metadata": {"avatar_url": public_url, "avatar": None}})
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
+    session["avatar_url"] = public_url
+    session["avatar"]     = ""
     return jsonify({"ok": True, "url": public_url})
 
 

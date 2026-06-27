@@ -154,6 +154,16 @@
         Progresso
       </a>
 
+      <a href="/revisoes" class="student-only hidden flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
+        {% if active_page == 'revisoes' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
+        <svg class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'revisoes' %}opacity-40{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
+        </svg>
+        Revisões
+        <span id="rev-nav-badge" style="display:none"
+              class="ml-auto bg-[#7B5EA7] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] text-center"></span>
+      </a>
+
       <a href="/exercicios" class="student-only hidden flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
         {% if active_page == 'exercicios' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
         <svg class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'exercicios' %}opacity-40{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
@@ -177,6 +187,16 @@
 
       <!-- ── Links exclusivos do professor (ocultos por padrão) ── -->
       <div class="teacher-nav hidden h-px bg-gray-100 mx-0 my-1"></div>
+
+      <a href="/dashboard" class="teacher-nav hidden flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
+        {% if active_page == 'dashboard' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
+        <svg class="w-[18px] h-[18px] flex-shrink-0 {% if active_page != 'dashboard' %}opacity-40{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        Alunos
+        <span id="recordings-nav-badge" style="display:none"
+              class="ml-auto bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[16px] text-center"></span>
+      </a>
 
       <a href="/admin" class="teacher-nav hidden flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] transition-colors
         {% if active_page == 'admin' %}bg-[#F2EAD8] text-[#1F2937] font-semibold{% else %}text-gray-500 hover:bg-gray-50{% endif %}">
@@ -330,6 +350,34 @@
         const roleEl  = document.getElementById('sidebar-user-role'); if (roleEl)  roleEl.textContent  = _role;
         const emailEl = document.getElementById('popup-user-email');  if (emailEl) emailEl.textContent = _email;
 
+        // Popula avatar na sidebar
+        (function() {
+          const wrap     = document.getElementById('sidebar-avatar');
+          if (!wrap) return;
+          const photoUrl = window.CURRENT_USER.avatar_url || '';
+          const avatarId = window.CURRENT_USER.avatar || '';
+          if (photoUrl) {
+            wrap.innerHTML = `<img src="${photoUrl}" style="width:100%;height:100%;object-fit:cover;" alt="avatar"/>`;
+          } else if (avatarId) {
+            const AVATARS = [
+              { id:'av1',  emoji:'🎵', bg:'linear-gradient(135deg,#C4943A,#8B6920)' },
+              { id:'av2',  emoji:'🎸', bg:'linear-gradient(135deg,#7B5EA7,#4A3470)' },
+              { id:'av3',  emoji:'🎹', bg:'linear-gradient(135deg,#4A78B0,#2A4F7A)' },
+              { id:'av4',  emoji:'🎺', bg:'linear-gradient(135deg,#E8632A,#B04020)' },
+              { id:'av5',  emoji:'🎻', bg:'linear-gradient(135deg,#5A8A6A,#3A6A4A)' },
+              { id:'av6',  emoji:'🎼', bg:'linear-gradient(135deg,#3D3018,#1A1008)' },
+              { id:'av7',  emoji:'🥁', bg:'linear-gradient(135deg,#E84A6A,#A02040)' },
+              { id:'av8',  emoji:'🎤', bg:'linear-gradient(135deg,#C44A9A,#8A2070)' },
+              { id:'av9',  emoji:'🎧', bg:'linear-gradient(135deg,#3A8A9A,#1A6070)' },
+              { id:'av10', emoji:'🎶', bg:'linear-gradient(135deg,#8A8A2A,#5A5A10)' },
+              { id:'av11', emoji:'🔔', bg:'linear-gradient(135deg,#D4943A,#9A6010)' },
+              { id:'av12', emoji:'♪',  bg:'linear-gradient(135deg,#4A5A7A,#2A3A5A)' },
+            ];
+            const av = AVATARS.find(a => a.id === avatarId);
+            if (av) wrap.innerHTML = `<div style="width:100%;height:100%;background:${av.bg};display:flex;align-items:center;justify-content:center;font-size:18px;">${av.emoji}</div>`;
+          }
+        })();
+
         // Mostra itens de navegação exclusivos do professor
         if (window.CURRENT_USER.is_teacher) {
           document.querySelectorAll('.teacher-nav').forEach(el => el.classList.remove('hidden'));
@@ -347,6 +395,19 @@
           }
           refreshTeacherMsgBadge();
           setInterval(refreshTeacherMsgBadge, 60000);
+
+          function refreshRecordingsBadge() {
+            fetch('/api/teacher/submissions/unread-count')
+              .then(r => r.ok ? r.json() : { count: 0 })
+              .then(({ count }) => {
+                const badge = document.getElementById('recordings-nav-badge');
+                if (!badge) return;
+                if (count > 0) { badge.style.display = ''; badge.textContent = count; }
+                else           { badge.style.display = 'none'; }
+              }).catch(() => {});
+          }
+          refreshRecordingsBadge();
+          setInterval(refreshRecordingsBadge, 60000);
         } else {
           // Mostra link de mensagens e carrega badge de não lidas
           document.querySelectorAll('.student-only').forEach(el => el.classList.remove('hidden'));
@@ -357,6 +418,14 @@
                 const badge = document.getElementById('msg-nav-badge');
                 if (badge) { badge.style.display = ''; badge.textContent = count; }
               }
+            }).catch(() => {});
+          // Badge de revisões pendentes
+          fetch('/api/reviews')
+            .then(r => r.ok ? r.json() : { this_week: [] })
+            .then(({ this_week }) => {
+              const count = (this_week || []).length;
+              const badge = document.getElementById('rev-nav-badge');
+              if (badge && count > 0) { badge.style.display = ''; badge.textContent = count; }
             }).catch(() => {});
           // Badge de exercícios avulsos pendentes
           fetch('/api/standalone-exercises')
